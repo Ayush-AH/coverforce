@@ -17,7 +17,7 @@ const stats: StatItem[] = [
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="flex items-center justify-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/70">
-      <span className="inline-block size-2 shrink-0 bg-[#5B35E0]" aria-hidden />
+      <span className="inline-block size-2 shrink-0 bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF] rounded-full" aria-hidden />
       {children}
     </p>
   );
@@ -25,18 +25,10 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#0a143b] text-white">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,#2d4a9e_0%,#1a2f6e_35%,#0a143b_70%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.15)_0%,transparent_8%),radial-gradient(circle_at_80%_60%,rgba(91,53,224,0.2)_0%,transparent_12%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.08)_0%,transparent_6%)]"
-        aria-hidden
-      />
+    <section className="relative overflow-hidden bg-[#141E4B] text-white">
 
-      <Container>
-        <div className="relative z-10 flex min-h-[calc(100svh-4.5rem)] flex-col justify-between py-16 md:min-h-[calc(100svh-5rem)] md:py-20 lg:py-24">
+      <Container >
+        <div className="relative z-10 flex min-h-[calc(100svh-4.5rem)] flex-col justify-between py-16 md:py-20 lg:py-24">
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             <Eyebrow>The AI distribution flow</Eyebrow>
 

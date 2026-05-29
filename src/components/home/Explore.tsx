@@ -5,7 +5,7 @@ import Container from "../common/Container";
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="flex items-center justify-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/70">
-      <span className="inline-block size-2 shrink-0 bg-[#5B35E0]" aria-hidden />
+      <span className="inline-block size-2 shrink-0 bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF] rounded-full" aria-hidden />
       {children}
     </p>
   );

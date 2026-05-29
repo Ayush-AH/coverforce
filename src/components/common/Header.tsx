@@ -20,7 +20,7 @@ const navItems: NavItem[] = [
 
 const Header = () => {
   return (
-    <nav className="bg-[#0a143b] text-white">
+    <nav className="bg-[#141E4B] text-white">
       <Container>
         <div className="flex items-center justify-between gap-8 py-4 md:py-5">
           <Link href="/" className="shrink-0">

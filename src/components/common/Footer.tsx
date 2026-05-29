@@ -42,7 +42,7 @@ const legalLinks: LegalLink[] = [
 function FooterBullet() {
   return (
     <span
-      className="inline-block size-2 shrink-0 bg-[#5B35E0]"
+      className="inline-block size-2 rounded-full shrink-0 bg-[#5B35E0]"
       aria-hidden
     />
   );

@@ -43,7 +43,7 @@ const features: FeatureItem[] = [
 function SectionEyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="flex items-center justify-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#0a143b]/50">
-      <span className="inline-block size-2 shrink-0 bg-[#5B35E0]" aria-hidden />
+      <span className="inline-block size-2 shrink-0 bg-[#797979] rounded-full" aria-hidden />
       {children}
     </p>
   );
