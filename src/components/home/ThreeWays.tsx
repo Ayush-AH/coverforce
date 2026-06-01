@@ -255,22 +255,22 @@ const ThreeWays = () => {
 
       <Container borderColor="#0A143B1A">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-10 xl:gap-14">
             <div className="space-y-5 md:space-y-6">
-              <p className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-[#797979]">
+              <p className="flex items-center gap-2.5 text-xs font-mono font-medium uppercase tracking-[0.14em] text-[#797979]">
                 <span
                   className="inline-block size-2 shrink-0 rounded-full bg-[#797979]"
                   aria-hidden
                 />
                 Built for your role
               </p>
-              <h2 className="max-w-xl text-3xl font-semibold leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+              <h2 className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-4xl lg:leading-[1.1]">
                 One platform.
                 <br />
                 Three Ways to Use It.
               </h2>
             </div>
-            <p className="max-w-md text-base leading-relaxed text-[#0a143b]/70 md:text-lg lg:pt-8 xl:pt-10">
+            <p className="max-w-md text-base leading-relaxed text-[#091843BF]   md:text-base lg:pt-8 xl:pt-10">
               Whether you&apos;re routing submissions, quoting carriers, or
               building on our API, CoverForce adapts to your role.
             </p>

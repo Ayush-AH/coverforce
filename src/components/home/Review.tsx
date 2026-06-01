@@ -58,11 +58,14 @@ const testimonials: Testimonial[] = [
 
 function CoalitionLogo() {
   return (
-    <div className="flex items-center gap-2 text-[#0a143b]">
-      <span className="flex size-8 items-center justify-center rounded-full border-2 border-[#0a143b] text-xs font-bold">
-        C
-      </span>
-      <span className="text-lg font-semibold tracking-tight">Coalition</span>
+    <div className="relative h-14 w-[220px] shrink-0 md:h-16 md:w-[264px]">
+      <Image
+        src="/images/review%20logo.png"
+        alt="Coalition"
+        fill
+        className="object-contain object-right"
+        sizes="(max-width: 768px) 220px, 264px"
+      />
     </div>
   );
 }
@@ -83,8 +86,8 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         />
       </div>
 
-      <div className="relative z-10 flex h-full min-h-0 flex-col">
-        <div className="mb-8 size-20 shrink-0 overflow-hidden rounded-lg md:mb-10 md:size-24">
+      <div className="relative z-10 flex h-full flex-1 flex-col justify-between">
+        <div className="size-20 shrink-0 overflow-hidden md:size-24">
           <Image
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -94,16 +97,16 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           />
         </div>
 
-        <blockquote className="mb-auto max-w-3xl text-xl font-semibold leading-snug tracking-tight text-[#1a1a2e] md:text-2xl lg:text-[1.75rem] lg:leading-snug">
+        <blockquote className="max-w-3xl text-xl font-heading font-regular tracking-tight text-[#1a1a2e] md:text-2xl lg:text-5xl">
           &ldquo;{testimonial.quote}&rdquo;
         </blockquote>
 
-        <div className="mt-10 flex items-end justify-between gap-6">
+        <div className="flex items-end justify-between gap-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0a143b]">
+            <p className="text-sm font-mono font-medium uppercase tracking-[0.14em]  text-[#303030]">
               {testimonial.name}
             </p>
-            <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.1em] text-neutral-500">
+            <p className="text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#303030]">
               {testimonial.role}
             </p>
           </div>
@@ -135,65 +138,63 @@ const Review = () => {
   return (
     <section className="bg-[#141E4B] text-white">
       <Container borderColor="#FFFFFF1A" className="border-t border-[#FFFFFF1A]">
-       <div className="relative overflow-hidden py-16 md:py-20 lg:py-24">
-       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between md:mb-12">
-          <h2 className="max-w-2xl text-2xl font-semibold leading-tight tracking-tight md:text-3xl lg:text-4xl">
-            Why Commercial Insurance{" "}
-            <span className="text-white/40">Teams Trust</span>
-            <br />
-            CoverForce for Smarter Workflows
-          </h2>
+        <div className="relative overflow-hidden py-16 md:py-20 lg:py-24">
+          <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between md:mb-12">
+            <h2 className="max-w-2xl text-2xl font-heading font-regular tracking-tight md:text-3xl lg:text-4xl">
+              Why Commercial Insurance{" "}
+              <span className="text-white/40">Teams Trust CoverForce for Smarter Workflows</span>
+            </h2>
 
-          <div className="flex shrink-0 items-center gap-3">
-            <button
-              ref={prevRef}
-              type="button"
-              aria-label="Previous testimonial"
-              className="review-prev flex size-11 shrink-0 items-center justify-center rounded-full border border-[#FFFFFF29] bg-transparent text-white transition-colors hover:bg-white/10"
-            >
-              <RiArrowLeftLine className="size-5" />
-            </button>
-            <button
-              ref={nextRef}
-              type="button"
-              aria-label="Next testimonial"
-              className="review-next flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-[#0a143b] transition-opacity hover:opacity-90"
-            >
-              <RiArrowRightLine className="size-5" />
-            </button>
+            <div className="flex shrink-0 items-center gap-3">
+              <button
+                ref={prevRef}
+                type="button"
+                aria-label="Previous testimonial"
+                className="review-prev flex size-11 shrink-0 items-center justify-center rounded-full border border-[#FFFFFF29] bg-transparent text-white transition-colors hover:bg-white/10"
+              >
+                <RiArrowLeftLine className="size-5" />
+              </button>
+              <button
+                ref={nextRef}
+                type="button"
+                aria-label="Next testimonial"
+                className="review-next flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-[#0a143b] transition-opacity hover:opacity-90"
+              >
+                <RiArrowRightLine className="size-5" />
+              </button>
+            </div>
           </div>
-        </div>
 
-        <Swiper
-          modules={[Navigation]}
-          spaceBetween={24}
-          slidesPerView={1}
-          speed={600}
-          onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-          }}
-          onBeforeInit={(swiper) => {
-            if (
-              swiper.params.navigation &&
-              typeof swiper.params.navigation !== "boolean"
-            ) {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }
-          }}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
-          className="review-swiper !overflow-visible"
-        >
-          {testimonials.map((testimonial) => (
-            <SwiperSlide key={testimonial.id}>
-              <TestimonialCard testimonial={testimonial} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-       </div>
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={24}
+            slidesPerView={1}
+            speed={600}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            onBeforeInit={(swiper) => {
+              if (
+                swiper.params.navigation &&
+                typeof swiper.params.navigation !== "boolean"
+              ) {
+                swiper.params.navigation.prevEl = prevRef.current;
+                swiper.params.navigation.nextEl = nextRef.current;
+              }
+            }}
+            navigation={{
+              prevEl: prevRef.current,
+              nextEl: nextRef.current,
+            }}
+            className="review-swiper !overflow-visible"
+          >
+            {testimonials.map((testimonial) => (
+              <SwiperSlide key={testimonial.id}>
+                <TestimonialCard testimonial={testimonial} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </Container>
     </section>
   );

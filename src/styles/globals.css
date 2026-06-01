@@ -29,3 +29,17 @@ button {
   max-width: 1440px;
   margin-inline: auto;
 }
+
+.why-coverforce-swiper .swiper-slide {
+  height: auto;
+  transition:
+    transform 0.55s ease,
+    opacity 0.55s ease;
+  transform: scale(0.88);
+  opacity: 0.55;
+}
+
+.why-coverforce-swiper .swiper-slide-active {
+  transform: scale(1);
+  opacity: 1;
+}

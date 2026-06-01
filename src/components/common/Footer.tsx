@@ -53,7 +53,7 @@ type FooterColumnProps = FooterColumnData;
 function FooterColumn({ title, links }: FooterColumnProps) {
   return (
     <div>
-      <h3 className="mb-5 flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a143b]">
+      <h3 className="mb-5 flex items-center gap-2.5 font-mono text-sm font-medium uppercase tracking-[0.14em] text-[#5B35E0]">
         <FooterBullet />
         {title}
       </h3>
@@ -62,7 +62,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
           <li key={label}>
             <Link
               href="/"
-              className="text-[11px] font-medium uppercase tracking-[0.1em] text-neutral-800 transition-colors hover:text-[#0a143b]"
+              className="font-mono text-sm font-medium uppercase tracking-[0.1em] text-neutral-800 transition-colors hover:text-[#0a143b]"
             >
               {label}
             </Link>
@@ -101,7 +101,7 @@ const Footer = () => {
                 className="h-10 w-auto md:h-12 lg:h-14"
               />
             </Link>
-            <p className="max-w-md text-sm leading-relaxed text-neutral-600 md:text-right">
+            <p className="max-w-md font-mono text-sm font-medium leading-relaxed text-neutral-600 md:text-right">
               CoverForce brings smarter insurance distribution into one
               connected workflow.
             </p>
@@ -117,7 +117,7 @@ const Footer = () => {
                 <Link
                   key={label}
                   href="/"
-                  className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a143b] transition-opacity hover:opacity-80"
+                  className="flex items-center gap-2.5 font-mono text-sm font-medium uppercase tracking-[0.14em] text-[#0a143b] transition-opacity hover:opacity-80"
                 >
                   <FooterBullet />
                   {label}
@@ -126,7 +126,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 py-8 text-[11px] font-medium uppercase tracking-[0.1em] text-neutral-700 sm:flex-row sm:items-center sm:justify-between md:py-10">
+          <div className="flex flex-col gap-4 py-8 font-mono text-sm font-medium uppercase tracking-[0.1em] text-neutral-700 sm:flex-row sm:items-center sm:justify-between md:py-10">
             <ul className="flex flex-wrap gap-6 sm:gap-8">
               {legalLinks.map(({ label, href }) => (
                 <li key={label}>
@@ -139,8 +139,8 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-            <p className="text-neutral-500 sm:text-right">
-              © 2024 — Copyright Insuredge Technologies
+            <p className="font-mono text-sm font-medium text-neutral-500 sm:text-right">
+              © {new Date().getFullYear()} — Copyright Insuredge Technologies
             </p>
           </div>
         </div>

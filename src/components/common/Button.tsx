@@ -21,8 +21,8 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-5 py-2.5 text-xs tracking-[0.08em]",
-  md: "px-8 py-3.5 text-xs tracking-[0.08em]",
+  sm: "px-5 py-2.5 font-mono text-sm font-medium tracking-[0.08em]",
+  md: "px-6 py-2.5 font-mono text-sm font-medium tracking-[0.08em]",
 };
 
 const Button = ({

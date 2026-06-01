@@ -5,7 +5,8 @@ import Container from "@/components/common/Container";
 
 type CarrierResult = {
   id: string;
-  brand: React.ReactNode;
+  logo: string;
+  logoAlt: string;
   title: string;
   description: string;
 };
@@ -13,62 +14,67 @@ type CarrierResult = {
 const carrierResults: CarrierResult[] = [
   {
     id: "employers",
-    brand: (
-      <span className="text-base font-black tracking-[0.18em] text-white md:text-lg">
-        EMPLOYERS
-      </span>
-    ),
+    logo: "/images/Employers.svg",
+    logoAlt: "Employers",
     title: "0% Error Rate",
     description:
       "Only integration partner to achieve 0% API error rate on submission data.",
   },
   {
     id: "nationwide",
-    brand: (
-      <span className="text-base font-bold tracking-wide text-white md:text-lg">
-        NATIONWIDE
-      </span>
-    ),
+    logo: "/images/Nationwide.svg",
+    logoAlt: "Nationwide",
     title: "Live in 12 Weeks",
     description:
       "BOP integration: under 12 weeks, less than 10 hours carrier eng time.",
   },
   {
     id: "chubb",
-    brand: (
-      <span className="text-lg font-light tracking-[0.32em] text-white md:text-xl">
-        CHUBB
-      </span>
-    ),
+    logo: "/images/chubb.svg",
+    logoAlt: "Chubb",
     title: "Trust & Quality",
     description:
       "Submission quality → first wholesale partner appointed in 2+ years.",
   },
   {
     id: "liberty",
-    brand: (
-      <div className="flex items-center gap-2 text-white">
-        <span className="flex size-8 items-center justify-center rounded-full border border-white/80 text-[10px] font-bold">
-          LM
-        </span>
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold">Liberty Mutual</span>
-          <span className="text-[10px] font-medium uppercase tracking-wider text-white/70">
-            Insurance
-          </span>
-        </div>
-      </div>
-    ),
+    logo: "/images/liverty.svg",
+    logoAlt: "Liberty Mutual",
     title: "5-Point Bind Advantage",
     description:
       "Only integration partner to achieve 0% API error rate on submission data.",
   },
 ];
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function CarrierLogo({ src, alt }: { src: string; alt: string }) {
   return (
-    <p className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/60">
-      <span className="inline-block size-2 shrink-0 bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF] rounded-full" aria-hidden />
+    <div className="relative h-8 w-[112px] max-w-full md:h-9 md:w-[128px]">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-contain object-left"
+        sizes="(max-width: 768px) 112px, 128px"
+      />
+    </div>
+  );
+}
+
+function Eyebrow({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      className={`flex items-center gap-2.5 text-sm font-mono font-medium uppercase tracking-[0.14em] ${className}`}
+    >
+      <span
+        className="inline-block size-2 shrink-0 rounded-full bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF]"
+        aria-hidden
+      />
       {children}
     </p>
   );
@@ -77,12 +83,14 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 function CarrierCard({ result }: { result: CarrierResult }) {
   return (
     <article className="flex flex-col gap-10 lg:gap-12 lg:px-8 xl:px-10 first:lg:pl-0 last:lg:pr-0">
-      <div className="min-h-[3rem]">{result.brand}</div>
+      <div className="min-h-[2.25rem]">
+        <CarrierLogo src={result.logo} alt={result.logoAlt} />
+      </div>
       <div className="space-y-3">
-        <h3 className="text-xl font-semibold text-white md:text-2xl">
+        <h3 className="text-xl font-heading font-regular text-white md:text-2xl tracking-tight">
           {result.title}
         </h3>
-        <p className="max-w-[240px] text-sm leading-relaxed text-white/55">
+        <p className="max-w-[240px] text-sm font-sans font-regular text-[#D1D1D1]text-sm leading-relaxed text-white/55">
           {result.description}
         </p>
       </div>
@@ -94,52 +102,49 @@ const CarrierResults = () => {
   return (
     <section className="bg-[#141E4B] text-white">
       <Container borderColor="#FFFFFF1A" className="border-t border-b border-[#FFFFFF1A]">
-        <div className="relative py-16 md:py-20 lg:py-24">
-          {/* Wave — 130% width, anchored left top inside container */}
-          <div
-            className="pointer-events-none absolute left-0 top-0 z-0 h-[min(55vw,420px)] w-[130%] md:h-[min(50vw,480px)] lg:h-[520px]"
+      <div
+            className="pointer-events-none absolute left-0 top-0 z-0  w-full lg:h-full"
             aria-hidden
           >
             <Image
-              src="/carrier-results-wave.svg"
+              src="/images/result bg.svg"
               alt=""
               fill
               sizes="130vw"
-              className="object-contain object-left-top"
+              className="object-cover"
             />
           </div>
+        <div className="relative py-16 md:py-20 lg:py-24">
+          {/* Wave — 130% width, anchored left top inside container */}
+       
 
-          <div className="relative z-10 flex flex-col">
+          <div className="relative z-10 flex flex-col gap-62">
             {/* Header */}
-            <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-16">
-              <div className="space-y-5 lg:max-w-xl">
-                <Eyebrow>Named carrier results</Eyebrow>
-                <h2 className="text-3xl font-semibold leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem]">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12">
+              <div className="flex flex-col justify-end space-y-5">
+                <Eyebrow className="text-[#FFFFFF80]">
+                  Named carrier results
+                </Eyebrow>
+                <h2 className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight md:text-4xl lg:text-4xl lg:leading-[1.15]">
                   Carrier results that speak for themselves
                 </h2>
               </div>
 
-              <div className="flex flex-col gap-6 lg:items-end lg:text-right">
-                <p className="max-w-md text-sm leading-relaxed text-white/70 lg:ml-auto">
+              <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
+                <p className="text-base font-sans font-regular leading-relaxed text-[#D1D1D1]">
                   Named outcomes provide clear, organized quote comparisons from
                   appointed carriers, helping agents from production carrier
                   partnerships.
                 </p>
-                <Button
-                  href="/"
-                  variant="primary"
-                  className="w-fit px-6 py-3 lg:ml-auto"
-                >
+                <Button href="/" variant="primary">
                   Explore Carrier
                 </Button>
               </div>
             </div>
 
-            {/* Spacer so wave sits between header and stats */}
-            <div className="h-[min(28vw,200px)] md:h-[min(24vw,240px)] lg:h-[280px]" />
 
             {/* Carrier columns */}
-            <div className="grid gap-14 border-t border-white/10 pt-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/15 lg:pt-16">
+            <div className="grid gap-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
               {carrierResults.map((result) => (
                 <CarrierCard key={result.id} result={result} />
               ))}

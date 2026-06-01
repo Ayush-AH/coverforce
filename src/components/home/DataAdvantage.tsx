@@ -11,7 +11,7 @@ type EyebrowProps = {
 function Eyebrow({ children, className = "" }: EyebrowProps) {
   return (
     <p
-      className={`flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.14em] ${className}`}
+      className={`flex items-center gap-2.5 text-base font-mono font-medium uppercase tracking-[0.14em] ${className}`}
     >
       <span className="inline-block size-2 shrink-0 bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF] rounded-full" aria-hidden />
       {children}
@@ -20,26 +20,33 @@ function Eyebrow({ children, className = "" }: EyebrowProps) {
 }
 
 type CarrierBarProps = {
-  label: string;
+  logo: string;
+  logoAlt: string;
   value: number;
 };
 
-function CarrierBar({ label, value }: CarrierBarProps) {
+function CarrierBar({ logo, logoAlt, value }: CarrierBarProps) {
   return (
-    <div className="flex items-center gap-4">
-      <span className="w-24 shrink-0 text-sm font-semibold tracking-wide text-white">
-        {label}
-      </span>
-      <div className="flex flex-1 items-center gap-4">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/25">
-          <div
-            className="h-full rounded-full bg-white transition-all"
-            style={{ width: `${value}%` }}
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-4">
+        <div className="relative h-6 w-20 shrink-0">
+          <Image
+            src={logo}
+            alt={logoAlt}
+            fill
+            className="object-contain object-left"
+            sizes="80px"
           />
         </div>
-        <span className="w-12 shrink-0 text-right text-sm font-medium tabular-nums text-white">
+        <span className="shrink-0 text-base font-mono font-medium tabular-nums text-white">
           {value}%
         </span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/25">
+        <div
+          className="h-full rounded-full bg-white transition-all"
+          style={{ width: `${value}%` }}
+        />
       </div>
     </div>
   );
@@ -50,23 +57,22 @@ const DataAdvantage = () => {
     <section className="bg-[#141E4B] text-white">
       <Container borderColor="#FFFFFF1A">
         <div className="flex flex-col gap-10 lg:gap-14 py-16 md:py-20 lg:py-24">
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-12">
-            <div className="space-y-5">
-              <Eyebrow className="text-white/70">The data advantage</Eyebrow>
-              <h2 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:justify-between lg:gap-12">
+            <div className="flex flex-col justify-end space-y-5">
+              <Eyebrow className="text-[#FFFFFF80]">The data advantage</Eyebrow>
+              <h2 className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight md:text-4xl lg:text-4xl lg:leading-[1.15]">
                 Intelligence Built on Data no One Else has
               </h2>
             </div>
 
-            <div className="flex flex-col gap-6 lg:items-end lg:text-right">
-              <p className="max-w-md text-sm leading-relaxed text-white/75 lg:ml-auto">
+            <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
+              <p className="text-xl font-sans font-regular leading-relaxed text-white/80">
                 140,000+ proprietary carrier interactions. Every transaction
                 makes the platform smarter.
               </p>
               <Button
                 href="/"
                 variant="primary"
-                className="w-fit px-6 py-3 lg:ml-auto"
               >
                 Explore AI
               </Button>
@@ -91,24 +97,24 @@ const DataAdvantage = () => {
 
               <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
                 <div className="space-y-8">
-                  <Eyebrow className="text-[#0a143b]/60">
+                  <Eyebrow className="text-[#525252]">
                     Submission intelligence
                   </Eyebrow>
                   <div>
-                    <p className="text-[clamp(4.5rem,12vw,7.5rem)] font-semibold leading-none tracking-tight text-[#4F63E8]">
+                    <p className="text-6xl font-heading font-medium leading-none tracking-tight text-[#4F63E8]">
                       95%
                     </p>
-                    <p className="mt-2 text-sm font-medium text-[#0a143b]/70">
+                    <p className="mt-2 text-xl font-heading font-medium text-[#525252]">
                       Pre-fill Accuracy
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold leading-snug md:text-xl">
+                  <h3 className="text-lg font-heading font-medium md:text-2xl max-w-xs">
                     Upload an ACORD form AI reads it instantly
                   </h3>
-                  <p className="text-sm leading-relaxed text-[#0a143b]/65">
+                  <p className="text-base font-sans font-regular leading-relaxed text-[#525252]">
                     Pre-fill with precision, no manual entry, no errors
                   </p>
                 </div>
@@ -134,18 +140,26 @@ const DataAdvantage = () => {
                 <div className="space-y-5">
                   <Eyebrow className="text-white/80">Appetite intelligence</Eyebrow>
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold leading-snug md:text-xl">
-                      Same risk, different carriers.
+                    <h3 className="text-3xl font-heading font-medium md:text-3xl max-w-xs">
+                      Same risk, <br /> different carriers.
                     </h3>
-                    <p className="max-w-sm text-sm leading-relaxed text-white/75">
+                    <p className="max-w-sm text-base font-sans font-regular leading-relaxed text-[#FFFFFF]">
                       See which carriers quote which risks before you submit.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-5">
-                  <CarrierBar label="Coalition" value={94.8} />
-                  <CarrierBar label="CHUBB" value={10.4} />
+                  <CarrierBar
+                    logo="/images/coailtionloading-logo.svg"
+                    logoAlt="Coalition"
+                    value={94.8}
+                  />
+                  <CarrierBar
+                    logo="/images/chubbloading-logo.svg"
+                    logoAlt="Chubb"
+                    value={10.4}
+                  />
                 </div>
               </div>
             </article>

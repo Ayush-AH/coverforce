@@ -1,8 +1,7 @@
 import React from "react";
 import {
   RiMailLine,
-  RiSparkling2Line,
-  RiUser3Line,
+  RiSparkling2Fill,
   RiDownloadLine,
   RiCheckboxCircleFill,
 } from "@remixicon/react";
@@ -17,17 +16,17 @@ type FeatureItem = {
 const features: FeatureItem[] = [
   {
     id: "accept",
-    icon: <RiMailLine className="size-5" />,
+    icon: <RiMailLine className="size-3" />,
     text: "Accept submissions from email, ACORD PDFs, loss runs, prior policies, manual entry, or AMS sync.",
   },
   {
     id: "ai",
-    icon: <RiSparkling2Line className="size-5" />,
+    icon: <RiSparkling2Fill className="size-3" />,
     highlighted: true,
     text: (
       <>
         AI reads ACORDs, prior policies, and loss runs with 95%+ accuracy.{" "}
-        <span className="inline-flex rounded-full bg-[#5B35E0] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+        <span className="inline-flex rounded-full bg-[#0130BE] px-4 py-0.2 text-[10px] uppercase tracking-wide text-white">
           AI
         </span>
       </>
@@ -35,14 +34,14 @@ const features: FeatureItem[] = [
   },
   {
     id: "customer",
-    icon: <RiUser3Line className="size-5" />,
+    icon: <RiMailLine className="size-3" />,
     text: "Customer details are saved and reused for future submissions.",
   },
 ];
 
 function SectionEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="flex items-center justify-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#0a143b]/50">
+    <p className="flex items-center justify-center gap-2.5 text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#0a143b]/50">
       <span className="inline-block size-2 shrink-0 bg-[#797979] rounded-full" aria-hidden />
       {children}
     </p>
@@ -57,12 +56,12 @@ function AcordMock() {
           {[20, 35, 28, 50, 42, 65].map((h, i) => (
             <div
               key={i}
-              className="w-2 rounded-sm bg-[#5B35E0]/70"
+              className="w-2 rounded-sm bg-[#0130BE]/70"
               style={{ height: `${h}px` }}
             />
           ))}
         </div>
-        <p className="mt-2 text-lg font-semibold text-[#5B35E0]">+326%</p>
+        <p className="mt-2 text-lg font-semibold text-[#0130BE]">+326%</p>
       </div>
 
       <div className="relative rounded-2xl border border-neutral-100 bg-white p-6 shadow-xl md:p-8">
@@ -97,7 +96,7 @@ function AcordMock() {
             <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
               Limits summary
             </p>
-            <button type="button" className="text-xs font-medium text-[#5B35E0]">
+            <button type="button" className="text-xs font-medium text-[#0130BE]">
               View all
             </button>
           </div>
@@ -114,9 +113,9 @@ function AcordMock() {
         </div>
 
         <div className="mt-6 flex items-center gap-2 border-t border-neutral-100 pt-5">
-          <RiCheckboxCircleFill className="size-5 text-[#5B35E0]" />
+          <RiCheckboxCircleFill className="size-5 text-[#0130BE]" />
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#5B35E0]">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#0130BE]">
               Verified
             </p>
             <p className="text-[11px] text-neutral-500">
@@ -134,65 +133,59 @@ const DistributionFlow = () => {
     <section className="bg-white">
       <Container borderColor="#5353531A">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <SectionEyebrow>The AI distribution flow</SectionEyebrow>
-          <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight text-[#0a143b] md:text-4xl lg:text-5xl">
-            Built to streamline commercial insurance workflows
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-neutral-500 md:text-base">
-            Upload emails and documents to instantly extract insurance-ready
-            data with AI.
-          </p>
-        </div>
-
-        <div className="mt-16 grid items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#5B35E0]">
-              Intake 01
+          <div className="mx-auto max-w-3xl text-center">
+            <SectionEyebrow>The AI distribution flow</SectionEyebrow>
+            <h2 className="mt-5 text-3xl font-heading font-medium leading-tight tracking-tight text-[#424242] md:text-4xl lg:text-4xl">
+              Built to streamline <br /> commercial insurance workflows
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-[#091843BF] font-sans font-regular md:text-base">
+              Upload emails and documents to instantly extract <br /> insurance-ready
+              data with AI.
             </p>
-            <h3 className="mt-4 text-2xl font-semibold leading-snug text-[#0a143b] md:text-3xl lg:text-4xl">
-              From{" "}
-              <span className="bg-gradient-to-r from-[#4F63E8] to-[#5B35E0] bg-clip-text text-transparent">
-                email to forms to documents
-              </span>{" "}
-              every submission starts here.
-            </h3>
-            <p className="mt-5 text-sm leading-relaxed text-neutral-600 md:text-base">
-              CoverForce accepts submissions however agents already work —
-              email, ACORD PDFs, manual entry, or direct AMS sync.
-            </p>
+          </div>
 
-            <ul className="mt-10 space-y-3">
-              {features.map((feature) => (
-                <li
-                  key={feature.id}
-                  className={`flex gap-4 rounded-xl p-4 ${
-                    feature.highlighted
-                      ? "bg-[#EEF0FF] ring-1 ring-[#5B35E0]/15"
-                      : "bg-transparent"
-                  }`}
-                >
-                  <span
-                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${
-                      feature.highlighted
-                        ? "bg-[#5B35E0] text-white"
-                        : "bg-neutral-100 text-neutral-600"
-                    }`}
+          <div className="mt-16 grid items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
+            <div>
+              <p className="text-base font-mono font-medium uppercase tracking-[0.14em] text-[#0130BE]">
+                Intake 01
+              </p>
+              <h3 className="mt-4 text-2xl font-heading font-regular tracking-tight text-[#0a143b] md:text-3xl lg:text-4xl">
+                From{" "}
+                <span className="bg-gradient-to-r from-[#4F63E8] to-[#0130BE] bg-clip-text text-transparent">
+                  email to forms to <br /> documents
+                </span>{" "}
+                every <br /> submission starts here.
+              </h3>
+              <p className="max-w-lg mt-5 text-sm leading-relaxed text-[#4A5778] font-sans font-regular md:text-base">
+                CoverForce accepts submissions however agents already work email, ACORD PDFs, manual entry, or direct AMS sync.
+              </p>
+
+              <ul className="mt-10 space-y-3">
+                {features.map((feature) => (
+                  <li
+                    key={feature.id}
+                    className={`flex gap-4 py-4 `}
                   >
-                    {feature.icon}
-                  </span>
-                  <p className="text-sm leading-relaxed text-[#0a143b]/80 md:text-base">
-                    {feature.text}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    <span
+                      className={`flex size-6 border border-[#424242] shrink-0 items-center justify-center rounded-full ${feature.highlighted
+                        ? "bg-[#0130BE] text-white"
+                        : ""
+                        }`}
+                    >
+                      {feature.icon}
+                    </span>
+                    <p className={`text-sm leading-relaxed ${feature.highlighted ? "text-[#0130BE]" : "text-[#424242]"} font-heading font-regular md:text-base`}>
+                      {feature.text}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div className="flex justify-center lg:justify-end">
-            <AcordMock />
+            <div className="flex justify-center lg:justify-end">
+              <AcordMock />
+            </div>
           </div>
-        </div>
         </div>
       </Container>
     </section>
