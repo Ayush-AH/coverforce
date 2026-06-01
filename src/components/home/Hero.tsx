@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
+import SectionRadialGlow from "../common/SectionRadialGlow";
 
 type StatItem = {
   value: string;
@@ -17,7 +18,10 @@ const stats: StatItem[] = [
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="flex items-center justify-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/70">
-      <span className="inline-block size-2 shrink-0 bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF] rounded-full" aria-hidden />
+      <span
+        className="inline-block size-2 shrink-0 rounded-full bg-linear-to-r from-[#FFFFFF] to-[#AFB3EF]"
+        aria-hidden
+      />
       {children}
     </p>
   );
@@ -25,8 +29,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#141E4B] text-white">
-
+    <section className="relative isolate overflow-hidden bg-[#141E4B] text-white">
       <Container borderColor="#FFFFFF1A">
         <div className="relative z-10 flex min-h-[calc(100svh-4.5rem)] flex-col justify-between py-16 md:py-20 lg:py-24">
           <div className="flex flex-1 flex-col items-center justify-center text-center">
@@ -63,6 +66,11 @@ const Hero = () => {
               ))}
             </ul>
           </div>
+        </div>
+
+        <div className="relative h-[min(420px,55vw)] w-full md:h-[480px] lg:h-[500px]">
+          <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
+          <div className="relative z-10 h-full w-full" aria-label="Partner network" />
         </div>
       </Container>
     </section>

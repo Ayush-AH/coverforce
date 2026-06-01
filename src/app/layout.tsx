@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "../styles/fonts.css";
 import SiteLayout from "@/components/common/SiteLayout";
 import { createRootMetadata } from "@/lib/seo";
 import type { ReactNode } from "react";

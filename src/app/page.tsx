@@ -1,5 +1,4 @@
 import Hero from "@/components/home/Hero";
-import PartnerNetwork from "@/components/home/PartnerNetwork";
 import ThreeWays from "@/components/home/ThreeWays";
 import DistributionFlow from "@/components/home/DistributionFlow";
 import DataAdvantage from "@/components/home/DataAdvantage";
@@ -13,7 +12,6 @@ const HomePage = () => {
   return (
     <>
       <Hero />
-      <PartnerNetwork />
       <ThreeWays />
       <DistributionFlow />
       <DataAdvantage />
