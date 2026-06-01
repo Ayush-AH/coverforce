@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
+import SectionRadialGlow from "../common/SectionRadialGlow";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -14,8 +15,10 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 const Explore = () => {
   return (
     <section className="relative overflow-hidden  bg-[#141E4B] text-white">
-      <Container borderColor="#FFFFFF1A">
-        <div className="mx-auto min-h-[calc(100svh-10rem)] flex max-w-2xl flex-col items-center justify-center text-center">
+      <Container borderColor="#FFFFFF1A" className="relative">
+        <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%] lg:top-[14%]" />
+
+        <div className="relative z-10 mx-auto flex min-h-[calc(100svh-2rem)] max-w-2xl flex-col items-center justify-center text-center">
           <Eyebrow>Explore the platform</Eyebrow>
 
           <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight md:text-4xl lg:text-5xl">

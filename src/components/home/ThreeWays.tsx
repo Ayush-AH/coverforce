@@ -1,70 +1,147 @@
 import React, { type ReactNode } from "react";
+import Image from "next/image";
 
-import {
-  RiFilter3Line,
-  RiBarChartGroupedLine,
-  RiCodeBoxLine,
-  RiRocketLine,
-  RiBuilding4Line,
-} from "@remixicon/react";
 import Container from "../common/Container";
 type WayCardProps = {
   label: string;
   tagline: string;
   taglinePosition?: "left" | "right";
   variant: "dark" | "light";
-  icon: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Figma 1179×530 — full-width center card, scales with container */
+  wide?: boolean;
+  /** Solid #9F7CFF background (first & last cards) */
+  accent?: boolean;
+  /** Custom card background color (e.g. second card) */
+  cardBg?: string;
+  /** Background image path (e.g. second card) */
+  cardBgImage?: string;
 };
+
+function CardBottomStrip({ label, tagline }: { label: string; tagline: string }) {
+  return (
+    <div
+      className="-mx-5 -mb-5 mt-auto flex items-center justify-between gap-4 border-t border-[#E8E0F5]/60 px-4 py-3 md:-mx-6 md:-mb-6 md:px-5 md:py-3.5"
+      style={{
+        background: "linear-gradient(90deg, #F8F3FF 0%, #F1F1FF 100%)",
+      }}
+    >
+      <div className="flex min-w-0 items-center gap-2.5">
+        <span
+          className="h-9 w-1.5 shrink-0 rounded-sm"
+          style={{
+            background:
+              "repeating-linear-gradient(135deg, #5B35E0 0 3px, #ffffff 3px 6px)",
+          }}
+          aria-hidden
+        />
+        <span
+          className="size-1.5 shrink-0 rounded-full bg-[#797979]"
+          aria-hidden
+        />
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#797979]">
+          {label}
+        </span>
+      </div>
+      <p className="shrink-0 text-right text-sm font-semibold leading-snug text-[#0a143b] md:text-base">
+        {tagline}
+      </p>
+    </div>
+  );
+}
 
 function WayCard({
   label,
   tagline,
   taglinePosition = "right",
   variant,
-  icon,
   children,
   className = "",
+  wide = false,
+  accent = false,
+  cardBg,
+  cardBgImage,
 }: WayCardProps) {
   const isDark = variant === "dark";
+  const isLightText = accent || (isDark && !cardBg);
 
   return (
     <article
-      className={`relative flex min-h-[320px] flex-col overflow-hidden rounded-2xl p-5 md:min-h-[360px] md:p-6 lg:min-h-[400px] ${
-        isDark
-          ? "bg-gradient-to-br from-[#5B35E0] via-[#4a2d9e] to-[#3d2878] text-white"
-          : "bg-gradient-to-br from-[#EDE8F8] via-[#F5F3FA] to-white text-[#0a143b]"
+      className={`relative flex w-full flex-col overflow-hidden rounded-sm p-5 md:p-6 ${
+        wide ? "aspect-[1179/530]" : "aspect-[580/530]"
+      } ${
+        cardBg
+          ? "text-[#0a143b]"
+          : accent
+            ? "bg-[#9F7CFF] text-white"
+            : isDark
+              ? "bg-gradient-to-br from-[#5B35E0] via-[#4a2d9e] to-[#3d2878] text-white"
+              : "bg-gradient-to-br from-[#EDE8F8] via-[#F5F3FA] to-white text-[#0a143b]"
       } ${className}`}
+      style={cardBg ? { backgroundColor: cardBg } : undefined}
     >
-      <div className="flex items-start justify-between gap-4">
+      {cardBgImage && (
+        <div className="pointer-events-none absolute -translate-y-1/5 left-1/2 z-0 h-[150%] w-[150%] -translate-x-1/2  md:-top-24 lg:-top-28">
+          <Image
+            src={cardBgImage}
+            alt=""
+            fill
+            className="object-cover object-center  w-full h-full "
+            sizes="(max-width: 768px) 100vw, 50vw"
+            aria-hidden
+          />
+        </div>
+      )}
+
+      {accent && (
         <span
-          className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${
-            isDark ? "text-white/80" : "text-[#0a143b]/60"
-          }`}
-        >
-          {label}
-        </span>
-        <span
-          className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${
-            isDark ? "bg-white/15 text-white" : "bg-white text-[#5B35E0] shadow-sm"
-          }`}
-        >
-          {icon}
+          className="pointer-events-none absolute -left-8 -top-2 z-0 aspect-square w-[200%] rounded-full bg-[#2C33BB] md:-left-12 md:-top-4 blur-3xl"
+          aria-hidden
+        />
+      )}
+
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+      <div
+        className={`flex items-start gap-4 ${cardBgImage ? "justify-end" : "justify-between"}`}
+      >
+        {!cardBgImage && (
+          <span
+            className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${
+              isLightText ? "text-white/80" : "text-[#0a143b]/60"
+            }`}
+          >
+            {label}
+          </span>
+        )}
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#8E68F9]">
+          <Image
+            src="/images/expandicon.svg"
+            alt=""
+            width={20}
+            height={20}
+            className="size-5"
+            aria-hidden
+          />
         </span>
       </div>
 
-      <div className="relative mt-4 flex flex-1 items-center justify-center py-4">
+      <div className="relative mt-4 flex min-h-0 flex-1 items-center justify-center overflow-hidden py-2">
         {children}
       </div>
 
-      <p
-        className={`mt-auto text-sm font-semibold leading-snug md:text-base ${
-          taglinePosition === "left" ? "text-left" : "text-right"
-        } ${isDark ? "text-white" : "text-[#0a143b]"}`}
-      >
-        {tagline}
-      </p>
+      {cardBgImage ? (
+        <CardBottomStrip label={label} tagline={tagline} />
+      ) : (
+        <p
+          className={`mt-auto text-sm font-semibold leading-snug md:text-base ${
+            taglinePosition === "left" ? "text-left" : "text-right"
+          } ${isLightText ? "text-white" : "text-[#0a143b]"}`}
+        >
+          {tagline}
+        </p>
+      )}
+      </div>
     </article>
   );
 }
@@ -165,20 +242,18 @@ function DeveloperMock() {
 const ThreeWays = () => {
   return (
     <section className="relative overflow-hidden bg-white">
-      <div
-        className="pointer-events-none absolute -left-32 top-20 size-[420px] rounded-full bg-[#C4D4F8]/50 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-24 top-1/3 size-[500px] rounded-full bg-[#E8D4F8]/60 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-[#5B35E0]/20 to-transparent"
-        aria-hidden
-      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[min(122vw,1200px)] overflow-hidden md:h-[min(116vw,1420px)] lg:h-[min(112vw,1700px)]">
+        <Image
+          src="/images/Group%201000006214.svg"
+          alt=""
+          fill
+          className="translate-y-10 object-cover object-top md:translate-y-14 lg:translate-y-16"
+          sizes="100vw"
+          aria-hidden
+        />
+      </div>
 
-      <Container>
+      <Container borderColor="#0A143B1A">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
             <div className="space-y-5 md:space-y-6">
@@ -206,7 +281,7 @@ const ThreeWays = () => {
               label="Wholesalers"
               tagline="Grow distribution efficiently"
               variant="dark"
-              icon={<RiFilter3Line className="size-5" />}
+              accent
             >
               <WholesalerMock />
             </WayCard>
@@ -215,7 +290,8 @@ const ThreeWays = () => {
               label="Brokers"
               tagline="One workflow for every producer"
               variant="light"
-              icon={<RiBarChartGroupedLine className="size-5" />}
+              cardBg="#FFFFFFCC"
+              cardBgImage="/images/secondcardbg.svg"
             >
               <BrokerMock />
             </WayCard>
@@ -225,7 +301,8 @@ const ThreeWays = () => {
               tagline="Build insurance products on Coverforce APIs"
               taglinePosition="left"
               variant="dark"
-              icon={<RiCodeBoxLine className="size-5" />}
+              wide
+              cardBg="#8A80DDAB"
               className="md:col-span-2"
             >
               <DeveloperMock />
@@ -235,7 +312,8 @@ const ThreeWays = () => {
               label="Startups"
               tagline="One workflow for every producer"
               variant="light"
-              icon={<RiRocketLine className="size-5" />}
+              cardBg="#FFFFFFCC"
+              cardBgImage="/images/secondcardbg.svg"
             >
               <BrokerMock />
             </WayCard>
@@ -244,7 +322,7 @@ const ThreeWays = () => {
               label="Carriers"
               tagline="Grow distribution efficiently"
               variant="dark"
-              icon={<RiBuilding4Line className="size-5" />}
+              accent
             >
               <WholesalerMock />
             </WayCard>

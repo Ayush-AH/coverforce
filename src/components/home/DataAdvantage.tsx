@@ -1,5 +1,5 @@
 import React, { type ReactNode } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
 
@@ -74,43 +74,63 @@ const DataAdvantage = () => {
           </div>
 
           <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-            <article className="flex min-h-[420px] flex-col justify-between rounded-2xl bg-[#E8EBF0] p-6 text-[#0a143b] md:p-8 lg:min-h-[460px] lg:p-10">
-              <div className="space-y-8">
-                <Eyebrow className="text-[#0a143b]/60">
-                  Submission intelligence
-                </Eyebrow>
-                <div>
-                  <p className="text-[clamp(4.5rem,12vw,7.5rem)] font-semibold leading-none tracking-tight text-[#4F63E8]">
-                    95%
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[#0a143b]/70">
-                    Pre-fill Accuracy
+            <article
+              className="relative flex aspect-[556/586] w-full flex-col justify-between overflow-hidden rounded-sm p-6 text-[#0a143b] md:p-8 lg:p-10"
+              style={{ backgroundColor: "#FFFFFFCC" }}
+            >
+              <div className="pointer-events-none absolute -translate-y-1/5 left-1/2 z-0 h-[150%] w-[150%] -translate-x-1/2 md:-top-24 lg:-top-28">
+                <Image
+                  src="/images/secondcardbg.svg"
+                  alt=""
+                  fill
+                  className="h-full w-full object-cover object-center"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  aria-hidden
+                />
+              </div>
+
+              <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
+                <div className="space-y-8">
+                  <Eyebrow className="text-[#0a143b]/60">
+                    Submission intelligence
+                  </Eyebrow>
+                  <div>
+                    <p className="text-[clamp(4.5rem,12vw,7.5rem)] font-semibold leading-none tracking-tight text-[#4F63E8]">
+                      95%
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-[#0a143b]/70">
+                      Pre-fill Accuracy
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold leading-snug md:text-xl">
+                    Upload an ACORD form AI reads it instantly
+                  </h3>
+                  <p className="text-sm leading-relaxed text-[#0a143b]/65">
+                    Pre-fill with precision, no manual entry, no errors
                   </p>
                 </div>
               </div>
-
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold leading-snug md:text-xl">
-                  Upload an ACORD form AI reads it instantly
-                </h3>
-                <p className="text-sm leading-relaxed text-[#0a143b]/65">
-                  Pre-fill with precision, no manual entry, no errors
-                </p>
-              </div>
             </article>
 
-            <article className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-2xl p-6 md:p-8 lg:min-h-[460px] lg:p-10">
-              <div className="absolute inset-0 bg-[#2a2458]" aria-hidden />
-              <div
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,rgba(255,255,255,0.18),transparent_50%),radial-gradient(ellipse_at_80%_20%,rgba(91,53,224,0.45),transparent_55%),linear-gradient(135deg,#3d3568_0%,#1a2544_50%,#0a143b_100%)]"
+            <article className="relative flex aspect-[556/586] w-full flex-col justify-between overflow-hidden rounded-sm p-6 md:p-8 lg:p-10">
+              <Image
+                src="/images/cardbg.png"
+                alt=""
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={false}
                 aria-hidden
               />
               <div
-                className="absolute inset-0 opacity-40 [background-image:repeating-linear-gradient(108deg,transparent,transparent_48px,rgba(255,255,255,0.04)_48px,rgba(255,255,255,0.04)_96px)]"
+                className="absolute inset-0 bg-[#141E4B]/20"
                 aria-hidden
               />
 
-              <div className="relative z-10 flex flex-col justify-between gap-10">
+              <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between gap-10">
                 <div className="space-y-5">
                   <Eyebrow className="text-white/80">Appetite intelligence</Eyebrow>
                   <div className="space-y-2">

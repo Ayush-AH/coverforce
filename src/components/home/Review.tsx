@@ -69,13 +69,21 @@ function CoalitionLogo() {
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <article className="relative flex min-h-[320px] flex-col overflow-hidden rounded-2xl bg-white p-8 md:min-h-[360px] md:p-10 lg:min-h-[400px] lg:p-12">
-      <div
-        className="pointer-events-none absolute -right-20 -bottom-20 size-80 rounded-full bg-[#E8D4F0]/60 blur-3xl"
-        aria-hidden
-      />
+    <article
+      className="relative flex min-h-[320px] flex-col overflow-hidden rounded-sm bg-white p-7 md:min-h-[420px] md:p-9 lg:min-h-[520px] lg:p-10"
+    >
+      <div className="pointer-events-none absolute -translate-y-1/6 left-1/2 z-0 h-[180%] w-[120%] -translate-x-1/2 md:-top-24 lg:-top-28">
+        <Image
+          src="/images/secondcardbg.svg"
+          alt=""
+          fill
+          className="h-full w-full object-cover object-bottom"
+          sizes="100vw"
+          aria-hidden
+        />
+      </div>
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-10 flex h-full min-h-0 flex-col">
         <div className="mb-8 size-20 shrink-0 overflow-hidden rounded-lg md:mb-10 md:size-24">
           <Image
             src={testimonial.avatar}
@@ -141,7 +149,7 @@ const Review = () => {
               ref={prevRef}
               type="button"
               aria-label="Previous testimonial"
-              className="review-prev flex size-11 items-center justify-center rounded-full border border-white/20 bg-[#1a1540] text-white transition-colors hover:bg-[#1a1540]/80"
+              className="review-prev flex size-11 shrink-0 items-center justify-center rounded-full border border-[#FFFFFF29] bg-transparent text-white transition-colors hover:bg-white/10"
             >
               <RiArrowLeftLine className="size-5" />
             </button>
@@ -149,7 +157,7 @@ const Review = () => {
               ref={nextRef}
               type="button"
               aria-label="Next testimonial"
-              className="review-next flex size-12 items-center justify-center rounded-full bg-white text-[#0a143b] transition-opacity hover:opacity-90"
+              className="review-next flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-[#0a143b] transition-opacity hover:opacity-90"
             >
               <RiArrowRightLine className="size-5" />
             </button>
