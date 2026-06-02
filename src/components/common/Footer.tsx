@@ -62,7 +62,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
           <li key={label}>
             <Link
               href="/"
-              className="font-mono text-sm font-medium uppercase tracking-[0.1em] text-neutral-800 transition-colors hover:text-[#0a143b]"
+              className="font-mono text-sm font-medium uppercase tracking-[0.1em] text-[#3F3F3F] transition-colors hover:text-[#5B35E0]"
             >
               {label}
             </Link>
@@ -101,7 +101,7 @@ const Footer = () => {
                 className="h-10 w-auto md:h-12 lg:h-14"
               />
             </Link>
-            <p className="max-w-md font-mono text-sm font-medium leading-relaxed text-neutral-600 md:text-right">
+            <p className="max-w-xs font-sans font-regular text-sm leading-relaxed text-neutral-600 md:text-left">
               CoverForce brings smarter insurance distribution into one
               connected workflow.
             </p>
@@ -117,7 +117,7 @@ const Footer = () => {
                 <Link
                   key={label}
                   href="/"
-                  className="flex items-center gap-2.5 font-mono text-sm font-medium uppercase tracking-[0.14em] text-[#0a143b] transition-opacity hover:opacity-80"
+                  className="flex items-center gap-2.5 font-mono text-sm font-medium uppercase tracking-[0.14em] text-[#3F3F3F] hover:text-[#5B35E0] transition-colors"
                 >
                   <FooterBullet />
                   {label}
@@ -126,20 +126,20 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 py-8 font-mono text-sm font-medium uppercase tracking-[0.1em] text-neutral-700 sm:flex-row sm:items-center sm:justify-between md:py-10">
+          <div className="flex flex-col gap-4 py-8 font-mono text-sm font-medium uppercase tracking-[0.1em] text-[#3F3F3F] sm:flex-row sm:items-center sm:justify-between md:py-10">
             <ul className="flex flex-wrap gap-6 sm:gap-8">
               {legalLinks.map(({ label, href }) => (
                 <li key={label}>
                   <Link
                     href={href}
-                    className="transition-colors hover:text-[#0a143b]"
+                    className="transition-colors hover:text-[#5B35E0]"
                   >
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="font-mono text-sm font-medium text-neutral-500 sm:text-right">
+            <p className="font-mono text-sm font-medium text-[#3F3F3F] sm:text-right">
               © {new Date().getFullYear()} — Copyright Insuredge Technologies
             </p>
           </div>
