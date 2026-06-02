@@ -18,14 +18,14 @@ type WayCardProps = {
 function CardBottomStrip({ label, tagline }: { label: string; tagline: string }) {
   return (
     <div
-      className="-mx-5 -mb-5 mt-auto flex items-center justify-between gap-4 border-t border-[#E8E0F5]/60 px-4 py-3 md:-mx-6 md:-mb-6 md:px-5 md:py-3.5"
+      className="-mx-5  -mb-5 mt-auto flex items-center justify-between gap-4 border-t border-[#E8E0F5]/60 px-4 py-3 md:-mx-6 md:-mb-6 md:px-5 md:py-3.5"
       style={{ background: "linear-gradient(90deg, #F8F3FF 0%, #F1F1FF 100%)" }}
     >
       <div className="flex min-w-0 items-center gap-2.5">
         <span className="size-1.5 shrink-0 rounded-full bg-[#797979]" aria-hidden />
         <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#797979]">{label}</span>
       </div>
-      <p className="shrink-0 text-right text-xl font-heading font-medium leading-tight tracking-tight text-[#545353] max-w-[12rem]">{tagline}</p>
+      <p className="shrink-0 text-right text-lg font-heading font-medium leading-tight tracking-tight text-[#545353] max-w-[12rem]">{tagline}</p>
     </div>
   );
 }
@@ -66,7 +66,7 @@ function WayCard({ label, tagline, taglinePosition = "right", variant, children,
           <CardBottomStrip label={label} tagline={tagline} />
         ) : (
           <div className={`flex items-center  w-full ${taglinePosition === "left" ? "justify-start" : "justify-end"}`}>
-            <p className={`text-xl font-heading font-medium leading-tight tracking-tight text-[#545353] ${taglinePosition === "left" ? "max-w-xs" : "max-w-[12rem]"}  ${taglinePosition === "left" ? "text-left" : "text-right"} text-white`}>
+            <p className={`text-lg font-heading font-medium leading-tight tracking-tight text-[#545353] ${taglinePosition === "left" ? "max-w-xs" : "max-w-[12rem]"}  ${taglinePosition === "left" ? "text-left" : "text-right"} text-white`}>
               {tagline}
             </p>
           </div>
@@ -426,10 +426,6 @@ function DeveloperMock() {
 const ThreeWays = () => {
   return (
     <section className="relative overflow-hidden bg-white">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[min(122vw,1200px)] overflow-hidden md:h-[min(116vw,1420px)] lg:h-[min(112vw,1700px)]">
-        <Image src="/images/Group%201000006214.svg" alt="" fill className="translate-y-10 object-cover object-top md:translate-y-14 lg:translate-y-16" sizes="100vw" aria-hidden />
-      </div>
-
       <Container borderColor="#0A143B1A">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-10 xl:gap-14">

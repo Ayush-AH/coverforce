@@ -8,8 +8,8 @@ export function getSideBorderStyle(
   color: string = DEFAULT_BORDER_COLOR,
 ): CSSProperties {
   return {
-    borderLeft: "2px solid transparent",
-    borderRight: "2px solid transparent",
+    borderLeft: "1px solid transparent",
+    borderRight: "1px solid transparent",
     borderImage: `repeating-linear-gradient(180deg, ${color} 0px, ${color} 16px, transparent 16px, transparent 24px) 1`,
   };
 }

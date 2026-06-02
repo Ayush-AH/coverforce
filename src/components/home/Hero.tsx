@@ -86,7 +86,7 @@ const Hero = () => {
             >
               <div className="pointer-events-none w-full absolute inset-y-0 hidden md:block" aria-hidden>
                 {/* Top full-width line + moving segment */}
-                <div className="absolute left-0 top-0 h-px w-full bg-white/5">
+                <div className="absolute left-0 top-0 h-[0.05rem] w-full bg-white/5">
                   <div
                     className="h-full rounded-full linear-line_color transition-[transform,width] duration-300 ease-out"
                     style={{
@@ -97,7 +97,7 @@ const Hero = () => {
                 </div>
 
                 {/* Bottom full-width line + moving segment */}
-                <div className="absolute left-0 bottom-0 h-px w-full bg-white/5">
+                <div className="absolute left-0 bottom-0 h-[0.05rem] w-full bg-white/5">
                   <div
                     className="h-full rounded-full linear-line_color transition-[transform,width] duration-300 ease-out"
                     style={{

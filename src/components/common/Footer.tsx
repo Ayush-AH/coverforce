@@ -59,7 +59,7 @@ function FooterLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-mono text-xs leading-0 font-medium uppercase tracking-[0.1em] text-[#3F3F3F] transition-[padding-left,color] duration-200 ease-out hover:pl-3.5 hover:text-[#5B35E0] ${className}`}
+      className={`group relative inline-flex pl-0 font-mono text-xs leading-0 font-medium uppercase tracking-wider text-[#3F3F3F] transition-[padding-left,color] duration-200 ease-out hover:pl-3.5 hover:text-[#5B35E0] ${className}`}
     >
       <FooterBullet />
       {children}
@@ -125,7 +125,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 py-8 font-mono text-xs font-medium uppercase tracking-[0.1em] text-[#3F3F3F] sm:flex-row sm:items-center sm:justify-between md:py-10">
+          <div className="flex flex-col gap-4 py-8 font-mono text-xs font-medium uppercase tracking-wider text-[#3F3F3F] sm:flex-row sm:items-center sm:justify-between md:py-10">
             <ul className="flex flex-wrap gap-6 sm:gap-8">
               {legalLinks.map(({ label, href }) => (
                 <li key={label}>
