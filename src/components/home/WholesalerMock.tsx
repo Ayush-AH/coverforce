@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import TiltCard from "@/components/common/TiltCard";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import {
   MICRO_BAR_MS,
   MICRO_EASE,
-  MICRO_ENTRANCE_MS,
+  microPopStyle,
   microRevealStyle,
 } from "@/lib/motion";
 import { RiAttachmentLine, RiFileTextFill, RiLineChartLine, RiMailFill } from "@remixicon/react";
@@ -21,6 +21,11 @@ const ACORD_INFO_ROW = [
   { label: "Insured", value: "Construction LLC" },
   { label: "Policy Number", value: "GL-2024-98765" },
   { label: "Coverage", value: "5 coverages" },
+] as const;
+
+const AVATARS = [
+  { label: "A", className: "bg-amber-400", image: "/images/avatar1.png" },
+  { label: "B", className: "bg-blue-400", image: "/images/avatar2.png" },
 ] as const;
 
 function AcordInfoField({
@@ -60,26 +65,7 @@ function AcordInfoField({
 }
 
 export default function WholesalerMock() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [animate, setAnimate] = useState(false);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting || hasAnimated.current) return;
-        hasAnimated.current = true;
-        setAnimate(true);
-      },
-      { threshold: 0.3, rootMargin: "0px 0px -8% 0px" },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const [rootRef, animate] = useInViewOnce<HTMLDivElement>();
 
   return (
     <div ref={rootRef} className="relative -ml-32 w-full max-w-[290px]">
@@ -130,19 +116,11 @@ export default function WholesalerMock() {
           </div>
           <div className="flex items-center">
             <div className="flex -space-x-1.5 -mr-1.5">
-              {[
-                { label: "A", className: "bg-amber-400", image: "/images/avatar1.png" },
-                { label: "B", className: "bg-blue-400", image: "/images/avatar2.png" },
-              ].map((avatar, i) => (
+              {AVATARS.map((avatar, i) => (
                 <span
                   key={avatar.label}
                   className={`flex size-[23px] items-center justify-center overflow-hidden rounded-full border border-[#AFAFAF] ${avatar.className}`}
-                  style={{
-                    ...microRevealStyle(animate, { delay: 180 + i * 55 }),
-                    transform: animate ? "scale(1)" : "scale(0)",
-                    transition: `opacity ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}, transform ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}`,
-                    transitionDelay: `${180 + i * 55}ms`,
-                  }}
+                  style={microPopStyle(animate, { delay: 180 + i * 55 })}
                 >
                   <Image className="object-cover w-full h-full" src={avatar.image} alt={avatar.label} width={20} height={20} />
                 </span>
@@ -150,12 +128,7 @@ export default function WholesalerMock() {
             </div>
             <span
               className="flex size-[23px] items-center justify-center rounded-full bg-[#EEF2FF] border border-[#AFAFAF] text-[7px] font-bold text-[#4B5563]"
-              style={{
-                opacity: animate ? 1 : 0,
-                transform: animate ? "scale(1)" : "scale(0)",
-                transition: `opacity ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}, transform ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}`,
-                transitionDelay: "290ms",
-              }}
+              style={microPopStyle(animate, { delay: 290 })}
             >
               +2
             </span>
@@ -172,7 +145,7 @@ export default function WholesalerMock() {
         <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
           <span className="flex size-[23px] shrink-0 items-center justify-center border border-[#F3F4F6] rounded-full bg-[#F9FAFB]">
 
-            < RiFileTextFill color="#6F6F6F" size={11} />
+            <RiFileTextFill color="#6F6F6F" size={11} />
           </span>
           <span className="text-xs font-heading font-medium leading-tight text-[#3C3B3B]">ACORD 25</span>
         </div>
@@ -216,12 +189,11 @@ export default function WholesalerMock() {
               <span className="text-[0.60rem]  font-heading font-medium text-[#3C3B3B]">{row.label}</span>
               <span
                 className="text-xs font-heading font-medium leading-tight text-[#3C3B3B]"
-                style={{
-                  opacity: animate ? 1 : 0,
-                  transform: animate ? "translateX(0)" : "translateX(0.35rem)",
-                  transition: `opacity ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}, transform ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}`,
-                  transitionDelay: `${560 + i * 70}ms`,
-                }}
+                style={microRevealStyle(animate, {
+                  delay: 560 + i * 70,
+                  offsetX: "0.35rem",
+                  offsetY: "0",
+                })}
               >
                 {row.value}
               </span>
@@ -236,11 +208,7 @@ export default function WholesalerMock() {
           <div className="flex items-center gap-1.5">
             <span
               className="flex size-[16px] shrink-0 items-center justify-center rounded-full bg-blue-100"
-              style={{
-                transform: animate ? "scale(1)" : "scale(0)",
-                transition: `transform ${MICRO_ENTRANCE_MS}ms ${MICRO_EASE}`,
-                transitionDelay: "760ms",
-              }}
+              style={microPopStyle(animate, { delay: 760 })}
             >
               <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
                 <path

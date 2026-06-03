@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import {
   AnimatedFortyPlus,
   AnimatedSixtyPercentHover,
 } from "@/components/common/AnimatedPercent";
+import MockWithCardHover from "@/components/common/MockWithCardHover";
 import TiltCard from "@/components/common/TiltCard";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import {
   MICRO_CHART_MS,
   MICRO_CHART_STAGGER_MS,
@@ -31,29 +32,10 @@ type BrokerMockProps = {
 };
 
 export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [animate, setAnimate] = useState(false);
-  const hasAnimated = useRef(false);
+  const [rootRef, animate] = useInViewOnce<HTMLDivElement>();
 
   const chartHeights = cardHovered ? CHART_BARS_HOVER : CHART_BARS_REST;
   const workflowPercent = cardHovered ? WORKFLOW_HOVER : WORKFLOW_REST;
-
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting || hasAnimated.current) return;
-        hasAnimated.current = true;
-        setAnimate(true);
-      },
-      { threshold: 0.3, rootMargin: "0px 0px -8% 0px" },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div
@@ -214,15 +196,9 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
 }
 
 export function BrokerMockWithCardHover() {
-  const [cardHovered, setCardHovered] = useState(false);
-
   return (
-    <div
-      className="flex h-full w-full items-center justify-center"
-      onMouseEnter={() => setCardHovered(true)}
-      onMouseLeave={() => setCardHovered(false)}
-    >
-      <BrokerMock cardHovered={cardHovered} />
-    </div>
+    <MockWithCardHover>
+      {(cardHovered) => <BrokerMock cardHovered={cardHovered} />}
+    </MockWithCardHover>
   );
 }

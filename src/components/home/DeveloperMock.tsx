@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import {
   MICRO_EASE,
   MICRO_ENTRANCE_MS,
@@ -73,30 +74,15 @@ function DevTabButton({
 }
 
 export default function DeveloperMock() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [panelAnimate, setPanelAnimate] = useState(false);
+  const [rootRef, panelAnimate] = useInViewOnce<HTMLDivElement>();
   const [activeTab, setActiveTab] = useState<TabLabel>("Integration");
   const [listAnimate, setListAnimate] = useState(false);
-  const hasPanelAnimated = useRef(false);
   const skipListReplay = useRef(true);
 
   useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting || hasPanelAnimated.current) return;
-        hasPanelAnimated.current = true;
-        setPanelAnimate(true);
-        setListAnimate(true);
-      },
-      { threshold: 0.3, rootMargin: "0px 0px -8% 0px" },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (!panelAnimate) return;
+    setListAnimate(true);
+  }, [panelAnimate]);
 
   useEffect(() => {
     if (!panelAnimate) return;
