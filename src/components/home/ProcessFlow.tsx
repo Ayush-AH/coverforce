@@ -4,9 +4,11 @@ import Container from "../common/Container";
 import { processSteps } from "@/data/processSteps";
 import {
     RiArrowDownSLine,
+    RiArrowRightLine,
     RiCalendarLine,
     RiCheckLine,
     RiFileTextFill,
+    RiHashtag,
     RiLineChartLine,
     RiMailLine,
     RiSparkling2Fill,
@@ -317,6 +319,187 @@ function ProcessStep2() {
     );
 }
 
+const CARRIER_LOGOS = [
+    { src: "/images/process/logo1.svg", alt: "AmTrust", highlighted: true },
+    { src: "/images/process/logo2.svg", alt: "AccidentFund", highlighted: true },
+    { src: "/images/process/logo4.svg", alt: "Chubb" },
+    { src: "/images/process/logo3.svg", alt: "CompWest" },
+    { src: "/images/process/logo5.svg", alt: "Coalition", highlighted: true },
+    { src: "/images/process/logo6.svg", alt: "Cowbell" },
+    { src: "/images/process/logo7.svg", alt: "Liberty Mutual" },
+    { src: "/images/process/logo8.svg", alt: "Merchants" },
+    { src: "/images/process/logo9.svg", alt: "Markel" },
+] as const;
+
+function ProcessStep3() {
+    return (
+        <div className="process-step3 opacity-0 relative flex h-full w-full items-center justify-center">
+            <div className="relative grid w-xs bg shrink-0 grid-cols-1 [&>*]:col-start-1 [&>*]:row-start-1">
+                <div className="w-full rounded-2xl overflow-hidden border border-[#CCCCCC] bg-white" aria-hidden>
+                    <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
+                        <span className="flex size-[23px] shrink-0 items-center justify-center rounded-full border border-[#F3F4F6] bg-[#F9FAFB]">
+                            <RiHashtag color="#6F6F6F" size={11} />
+                        </span>
+                        <div className="flex flex-col">
+                            <span className="font-heading text-xs font-medium leading-tight text-[#3C3B3B]">Select NAICS Code</span>
+                            <span className="font-heading text-[0.55rem] font-regular leading-tight text-[#3C3B3B]">Choose the business industry code.</span>
+
+                        </div>
+                    </div>
+
+                    <div className="px-3 pb-4">
+                        <div className="mt-0.5 w-full flex items-start justify-between gap-1 py-4">
+                            <div>
+                                <p className="font-sans text-[0.50rem] font-normal uppercase leading-tight tracking-wider text-[#9CA3AF]">NAICS Code</p>
+                                <p className="font-heading text-[0.50rem] flex items-center justify-center rounded-full px-2 py-px mt-1 font-medium tracking-wide bg-[#D8EFFF] text-[#7299B4]">445110</p>
+                            </div>
+
+                            <RiArrowDownSLine className="size-5 shrink-0 text-[#6B7280]" />
+                        </div>
+                        <div className="w-full flex items-start justify-between gap-1 ">
+                            <div>
+                                <p className="font-sans text-[0.50rem] font-normal uppercase leading-tight tracking-wider text-[#9CA3AF]">Description</p>
+                                <p className="font-heading text-[0.70rem] font-medium leading-tight text-[#2E2E2E] uppercase">Supermarkets and Other Grocery Stores</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div className="dropdown-step3 grid grid-cols-3 gap-2 overflow-hidden px-3 pb-0">
+                        {CARRIER_LOGOS.map((logo) => (
+                            <div
+                                key={logo.src}
+                                className={`logo-step3 col-span-1 flex items-center justify-center rounded-sm border py-1 shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${"highlighted" in logo && logo.highlighted
+                                    ? "border-[#B1B9FF]"
+                                    : "border-[#F3F2F3]"
+                                    }`}
+                            >
+                                <Image
+                                    src={logo.src}
+                                    alt={logo.alt}
+                                    width={100}
+                                    height={100}
+                                    className="size-12 object-contain object-center"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+function ProcessStep4() {
+    return (
+        <div className="process-step4 relative flex h-full w-full flex-col justify-between overflow-hidden opacity-0">
+            <div className="row1 w-full h-[31%]  flex items-center justify-between">
+                <div className="w-1/2 h-full border -ml-2 border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                    <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                        <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                    </div>
+                </div>
+                <div className="w-1/2 h-full border -mr-2 border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                    <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                        <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                    </div>
+                </div>
+            </div>
+            <div className="row2 relative w-full h-[31%]  flex items-center justify-between">
+                <div className="absolute left-[-28%]  w-full h-full  flex items-center justify-between">
+                    <div className="w-1/2 shrink-0  h-full border  border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                        <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                            <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                        </div>
+                    </div>
+                    <div className="w-1/2 h-full shrink-0 overflow-visible border mx-4 flex flex-col justify-between border-[#CCCCCC] bg-white rounded-2xl">
+                        <div className="w-full h-12 px-3 bg-[#EEF1F3]/25 flex items-center justify-between">
+                            <Image src="/images/process/logo1.svg" alt="step4-1" width={100} height={100} className="size-10 object-contain object-center" />
+                            <div className="flex items-center gap-2">
+                                <span className="font-heading text-[0.50rem] font-medium leading-tight text-[#177F9B] flex items-center justify-center rounded-xs bg-[#D7F2F9] py-px px-2">A++</span>
+                                <span className="font-heading text-[0.50rem] font-medium leading-tight text-[#177F9B] flex items-center justify-center rounded-xs bg-[#D7F2F9] py-px px-2">10/10</span>
+                            </div>
+                        </div>
+                        <div className="w-full flex items-end justify-between px-3 pb-3">
+                            <div className="flex flex-col gap-1">
+                                <span className="font-heading text-xs uppercase font-medium leading-tight text-[#9C9AA2]">Premium</span>
+                                <span className="font-mono text-sm tracking-wide font-regular leading-tight text-[#6DAB4E]">$900.00</span>
+                            </div>
+                            <span className="font-heading text-[0.50rem] font-medium leading-tight text-[#177F9B] flex items-center justify-center rounded-full bg-[#D7F2F9] py-1 px-4">Instantly Bindable</span>
+                        </div>
+                        <div className="w-full flex items-end justify-between px-3 pb-3">
+                            <span className="font-heading text-[0.55rem] font-medium tracking-wide leading-tight text-[#3A48BE]">Gain 2% Enhanced Commissions</span>
+                            <div className="relative shrink-0">
+                                <div className="step4-bind-btn flex items-center justify-center gap-1 rounded-full bg-[#0032C9] px-3 py-1 font-heading text-[0.60rem] text-xs font-medium leading-tight tracking-wide text-white">
+                                    Bind
+                                    <RiArrowRightLine size={12} />
+                                </div>
+                                <div className="process-step4-cursor pointer-events-none absolute left-1/2 top-1/2 z-20 flex h-11 w-11 -translate-x-[15%] -translate-y-[20%] items-center justify-center opacity-0">
+                                    <Image src="/images/process/cursor.svg" alt="" width={100} height={100} className="h-full w-full object-cover" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-1/2 shrink-0 h-full border  border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                        <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                            <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row3 w-full h-[31%]  flex items-center justify-between">
+                <div className="w-1/2 h-full border -ml-2 border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                    <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                        <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                    </div>
+                </div>
+                <div className="w-1/2 h-full border -mr-2 border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                    <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
+                        <div className="w-full h-12 border-b border-[#CCCCCC]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+function ProcessStep5() {
+    return (
+        <div className="process-step5 opacity-0 relative flex h-full w-full items-center justify-center">
+            <div className="w-xs shrink-0 overflow-hidden rounded-2xl border border-[#CCCCCC] bg-white">
+                <div className="flex flex-col items-center px-6 pb-8 pt-10 text-center">
+                    <Image src="/images/process/success.gif" alt="success-badge" width={100} height={100} className="size-18 object-contain object-center" />
+                    <p className="mt-5 font-sans text-xs font-medium leading-tight text-[#3742A4]">Thank you!</p>
+                    <p className="mt-1 font-sans text-base font-medium leading-tight tracking-tight text-[#11243E]">
+                        Policy Bound Successfully!
+                    </p>
+                </div>
+
+                <div className="flex items-end justify-between bg-[#F5F7F9] px-5 py-4">
+                    <div className="flex flex-col">
+                        <span className="font-heading text-[0.65rem] font-medium leading-tight text-[#4A5568]">
+                            Builder's Risk
+                        </span>
+                        <Image
+                            src="/images/process/logo1.svg"
+                            alt="AmTrust Insurance"
+                            width={100}
+                            height={32}
+                            className="h-7 w-auto object-contain object-left"
+                        />
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                        <span className="font-heading text-xs uppercase font-medium leading-tight text-[#9C9AA2]">Premium</span>
+                        <span className="font-mono text-sm tracking-wide font-regular leading-tight text-[#6DAB4E]">$900.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const ProcessFlow = () => {
     const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -362,6 +545,20 @@ const ProcessFlow = () => {
             gsap.set(".step2-input-fein, .step2-input-entity, .step2-input-year", {
                 borderColor: FIELD_IDLE_BORDER,
             });
+            gsap.set(".process-step3", { opacity: 0 });
+            gsap.set(".dropdown-step3", { height: 0, paddingBottom: 0 });
+            gsap.set(".logo-step3", { opacity: 0, scale: 0.88 });
+            gsap.set(".process-step4", { opacity: 0 });
+            gsap.set(".process-step4-cursor", {
+                opacity: 0,
+                x: 48,
+                y: -36,
+                scale: 1,
+                transformOrigin: "50% 50%",
+            });
+            gsap.set(".row1, .row3", { opacity: 1 });
+            gsap.set(".step4-bind-btn", { scale: 1, transformOrigin: "50% 50%" });
+            gsap.set(".process-step5", { opacity: 0 });
 
             const gradientEl = section.querySelector<HTMLElement>(".ai-buttom-gradient");
             if (gradientEl) {
@@ -440,6 +637,40 @@ const ProcessFlow = () => {
             const s2validate = s2p3 + D_PANEL;
             const s2hideWrap = s2validate + VALIDATE_STAGGER * 4 + 2.5;
             const s3scroll = s2hideWrap + 1.5;
+
+            // Step 3 — left panel sticks on step 3; right panel reveals NAICS card + carrier logos
+            const s3stick = s3scroll + D_SCROLL;
+            const s3p1 = s3stick;
+            const s3p1Off = s3stick + 5.5;
+            const s3p2 = s3p1Off;
+            const s3p2Off = s3p2 + 5.5;
+            const s3p3 = s3p2Off;
+            const s3p3Off = s3p3 + 11;
+            const s3hide = s3p3Off;
+            const s4scroll = s3hide + 1.5;
+
+            // Step 4 — point 2 cursor reaches Bind; point 3 clicks + side rows fade
+            const s4stick = s4scroll + D_SCROLL;
+            const s4p1 = s4stick;
+            const s4p1Off = s4stick + 5.5;
+            const s4p2 = s4p1Off;
+            const s4cursor = s4p2 + 2.5;
+            const s4p2Off = s4p2 + 5.5;
+            const s4p3 = s4p2Off;
+            const s4click = s4p3 + 1.5;
+            const s4afterClick = s4click + 0.55;
+            const s4p3Off = s4afterClick + 5.5;
+            const s4hide = s4p3Off;
+            const s5scroll = s4hide + 1.5;
+
+            // Step 5 — left panel sticks; success card visible; points switch one by one
+            const s5stick = s5scroll + D_SCROLL;
+            const s5p1 = s5stick;
+            const s5p1Off = s5stick + 5.5;
+            const s5p2 = s5p1Off;
+            const s5p2Off = s5p2 + 5.5;
+            const s5p3 = s5p2Off;
+            const s5p3Off = s5p3 + 5.5;
 
             tl.to(".process-step1", { opacity: 1, duration: D_PANEL, ease: EASE }, s1p1);
 
@@ -533,7 +764,68 @@ const ProcessFlow = () => {
             validateField(s2validate + VALIDATE_STAGGER * 4, [".step2-check-icon-year"], { color: "#ffffff" });
 
             tl.to(".placeholder2wrapper", { opacity: 0, duration: D_PANEL, ease: EASE }, s2hideWrap);
+            tl.to(".process-step2", { opacity: 0, duration: D_PANEL, ease: EASE }, s2hideWrap);
             tl.to(".pocessContainer", { yPercent: -40, duration: D_SCROLL, ease: "none" }, s3scroll);
+
+            unhighlightPoint(2, 3, s3p1);
+            highlightPoint(3, 1, s3p1);
+            tl.to(".process-step3", { opacity: 1, duration: D_PANEL, ease: EASE }, s3p1);
+            unhighlightPoint(3, 1, s3p1Off);
+
+            highlightPoint(3, 2, s3p2);
+            tl.to(
+                ".dropdown-step3",
+                { height: "12.5rem", paddingBottom: 20, duration: D_PANEL, ease: EASE },
+                s3p2,
+            );
+            unhighlightPoint(3, 2, s3p2Off);
+
+            highlightPoint(3, 3, s3p3);
+            tl.to(
+                ".logo-step3",
+                { opacity: 1, scale: 1, duration: D_VALIDATE, ease: EASE_OUT, stagger: 0.15 },
+                s3p3,
+            );
+            unhighlightPoint(3, 3, s3p3Off);
+
+            tl.to(".process-step3", { opacity: 0, duration: D_PANEL, ease: EASE }, s3hide);
+            tl.to(".pocessContainer", { yPercent: -60, duration: D_SCROLL, ease: "none" }, s4scroll);
+
+            highlightPoint(4, 1, s4p1);
+            tl.to(".process-step4", { opacity: 1, duration: D_PANEL, ease: EASE }, s4p1);
+            unhighlightPoint(4, 1, s4p1Off);
+
+            highlightPoint(4, 2, s4p2);
+            tl.to(
+                ".process-step4-cursor",
+                { opacity: 1, x: 0, y: 0, duration: D_PANEL, ease: EASE_OUT },
+                s4cursor,
+            );
+            tl.to(".step4-bind-btn", { scale: 1.06, duration: D_PANEL, ease: EASE }, s4cursor + 0.5);
+            unhighlightPoint(4, 2, s4p2Off);
+
+            highlightPoint(4, 3, s4p3);
+            tl.to(".process-step4-cursor", { scale: 0.82, duration: 0.18, ease: "power2.in" }, s4click)
+                .to(".step4-bind-btn", { scale: 0.9, duration: 0.18, ease: "power2.in" }, s4click)
+                .to(".process-step4-cursor", { scale: 1, duration: 0.35, ease: EASE_OUT }, s4click + 0.18)
+                .to(".step4-bind-btn", { scale: 1, duration: 0.4, ease: "back.out(2)" }, s4click + 0.22);
+            tl.to(".row1", { opacity: 0, duration: D_PANEL, ease: EASE }, s4p3);
+            tl.to(".row3", { opacity: 0, duration: D_PANEL, ease: EASE }, s4p3);
+            tl.to(".process-step4-cursor", { opacity: 0, duration: 1.25, ease: EASE }, s4afterClick);
+            unhighlightPoint(4, 3, s4p3Off);
+
+            tl.to(".process-step4", { opacity: 0, duration: D_PANEL, ease: EASE }, s4hide);
+            tl.to(".pocessContainer", { yPercent: -80, duration: D_SCROLL, ease: "none" }, s5scroll);
+
+            highlightPoint(5, 1, s5p1);
+            tl.to(".process-step5", { opacity: 1, duration: D_PANEL, ease: EASE }, s5p1);
+            unhighlightPoint(5, 1, s5p1Off);
+
+            highlightPoint(5, 2, s5p2);
+            unhighlightPoint(5, 2, s5p2Off);
+
+            highlightPoint(5, 3, s5p3);
+            unhighlightPoint(5, 3, s5p3Off);
 
             const lenis = window.lenis;
             const onLenisScroll = () => ScrollTrigger.update();
@@ -612,6 +904,21 @@ const ProcessFlow = () => {
                         <div className="absolute z-2 top-0 left-0 flex h-screen w-full items-center justify-center lg:justify-end">
                             <div className="relative flex w-full aspect-square overflow-hidden justify-center items-center">
                                 <ProcessStep2 />
+                            </div>
+                        </div>
+                        <div className="absolute z-3 top-0 left-0 flex h-screen w-full items-center justify-center lg:justify-end">
+                            <div className="relative flex w-full aspect-square overflow-hidden justify-center items-center">
+                                <ProcessStep3 />
+                            </div>
+                        </div>
+                        <div className="absolute z-4 top-0 left-0 flex h-screen w-full items-center justify-center lg:justify-end">
+                            <div className="relative p-7 flex w-full aspect-square overflow-hidden justify-center items-center">
+                                <ProcessStep4 />
+                            </div>
+                        </div>
+                        <div className="absolute z-5 top-0 left-0 flex h-screen w-full items-center justify-center lg:justify-end">
+                            <div className="relative flex w-full aspect-square overflow-hidden justify-center items-center">
+                                <ProcessStep5 />
                             </div>
                         </div>
                     </div>
