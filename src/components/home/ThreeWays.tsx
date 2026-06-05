@@ -1,9 +1,13 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useCallback, useRef, useState, type ReactNode } from "react";
+import { rectFromDOM, type WayModalRect } from "@/lib/wayModalMotion";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 
 import Container from "../common/Container";
-import { RiArrowRightSLine } from "@remixicon/react";
+import WayCardModal from "./WayCardModal";
+import { WayCardHoverProvider } from "./WayCardHoverContext";
+import { WAY_CARD_MODALS } from "@/data/wayCardModals";
 
 type CardBackground = "accent" | "light" | "developer";
 
@@ -20,6 +24,9 @@ const BrokerMockWithCardHover = dynamic(
   () => import("./BrokerMock").then((m) => ({ default: m.BrokerMockWithCardHover })),
   { loading: () => <MockPlaceholder /> },
 );
+const BrokerMock = dynamic(() => import("./BrokerMock"), {
+  loading: () => <MockPlaceholder />,
+});
 const DeveloperMock = dynamic(() => import("./DeveloperMock"), {
   loading: () => <MockPlaceholder className="max-w-[420px]" />,
 });
@@ -44,10 +51,13 @@ type WayCardProps = {
   background?: CardBackground;
   lightStrip?: boolean;
   mockAlign?: "center" | "bottom";
+  hideMock?: boolean;
+  onOpen: (originRect: WayModalRect | null) => void;
 };
 
-type WayCardConfig = Omit<WayCardProps, "children"> & {
+type WayCardConfig = Omit<WayCardProps, "children" | "onOpen"> & {
   mock: ReactNode;
+  modalPreview: ReactNode;
 };
 
 function CardBottomStrip({ label, tagline }: { label: string; tagline: string }) {
@@ -78,7 +88,11 @@ function WayCard({
   background,
   lightStrip = false,
   mockAlign = "center",
+  hideMock = false,
+  onOpen,
 }: WayCardProps) {
+  const [hovered, setHovered] = useState(false);
+  const mockRef = useRef<HTMLDivElement>(null);
   const isDark = variant === "dark";
   const textClass =
     background === "developer"
@@ -87,10 +101,30 @@ function WayCard({
         ? "text-white"
         : "text-[#0a143b]";
 
+  const handleOpen = () => {
+    const rect = mockRef.current?.getBoundingClientRect();
+    onOpen(rect ? rectFromDOM(rect) : null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleOpen();
+    }
+  };
+
   return (
-    <article
-      className={`way-card-shell relative cursor-pointer ${wide ? "aspect-[1179/530]" : "aspect-[580/530]"} ${textClass} ${className}`}
-    >
+    <WayCardHoverProvider hovered={hovered}>
+      <article
+        role="button"
+        tabIndex={0}
+        onClick={handleOpen}
+        onKeyDown={handleKeyDown}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        aria-label={`Open ${label} details`}
+        className={`way-card-shell relative cursor-pointer ${wide ? "aspect-[1179/530]" : "aspect-[580/530]"} ${textClass} ${className}`}
+      >
       <div className={`way-card-body absolute inset-0 overflow-hidden rounded-sm flex flex-col p-5 md:p-6 ${background ? CARD_BACKGROUNDS[background] : ""}`}>
         <div className="relative z-10 flex min-h-0 flex-1 flex-col">
           <div className={`flex items-start gap-4 ${lightStrip ? "justify-end" : "justify-between"}`}>
@@ -136,19 +170,21 @@ function WayCard({
         </div>
       </div>
       <div
-        className={`way-card-mock pointer-events-none absolute inset-0 z-20 p-5 md:p-6 ${mockAlign === "center" ? "flex items-center justify-center" : ""}`}
+        className={`way-card-mock pointer-events-none absolute inset-0 z-20 p-5 transition-opacity duration-300 md:p-6 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" ? "flex items-center justify-center" : ""}`}
       >
         <div
+          ref={mockRef}
           className={
             mockAlign === "bottom"
-              ? "pointer-events-auto relative h-full w-full"
-              : "pointer-events-auto relative flex w-full items-center justify-center"
+              ? "relative h-full w-full"
+              : "relative flex w-full items-center justify-center"
           }
         >
           {children}
         </div>
       </div>
     </article>
+    </WayCardHoverProvider>
   );
 }
 
@@ -159,6 +195,7 @@ const WAY_CARDS: WayCardConfig[] = [
     variant: "dark",
     background: "accent",
     mock: <WholesalerMock />,
+    modalPreview: <WholesalerMock />,
   },
   {
     label: "Brokers",
@@ -167,6 +204,7 @@ const WAY_CARDS: WayCardConfig[] = [
     background: "light",
     lightStrip: true,
     mock: <BrokerMockWithCardHover />,
+    modalPreview: <BrokerMock />,
   },
   {
     label: "Developers",
@@ -178,6 +216,7 @@ const WAY_CARDS: WayCardConfig[] = [
     className: "md:col-span-2",
     mockAlign: "bottom",
     mock: <DeveloperMock />,
+    modalPreview: <DeveloperMock />,
   },
   {
     label: "Startups",
@@ -186,6 +225,7 @@ const WAY_CARDS: WayCardConfig[] = [
     background: "light",
     lightStrip: true,
     mock: <BrokerMockWithCardHover />,
+    modalPreview: <BrokerMock />,
   },
   {
     label: "Carriers",
@@ -193,10 +233,27 @@ const WAY_CARDS: WayCardConfig[] = [
     variant: "dark",
     background: "accent",
     mock: <WholesalerMock />,
+    modalPreview: <WholesalerMock />,
   },
 ];
 
 export default function ThreeWays() {
+  const [activeCard, setActiveCard] = useState<string | null>(null);
+  const [originRect, setOriginRect] = useState<WayModalRect | null>(null);
+
+  const activeConfig = WAY_CARDS.find((c) => c.label === activeCard) ?? null;
+  const modalContent = activeCard ? WAY_CARD_MODALS[activeCard] : null;
+
+  const closeModal = useCallback(() => {
+    setActiveCard(null);
+    setOriginRect(null);
+  }, []);
+
+  const openModal = useCallback((label: string, rect: WayModalRect | null) => {
+    setOriginRect(rect);
+    setActiveCard(label);
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-white">
       <Container borderColor="#0A143B1A">
@@ -219,14 +276,27 @@ export default function ThreeWays() {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-3 lg:mt-14">
-            {WAY_CARDS.map(({ mock, ...card }) => (
-              <WayCard key={card.label} {...card}>
+            {WAY_CARDS.map(({ mock, modalPreview, ...card }) => (
+              <WayCard
+                key={card.label}
+                {...card}
+                hideMock={activeCard === card.label}
+                onOpen={(rect) => openModal(card.label, rect)}
+              >
                 {mock}
               </WayCard>
             ))}
           </div>
         </div>
       </Container>
+
+      <WayCardModal
+        open={activeCard !== null}
+        content={modalContent}
+        preview={activeConfig?.modalPreview}
+        originRect={originRect}
+        onClose={closeModal}
+      />
     </section>
   );
 }

@@ -63,11 +63,12 @@ button {
 }
 
 .way-card-shell {
-  --way-card-hover-scale: 1.01;
   isolation: isolate;
   clip-path: inset(4px 4.798048790430439px 4px 4.798048790430439px round calc(6px - 1px));
   transition: clip-path 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   @media (hover: hover) {
@@ -76,6 +77,13 @@ button {
       clip-path: inset(0 round calc(6px - 1px));
     }
 
+    .way-card-shell:hover .way-card-body {
+      transform: translate3d(0, 0, 0) scale(var(--way-card-hover-scale));
+    }
+
+    .way-card-shell:hover .way-card-mock {
+      transform: translate3d(0, 0, 0) scale(calc(1 / var(--way-card-hover-scale)));
+    }
   }
 }
 
@@ -121,6 +129,108 @@ button {
     .way-card-shell:hover .way-card-expand-btn .way-card-expand-bl {
       transform: translate(-2.5px, 2.5px);
     }
+  }
+}
+
+:root {
+  --way-modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --way-modal-overlay-open: 360ms;
+  --way-modal-overlay-close: 340ms;
+  --way-modal-panel-open: 520ms;
+  --way-modal-panel-close: 440ms;
+  --way-modal-content-delay: 120ms;
+}
+
+@keyframes way-modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes way-modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes way-modal-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes way-modal-panel-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.98);
+  }
+}
+
+.way-modal-content-hidden {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+}
+
+.way-modal-content-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.way-modal-panel {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .way-modal-overlay-enter {
+    animation: way-modal-overlay-in var(--way-modal-overlay-open) ease-out both;
+  }
+
+  .way-modal-panel-enter {
+    animation: way-modal-panel-in var(--way-modal-panel-open) var(--way-modal-ease) both;
+  }
+
+  .way-modal-overlay-exit {
+    animation: way-modal-overlay-out var(--way-modal-overlay-close) ease-in both;
+  }
+
+  .way-modal-panel-exit {
+    animation: way-modal-panel-out var(--way-modal-panel-close) var(--way-modal-ease) both;
+  }
+
+  .way-modal-content-hidden,
+  .way-modal-content-visible {
+    transition:
+      opacity 380ms var(--way-modal-ease),
+      transform 380ms var(--way-modal-ease);
+  }
+
+  .way-modal-content-visible {
+    transition-delay: var(--way-modal-content-delay);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .way-modal-content-hidden,
+  .way-modal-content-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
