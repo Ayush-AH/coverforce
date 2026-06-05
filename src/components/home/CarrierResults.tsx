@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
-import GradFlow from "gradflow";
+import Threads from "@/components/Threads";
 
 type CarrierResult = {
   id: string;
@@ -108,17 +108,12 @@ const CarrierResults = () => {
           className="pointer-events-none absolute left-0 top-0 z-0  w-full lg:h-full"
           aria-hidden
         >
-         <GradFlow
-          config={{
-            color1: { r: 21, g: 31, b: 77 },
-            color2: { r: 51, g: 37, b: 159 },
-            color3: { r: 1, g: 48, b: 190 },
-            speed: 0.8,
-            scale: 1,
-            type: 'wave',
-            noise: 0
-          }}
-        />
+        <Threads
+  color={[0.004, 0.188, 0.745]}
+  amplitude={2.5}
+  distance={0}
+  enableMouseInteraction={false}
+/>
         </div>
         <div className="relative py-16 md:py-20 lg:py-24">
           {/* Wave — 130% width, anchored left top inside container */}
