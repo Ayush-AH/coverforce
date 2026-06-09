@@ -168,7 +168,7 @@ const WhyCoverforce = () => {
                 <Button
                   href="/"
                   variant="primary"
-                  className="!bg-[#4627A2] text-white"
+                  className="!bg-[#5B35E0] text-white"
                 >
                   Start a quote
                 </Button>
@@ -185,7 +185,7 @@ const WhyCoverforce = () => {
                     type="button"
                     aria-label="Next slide"
                     onClick={next}
-                    className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#4115DA] text-white transition-opacity hover:opacity-90"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#5B35E0] text-white transition-opacity hover:opacity-90"
                   >
                     <RiArrowRightLine className="size-5" />
                   </button>
