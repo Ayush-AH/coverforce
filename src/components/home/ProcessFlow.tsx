@@ -102,7 +102,7 @@ function PanelStep1() {
                     </div>
                 </div>
 
-                {/* Mini graph card — positioned above and to the right */}
+                {/* Mini graph card */}
                 <div className="graph1 absolute opacity-0 left-full bottom-[105%] rounded-2xl border border-[#CED2D2] p-[3px] z-10 w-[12rem] aspect-video">
                     <div className="w-full h-full rounded-xl border border-[#CED2D2]" />
                     <div className="absolute inset-0 z-10 py-3 p-4 flex flex-col justify-between">
@@ -124,7 +124,6 @@ function PanelStep1() {
 function PanelStep2() {
     return (
         <div className="panel-step2 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
-            {/* AI button — icon-only until step 2 point 1, then expands */}
             <div className="ai-btn relative size-14 bg-[#CED2D2] overflow-hidden rounded-full p-px opacity-0">
                 <div
                     className="ai-btn-gradient absolute inset-0 rounded-full opacity-0"
@@ -138,12 +137,10 @@ function PanelStep2() {
                 </div>
             </div>
 
-            {/* Cursor — positioned outside the button, slides in from below-right */}
             <div className="cursor2 absolute bottom-[40%] right-[35%] z-10 flex h-12 w-12 items-center justify-center opacity-0">
                 <Image src="/images/process/cursor.svg" alt="" width={100} height={100} className="h-full w-full object-cover" />
             </div>
 
-            {/* Form card */}
             <div className="form-wrap2 opacity-0 absolute inset-0 flex items-center justify-center">
                 <div className="relative grid w-xs shrink-0 grid-cols-1 [&>*]:col-start-1 [&>*]:row-start-1">
                     <div className="w-full rounded-2xl border border-[#CCCCCC] bg-white">
@@ -196,7 +193,6 @@ function PanelStep2() {
                         </div>
                     </div>
 
-                    {/* Skeleton overlay */}
                     <div className="skeleton2 absolute inset-0 z-10 flex w-full flex-col rounded-2xl border border-[#CED2D2] bg-white p-[3px]">
                         <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[0.70rem] border border-[#CED2D2]">
                             <div className="h-[18%] shrink-0 border-b border-[#CED2D2]" />
@@ -274,14 +270,6 @@ function PanelStep4() {
     return (
         <div className="panel-step4 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none p-7">
             <div className="relative overflow-hidden flex h-full w-full flex-col justify-between">
-
-                {/*
-                    cursor4 is a DIRECT CHILD of this container — completely outside
-                    every row element. No ancestor has overflow:hidden above it except
-                    panel-step4 itself (which is inset-0 and large enough).
-                    Position it absolutely relative to this wrapper: right-center area,
-                    roughly where the Bind button sits in the middle card.
-                */}
                 <div
                     className="cursor4 pointer-events-none absolute z-50 flex h-11 w-11 items-center justify-center opacity-0"
                     style={{ right: "25%", top: "60%", transform: "translateY(0%)" }}
@@ -302,7 +290,7 @@ function PanelStep4() {
                     ))}
                 </div>
 
-                <div className="row4-2 relative w-full h-[31%]  flex items-center justify-center">
+                <div className="row4-2 relative w-full h-[31%] flex items-center justify-center">
                     <div className="row4-2-track absolute left-[-28%] w-full h-full flex items-center justify-between">
                         <div className="row4-2-card row4-2-left w-1/2 shrink-0 h-full border border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
                             <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
@@ -414,43 +402,23 @@ const ProcessFlow = () => {
             const section = sectionRef.current;
             if (!section) return;
 
-            // ─────────────────────────────────────────────────────────────────
-            // TIMING PHILOSOPHY
-            // ─────────────────────────────────────────────────────────────────
-            // Every duration is significantly longer than the original.
-            // Panel cross-fades are slow and overlap deliberately so the right
-            // side is *never* empty. Key states linger before progressing.
-            // Easing uses custom cubic-bezier curves for premium feel.
-            // Scrub is high (8) so mouse wheel feels silky rather than jittery.
-            // ─────────────────────────────────────────────────────────────────
+            const EASE_ENTER  = "power2.out";
+            const EASE_EXIT   = "power2.inOut";
+            const EASE_REVEAL = "power3.out";
+            const EASE_SOFT   = "sine.inOut";
 
-            // Easing palette
-            const EASE_ENTER  = "power2.out";          // content arriving
-            const EASE_EXIT   = "power2.inOut";         // content leaving
-            const EASE_REVEAL = "power3.out";           // card/element reveals
-            const EASE_SOFT   = "sine.inOut";           // gentle colour transitions
+            const FADE_DUR    = 6;
+            const POINT_DUR   = 5;
+            const SCROLL_DUR  = 24;
+            const SCAN_RISE   = 4;
+            const SCAN_TRAVEL = 12;
+            const VALID_DUR   = 1.2;
+            const VALID_STAG  = 2.0;
 
-            // Core durations (all in timeline "virtual time" units)
-            const FADE_DUR    = 6;     // panel cross-fade (was 4)
-            const POINT_DUR   = 5;     // point highlight transition (was 3.5)
-            const SCROLL_DUR  = 24;    // left-panel scroll travel between steps (was 18)
-            const SCAN_RISE   = 4;     // scanner beam rise (was 3)
-            const SCAN_TRAVEL = 12;    // scanner travel (was 8)
-            const VALID_DUR   = 1.2;   // per-field validation animation (was 0.8)
-            const VALID_STAG  = 2.0;   // stagger between fields (was 1.2)
-
-            // Scroll budget
-            // Step slot boundaries (virtual units):
-            // Step 1:  0 – 60
-            // Step 2:  60 – 135
-            // Step 3:  135 – 200
-            // Step 4:  200 – 270
-            // Step 5:  270 – 330
             const TOTAL_SCROLL_UNITS = 330;
-            const VH_PER_UNIT        = 2.8;   // was 2.6 — more scroll travel per unit
+            const VH_PER_UNIT        = 2.8;
             const scrollDistance     = `+=${TOTAL_SCROLL_UNITS * VH_PER_UNIT}vh`;
 
-            // ── Initial states ────────────────────────────────────────────────
             gsap.set(".panel-step1, .panel-step2, .panel-step3, .panel-step4, .panel-step5", { opacity: 0 });
             gsap.set(".skeleton1",    { opacity: 1 });
             gsap.set(".card1",        { opacity: 0, y: 8 });
@@ -476,8 +444,6 @@ const ProcessFlow = () => {
             gsap.set(".logos-grid3", { height: 0, paddingBottom: 0 });
             gsap.set(".logo3",       { opacity: 0, scale: 0.94, y: 10 });
 
-            // Step 4
-            // cursor4 starts offset to the right and slightly above its resting spot
             gsap.set(".cursor4",              { opacity: 0, x: 40, y: -20 });
             gsap.set(".bind-btn",             { scale: 1, transformOrigin: "50% 50%" });
             gsap.set(".row4-1, .row4-3",      { opacity: 1, height: "31%" });
@@ -487,7 +453,6 @@ const ProcessFlow = () => {
             gsap.set(".card4-quote",          { opacity: 1 });
             gsap.set(".card4-success",        { opacity: 0 });
 
-            // Animate AI-button gradient continuously
             const gradEl = section.querySelector<HTMLElement>(".ai-btn-gradient");
             if (gradEl) {
                 gsap.to(gradEl, {
@@ -498,7 +463,6 @@ const ProcessFlow = () => {
                 });
             }
 
-            // ── Pin section ───────────────────────────────────────────────────
             ScrollTrigger.create({
                 trigger:    section,
                 start:      "top top",
@@ -507,19 +471,15 @@ const ProcessFlow = () => {
                 pinSpacing: true,
             });
 
-            // ── Main scrubbed timeline ────────────────────────────────────────
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: section,
                     start:   "top top",
                     end:     scrollDistance,
-                    scrub:   8,    // high scrub = silky feel, no snapping
+                    scrub:   8,
                 },
             });
 
-            // ── Helpers ───────────────────────────────────────────────────────
-
-            // Highlight / dim a numbered point
             const hi = (step: number, pt: number, t: number) => {
                 const b = `.step${step} .point${pt}`;
                 tl.to(`${b} p`,    { color: POINT_ACTIVE, duration: POINT_DUR, ease: EASE_SOFT }, t)
@@ -531,20 +491,18 @@ const ProcessFlow = () => {
                   .to(`${b} span`, { backgroundColor: "transparent", color: POINT_IDLE, borderColor: POINT_IDLE, duration: POINT_DUR, ease: EASE_SOFT }, t);
             };
 
-            // Cross-fade two panels with generous overlap so there's always content
-            // fromPanel fades out slowly; toPanel starts fading in halfway through.
             const crossFade = (fromPanel: string, toPanel: string, t: number) => {
                 tl.to(fromPanel, { opacity: 0, y: -10, duration: FADE_DUR, ease: EASE_EXIT },  t);
                 tl.to(toPanel,   { opacity: 1, y: 0,   duration: FADE_DUR * 1.1, ease: EASE_ENTER }, t + FADE_DUR * 0.35);
             };
 
             // ═══════════════════════════════════════════════════════════════
-            // STEP 1  (t = 0 … 60)
+            // STEP 1
             // ═══════════════════════════════════════════════════════════════
             const s1_enter  = 0;
             const s1_p1     = 3;
             const s1_p1off  = 16;
-            const s1_p2     = 14;       // overlap: p2 starts before p1 fully dims
+            const s1_p2     = 14;
             const s1_card   = s1_p2 + 2;
             const s1_graph  = s1_p2 + 5;
             const s1_p2off  = 28;
@@ -554,39 +512,32 @@ const ProcessFlow = () => {
             const s1_outro  = 50;
             const s2_scroll = 52;
 
-            // Panel 1 entrance: rise up from slight offset
             gsap.set(".panel-step1", { y: 20 });
             tl.to(".panel-step1", { opacity: 1, y: 0, duration: FADE_DUR * 1.2, ease: EASE_ENTER }, s1_enter);
 
             hi(1, 1, s1_p1);
             lo(1, 1, s1_p1off);
-
             hi(1, 2, s1_p2);
-            // Skeleton → Card reveal (skeleton fades, card rises in)
             tl.to(".skeleton1", { opacity: 0, duration: FADE_DUR * 0.8, ease: EASE_EXIT }, s1_card)
               .to(".card1",     { opacity: 1, y: 0, duration: FADE_DUR, ease: EASE_REVEAL }, s1_card + 1.5)
               .to(".graph1",    { opacity: 1, y: 0, x: 0, duration: FADE_DUR * 0.8, ease: EASE_REVEAL }, s1_graph);
             lo(1, 2, s1_p2off);
 
             hi(1, 3, s1_p3);
-            // Scanner beam: rises from bottom, travels upward across card, fades out
             tl.to(".scanner1", { opacity: 1, top: "10%", duration: SCAN_RISE,   ease: EASE_ENTER }, s1_scan)
               .to(".scanner1", { top: "100%",             duration: SCAN_TRAVEL, ease: "none"      }, s1_scan + SCAN_RISE)
               .to(".scanner1", { opacity: 0,              duration: 2.5,         ease: "power2.in" }, s1_scan + SCAN_RISE + SCAN_TRAVEL - 1.5);
             lo(1, 3, s1_p3off);
 
-            // Outro: crossfade to step 2 — AI button visible immediately (icon only, no swell)
             gsap.set(".panel-step2", { y: 18, opacity: 0 });
             crossFade(".panel-step1", ".panel-step2", s1_outro);
             tl.set(".ai-btn", { opacity: 1, scale: 1 }, s1_outro + FADE_DUR * 0.35);
             tl.to(".leftScroll", { yPercent: -20, duration: SCROLL_DUR, ease: "none" }, s2_scroll);
 
             // ═══════════════════════════════════════════════════════════════
-            // STEP 2  (t = 52 … 135)
-            // Panel 2 + static AI icon already visible after step 1.
-            // Animations begin at step 2 point 1.
+            // STEP 2
             // ═══════════════════════════════════════════════════════════════
-            const s2_stick   = s2_scroll + SCROLL_DUR;  // ~76
+            const s2_stick   = s2_scroll + SCROLL_DUR;
 
             const s2_p1      = s2_stick + 2;
             const s2_fill    = s2_p1 + 2;
@@ -594,7 +545,7 @@ const ProcessFlow = () => {
             const s2_click   = s2_p1 + 15;
             const s2_afterCl = s2_click + 2;
             const s2_p1off   = s2_afterCl + 4;
-            const s2_p2      = s2_p1off - 2;   // p2 overlaps p1 dim
+            const s2_p2      = s2_p1off - 2;
             const s2_form    = s2_p2 + 2;
             const s2_p2off   = s2_p2 + 16;
             const s2_p3      = s2_p2off - 2;
@@ -604,34 +555,28 @@ const ProcessFlow = () => {
             const s3_scroll  = s2_outro + 5;
 
             hi(2, 1, s2_p1);
-            // Point 1: expand AI button — gradient, label, width
             tl.to(".ai-btn",         { width: "11rem", duration: FADE_DUR * 1.1, ease: "power2.out" }, s2_fill)
               .to(".ai-btn-inner",    { backgroundColor: "#E1E9FF", gap: "0.5rem", paddingLeft: "1.25rem", paddingRight: "1.25rem", paddingTop: "1rem", paddingBottom: "1rem", duration: FADE_DUR, ease: EASE_SOFT }, s2_fill)
               .to(".ai-btn-gradient", { opacity: 1, duration: FADE_DUR, ease: EASE_SOFT }, s2_fill)
               .to(".ai-btn-text",     { width: "4.85rem", duration: FADE_DUR * 1.1, ease: "power2.out" }, s2_fill)
               .to(".ai-btn-icon",     { color: POINT_ACTIVE, duration: FADE_DUR, ease: EASE_SOFT }, s2_fill)
               .to(".ai-btn-label",    { opacity: 1, duration: FADE_DUR, ease: EASE_SOFT }, s2_fill + 1.5);
-            // Cursor glides in smoothly from offset
             tl.to(".cursor2", { opacity: 1, x: 0, y: 0, duration: FADE_DUR * 1.3, ease: "power2.out" }, s2_cursor);
-            // Click micro-interaction — subtle press and release
             tl.to(".cursor2",  { scale: 0.85, duration: 0.3,  ease: "power2.in"   }, s2_click)
               .to(".ai-btn",   { scale: 0.93, duration: 0.3,  ease: "power2.in"   }, s2_click)
               .to(".cursor2",  { scale: 1,    duration: 0.7,  ease: "back.out(2)" }, s2_click + 0.3)
               .to(".ai-btn",   { scale: 1,    duration: 0.7,  ease: "back.out(2)" }, s2_click + 0.35);
-            // Fade button + cursor out gracefully
             tl.to(".cursor2",  { opacity: 0, x: -12, duration: FADE_DUR * 0.8, ease: EASE_EXIT }, s2_afterCl)
               .to(".ai-btn",   { opacity: 0, y: -8,  duration: FADE_DUR * 0.8, ease: EASE_EXIT }, s2_afterCl);
 
             lo(2, 1, s2_p1off);
             hi(2, 2, s2_p2);
-            // Reveal form (skeleton dissolves revealing filled form beneath)
             tl.to(".form-wrap2", { opacity: 1, duration: FADE_DUR, ease: EASE_ENTER }, s2_form)
               .to(".skeleton2",  { opacity: 0, duration: FADE_DUR * 0.9, ease: EASE_EXIT }, s2_form + 1.5);
 
             lo(2, 2, s2_p2off);
             hi(2, 3, s2_p3);
 
-            // Validate fields one by one with generous stagger
             const vld = (t: number, inputs: string[], checks: string[], icons: string[]) => {
                 inputs.forEach(sel => tl.to(sel, { borderColor: FIELD_VALID, duration: VALID_DUR * 1.3, ease: EASE_SOFT }, t));
                 checks.forEach(sel => tl.to(sel, { backgroundColor: FIELD_VALID, borderColor: FIELD_VALID, duration: VALID_DUR * 1.3, ease: EASE_SOFT }, t));
@@ -644,12 +589,11 @@ const ProcessFlow = () => {
             vld(s2_valid + VALID_STAG * 4,   [".f2-inp-yr"],   [".f2-check-yr"],   [".f2-icon-yr"]);
 
             lo(2, 3, s2_p3off);
-            // Panel 2 exits while scroll travel begins
             tl.to(".panel-step2", { opacity: 0, y: -14, duration: FADE_DUR, ease: EASE_EXIT }, s2_outro);
             tl.to(".leftScroll",  { yPercent: -40, duration: SCROLL_DUR, ease: "none" }, s3_scroll);
 
             // ═══════════════════════════════════════════════════════════════
-            // STEP 3  (t ≈ s3_scroll … s3_scroll+65)
+            // STEP 3
             // ═══════════════════════════════════════════════════════════════
             const s3_stick  = s3_scroll + SCROLL_DUR;
 
@@ -669,24 +613,19 @@ const ProcessFlow = () => {
             hi(3, 1, s3_p1);
             lo(3, 1, s3_p1off);
             hi(3, 2, s3_p2);
-            // Dropdown — slow, smooth grid expansion
             tl.to(".logos-grid3", {
                 height: "12.5rem",
                 paddingBottom: 20,
                 duration: FADE_DUR * 2.8,
                 ease: "power3.inOut",
             }, s3_logos);
-            // Logos drift in while dropdown opens — no bounce
             tl.to(".logo3", {
                 opacity: 1,
                 scale: 1,
                 y: 0,
                 duration: FADE_DUR * 1.1,
                 ease: EASE_REVEAL,
-                stagger: {
-                    each: 0.55,
-                    from: "start",
-                },
+                stagger: { each: 0.55, from: "start" },
             }, s3_logos + 2.5);
             lo(3, 2, s3_p2off);
             hi(3, 3, s3_p3);
@@ -696,14 +635,13 @@ const ProcessFlow = () => {
             tl.to(".leftScroll",  { yPercent: -60, duration: SCROLL_DUR, ease: "none" }, s4_scroll);
 
             // ═══════════════════════════════════════════════════════════════
-            // STEP 4  (t ≈ s4_scroll … s4_scroll+75)
+            // STEP 4
             // ═══════════════════════════════════════════════════════════════
             const s4_stick  = s4_scroll + SCROLL_DUR;
 
             gsap.set(".panel-step4", { y: 18, opacity: 0 });
             tl.to(".panel-step4", { opacity: 1, y: 0, duration: SCROLL_DUR * 0.65, ease: EASE_ENTER }, s4_scroll + SCROLL_DUR * 0.18);
 
-            // Reset step4 layout for correct reverse-scroll behaviour
             tl.set(".row4-1, .row4-3",  { height: "31%", opacity: 1 }, s4_scroll)
               .set(".row4-2",            { height: "31%", opacity: 1 }, s4_scroll)
               .set(".row4-1-card, .row4-3-card, .row4-2-card", { x: 0, y: 0, opacity: 1 }, s4_scroll)
@@ -716,10 +654,6 @@ const ProcessFlow = () => {
             const s4_p1     = s4_stick + 2;
             const s4_p1off  = s4_stick + 14;
             const s4_p2     = s4_p1off - 2;
-
-            // Cursor enters from OUTSIDE the card — top-right, well clear of card bounds
-            // cursor4 is positioned in CSS at { right: -1rem, top: -2.5rem }
-            // We animate from further out and bring it toward the Bind button
             const s4_cursor = s4_p2 + 6;
             const s4_p2off  = s4_p2 + 18;
             const s4_p3     = s4_p2off - 2;
@@ -735,32 +669,26 @@ const ProcessFlow = () => {
             lo(4, 1, s4_p1off);
             hi(4, 2, s4_p2);
 
-            // Cursor glides in from outside top-right corner of the card row
-            // (cursor4 initial state: x: 24, y: 24 — further from its resting spot)
             tl.to(".cursor4", { opacity: 1, x: 0, y: 0, duration: FADE_DUR * 1.3, ease: "power2.out" }, s4_cursor)
               .to(".bind-btn", { scale: 1.1, duration: FADE_DUR, ease: EASE_SOFT }, s4_cursor + 2);
 
             lo(4, 2, s4_p2off);
             hi(4, 3, s4_p3);
 
-            // Cursor presses down — stays outside card, near top-right
             tl.to(".cursor4",  { scale: 0.84, duration: 0.35, ease: "power2.in"   }, s4_click)
               .to(".bind-btn", { scale: 0.91, duration: 0.35, ease: "power2.in"   }, s4_click)
               .to(".cursor4",  { scale: 1,    duration: 0.65, ease: "back.out(2)" }, s4_click + 0.35)
               .to(".bind-btn", { scale: 1,    duration: 0.7,  ease: "back.out(2)" }, s4_click + 0.38);
 
-            // Side rows slide away (rows 1 & 3 side cards exit stage left/right)
             tl.to(".row4-1-left",  { x: "-130%", y: -8, opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_p3 + 1)
               .to(".row4-1-right", { x: "130%",  y: -8, opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_p3 + 1)
               .to(".row4-3-left",  { x: "-130%", y:  8, opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_p3 + 1)
               .to(".row4-3-right", { x: "130%",  y:  8, opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_p3 + 1);
 
-            // Cursor fades out gracefully after click
             tl.to(".cursor4",  { opacity: 0, x: 16, duration: FADE_DUR * 0.8, ease: EASE_EXIT }, s4_afterCl);
 
             lo(4, 3, s4_p3off);
 
-            // Row 2 side cards slide away, center card stays prominent
             tl.to(".row4-2-left",  { x: "-130%", opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_rows_out)
               .to(".row4-2-right", { x: "130%",  opacity: 0, duration: FADE_DUR * 1.1, ease: EASE_EXIT }, s4_rows_out)
               .to(".row4-2-track", { x: 0, duration: FADE_DUR, ease: EASE_SOFT }, s4_rows_out);
@@ -768,27 +696,21 @@ const ProcessFlow = () => {
             tl.to(".leftScroll", { yPercent: -80, duration: SCROLL_DUR, ease: "none" }, s5_scroll);
 
             // ═══════════════════════════════════════════════════════════════
-            // STEP 5 — Center quote card morphs into success state
-            // Panel 5 appears as the morphed card; both coexist gracefully.
+            // STEP 5
             // ═══════════════════════════════════════════════════════════════
             const s5_stick  = s5_scroll + SCROLL_DUR;
 
-            // Rows 1 & 3 collapse, row 2 expands to center stage
             tl.to(".row4-1", { height: 0, opacity: 0, duration: FADE_DUR * 1.2, ease: EASE_EXIT }, s5_morph)
               .to(".row4-3", { height: 0, opacity: 0, duration: FADE_DUR * 1.2, ease: EASE_EXIT }, s5_morph)
               .to(".row4-2", { height: "56%", duration: FADE_DUR * 1.4, ease: "power2.inOut" }, s5_morph)
               .to(".card4-center", { scale: 1.02, y: 0, duration: FADE_DUR * 1.2, ease: EASE_ENTER }, s5_morph);
 
-            // Quote fades out cleanly, success fades in after a short pause
-            const s5_quoteOut = s5_morph + FADE_DUR * 0.8;
+            const s5_quoteOut  = s5_morph + FADE_DUR * 0.8;
             const s5_successIn = s5_quoteOut + FADE_DUR * 0.6;
             tl.to(".card4-quote",   { opacity: 0, duration: FADE_DUR, ease: EASE_EXIT }, s5_quoteOut)
               .to(".card4-success", { opacity: 1, duration: FADE_DUR * 1.1, ease: EASE_ENTER }, s5_successIn);
 
-            // Panel 5 fades in alongside the card morph for a seamless transition
             gsap.set(".panel-step5", { y: 0 });
-            // (Panel 5 will NOT show since the card4 morph IS the step 5 content.
-            // We keep panel-step5 hidden unless needed as a fallback.)
 
             const s5_p1    = s5_stick;
             const s5_p1off = s5_stick + 14;
@@ -801,7 +723,6 @@ const ProcessFlow = () => {
             hi(5, 2, s5_p2);  lo(5, 2, s5_p2off);
             hi(5, 3, s5_p3);  lo(5, 3, s5_p3off);
 
-            // ── Lenis integration ─────────────────────────────────────────
             const lenis = (window as any).lenis;
             const onLenisScroll = () => ScrollTrigger.update();
             lenis?.on("scroll", onLenisScroll);
@@ -830,12 +751,7 @@ const ProcessFlow = () => {
                                     {step.tag}
                                 </p>
                                 <h3 className="mt-4 text-2xl font-heading font-regular tracking-tight text-[#0a143b] md:text-3xl lg:text-3xl">
-                                    {step.heading.pre}{" "}
-                                    <span className="bg-linear-to-r from-[#4F63E8] to-[#0130BE] bg-clip-text text-transparent">
-                                        {step.heading.highlightLines[0]} <br />
-                                        {step.heading.highlightLines[1]}
-                                    </span>{" "}
-                                    {step.heading.postLines[0]} <br /> {step.heading.postLines[1]}
+                                    {step.heading}
                                 </h3>
                                 <p className="mt-5 max-w-lg text-sm leading-relaxed text-[#4A5778] font-sans font-regular md:text-sm">
                                     {step.desc}
@@ -863,11 +779,6 @@ const ProcessFlow = () => {
 
                     {/* ── Right: single sticky visualization panel ─────────── */}
                     <div className="h-screen sticky top-0 flex items-center justify-center bg-white">
-                        {/*
-                            All step panels are always in the DOM.
-                            GSAP drives opacity + subtle y-offsets for entrances/exits.
-                            overflow-visible on the wrapper ensures cursor4 is never clipped.
-                        */}
                         <div className="relative w-full aspect-square overflow-visible">
                             <PanelStep1 />
                             <PanelStep2 />
