@@ -39,7 +39,7 @@ function PanelStep1() {
             <div className="relative grid w-xs shrink-0 grid-cols-1 [&>*]:col-start-1 [&>*]:row-start-1">
                 <div
 
-                    className="skeleton1 absolute inset-0 z-0 flex w-full flex-col rounded-2xl border border-[#CED2D2] bg-white p-[3px]"
+                    className="skeleton1 absolute inset-0 z-10 flex w-full flex-col rounded-2xl border border-[#CED2D2] bg-white p-[3px]"
                     style={{
                         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
                     }}
@@ -56,7 +56,8 @@ function PanelStep1() {
                     </div>
                 </div>
 
-                <div className="card1 w-full rounded-2xl border border-[#CCCCCC] bg-white">
+                <div className="card1 relative z-0 w-full overflow-hidden rounded-2xl border border-[#CCCCCC] bg-white">
+                    <div className="card1-content">
                     <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
                         <span className="flex size-[23px] shrink-0 items-center justify-center rounded-full border border-[#F3F4F6] bg-[#F9FAFB]">
                             <RiFileTextFill color="#6F6F6F" size={11} />
@@ -110,6 +111,12 @@ function PanelStep1() {
                         </div>
                         <span className="font-heading text-[0.60rem] font-normal text-[#9CA3AF]">ACORD 25 Standard</span>
                     </div>
+                    </div>
+                    <div className="card1-morph-shell pointer-events-none absolute inset-0 flex items-center justify-center opacity-0">
+                        <div className="card1-morph-inner flex h-full w-full items-center justify-center rounded-full bg-white">
+                            <RiSparkling2Fill className="card1-morph-icon size-4 shrink-0 text-[#CED2D2]" />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Mini graph card */}
@@ -125,7 +132,7 @@ function PanelStep1() {
                 </div>
 
                 {/* Scanner beam */}
-                <div className="scanner1 absolute top-full opacity-0 left-1/2 h-20 w-[25rem] -translate-x-1/2 border-t border-[#1365D0] bg-gradient-to-b from-[#1365D0]/10 to-transparent" />
+                <div className="scanner1 absolute top-full z-20 opacity-0 left-1/2 h-20 w-[25rem] -translate-x-1/2 border-t border-[#1365D0] bg-gradient-to-b from-[#1365D0]/10 to-transparent" />
             </div>
         </div>
     );
@@ -134,7 +141,7 @@ function PanelStep1() {
 function PanelStep2() {
     return (
         <div className="panel-step2 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
-            <div className="ai-btn relative size-14 bg-[#CED2D2] overflow-hidden rounded-full p-px opacity-0">
+            <div className="ai-btn relative size-14 bg-[#CED2D2] overflow-hidden rounded-full p-[0.05rem] opacity-0">
                 <div
                     className="ai-btn-gradient absolute inset-0 rounded-full opacity-0"
                     style={{ backgroundImage: "linear-gradient(90deg,#0032C9,#EA4336,#FCBC05,#34A854,#0032C9)", backgroundSize: "200% 100%", backgroundPosition: "0% 50%" }}
@@ -433,6 +440,9 @@ const ProcessFlow = () => {
             gsap.set(".skeleton1", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" });
             gsap.set(".graph1", { opacity: 0, y: 12, x: -4 });
             gsap.set(".scanner1", { opacity: 0, top: "100%" });
+            gsap.set(".card1-content", { opacity: 1 });
+            gsap.set(".card1-morph-shell", { opacity: 0 });
+            gsap.set(".card1-morph-inner", { backgroundColor: "#fff" });
 
             gsap.set(".ai-btn", { opacity: 0, scale: 1, width: "3.5rem", transformOrigin: "50% 50%" });
             gsap.set(".ai-btn-gradient", { opacity: 0 });
@@ -519,7 +529,10 @@ const ProcessFlow = () => {
             const s1_scan = 29;
             const s1_p3off = 46;
             const s1_outro = 50;
-            const s2_scroll = 52;
+            const s1_contentFade = s1_outro + 1;
+            const s1_morph = s1_contentFade + 5;
+            const s1_swap = s1_morph + 7;
+            const s2_scroll = s1_swap + 4;
 
             gsap.set(".panel-step1", { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)", });
             tl.to(".panel-step1", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: FADE_DUR * 1.2, ease: EASE_ENTER }, s1_enter);
@@ -537,9 +550,44 @@ const ProcessFlow = () => {
                 .to(".scanner1", { opacity: 0, duration: 2.5, ease: "power2.in" }, s1_scan + SCAN_RISE + SCAN_TRAVEL - 1.5);
             lo(1, 3, s1_p3off);
 
-            gsap.set(".panel-step2", { y: 18, opacity: 0 });
-            crossFade(".panel-step1", ".panel-step2", s1_outro);
-            tl.set(".ai-btn", { opacity: 1, scale: 1 }, s1_outro + FADE_DUR * 0.35);
+            gsap.set(".panel-step2", { y: 0, opacity: 0 });
+
+            // Step 1 → 2: after scan + last point, card1 morphs into AI button
+            tl.to(".graph1", { opacity: 0, y: 8, duration: FADE_DUR * 0.5, ease: EASE_EXIT }, s1_outro)
+                .to(".skeleton1", { opacity: 0, duration: FADE_DUR * 0.6, ease: EASE_EXIT }, s1_outro);
+
+            tl.to(".card1-content", { opacity: 0, duration: FADE_DUR * 0.7, ease: EASE_EXIT }, s1_contentFade);
+
+            tl.call(() => {
+                const el = section.querySelector<HTMLElement>(".card1");
+                if (!el) return;
+                gsap.set(el, {
+                    width: el.offsetWidth,
+                    height: el.offsetHeight,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    transformOrigin: "50% 50%",
+                    zIndex: 10,
+                });
+            }, [], s1_morph);
+
+            tl.to(".card1", {
+                width: "3.5rem",
+                height: "3.5rem",
+                borderRadius: "9999px",
+                backgroundColor: "#ffffff",
+                borderColor: "#CED2D2",
+                padding: "1px",
+                duration: FADE_DUR * 1.1,
+                ease: EASE_SOFT,
+            }, s1_morph)
+                .to(".card1-morph-shell", { opacity: 1, duration: FADE_DUR * 0.5, ease: EASE_ENTER }, s1_morph + FADE_DUR * 0.45);
+
+            tl.to(".panel-step1", { opacity: 0, duration: FADE_DUR * 0.5, ease: EASE_EXIT }, s1_swap)
+                .to(".panel-step2", { opacity: 1, duration: FADE_DUR * 0.6, ease: EASE_ENTER }, s1_swap)
+                .set(".card1", { opacity: 0 }, s1_swap + FADE_DUR * 0.35)
+                .set(".ai-btn", { opacity: 1, scale: 1 }, s1_swap + FADE_DUR * 0.35);
+
             tl.to(".leftScroll", { yPercent: -20, duration: SCROLL_DUR, ease: "none" }, s2_scroll);
 
             // ═══════════════════════════════════════════════════════════════
