@@ -88,7 +88,7 @@ function Particles() {
   }, [size]);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.elapsed;
     const posAttr = meshRef.current.geometry.attributes.position as THREE.BufferAttribute;
     const arr = posAttr.array as Float32Array;
 
