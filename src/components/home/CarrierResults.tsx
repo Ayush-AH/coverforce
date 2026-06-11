@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+
+import { useRef } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
-import Threads from "@/components/Threads";
+import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 type CarrierResult = {
   id: string;
@@ -83,8 +84,15 @@ function CarrierCard({ result }: { result: CarrierResult }) {
 }
 
 const CarrierResults = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef });
+
   return (
-    <section className="bg-[#121C49] text-white">
+    <section ref={sectionRef} className="bg-[#121C49] text-white">
       <Container borderColor="#FFFFFF33" className="border-t border-b border-[#FFFFFF1A]">
         <div
           className="absolute left-0 -top-20 z-0  w-full lg:h-full opacity-75"
@@ -111,10 +119,18 @@ const CarrierResults = () => {
 
           <div className="relative z-10 flex flex-col gap-62">
             {/* Header */}
-            <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12">
+            <div
+              ref={headerRef}
+              className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+            >
               <div className="flex flex-col justify-end space-y-5">
-                <h2 className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight md:text-4xl lg:text-3xl lg:leading-[1.15]">
-                  Carrier results that speak for themselves
+                <h2
+                  ref={headingRef}
+                  className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight md:text-4xl lg:text-3xl lg:leading-[1.15]"
+                >
+                  <span data-split>Carrier results that</span>
+                  <br />
+                  <span data-split>speak for themselves</span>
                 </h2>
                 <Button href="/" variant="primary">
                   Explore Carrier
@@ -122,7 +138,10 @@ const CarrierResults = () => {
               </div>
 
               <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
-                <p className="font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem] text-[#D1D1D1]">
+                <p
+                  ref={descRef}
+                  className="font-sans font-regular text-sm leading-[1.4] text-[#D1D1D1] md:text-[1.125rem]"
+                >
                   Named outcomes provide clear, organized quote comparisons from
                   appointed carriers, helping agents from production carrier
                   partnerships.

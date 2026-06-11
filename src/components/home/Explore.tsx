@@ -1,11 +1,10 @@
-import React, { type ReactNode } from "react";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
 import SectionRadialGlow from "../common/SectionRadialGlow";
 
 const Explore = () => {
   return (
-    <section className="relative overflow-hidden  bg-[#121C49] text-white">
+    <section className="relative overflow-hidden bg-[#121C49] text-white">
       <Container borderColor="#FFFFFF33" className="relative">
         <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%]" />
 
@@ -14,7 +13,7 @@ const Explore = () => {
             Start a New Quote
           </h2>
 
-          <p className="mt-5 font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem] text-[#FFFFFF]">
+          <p className="mt-5 font-sans font-regular text-sm leading-[1.4] text-[#FFFFFF] md:text-[1.125rem]">
             Start quoting faster with CoverForce. <br /> Submit once, compare carriers,
             and bind in one platform.
           </p>

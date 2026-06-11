@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -10,6 +10,7 @@ import {
   RiArrowRightLine,
 } from "@remixicon/react";
 import Container from "../common/Container";
+import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -118,9 +119,14 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 }
 
 const Review = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
+
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef });
 
   useEffect(() => {
     const swiper = swiperRef.current;
@@ -136,13 +142,21 @@ const Review = () => {
   }, []);
 
   return (
-    <section className="bg-[#121C49] text-white">
+    <section ref={sectionRef} className="bg-[#121C49] text-white">
       <Container borderColor="#FFFFFF33" className="border-t border-[#FFFFFF1A]">
         <div className="relative overflow-hidden py-16 md:py-20 lg:py-24">
-          <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between md:mb-12">
-            <h2 className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-              Why Commercial Insurance{" "}
-              <span className="text-white/40">Teams Trust CoverForce for Smarter Workflows</span>
+          <div
+            ref={headerRef}
+            className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between md:mb-12"
+          >
+            <h2
+              ref={headingRef}
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+            >
+              <span data-split>Why Commercial Insurance</span>{" "}
+              <span data-split className="text-white/40">
+                Teams Trust CoverForce for Smarter Workflows
+              </span>
             </h2>
 
             <div className="flex shrink-0 items-center gap-3">

@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useRef, useState, useEffect, type ReactNode } from "react";
-import Image from "next/image";
+import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 import Container from "../common/Container";
 import Button from "../common/Button";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type WhySlide = {
   id: string;
@@ -65,6 +70,10 @@ function Eyebrow({
 }
 
 const WhyCoverforce = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
   const [active, setActive] = useState(0);
   const animatingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,8 +93,54 @@ const WhyCoverforce = () => {
 
   useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); }, []);
 
+  useGSAP(
+    () => {
+      const header = headerRef.current;
+      const heading = headingRef.current;
+      const desc = descRef.current;
+      if (!header || !heading) return;
+
+      const cleanups: (() => void)[] = [];
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      cleanups.push(animateSplitTextReveal(heading, { trigger: header }));
+
+      if (desc) {
+        if (reducedMotion) {
+          gsap.set(desc, { opacity: 1 });
+        } else {
+          gsap.set(desc, { opacity: 0 });
+
+          const fadeTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: header,
+              start: "top 88%",
+              toggleActions: "play none none none",
+              once: true,
+            },
+          });
+
+          fadeTl.to(desc, { opacity: 1, duration: 0.8, ease: "power2.out" });
+
+          const lenis = window.lenis;
+          const onLenisScroll = () => ScrollTrigger.update();
+          lenis?.on("scroll", onLenisScroll);
+
+          cleanups.push(() => {
+            lenis?.off("scroll", onLenisScroll);
+            fadeTl.scrollTrigger?.kill();
+            fadeTl.kill();
+          });
+        }
+      }
+
+      return () => cleanups.forEach((cleanup) => cleanup());
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section className="bg-white text-[#0a143b]">
+    <section ref={sectionRef} className="bg-white text-[#0a143b]">
       {/* Slider CSS — scoped to this section */}
       <style>{`
         .why-slider-track {
@@ -150,11 +205,16 @@ const WhyCoverforce = () => {
       <Container borderColor="#53535380">
         <div className="pb-16 md:pb-20 lg:pb-24">
           {/* ── Header (unchanged) ── */}
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12">
+          <div
+            ref={headerRef}
+            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+          >
             <div className="flex flex-col justify-end space-y-5">
-              <h2 className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                Infrastructure to Run Your Distribution Not a Tool to Quote One
-                Risk.
+              <h2
+                ref={headingRef}
+                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              >
+                <span data-split>Infrastructure to Run Your Distribution Not a Tool to Quote One Risk.</span>
               </h2>
               <Button
                   href="/"
@@ -166,7 +226,10 @@ const WhyCoverforce = () => {
             </div>
 
             <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
-              <p className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]">
+              <p
+                ref={descRef}
+                className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
+              >
                 Insurance distribution should work like infrastructure — just
                 like Stripe for payments or Plaid for identity.
               </p>

@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 
 import Container from "../common/Container";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
 
 const LOGOS = [
     { src: "/images/logos/logo1.svg", alt: "RT Specialty" },
@@ -41,16 +46,34 @@ function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
 }
 
 const Marquee = () => {
+    const sectionRef = useRef<HTMLElement>(null);
+    const headingRef = useRef<HTMLHeadingElement>(null);
+
+    useGSAP(
+        () => {
+            const heading = headingRef.current;
+            if (!heading) return;
+
+            return animateSplitTextReveal(heading);
+        },
+        { scope: sectionRef },
+    );
+
     return (
-        <section className="relative overflow-hidden bg-white">
+        <section ref={sectionRef} className="relative overflow-hidden bg-white">
             <Container borderColor="#53535380" borderBottom>
                 <div className="relative z-10 py-16 md:py-20 lg:py-24">
-                    <h2 className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                    <span className="font-medium text-[#424242]">Commercial insurance </span>
-                        <span className="font-regular text-[#9CA3AF]">
+                    <h2
+                        ref={headingRef}
+                        className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                    >
+                        <span data-split className="font-medium text-[#424242]">
+                            Commercial insurance{" "}
+                        </span>
+                        <span data-split className="font-regular text-[#9CA3AF]">
                             distribution that gets smarter with every transaction
                         </span>
-              </h2>
+                    </h2>
                 </div>
                 <div className="relative z-10 space-y-8 pb-16 md:space-y-10 md:pb-20 lg:pb-24">
                     <MarqueeRow />

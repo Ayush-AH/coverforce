@@ -1,30 +1,48 @@
+"use client";
+
+import { useRef } from "react";
 import Image from "next/image";
 import AnimatedCarrierBars from "@/components/common/AnimatedCarrierBar";
 import AnimatedPercent from "@/components/common/AnimatedPercent";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
-
+import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 const DataAdvantage = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef });
+
   return (
-    <section className="bg-[#121C49] text-white">
+    <section ref={sectionRef} className="bg-[#121C49] text-white">
       <Container borderColor="#FFFFFF33">
-        <div className="flex flex-col gap-10 lg:gap-14 py-16 md:py-20 lg:py-24">
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12">
+        <div className="flex flex-col gap-10 py-16 md:py-20 lg:gap-14 lg:py-24">
+          <div
+            ref={headerRef}
+            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+          >
             <div className="flex-col items-start justify-end space-y-5">
-              <h2 className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                Intelligence Built on Data no One Else has
-              </h2>
-              <Button
-                href="/"
-                variant="primary"
+              <h2
+                ref={headingRef}
+                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
+                <span data-split>Intelligence Built on Data</span>
+                <br />
+                <span data-split>no One Else has</span>
+              </h2>
+              <Button href="/" variant="primary">
                 Explore AI
               </Button>
             </div>
 
             <div className="max-w-md text-left lg:ml-auto">
-              <p className="font-sans font-regular text-sm leading-[1.4] text-white/80 md:text-[1.125rem]">
+              <p
+                ref={descRef}
+                className="font-sans font-regular text-sm leading-[1.4] text-white/80 md:text-[1.125rem]"
+              >
                 140,000+ proprietary carrier interactions. Every transaction
                 makes the platform smarter.
               </p>
@@ -58,7 +76,7 @@ const DataAdvantage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-heading font-medium md:text-2xl max-w-xs">
+                  <h3 className="max-w-xs text-lg font-heading font-medium md:text-2xl">
                     Upload an ACORD form AI reads it instantly
                   </h3>
                   <p className="text-sm font-sans font-regular leading-relaxed text-[#525252]">
@@ -78,15 +96,12 @@ const DataAdvantage = () => {
                 className="absolute inset-0 h-full w-full object-cover object-center"
                 aria-hidden
               />
-              <div
-                className="absolute inset-0 bg-[#141E4B]/20"
-                aria-hidden
-              />
+              <div className="absolute inset-0 bg-[#141E4B]/20" aria-hidden />
 
               <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between gap-10">
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <h3 className="text-3xl font-heading font-medium md:text-3xl max-w-xs">
+                    <h3 className="max-w-xs text-3xl font-heading font-medium md:text-3xl">
                       Same risk, <br /> different carriers.
                     </h3>
                     <p className="max-w-[18rem] text-sm font-sans font-regular leading-relaxed text-[#FFFFFF]">

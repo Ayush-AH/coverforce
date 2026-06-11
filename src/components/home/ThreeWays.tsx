@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { rectFromDOM, type WayModalRect } from "@/lib/wayModalMotion";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 import dynamic from "next/dynamic";
 
 import Container from "../common/Container";
@@ -190,8 +196,10 @@ function WayCard({
           ) : null}
           <div className="relative z-10 flex min-h-0 flex-1 flex-col pointer-events-none">
             <div className="flex items-start justify-between gap-4">
-              <p className={`${taglinePosition === "left" ? "max-w-xs" : "max-w-[16rem]"} text-3xl font-heading font-medium leading-[1.12] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}>
-                {tagline} 
+              <p
+                className={`${taglinePosition === "left" ? "max-w-xs" : "max-w-[16rem]"} text-3xl font-heading font-medium leading-[1.12] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}
+              >
+                {tagline}
               </p>
               <span
                 className="way-card-expand-btn pointer-events-auto relative z-20 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm"
@@ -251,11 +259,61 @@ function WayCard({
 }
 
 export default function ThreeWays() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
   const [activeCard, setActiveCard] = useState<string | null>(null);
   const [originRect, setOriginRect] = useState<WayModalRect | null>(null);
 
   const activeConfig = WAY_CARDS.find((c) => c.label === activeCard) ?? null;
   const modalContent = activeCard ? WAY_CARD_MODALS[activeCard] : null;
+
+  useGSAP(
+    () => {
+      const header = headerRef.current;
+      const heading = headingRef.current;
+      const desc = descRef.current;
+      if (!header || !heading) return;
+
+      const cleanups: (() => void)[] = [];
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      cleanups.push(animateSplitTextReveal(heading, { trigger: header }));
+
+      if (desc) {
+        if (reducedMotion) {
+          gsap.set(desc, { opacity: 1 });
+        } else {
+          gsap.set(desc, { opacity: 0 });
+
+          const fadeTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: header,
+              start: "top 88%",
+              toggleActions: "play none none none",
+              once: true,
+            },
+          });
+
+          fadeTl.to(desc, { opacity: 1, duration: 0.8, ease: "power2.out" });
+
+          const lenis = window.lenis;
+          const onLenisScroll = () => ScrollTrigger.update();
+          lenis?.on("scroll", onLenisScroll);
+
+          cleanups.push(() => {
+            lenis?.off("scroll", onLenisScroll);
+            fadeTl.scrollTrigger?.kill();
+            fadeTl.kill();
+          });
+        }
+      }
+
+      return () => cleanups.forEach((cleanup) => cleanup());
+    },
+    { scope: sectionRef },
+  );
 
   const closeModal = useCallback(() => {
     setActiveCard(null);
@@ -268,18 +326,24 @@ export default function ThreeWays() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section ref={sectionRef} className="relative overflow-hidden bg-white">
       <Container borderColor="#53535380">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
-          <div className="flex items-start justify-between">
+          <div ref={headerRef} className="flex items-start justify-between">
             <div className="space-y-5 md:space-y-6">
-              <h2 className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                One platform.
+              <h2
+                ref={headingRef}
+                className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              >
+                <span data-split>One platform.</span>
                 <br />
-                Three Ways to Use It.
+                <span data-split>Three Ways to Use It.</span>
               </h2>
             </div>
-            <p className="max-w-md font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]">
+            <p
+              ref={descRef}
+              className="max-w-md font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
+            >
               Whether you&apos;re routing submissions, quoting carriers, or building on our API, CoverForce adapts to your role.
             </p>
           </div>

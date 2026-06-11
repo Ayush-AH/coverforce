@@ -437,3 +437,7 @@ button {
     @apply font-sans;
   }
 }
+
+.marquee-heading {
+  transform-style: preserve-3d;
+}
