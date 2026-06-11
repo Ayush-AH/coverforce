@@ -85,7 +85,7 @@ function CarrierCard({ result }: { result: CarrierResult }) {
 const CarrierResults = () => {
   return (
     <section className="bg-[#121C49] text-white">
-      <Container borderColor="#FFFFFF1A" className="border-t border-b border-[#FFFFFF1A]">
+      <Container borderColor="#FFFFFF33" className="border-t border-b border-[#FFFFFF1A]">
         <div
           className="absolute left-0 -top-20 z-0  w-full lg:h-full opacity-75"
           aria-hidden

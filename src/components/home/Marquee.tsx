@@ -43,7 +43,7 @@ function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
 const Marquee = () => {
     return (
         <section className="relative overflow-hidden bg-white">
-            <Container borderColor="#53535340">
+            <Container borderColor="#53535380">
                 <div className="relative z-10 py-16 md:py-20 lg:py-24">
                     <h2 className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
                     <span className="font-medium text-[#424242]">Commercial insurance </span>

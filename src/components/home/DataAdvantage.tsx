@@ -8,7 +8,7 @@ import Container from "../common/Container";
 const DataAdvantage = () => {
   return (
     <section className="bg-[#121C49] text-white">
-      <Container borderColor="#FFFFFF1A">
+      <Container borderColor="#FFFFFF33">
         <div className="flex flex-col gap-10 lg:gap-14 py-16 md:py-20 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12">
             <div className="flex-col items-start justify-end space-y-5">

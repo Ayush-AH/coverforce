@@ -31,7 +31,7 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
     <ViewTransitions>
       <LenisScroll>
         <div className="relative w-full">
-          <header className="sticky top-0 z-50 w-full">
+          <header className="fixed top-0 z-50 w-full">
             <Header />
           </header>
 

@@ -264,7 +264,7 @@ export default function ThreeWays() {
 
   return (
     <section className="relative overflow-hidden bg-white">
-      <Container borderColor="#53535340">
+      <Container borderColor="#53535380">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
           <div className="flex items-start justify-between">
             <div className="space-y-5 md:space-y-6">

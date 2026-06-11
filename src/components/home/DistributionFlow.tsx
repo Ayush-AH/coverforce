@@ -5,7 +5,7 @@ import Button from "../common/Button";
 const DistributionFlow = () => {
   return (
     <section className="bg-white">
-      <Container borderColor="#53535340">
+      <Container borderColor="#53535380">
         <div className="relative z-10 pt-16 md:pt-20 lg:pt-24 lg:pt-24">
           <div className="flex justify-between">
            <div>
