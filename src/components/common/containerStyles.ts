@@ -4,12 +4,29 @@ export const containerPadding = "px-2 md:px-4 lg:px-6 xl:px-6";
 
 export const DEFAULT_BORDER_COLOR = "#e5e7eb";
 
+const BORDER_WIDTH = "0.001rem";
+const DASH_LENGTH = 5;
+const DASH_GAP = 12;
+
+function borderDashGradient(color: string, angle: number): string {
+  return `repeating-linear-gradient(${angle}deg, ${color} 0px, ${color} ${DASH_LENGTH}px, transparent ${DASH_LENGTH}px, transparent ${DASH_GAP}px)`;
+}
+
 export function getSideBorderStyle(
   color: string = DEFAULT_BORDER_COLOR,
 ): CSSProperties {
   return {
-    borderLeft: "0.001rem solid transparent",
-    borderRight: "0.001rem solid transparent",
-    borderImage: `repeating-linear-gradient(180deg, ${color} 0px, ${color} 5px, transparent 5px, transparent 12px) 1`,
+    borderLeft: `${BORDER_WIDTH} solid transparent`,
+    borderRight: `${BORDER_WIDTH} solid transparent`,
+    borderImage: `${borderDashGradient(color, 180)} 1`,
+  };
+}
+
+export function getBottomBorderStyle(
+  color: string = DEFAULT_BORDER_COLOR,
+): CSSProperties {
+  return {
+    borderBottom: `${BORDER_WIDTH} solid transparent`,
+    borderImage: `${borderDashGradient(color, 90)} 1`,
   };
 }

@@ -496,7 +496,7 @@ const ProcessFlow = () => {
                     trigger: section,
                     start: "top top",
                     end: scrollDistance,
-                    scrub: 8,
+                    scrub: 1.5,
                 },
             });
 
