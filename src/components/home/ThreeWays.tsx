@@ -237,7 +237,7 @@ const WayCard = memo(function WayCard({
           {dotGrid ? <WayCardDotGrid variant={variant} active={hovered} /> : null}
           {backgroundScene && inView ? (
             <div
-              className={`absolute inset-0 ${backgroundInteractive ? "z-[5] pointer-events-auto" : "z-[1] pointer-events-none"}`}
+              className={`absolute inset-0 z-[1] ${backgroundInteractive ? "pointer-events-auto" : "pointer-events-none"}`}
               aria-hidden={!backgroundInteractive}
               onPointerDown={backgroundInteractive ? (e) => e.stopPropagation() : undefined}
               onClick={backgroundInteractive ? (e) => e.stopPropagation() : undefined}
@@ -245,53 +245,9 @@ const WayCard = memo(function WayCard({
               {backgroundScene}
             </div>
           ) : null}
-          <div className="relative z-[2] flex min-h-0 flex-1 flex-col pointer-events-none">
-            <div className="flex items-start justify-between gap-4">
-              <p
-                className={`${taglinePosition === "left" ? "max-w-xs" : "max-w-[16rem]"} text-3xl font-heading font-medium leading-[1.12] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}
-              >
-                {tagline}
-              </p>
-              <span
-                className="way-card-expand-btn pointer-events-auto relative z-20 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm"
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpen();
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleOpen();
-                  }
-                }}
-              >
-                <svg
-                  className="way-card-expand-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden
-                >
-                  <path
-                    className="way-card-expand-tr"
-                    d="M13.75 6.75L10.25 6.75L10.25 5L15.5 5L15.5 10.25L13.75 10.25L13.75 6.75Z"
-                  />
-                  <path
-                    className="way-card-expand-bl"
-                    d="M6.25 10.25L5 10.25L5 15.5L10.25 15.5L10.25 13.75L6.75 13.75L6.75 10.25Z"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
         </div>
         <div
-          className={`way-card-mock pointer-events-none absolute inset-0 z-20 p-5 transition-opacity duration-300 md:p-6 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" ? "flex items-center justify-center" : ""}`}
+          className={`way-card-mock pointer-events-none absolute inset-0 z-10 p-5 transition-opacity duration-300 md:p-6 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" ? "flex items-center justify-center" : ""}`}
         >
           <div
             ref={mockRef}
@@ -302,6 +258,50 @@ const WayCard = memo(function WayCard({
             }
           >
             {inView ? children : <MockPlaceholder />}
+          </div>
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 p-5 md:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <p
+              className={`${taglinePosition === "left" ? "max-w-xs" : "max-w-[16rem]"} text-3xl font-heading font-medium leading-[1.12] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}
+            >
+              {tagline}
+            </p>
+            <span
+              className="way-card-expand-btn pointer-events-auto relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm"
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpen();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleOpen();
+                }
+              }}
+            >
+              <svg
+                className="way-card-expand-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  className="way-card-expand-tr"
+                  d="M13.75 6.75L10.25 6.75L10.25 5L15.5 5L15.5 10.25L13.75 10.25L13.75 6.75Z"
+                />
+                <path
+                  className="way-card-expand-bl"
+                  d="M6.25 10.25L5 10.25L5 15.5L10.25 15.5L10.25 13.75L6.75 13.75L6.75 10.25Z"
+                />
+              </svg>
+            </span>
           </div>
         </div>
       </article>
