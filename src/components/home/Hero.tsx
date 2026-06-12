@@ -5,8 +5,13 @@ import gsap from "gsap";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
 import SectionRadialGlow from "../common/SectionRadialGlow";
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import { SplitText } from "@/lib/SplitText";
+
+const OpticalFiber = dynamic(() => import("./OpticalFiber"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full" aria-hidden />,
+});
 import {
   HOME_INTRO_EASE,
   HOME_INTRO_NAV_MS,
@@ -202,13 +207,14 @@ const Hero = () => {
               }}
               aria-label="Partner network"
             >
-              <Image
-                src="/images/network.svg"
-                alt="Hero background"
-                width={100}
-                height={100}
-                priority
-                className="h-full w-full object-contain object-bottom"
+              <OpticalFiber
+                className="h-full w-full"
+                contentScale={1.5}
+                fanSpread={0.58}
+                fanReach={1.28}
+                fanHeight={0.85}
+                fanOffsetX={0.45}
+                fov={86}
               />
             </div>
           </div>
