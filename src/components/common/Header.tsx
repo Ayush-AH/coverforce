@@ -1,51 +1,29 @@
+"use client";
+
+import { useCallback, useRef, useState } from "react";
 import Container from "./Container";
 import Button from "./Button";
+import MegaMenu from "./MegaMenu";
 import Link from "next/link";
 import Image from "next/image";
 import { RiArrowDownSLine } from "@remixicon/react";
+import { MEGA_MENUS } from "@/data/megaMenu";
 
 type NavItem = {
   label: string;
   href: string;
   hasDropdown: boolean;
-  subItems?: NavItem[];
 };
 
 const navItems: NavItem[] = [
-  {
-    label: "Product", href: "/", hasDropdown: true,
-    subItems: [
-      { label: "Submission & Intake", href: "/", hasDropdown: false },
-      { label: "Quote & Bind", href: "/", hasDropdown: false },
-      { label: "Intelligence", href: "/", hasDropdown: false },
-
-    ],
-  },
-  {
-    label: "Solutions", href: "/", hasDropdown: true,
-    subItems: [
-      { label: "ROI Calculator", href: "/", hasDropdown: false },
-      { label: "Appetite Checker", href: "/", hasDropdown: false },
-      { label: "2026 Carrier API Index", href: "/", hasDropdown: false },
-      { label: "Wholesalers", href: "/", hasDropdown: false },
-      { label: "Brokers", href: "/", hasDropdown: false },
-      { label: "Carriers", href: "/", hasDropdown: false },
-      { label: "Startups", href: "/", hasDropdown: false },
-      { label: "Developers", href: "/", hasDropdown: false },
-    ],
-  },
+  { label: "Product", href: "/", hasDropdown: true },
+  { label: "Solutions", href: "/", hasDropdown: true },
   { label: "Developers", href: "/", hasDropdown: false },
   { label: "Pricing", href: "/", hasDropdown: false },
-  {
-    label: "Company", href: "/", hasDropdown: true,
-    subItems: [
-      { label: "About CoverForce", href: "/", hasDropdown: false },
-      { label: "Blogs and news", href: "/", hasDropdown: false },
-      { label: "Career", href: "/", hasDropdown: false },
-      { label: "Contact", href: "/", hasDropdown: false },
-    ],
-  },
+  { label: "Company", href: "/", hasDropdown: true },
 ];
+
+const HOVER_CLOSE_DELAY = 120;
 
 function NavLinkLabel({ label }: { label: string }) {
   return (
@@ -59,8 +37,88 @@ function NavLinkLabel({ label }: { label: string }) {
 }
 
 const Header = () => {
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [renderedMenu, setRenderedMenu] = useState<string | null>(null);
+  const [clipOpen, setClipOpen] = useState(false);
+  const [enterKey, setEnterKey] = useState(0);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const switchingToRef = useRef<string | null>(null);
+  const activeMenuRef = useRef<string | null>(null);
+  const renderedMenuRef = useRef<string | null>(null);
+
+  activeMenuRef.current = activeMenu;
+  renderedMenuRef.current = renderedMenu;
+
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const revealClip = useCallback(() => {
+    setEnterKey((key) => key + 1);
+    setClipOpen(false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setClipOpen(true));
+    });
+  }, []);
+
+  const openMenu = useCallback(
+    (label: string) => {
+      clearCloseTimer();
+      if (!MEGA_MENUS[label]) return;
+
+      setActiveMenu(label);
+
+      if (renderedMenuRef.current === label && !switchingToRef.current) {
+        return;
+      }
+
+      if (renderedMenuRef.current && renderedMenuRef.current !== label) {
+        switchingToRef.current = label;
+        setClipOpen(false);
+        return;
+      }
+
+      switchingToRef.current = null;
+      setRenderedMenu(label);
+      revealClip();
+    },
+    [clearCloseTimer, revealClip],
+  );
+
+  const closeMenu = useCallback(() => {
+    switchingToRef.current = null;
+    setActiveMenu(null);
+    setClipOpen(false);
+  }, []);
+
+  const scheduleClose = useCallback(() => {
+    clearCloseTimer();
+    closeTimerRef.current = setTimeout(closeMenu, HOVER_CLOSE_DELAY);
+  }, [clearCloseTimer, closeMenu]);
+
+  const handleClipClosed = useCallback(() => {
+    const nextMenu = switchingToRef.current;
+
+    if (nextMenu) {
+      switchingToRef.current = null;
+      setRenderedMenu(nextMenu);
+      revealClip();
+      return;
+    }
+
+    if (!activeMenuRef.current) {
+      setRenderedMenu(null);
+    }
+  }, [revealClip]);
+
+  const renderedConfig = renderedMenu ? MEGA_MENUS[renderedMenu] : null;
+
   return (
-    <nav className="w-full bg-[#121C49] text-white border-b border-[#FFFFFF1A]">
+    <nav className="relative w-full border-b border-[#FFFFFF1A] bg-[#121C49] text-white">
+      <div onMouseLeave={scheduleClose}>
       <Container>
         <div className="relative flex items-center justify-between py-4">
           <Link href="/" className="relative z-10 shrink-0">
@@ -74,28 +132,45 @@ const Header = () => {
             />
           </Link>
 
-          <div className="pointer-events-none  absolute inset-0 hidden items-center justify-center lg:flex">
-            <div className="relative h-full flex items-center">
+          <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
+            <div className="relative flex h-full items-center">
               <ul className="pointer-events-auto flex items-center gap-6 xl:gap-8">
-                {navItems.map(({ label, href, hasDropdown }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="group flex items-center gap-1 font-heading text-xs font-regular tracking-[0.12em] text-white/95 transition-colors hover:text-white"
-                    >
-                      <NavLinkLabel label={label} />
-                      {hasDropdown && (
+                {navItems.map(({ label, href, hasDropdown }) => {
+                  const isActive = activeMenu === label;
 
-                        <RiArrowDownSLine
-                          className="size-4 opacity-80 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:rotate-180"
-                          aria-hidden
-                        />
-                      )}
-                    </Link>
-                  </li>
-                ))}
+                  return (
+                    <li
+                      key={label}
+                      onMouseEnter={() => {
+                        if (hasDropdown) openMenu(label);
+                        else {
+                          clearCloseTimer();
+                          closeMenu();
+                        }
+                      }}
+                    >
+                      <Link
+                        href={href}
+                        className={`group flex items-center gap-1 font-heading text-xs font-regular tracking-[0.12em] transition-colors ${
+                          isActive ? "text-white" : "text-white/80 hover:text-white"
+                        }`}
+                        aria-expanded={hasDropdown ? isActive : undefined}
+                        aria-haspopup={hasDropdown ? "true" : undefined}
+                      >
+                        <NavLinkLabel label={label} />
+                        {hasDropdown ? (
+                          <RiArrowDownSLine
+                            className={`size-4 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+                              isActive ? "rotate-180 opacity-100" : "opacity-80 group-hover:rotate-180"
+                            }`}
+                            aria-hidden
+                          />
+                        ) : null}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
-             
             </div>
           </div>
 
@@ -112,6 +187,17 @@ const Header = () => {
           </div>
         </div>
       </Container>
+
+      {renderedConfig ? (
+        <MegaMenu
+          open={clipOpen}
+          enterKey={enterKey}
+          config={renderedConfig}
+          onMouseEnter={clearCloseTimer}
+          onClipClosed={handleClipClosed}
+        />
+      ) : null}
+      </div>
     </nav>
   );
 };
