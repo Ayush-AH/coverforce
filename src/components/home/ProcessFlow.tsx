@@ -10,6 +10,7 @@ import {
     RiFileTextFill,
     RiHashtag,
     RiLineChartLine,
+    RiLoader2Fill,
     RiSparkling2Fill,
 } from "@remixicon/react";
 import { useGSAP } from "@gsap/react";
@@ -194,16 +195,21 @@ function PanelStep2() {
                                     <span className="border-r border-[#D1D5DB] bg-white px-2.5 py-1 text-[#6B7280]">Yes</span>
                                     <span className="f2-toggle-no bg-[#E5E7EB] px-2.5 py-1 text-[#111827]">No</span>
                                 </div>
-                                <span className="f2-check-np flex size-2.5 shrink-0 items-center justify-center rounded-full border border-[#D1D5DB] bg-white">
-                                    <RiCheckLine className="f2-icon-np size-1.5 text-[#111827]" />
+                                <span className="relative grid size-2.5 shrink-0 place-items-center [&>*]:col-start-1 [&>*]:row-start-1">
+                                    <span className="f2-loader-np flex size-3.5 items-center justify-center opacity-0">
+                                        <RiLoader2Fill className="block size-3.5 shrink-0 animate-spin text-[#9CA3AF] [animation-duration:0.85s]" />
+                                    </span>
+                                    <span className="f2-check-np flex size-2.5 items-center justify-center rounded-full border border-[#D1D5DB] bg-white opacity-0">
+                                        <RiCheckLine className="f2-icon-np size-1.5 text-white opacity-0" />
+                                    </span>
                                 </span>
                             </div>
                         </div>
                         <div className="divide-y divide-neutral-100 px-4">
                             {[
-                                { label: "FEIN", icon: null, cls: "f2-inp-fein", chk: "f2-check-fein", ico: "f2-icon-fein", val: "13-1324567" },
-                                { label: "Business Entity Type", icon: <RiArrowDownSLine className="ml-auto size-3 shrink-0 text-[#6B7280]" />, cls: "f2-inp-ent", chk: "f2-check-ent", ico: "f2-icon-ent", val: "General Partnership" },
-                                { label: "Start Year", icon: <RiCalendarLine className="ml-auto size-3 shrink-0 text-[#6B7280]" />, cls: "f2-inp-yr", chk: "f2-check-yr", ico: "f2-icon-yr", val: "2023" },
+                                { label: "FEIN", icon: null, cls: "f2-inp-fein", loader: "f2-loader-fein", chk: "f2-check-fein", ico: "f2-icon-fein", val: "13-1324567" },
+                                { label: "Business Entity Type", icon: <RiArrowDownSLine className="ml-auto size-3 shrink-0 text-[#6B7280]" />, cls: "f2-inp-ent", loader: "f2-loader-ent", chk: "f2-check-ent", ico: "f2-icon-ent", val: "General Partnership" },
+                                { label: "Start Year", icon: <RiCalendarLine className="ml-auto size-3 shrink-0 text-[#6B7280]" />, cls: "f2-inp-yr", loader: "f2-loader-yr", chk: "f2-check-yr", ico: "f2-icon-yr", val: "2023" },
                             ].map(row => (
                                 <div key={row.label} className="flex items-center justify-between gap-2 py-3">
                                     <span className="font-heading text-[0.60rem] font-medium text-[#3C3B3B]">{row.label} <span className="text-[#EF4444]">*</span></span>
@@ -212,8 +218,13 @@ function PanelStep2() {
                                             <span className="min-w-0 flex-1 truncate">{row.val}</span>
                                             {row.icon}
                                         </span>
-                                        <span className={`${row.chk} flex size-2.5 shrink-0 items-center justify-center rounded-full border border-[#D1D5DB] bg-white`}>
-                                            <RiCheckLine className={`${row.ico} size-1.5 text-[#111827]`} />
+                                        <span className="relative grid size-2.5 shrink-0 place-items-center [&>*]:col-start-1 [&>*]:row-start-1">
+                                            <span className={`${row.loader} flex size-3.5 items-center justify-center opacity-0`}>
+                                                <RiLoader2Fill className="block size-3.5 shrink-0 animate-spin text-[#9CA3AF] [animation-duration:0.85s]" />
+                                            </span>
+                                            <span className={`${row.chk} flex size-2.5 items-center justify-center rounded-full border border-[#D1D5DB] bg-white opacity-0`}>
+                                                <RiCheckLine className={`${row.ico} size-1.5 text-white opacity-0`} />
+                                            </span>
                                         </span>
                                     </div>
                                 </div>
@@ -476,9 +487,10 @@ const ProcessFlow = () => {
             gsap.set(".skeleton2", { opacity: 1 });
             gsap.set(".f2-toggle-no", { backgroundColor: FIELD_IDLE_TOGGLE, color: "#111827" });
             gsap.set(".f2-check-np, .f2-check-fein, .f2-check-ent, .f2-check-yr",
-                { backgroundColor: "#fff", borderColor: FIELD_IDLE_BORDER });
+                { opacity: 0, scale: 0.85, backgroundColor: "#fff", borderColor: FIELD_IDLE_BORDER, borderRadius: "9999px" });
+            gsap.set(".f2-loader-np, .f2-loader-fein, .f2-loader-ent, .f2-loader-yr", { opacity: 0 });
             gsap.set(".f2-icon-np, .f2-icon-fein, .f2-icon-ent, .f2-icon-yr",
-                { color: "#111827" });
+                { opacity: 0, color: "#fff" });
             gsap.set(".f2-inp-fein, .f2-inp-ent, .f2-inp-yr",
                 { borderColor: FIELD_IDLE_BORDER });
 
@@ -689,17 +701,55 @@ const ProcessFlow = () => {
             hi(2, 3, s2_t);
             const s2_valid = s2_t + T(2);
 
-            const vld = (t: number, inputs: string[], checks: string[], icons: string[]) => {
-                inputs.forEach(sel => tl.to(sel, { borderColor: FIELD_VALID, duration: VALID_DUR * 1.3, ease: EASE_SOFT }, t));
-                checks.forEach(sel => tl.to(sel, { backgroundColor: FIELD_VALID, borderColor: FIELD_VALID, duration: VALID_DUR * 1.3, ease: EASE_SOFT }, t));
-                icons.forEach(sel => tl.to(sel, { color: "#fff", duration: VALID_DUR, ease: EASE_SOFT }, t + T(0.4)));
-            };
+            const F2_VALID_FIELDS = [
+                { loader: ".f2-loader-np", check: ".f2-check-np", icon: ".f2-icon-np" },
+                { loader: ".f2-loader-fein", check: ".f2-check-fein", icon: ".f2-icon-fein", input: ".f2-inp-fein" },
+                { loader: ".f2-loader-ent", check: ".f2-check-ent", icon: ".f2-icon-ent", input: ".f2-inp-ent" },
+                { loader: ".f2-loader-yr", check: ".f2-check-yr", icon: ".f2-icon-yr", input: ".f2-inp-yr" },
+            ] as const;
+
+            const LOADER_STAG = T(0.65);
+            const LOADER_SPIN = T(2.8);
+            const LOADER_FADE = FADE_DUR * 0.55;
+
             tl.to(".f2-toggle-no", { backgroundColor: FIELD_VALID, color: "#fff", duration: VALID_DUR * 1.5, ease: EASE_SOFT }, s2_valid);
-            vld(s2_valid + VALID_STAG, [], [".f2-check-np"], [".f2-icon-np"]);
-            vld(s2_valid + VALID_STAG * 2, [".f2-inp-fein"], [".f2-check-fein"], [".f2-icon-fein"]);
-            vld(s2_valid + VALID_STAG * 3, [".f2-inp-ent"], [".f2-check-ent"], [".f2-icon-ent"]);
-            vld(s2_valid + VALID_STAG * 4, [".f2-inp-yr"], [".f2-check-yr"], [".f2-icon-yr"]);
-            s2_t = afterPoint(s2_t, pointText(2, 3), s2_valid + VALID_STAG * 4 + VALID_DUR * 1.5 + T(2));
+
+            const s2_loaderIn = s2_valid + T(0.4);
+            F2_VALID_FIELDS.forEach((field, i) => {
+                const t = s2_loaderIn + i * LOADER_STAG;
+                tl.to(field.loader, { opacity: 1, duration: LOADER_FADE, ease: EASE_ENTER }, t);
+                tl.set(field.check, { opacity: 0, scale: 0.85 }, t);
+            });
+
+            const s2_loaderOut =
+                s2_loaderIn + (F2_VALID_FIELDS.length - 1) * LOADER_STAG + LOADER_SPIN;
+            F2_VALID_FIELDS.forEach((field, i) => {
+                const t = s2_loaderOut + i * LOADER_STAG * 0.5;
+                tl.to(field.loader, { opacity: 0, duration: LOADER_FADE * 0.8, ease: EASE_EXIT }, t);
+            });
+
+            const s2_successIn =
+                s2_loaderOut + (F2_VALID_FIELDS.length - 1) * LOADER_STAG * 0.5 + LOADER_FADE * 0.8 + T(0.5);
+            F2_VALID_FIELDS.forEach((field, i) => {
+                const t = s2_successIn + i * VALID_STAG;
+                if ("input" in field && field.input) {
+                    tl.to(field.input, { borderColor: FIELD_VALID, duration: VALID_DUR * 1.3, ease: EASE_SOFT }, t);
+                }
+                tl.to(field.check, {
+                    opacity: 1,
+                    scale: 1,
+                    backgroundColor: FIELD_VALID,
+                    borderColor: FIELD_VALID,
+                    borderRadius: "9999px",
+                    duration: VALID_DUR * 1.3,
+                    ease: EASE_SOFT,
+                }, t);
+                tl.to(field.icon, { opacity: 1, duration: VALID_DUR, ease: EASE_SOFT }, t + T(0.4));
+            });
+
+            const s2_validEnd =
+                s2_successIn + (F2_VALID_FIELDS.length - 1) * VALID_STAG + VALID_DUR * 1.5 + T(2);
+            s2_t = afterPoint(s2_t, pointText(2, 3), s2_validEnd);
 
             const s2_outro = s2_t + T(2);
             const s3_scroll = s2_outro + T(5);
