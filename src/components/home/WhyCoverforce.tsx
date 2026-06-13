@@ -57,7 +57,6 @@ const WhyCoverforce = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const animatingRef = useRef(false);
@@ -88,15 +87,13 @@ const WhyCoverforce = () => {
 
   useGSAP(() => {
     const container = containerRef.current;
-    const overlay = overlayRef.current;
     const section = sectionRef.current;
-    if (!container || !overlay || !section) return;
+    if (!container || !section) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
 
     gsap.set(container, { y: "0%", scale: 1, force3D: true, transformOrigin: "50% 50%" });
-    gsap.set(overlay, { opacity: 0 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -108,7 +105,7 @@ const WhyCoverforce = () => {
       },
     });
 
-    tl.to(container, { y: "100%", scale: 0.8, force3D: true }, 0).to(overlay, { opacity: 0.8 }, 0);
+    tl.to(container, { y: "100%", scale: 0.8, force3D: true }, 0);
 
     const lenis = window.lenis;
     const onLenisScroll = () => ScrollTrigger.update();
@@ -182,8 +179,6 @@ const WhyCoverforce = () => {
           transform: translateY(0);
         }
       `}</style>
-      <div ref={overlayRef} className="z-11 opacity-0 pointer-events-none bg-[#080808] absolute inset-0">
-      </div>  
       <div ref={containerRef} className="relative overflow-hidden z-10 translate-y-0">
         <Container borderColor="#53535380">
           <div className="pb-16 md:pb-20 lg:pb-24">
