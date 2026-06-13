@@ -232,7 +232,7 @@ const WayCard = memo(function WayCard({
         className={`way-card-shell relative cursor-pointer [content-visibility:auto] [contain-intrinsic-size:auto_530px] ${wide ? "aspect-[1179/530]" : "aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
       >
         <div
-          className={`way-card-body absolute inset-0 overflow-hidden rounded-sm flex flex-col p-5 md:p-8 ${background ? CARD_BACKGROUNDS[background] : ""}`}
+          className={`way-card-body absolute inset-0 overflow-hidden flex flex-col p-5 md:p-8 ${background ? CARD_BACKGROUNDS[background] : ""}`}
         >
           {dotGrid ? <WayCardDotGrid variant={variant} active={hovered} /> : null}
           {backgroundScene && inView ? (

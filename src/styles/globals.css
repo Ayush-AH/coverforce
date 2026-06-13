@@ -142,7 +142,7 @@ button {
 
 .way-card-shell {
   isolation: isolate;
-  clip-path: inset(4px 4.798048790430439px 4px 4.798048790430439px round calc(6px - 1px));
+  clip-path: inset(4px 4.798048790430439px 4px 4.798048790430439px);
   transition: clip-path 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -196,7 +196,7 @@ button {
   @media (hover: hover) {
     .way-card-shell:hover {
       z-index: 10;
-      clip-path: inset(0 round calc(6px - 1px));
+      clip-path: inset(0);
     }
 
     .way-card-shell:hover .way-card-body {
