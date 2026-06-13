@@ -22,21 +22,30 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const POINT_ACTIVE = "#0130BE";
 const POINT_IDLE = "#CCCCCC";
-const FIELD_VALID = "#1c4439";
+const FIELD_VALID = "#6DAB4E";
 
 function ProcessPointText({ text }: { text: string }) {
+    const words = text.split(" ");
+
     return (
         <p className="point-text max-w-sm text-sm leading-relaxed font-heading font-regular md:text-sm">
-            {text.split("").map((char, i) => (
-                <span key={`${char}-${i}`} className="point-char inline-block text-[#CCCCCC]">
-                    {char === " " ? "\u00A0" : char}
+            {words.map((word, wordIndex) => (
+                <span key={wordIndex} className="inline-block whitespace-nowrap">
+                    {word.split("").map((char, charIndex) => (
+                        <span key={charIndex} className="point-char inline-block text-[#CCCCCC]">
+                            {char}
+                        </span>
+                    ))}
+                    {wordIndex < words.length - 1 ? (
+                        <span className="point-char inline-block text-[#CCCCCC]">&nbsp;</span>
+                    ) : null}
                 </span>
             ))}
         </p>
     );
 }
 const FIELD_IDLE_BORDER = "#D1D5DB";
-const FIELD_IDLE_TOGGLE = "#1c4439";
+const FIELD_IDLE_TOGGLE = "#E5E7EB";
 
 // ─── Step panel components ────────────────────────────────────────────────────
 
@@ -173,7 +182,7 @@ function PanelStep2() {
                 <div className="relative grid w-xs shrink-0 grid-cols-1 [&>*]:col-start-1 [&>*]:row-start-1">
                     <div className="w-full rounded-2xl border border-[#CCCCCC] bg-white">
                         <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
-                            <span className="font-heading text-xs font-medium text-[#1c4439]">CARRIER APPLICATION (PRE-FILLED)</span>
+                            <span className="font-heading text-xs font-medium text-[#6DAB4E]">CARRIER APPLICATION (PRE-FILLED)</span>
                         </div>
                         <div className="px-3 py-6">
                             <p className="font-sans text-[0.40rem] uppercase tracking-wider text-[#9CA3AF]">Business Details</p>
