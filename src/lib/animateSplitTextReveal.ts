@@ -39,6 +39,139 @@ export type SplitTextRevealOptions = {
     wordsClass?: string;
 };
 
+export type SplitTextWaveTimelineOptions = {
+    theme?: SplitTextColorTheme;
+    colors?: { idle: string; active: string; done: string };
+    duration?: number;
+    delay?: number;
+    charsClass?: string;
+    wordsClass?: string;
+};
+
+function applyWaveToChars(
+    chars: HTMLSpanElement[],
+    progress: number,
+    colors: { idle: string; active: string; done: string },
+) {
+    const waveSpan = chars.length + WAVE_TOTAL + WAVE_SETTLE;
+    const head = smootherstep(progress) * waveSpan;
+
+    chars.forEach((char, index) => {
+        char.style.color = waveColor(head - index, colors);
+    });
+}
+
+export function animateSplitTextWaveTimeline(
+    root: HTMLElement,
+    options: SplitTextWaveTimelineOptions = {},
+): () => void {
+    const {
+        theme = "light",
+        colors = COLOR_THEMES[theme],
+        duration = 1.85,
+        delay = 0,
+        charsClass = "split-reveal-char",
+        wordsClass = "split-reveal-word",
+    } = options;
+
+    const split = new SplitText(root, { type: "chars", charsClass, wordsClass });
+    const { chars } = split;
+
+    if (!chars.length) {
+        split.revert();
+        return () => {};
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(chars, { color: colors.done, opacity: 1 });
+        return () => split.revert();
+    }
+
+    gsap.set(chars, { color: colors.idle, opacity: 1 });
+
+    const progress = { value: 0 };
+    const tween = gsap.to(progress, {
+        value: 1,
+        duration,
+        delay,
+        ease: "none",
+        onUpdate: () => applyWaveToChars(chars, progress.value, colors),
+        onComplete: () => applyWaveToChars(chars, 1, colors),
+    });
+
+    return () => {
+        tween.kill();
+        split.revert();
+    };
+}
+
+function normalizeSplitLayout(chars: HTMLSpanElement[], words: HTMLSpanElement[]) {
+    chars.forEach((char) => {
+        char.style.display = "inline";
+    });
+    words.forEach((word) => {
+        word.style.display = "inline";
+        word.style.whiteSpace = "normal";
+    });
+}
+
+/** Wave fill per word — keeps spaces between mask wrappers untouched */
+export function animateLoaderWordsWave(
+    line: HTMLElement,
+    options: SplitTextWaveTimelineOptions = {},
+): () => void {
+    const {
+        theme = "light",
+        colors = COLOR_THEMES[theme],
+        duration = 1.85,
+        delay = 0,
+        charsClass = "loader-wave-char",
+        wordsClass = "loader-wave-word",
+    } = options;
+
+    const wordEls = Array.from(
+        line.querySelectorAll<HTMLElement>("[data-loader-word-inner]"),
+    );
+    if (!wordEls.length) return () => {};
+
+    const splits: SplitText[] = [];
+    const chars: HTMLSpanElement[] = [];
+
+    wordEls.forEach((wordEl) => {
+        const split = new SplitText(wordEl, { type: "chars", charsClass, wordsClass });
+        splits.push(split);
+        normalizeSplitLayout(split.chars, split.words);
+        chars.push(...split.chars);
+    });
+
+    if (!chars.length) {
+        splits.forEach((split) => split.revert());
+        return () => {};
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(chars, { color: colors.done, opacity: 1 });
+        return () => splits.forEach((split) => split.revert());
+    }
+
+    gsap.set(chars, { color: colors.idle, opacity: 1 });
+
+    const progress = { value: 0 };
+    const tween = gsap.to(progress, {
+        value: 1,
+        duration,
+        delay,
+        ease: "none",
+        onUpdate: () => applyWaveToChars(chars, progress.value, colors),
+        onComplete: () => applyWaveToChars(chars, 1, colors),
+    });
+
+    return () => {
+        tween.kill();
+        splits.forEach((split) => split.revert());
+    };
+}
+
 function smootherstep(t: number): number {
     const x = Math.max(0, Math.min(1, t));
     return x * x * x * (x * (x * 6 - 15) + 10);

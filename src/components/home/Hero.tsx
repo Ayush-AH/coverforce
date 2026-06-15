@@ -16,6 +16,7 @@ const OpticalFiber = dynamic(() => import("./OpticalFiber"), {
 });
 import {
   HOME_INTRO_EASE,
+  HOME_INTRO_HERO_RISE_MS,
   HOME_INTRO_NAV_MS,
   HOME_INTRO_NETWORK_MS,
   useHomeIntro,
@@ -40,7 +41,10 @@ const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const introComplete = !introEnabled || introPhase === "done";
+  const headingVisible =
+    !introEnabled || introPhase === "text" || introPhase === "network" || introPhase === "done";
   const networkVisible = !introEnabled || introPhase === "network" || introPhase === "done";
+  const heroRiseStartedRef = useRef(false);
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
@@ -55,6 +59,48 @@ const Hero = () => {
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
 
   const statCount = useMemo(() => stats.length, []);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !introEnabled) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(section, { clearProps: "all" });
+      return;
+    }
+
+    gsap.set(section, {
+      y: "100vh",
+      scale: 0.5,
+      opacity: 1,
+      transformOrigin: "center bottom",
+      force3D: true,
+    });
+  }, [introEnabled]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !introEnabled || introPhase !== "hero-rise" || heroRiseStartedRef.current) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(section, { clearProps: "all" });
+      return;
+    }
+
+    heroRiseStartedRef.current = true;
+    gsap.to(section, {
+      y: 0,
+      scale: 1,
+      opacity: 1,
+      duration: HOME_INTRO_HERO_RISE_MS / 1000,
+      ease: "power3.out",
+      onComplete: () => {
+        gsap.set(section, { clearProps: "transform" });
+      },
+    });
+  }, [introEnabled, introPhase]);
 
   useEffect(() => {
     if (!introEnabled) {
@@ -228,7 +274,10 @@ const Hero = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden bg-[#121C49] text-white">
+    <section
+      ref={sectionRef}
+      className="relative isolate overflow-hidden bg-[#121C49] text-white will-change-transform"
+    >
       <div ref={containerRef} className="relative z-10 overflow-hidden will-change-transform">
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="px-0! pb-10">
 
@@ -242,7 +291,7 @@ const Hero = () => {
           >
             <h1
               className={`mt-6 max-w-4xl text-3xl font-heading font-regular leading-[1.1] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl ${
-                introEnabled && (introPhase === "idle" || introPhase === "nav") ? "opacity-0" : "opacity-100"
+                headingVisible ? "opacity-100" : "opacity-0"
               }`}
             >
               <span data-split>AI-Native Insurance</span>

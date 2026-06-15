@@ -1,4 +1,5 @@
 import Hero from "@/components/home/Hero";
+import HomeSectionsAfterIntro from "@/components/home/HomeSectionsAfterIntro";
 import ThreeWays from "@/components/home/ThreeWays";
 import DistributionFlow from "@/components/home/DistributionFlow";
 import ProcessFlow from "@/components/home/ProcessFlow";
@@ -15,6 +16,7 @@ const HomePage = () => {
   return (
     <>
       <Hero />
+      <HomeSectionsAfterIntro>
       <Marquee />
       <ThreeWays />
       <DistributionFlow />
@@ -27,6 +29,7 @@ const HomePage = () => {
       <Review />
       <CarrierResults />
       <Explore />
+      </HomeSectionsAfterIntro>
     </>
   );
 };
