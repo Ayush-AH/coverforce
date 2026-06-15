@@ -89,7 +89,7 @@ const CarrierResults = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
 
-  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef });
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef, theme: "dark" });
 
   return (
     <section ref={sectionRef} className="bg-[#121C49] text-white">
@@ -126,7 +126,7 @@ const CarrierResults = () => {
               <div className="flex flex-col justify-end space-y-5">
                 <h2
                   ref={headingRef}
-                  className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight md:text-4xl lg:text-3xl lg:leading-[1.15]"
+                  className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
                 >
                   <span data-split>Carrier results that</span>
                   <br />

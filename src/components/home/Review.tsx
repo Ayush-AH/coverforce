@@ -123,7 +123,7 @@ const Review = () => {
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
 
-  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef });
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, theme: "dark" });
 
   useEffect(() => {
     const swiper = swiperRef.current;
@@ -148,10 +148,10 @@ const Review = () => {
           >
             <h2
               ref={headingRef}
-              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
               <span data-split>Why Commercial Insurance</span>{" "}
-              <span data-split className="text-white/40">
+              <span data-split>
                 Teams Trust CoverForce for Smarter Workflows
               </span>
             </h2>

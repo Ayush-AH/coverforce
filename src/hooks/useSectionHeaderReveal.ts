@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { RefObject } from "react";
 
-import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
+import { animateSplitTextReveal, type SplitTextColorTheme } from "@/lib/animateSplitTextReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +12,7 @@ type SectionHeaderRevealRefs = {
   headerRef: RefObject<HTMLElement | null>;
   headingRef: RefObject<HTMLElement | null>;
   descRef?: RefObject<HTMLElement | null>;
+  theme?: SplitTextColorTheme;
 };
 
 export function useSectionHeaderReveal({
@@ -19,6 +20,7 @@ export function useSectionHeaderReveal({
   headerRef,
   headingRef,
   descRef,
+  theme = "light",
 }: SectionHeaderRevealRefs) {
   useGSAP(
     () => {
@@ -30,7 +32,7 @@ export function useSectionHeaderReveal({
       const cleanups: (() => void)[] = [];
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      cleanups.push(animateSplitTextReveal(heading, { trigger: header }));
+      cleanups.push(animateSplitTextReveal(heading, { trigger: header, theme }));
 
       if (desc) {
         if (reducedMotion) {

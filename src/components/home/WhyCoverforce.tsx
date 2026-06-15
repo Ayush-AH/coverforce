@@ -93,23 +93,51 @@ const WhyCoverforce = () => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
 
-    gsap.set(container, { y: "0%", scale: 1, force3D: true, transformOrigin: "50% 50%" });
+    const getShift = () => container.offsetHeight;
+
+    gsap.set(container, {
+      y: 0,
+      scale: 1,
+      force3D: true,
+      transformOrigin: "50% 50%",
+      backfaceVisibility: "hidden",
+    });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: "bottom bottom",
         end: "bottom -180%",
-        scrub: 0.05,
+        scrub: 0.35,
         invalidateOnRefresh: true,
+        fastScrollEnd: true,
       },
     });
 
-    tl.to(container, { y: "100%", scale: 0.8, force3D: true }, 0);
+    tl.to(
+      container,
+      {
+        y: getShift,
+        scale: 0.8,
+        ease: "none",
+        force3D: true,
+      },
+      0,
+    );
 
     const lenis = window.lenis;
-    const onLenisScroll = () => ScrollTrigger.update();
+    let scrollPending = false;
+    const onLenisScroll = () => {
+      if (scrollPending) return;
+      scrollPending = true;
+      requestAnimationFrame(() => {
+        ScrollTrigger.update();
+        scrollPending = false;
+      });
+    };
     lenis?.on("scroll", onLenisScroll);
+
+    ScrollTrigger.refresh();
 
     return () => {
       lenis?.off("scroll", onLenisScroll);
@@ -179,7 +207,7 @@ const WhyCoverforce = () => {
           transform: translateY(0);
         }
       `}</style>
-      <div ref={containerRef} className="relative overflow-hidden z-10 translate-y-0">
+      <div ref={containerRef} className="relative z-10 overflow-hidden will-change-transform">
         <Container borderColor="#53535380">
           <div className="pb-16 md:pb-20 lg:pb-24">
             {/* ── Header (unchanged) ── */}
@@ -190,7 +218,7 @@ const WhyCoverforce = () => {
               <div className="flex flex-col justify-end space-y-5">
                 <h2
                   ref={headingRef}
-                  className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#424242] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                  className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
                 >
                   <span data-split>Infrastructure to Run Your Distribution Not a Tool to Quote One Risk.</span>
                 </h2>

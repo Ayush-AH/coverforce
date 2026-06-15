@@ -5,16 +5,62 @@ import { SplitText } from "@/lib/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const DEFAULT_CHAR_DELAY = 0.038;
+const WAVE_TOTAL = 14;
+const WAVE_SETTLE = 4.5;
+const WAVE_PEAK = 4.2;
+const WAVE_SPREAD = 4.6;
+
+export type SplitTextColorTheme = "light" | "dark";
+
+const COLOR_THEMES: Record<
+    SplitTextColorTheme,
+    { idle: string; active: string; done: string }
+> = {
+    light: {
+        idle: "#BCC5D6",
+        active: "#0032C9",
+        done: "#000000",
+    },
+    dark: {
+        idle: "#9AA8BC",
+        active: "#E8EEF6",
+        done: "#FFFFFF",
+    },
+};
 
 export type SplitTextRevealOptions = {
     trigger?: HTMLElement;
     start?: string;
-    charDelay?: number;
+    end?: string;
+    theme?: SplitTextColorTheme;
+    colors?: { idle: string; active: string; done: string };
     splitSelf?: boolean;
     charsClass?: string;
     wordsClass?: string;
 };
+
+function smootherstep(t: number): number {
+    const x = Math.max(0, Math.min(1, t));
+    return x * x * x * (x * (x * 6 - 15) + 10);
+}
+
+function waveColor(
+    dist: number,
+    colors: { idle: string; active: string; done: string },
+): string {
+    if (dist <= 0) return colors.idle;
+
+    const waveEnd = WAVE_TOTAL + WAVE_SETTLE;
+    if (dist >= waveEnd) return colors.done;
+
+    const bell = Math.exp(-0.5 * Math.pow((dist - WAVE_PEAK) / WAVE_SPREAD, 2));
+    const lit = gsap.utils.interpolate(colors.idle, colors.active, bell) as string;
+
+    const doneMix = smootherstep(Math.max(0, (dist - WAVE_TOTAL) / WAVE_SETTLE));
+    if (doneMix <= 0) return lit;
+
+    return gsap.utils.interpolate(lit, colors.done, doneMix) as string;
+}
 
 export function animateSplitTextReveal(
     root: HTMLElement,
@@ -22,8 +68,10 @@ export function animateSplitTextReveal(
 ): () => void {
     const {
         trigger = root,
-        start = "top 88%",
-        charDelay = DEFAULT_CHAR_DELAY,
+        start = "top bottom",
+        end = "top 40%",
+        theme = "light",
+        colors = COLOR_THEMES[theme],
         splitSelf = false,
         charsClass = "split-reveal-char",
         wordsClass = "split-reveal-word",
@@ -47,24 +95,51 @@ export function animateSplitTextReveal(
     if (!chars.length) return () => {};
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(chars, { opacity: 1 });
+        gsap.set(chars, { color: colors.done, opacity: 1 });
         return () => splits.forEach((split) => split.revert());
     }
 
-    gsap.set(chars, { opacity: 0 });
+    gsap.set(chars, { color: colors.idle, opacity: 1 });
 
-    const tl = gsap.timeline({
-        scrollTrigger: {
-            trigger,
-            start,
-            toggleActions: "play none none none",
-            once: true,
+    const waveSpan = chars.length + WAVE_TOTAL + WAVE_SETTLE;
+
+    const updateWave = (progress: number) => {
+        const head = progress * waveSpan;
+
+        chars.forEach((char, index) => {
+            char.style.color = waveColor(head - index, colors);
+        });
+    };
+
+    let maxProgress = 0;
+    let completed = false;
+
+    const finish = () => {
+        if (completed) return;
+        completed = true;
+        updateWave(1);
+        st.kill();
+    };
+
+    const st = ScrollTrigger.create({
+        trigger,
+        start,
+        end,
+        onUpdate: (self) => {
+            if (completed) return;
+
+            maxProgress = Math.max(maxProgress, self.progress);
+            updateWave(smootherstep(maxProgress));
+
+            if (maxProgress >= 1) finish();
         },
     });
 
-    chars.forEach((char, index) => {
-        tl.to(char, { opacity: 1, duration: 0.01, ease: "none" }, index * charDelay);
-    });
+    if (st.progress >= 1) {
+        finish();
+    } else {
+        updateWave(smootherstep(maxProgress));
+    }
 
     const lenis = window.lenis;
     const onLenisScroll = () => ScrollTrigger.update();
@@ -72,8 +147,7 @@ export function animateSplitTextReveal(
 
     return () => {
         lenis?.off("scroll", onLenisScroll);
-        tl.scrollTrigger?.kill();
-        tl.kill();
+        st.kill();
         splits.forEach((split) => split.revert());
     };
 }

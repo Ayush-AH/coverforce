@@ -14,7 +14,7 @@ const DataAdvantage = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
 
-  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef });
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef, theme: "dark" });
 
   return (
     <section ref={sectionRef} className="z-20 bg-[#121C49] text-white">
@@ -27,7 +27,7 @@ const DataAdvantage = () => {
             <div className="flex-col items-start justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Intelligence Built on Data</span>
                 <br />
