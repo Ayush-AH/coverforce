@@ -18,7 +18,8 @@ import { WAY_CARD_MODALS } from "@/data/wayCardModals";
 type CardBackground = "accent" | "light" | "developer";
 
 const CARD_BACKGROUNDS: Record<CardBackground, string> = {
-  accent: "bg-[linear-gradient(135deg,#2C33BB_0%,#6B5FD4_45%,#9F7CFF_100%)]",
+  accent:
+    "bg-[linear-gradient(135deg,#4541CD_0%,#352D93_38%,#121C49_100%)]",
   light: "bg-[linear-gradient(135deg,#DADEF5_0%,#F8F0FC_55%,#FFFFFF_100%)]",
   developer: "bg-[linear-gradient(135deg,#8A80DD_0%,#ACA8D7_50%,#8A80DD_100%)]",
 };
