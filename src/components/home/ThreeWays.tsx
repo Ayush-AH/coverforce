@@ -44,10 +44,20 @@ const GlobeScene = dynamic(() => import("@/components/home/GlobeScene"), {
   ssr: false,
   loading: () => null,
 });
-const GlobeDemo = dynamic(() => import("@/components/globe-demo"), {
-  ssr: false,
-  loading: () => null,
-});
+
+function BrokersGlobeVideo() {
+  return (
+    <video
+      className="h-full w-full object-cover"
+      src="/videos/globevideo.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      aria-hidden
+    />
+  );
+}
 
 function MockPlaceholder({ className = "max-w-[290px]" }: { className?: string }) {
   return (
@@ -117,7 +127,7 @@ const WAY_CARDS: WayCardConfig[] = [
     tagline: "One workflow for every producer",
     variant: "light",
     background: "light",
-    backgroundScene: <GlobeDemo embedded className="translate-y-16 scale-[0.92] origin-center" />,
+    backgroundScene: <BrokersGlobeVideo />,
     mock: <BrokerMockWithCardHover />,
     modalPreview: <BrokerMock />,
   },
