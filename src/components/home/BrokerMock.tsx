@@ -1,26 +1,52 @@
 "use client";
 
 import MockWithCardHover from "@/components/common/MockWithCardHover";
-import { MICRO_EASE, MICRO_TAB_COLOR_MS } from "@/lib/motion";
+import { PeriodicIncrementalStat } from "@/components/common/AnimatedPercent";
+import { MICRO_EASE, MICRO_TAB_COLOR_MS, MICRO_WORKFLOW_MS } from "@/lib/motion";
 import { RiUserFill } from "@remixicon/react";
+import { useEffect, useState } from "react";
 
+const ROTATE_MS = 8000;
 const CHART_MAX = 85;
 
 const CHART_BARS_REST = [15, 25, 35, 45, 55, 65, 75, CHART_MAX] as const;
 const CHART_BARS_HOVER = [12, 28, 32, 48, 52, 68, 72, 80] as const;
 
 const HEIGHT_TRANSITION = `height ${MICRO_TAB_COLOR_MS}ms ${MICRO_EASE}`;
+const WORKFLOW_WIDTH_TRANSITION = `width ${MICRO_WORKFLOW_MS}ms ${MICRO_EASE}`;
 
-const WORKFLOW_REST = 62;
+const WORKFLOW_START = 62;
+const WORKFLOW_MAX = 68;
 const WORKFLOW_HOVER = 68;
 
 type BrokerMockProps = {
   cardHovered?: boolean;
 };
 
+function useWorkflowPercent(cardHovered: boolean) {
+  const [percent, setPercent] = useState(WORKFLOW_START);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    const id = window.setInterval(() => {
+      setPercent((current) => {
+        const next = current + 1;
+        return next > WORKFLOW_MAX ? WORKFLOW_START : next;
+      });
+    }, ROTATE_MS);
+
+    return () => window.clearInterval(id);
+  }, []);
+
+  return cardHovered ? WORKFLOW_HOVER : percent;
+}
+
 export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
   const chartHeights = cardHovered ? CHART_BARS_HOVER : CHART_BARS_REST;
-  const workflowPercent = cardHovered ? WORKFLOW_HOVER : WORKFLOW_REST;
+  const workflowPercent = useWorkflowPercent(cardHovered);
+  const statClassName = "text-lg font-sans font-medium leading-none text-[#494646]";
 
   return (
     <div
@@ -34,11 +60,16 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
               Quotes Returned Today
             </p>
             <div className="mt-1 flex flex-wrap items-baseline gap-x-1 text-[#0a143b]">
-              <span className="text-lg font-sans font-medium leading-none text-[#494646]">40+</span>
-              <span className="text-lg font-sans font-medium leading-none text-[#494646]">
-                {" "}
-                carriers
-              </span>
+              <PeriodicIncrementalStat
+                start={40}
+                step={1}
+                max={47}
+                intervalMs={ROTATE_MS}
+                suffix="+"
+                suffixClassName={statClassName}
+                className={statClassName}
+              />
+              <span className={statClassName}>carriers</span>
             </div>
           </div>
 
@@ -113,7 +144,10 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
           </div>
 
           <div className="px-4 pt-3 pb-4">
-            <span className="text-2xl font-sans font-medium leading-none text-[#494646]">
+            <span
+              className="text-2xl font-sans font-medium leading-none text-[#494646] tabular-nums"
+              style={{ transition: WORKFLOW_WIDTH_TRANSITION }}
+            >
               {workflowPercent}%
             </span>
             <div className="flex items-start gap-10 pt-3">
@@ -144,7 +178,7 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
                     style={{
                       width: `${workflowPercent}%`,
                       background: "linear-gradient(90deg, #5B35E0 0%, #A78BFA 100%)",
-                      transition: `width ${MICRO_TAB_COLOR_MS}ms ${MICRO_EASE}`,
+                      transition: WORKFLOW_WIDTH_TRANSITION,
                     }}
                   />
                 </div>

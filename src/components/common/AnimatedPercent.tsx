@@ -154,6 +154,102 @@ export function ReplayableAnimatedStat({
   );
 }
 
+function buildDigitColumns(prev: number, next: number): DigitColumn[] {
+  const prevStr = String(prev);
+  const nextStr = String(next);
+  const width = Math.max(prevStr.length, nextStr.length);
+  const paddedPrev = prevStr.padStart(width, "0");
+  const paddedNext = nextStr.padStart(width, "0");
+
+  return paddedNext.split("").map((char, index) => {
+    const prevDigit = Number(paddedPrev[index]);
+    const nextDigit = Number(char);
+    return {
+      sequence: prevDigit === nextDigit ? [nextDigit] : [prevDigit, nextDigit],
+      duration: MICRO_ROLL_MS * 0.75,
+      delay: index > 0 ? MICRO_ROLL_STAGGER_MS : 0,
+    };
+  });
+}
+
+function staticDigitColumns(value: number): DigitColumn[] {
+  return String(value)
+    .split("")
+    .map((char) => ({ sequence: [Number(char)] }));
+}
+
+type PeriodicIncrementalStatProps = {
+  start: number;
+  step?: number;
+  max: number;
+  intervalMs?: number;
+  suffix?: string;
+  suffixClassName?: string;
+  className?: string;
+  enabled?: boolean;
+};
+
+/** Slowly ticks up on an interval with odometer-style digit rolls */
+export function PeriodicIncrementalStat({
+  start,
+  step = 1,
+  max,
+  intervalMs = 8000,
+  suffix = "",
+  suffixClassName = "",
+  className = "",
+  enabled = true,
+}: PeriodicIncrementalStatProps) {
+  const [value, setValue] = useState(start);
+  const [animationKey, setAnimationKey] = useState(0);
+  const prevRef = useRef(start);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    const id = window.setInterval(() => {
+      setValue((current) => {
+        const next = current + step;
+        return next > max ? start : next;
+      });
+      setAnimationKey((key) => key + 1);
+    }, intervalMs);
+
+    return () => window.clearInterval(id);
+  }, [enabled, start, step, max, intervalMs]);
+
+  useEffect(() => {
+    if (animationKey === 0) return;
+
+    const settleMs =
+      MICRO_ROLL_MS * 0.75 + MICRO_ROLL_STAGGER_MS * (String(value).length - 1) + 80;
+    const id = window.setTimeout(() => {
+      prevRef.current = value;
+    }, settleMs);
+
+    return () => window.clearTimeout(id);
+  }, [animationKey, value]);
+
+  const columns =
+    animationKey === 0
+      ? staticDigitColumns(value)
+      : buildDigitColumns(prevRef.current, value);
+
+  return (
+    <ReplayableAnimatedStat
+      animationKey={animationKey}
+      columns={columns}
+      suffix={suffix}
+      suffixClassName={suffixClassName}
+      className={className}
+      ariaLabel={`${value}${suffix}`}
+    />
+  );
+}
+
 function ScrollTriggeredAnimatedStat(
   props: Omit<AnimatedStatProps, "roll">,
 ) {

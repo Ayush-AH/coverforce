@@ -40,6 +40,10 @@ const DeveloperTerminalBg = dynamic(() => import("./DeveloperTerminalBg"), {
   ssr: false,
   loading: () => null,
 });
+const WayCardDotGridScene = dynamic(() => import("./WayCardDotGridScene"), {
+  ssr: false,
+  loading: () => null,
+});
 const GlobeScene = dynamic(() => import("@/components/home/GlobeScene"), {
   ssr: false,
   loading: () => null,
@@ -73,20 +77,15 @@ function MockPlaceholder({ className = "max-w-[290px]" }: { className?: string }
 function WayCardDotGrid({
   variant,
   active,
+  inView,
 }: {
   variant: "dark" | "light";
   active: boolean;
+  inView: boolean;
 }) {
-  return (
-    <div
-      aria-hidden
-      className={[
-        "way-card-dot-grid",
-        variant === "dark" ? "way-card-dot-grid--dark" : "way-card-dot-grid--light",
-        active ? "way-card-dot-grid--active" : "",
-      ].join(" ")}
-    />
-  );
+  if (!inView) return null;
+
+  return <WayCardDotGridScene variant={variant} active={active} />;
 }
 
 // Remove label, lightStrip from WayCardProps
@@ -162,8 +161,8 @@ const WAY_CARDS: WayCardConfig[] = [
     variant: "dark",
     background: "accent",
     dotGrid: true,
-    mock: <WholesalerMock />,
-    modalPreview: <WholesalerMock />,
+    mock: <WholesalerMock liveStats />,
+    modalPreview: <WholesalerMock liveStats />,
   },
 ];
 
@@ -246,7 +245,7 @@ const WayCard = memo(function WayCard({
         <div
           className={`way-card-body absolute inset-0 overflow-hidden flex flex-col p-5 md:p-8 ${background ? CARD_BACKGROUNDS[background] : ""}`}
         >
-          {dotGrid ? <WayCardDotGrid variant={variant} active={hovered} /> : null}
+          {dotGrid ? <WayCardDotGrid variant={variant} active={hovered} inView={inView} /> : null}
           {backgroundScene && inView ? (
             <div
               className={`absolute inset-0 z-[1] overflow-hidden ${backgroundInteractive ? "pointer-events-auto" : "pointer-events-none"}`}
