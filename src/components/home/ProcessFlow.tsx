@@ -16,13 +16,13 @@ import {
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { applyWaveToChars, COLOR_THEMES } from "@/lib/animateSplitTextReveal";
 import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const POINT_ACTIVE = "#0130BE";
-const POINT_IDLE = "#CCCCCC";
 const FIELD_VALID = "#6DAB4E";
 
 function ProcessPointText({ text }: { text: string }) {
@@ -33,12 +33,12 @@ function ProcessPointText({ text }: { text: string }) {
             {words.map((word, wordIndex) => (
                 <span key={wordIndex} className="inline-block whitespace-nowrap">
                     {word.split("").map((char, charIndex) => (
-                        <span key={charIndex} className="point-char inline-block text-[#CCCCCC]">
+                        <span key={charIndex} className="point-char inline-block text-[#BCC5D6]">
                             {char}
                         </span>
                     ))}
                     {wordIndex < words.length - 1 ? (
-                        <span className="point-char inline-block text-[#CCCCCC]">&nbsp;</span>
+                        <span className="point-char inline-block text-[#BCC5D6]">&nbsp;</span>
                     ) : null}
                 </span>
             ))}
@@ -548,38 +548,23 @@ const ProcessFlow = () => {
             const afterPoint = (start: number, text: string, rightEnd: number) =>
                 Math.max(start + pointFillDur(text), rightEnd) + POINT_GAP;
 
-            const idleRgb = gsap.utils.splitColor(POINT_IDLE) as number[];
-            const activeRgb = gsap.utils.splitColor(POINT_ACTIVE) as number[];
-            const letterEase = gsap.parseEase("power2.out");
+            const pointWaveColors = COLOR_THEMES.light;
 
             const hi = (step: number, pt: number, t: number) => {
                 const b = `.step${step} .point${pt}`;
-                const chars = section.querySelectorAll<HTMLElement>(`${b} .point-char`);
+                const chars = Array.from(
+                    section.querySelectorAll<HTMLSpanElement>(`${b} .point-char`),
+                );
                 const icon = section.querySelector<HTMLElement>(`${b} .point-icon`);
                 const totalDur = pointFillDur(pointText(step, pt));
-                const setters = Array.from(chars, (el) => gsap.quickSetter(el, "color"));
                 const prog = { v: 0 };
 
                 tl.to(prog, {
                     v: 1,
                     duration: totalDur,
                     ease: "none",
-                    onUpdate: () => {
-                        const elapsed = prog.v * totalDur;
-                        for (let i = 0; i < setters.length; i++) {
-                            const letterT = gsap.utils.clamp(0, 1, (elapsed - i * CHAR_STAG) / CHAR_DUR);
-                            const blend = letterEase(letterT);
-                            if (blend <= 0) {
-                                setters[i](POINT_IDLE);
-                            } else if (blend >= 1) {
-                                setters[i](POINT_ACTIVE);
-                            } else {
-                                setters[i](
-                                    `rgb(${idleRgb[0] + (activeRgb[0] - idleRgb[0]) * blend},${idleRgb[1] + (activeRgb[1] - idleRgb[1]) * blend},${idleRgb[2] + (activeRgb[2] - idleRgb[2]) * blend})`,
-                                );
-                            }
-                        }
-                    },
+                    onUpdate: () => applyWaveToChars(chars, prog.v, pointWaveColors),
+                    onComplete: () => applyWaveToChars(chars, 1, pointWaveColors),
                 }, t);
 
                 if (icon) {
@@ -589,7 +574,7 @@ const ProcessFlow = () => {
                         borderColor: POINT_ACTIVE,
                         duration: CHAR_DUR * 1.2,
                         ease: "power2.out",
-                    }, t);
+                    }, t + totalDur * 0.72);
                 }
             };
             // ═══════════════════════════════════════════════════════════════

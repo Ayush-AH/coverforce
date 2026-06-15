@@ -12,7 +12,7 @@ const WAVE_SPREAD = 4.6;
 
 export type SplitTextColorTheme = "light" | "dark";
 
-const COLOR_THEMES: Record<
+export const COLOR_THEMES: Record<
     SplitTextColorTheme,
     { idle: string; active: string; done: string }
 > = {
@@ -48,7 +48,7 @@ export type SplitTextWaveTimelineOptions = {
     wordsClass?: string;
 };
 
-function applyWaveToChars(
+export function applyWaveToChars(
     chars: HTMLSpanElement[],
     progress: number,
     colors: { idle: string; active: string; done: string },
