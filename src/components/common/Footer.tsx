@@ -2,6 +2,7 @@
 
 import { useRef, type ReactNode } from "react";
 import Container from "./Container";
+import Button from "./Button";
 import Link from "next/link";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
@@ -182,12 +183,9 @@ const Footer = () => {
 
             {/* Get a demo pill — mirrors "JOIN THE NEWSLETTER" button */}
             <div className="">
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center rounded-full border border-[#5B35E0]/60 px-6 py-3 font-heading text-[11px] font-bold uppercase tracking-[0.14em] text-[#5B35E0] transition-colors duration-300 hover:bg-[#5B35E0]/5 hover:border-[#5B35E0]"
-              >
+              <Button href="/" variant="outline">
                 Get a demo
-              </Link>
+              </Button>
             </div>
           </div>
 

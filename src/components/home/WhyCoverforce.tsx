@@ -194,11 +194,7 @@ const WhyCoverforce = () => {
                 >
                   <span data-split>Infrastructure to Run Your Distribution Not a Tool to Quote One Risk.</span>
                 </h2>
-                <Button
-                  href="/"
-                  variant="primary"
-                  className="!bg-[#0032C9] text-white"
-                >
+                <Button href="/" variant="outline">
                   Start a quote
                 </Button>
               </div>

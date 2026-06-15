@@ -226,7 +226,7 @@ const Header = () => {
             >
               <NavLinkLabel label="Login" />
             </Link>
-            <Button href="/" variant="primary" size="sm">
+            <Button href="/" variant="primary">
               Book a call
             </Button>
           </div>

@@ -28,11 +28,7 @@ const DistributionFlow = () => {
                 <br />
                 <span data-split>commercial insurance workflows</span>
               </h2>
-              <Button
-                href="/"
-                variant="primary"
-                className="!bg-[#0032C9] text-white mt-6"
-              >
+              <Button href="/" variant="outline" className="mt-6">
                 start a quote
               </Button>
             </div>
