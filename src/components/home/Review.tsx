@@ -5,10 +5,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import {
-  RiArrowLeftLine,
-  RiArrowRightLine,
-} from "@remixicon/react";
+import ArrowNavButton from "../common/ArrowNavButton";
 import Container from "../common/Container";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
@@ -160,22 +157,18 @@ const Review = () => {
             </h2>
 
             <div className="flex shrink-0 items-center gap-3">
-              <button
+              <ArrowNavButton
                 ref={prevRef}
-                type="button"
+                direction="prev"
+                tone="dark"
                 aria-label="Previous testimonial"
-                className="review-prev flex size-11 shrink-0 items-center justify-center rounded-full border border-[#FFFFFF29] bg-transparent text-white transition-colors hover:bg-white/10"
-              >
-                <RiArrowLeftLine className="size-5" />
-              </button>
-              <button
+              />
+              <ArrowNavButton
                 ref={nextRef}
-                type="button"
+                direction="next"
+                tone="dark"
                 aria-label="Next testimonial"
-                className="review-next flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-[#0a143b] transition-opacity hover:opacity-90"
-              >
-                <RiArrowRightLine className="size-5" />
-              </button>
+              />
             </div>
           </div>
 

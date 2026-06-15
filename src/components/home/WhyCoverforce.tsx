@@ -4,10 +4,10 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
+import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import Container from "../common/Container";
 import Button from "../common/Button";
-import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+import ArrowNavButton from "../common/ArrowNavButton";
 import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -209,22 +209,18 @@ const WhyCoverforce = () => {
                 </p>
                 <div className="flex w-full flex-wrap items-center justify-end gap-3">
                   <div className="flex items-center gap-3">
-                    <button
-                      type="button"
+                    <ArrowNavButton
+                      direction="prev"
+                      tone="light"
                       aria-label="Previous slide"
                       onClick={prev}
-                      className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[#53535329] bg-transparent text-[#424242] transition-colors hover:bg-[#f5f5f5]"
-                    >
-                      <RiArrowLeftLine className="size-5" />
-                    </button>
-                    <button
-                      type="button"
+                    />
+                    <ArrowNavButton
+                      direction="next"
+                      tone="light"
                       aria-label="Next slide"
                       onClick={next}
-                      className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#0032C9] text-white transition-opacity hover:opacity-90"
-                    >
-                      <RiArrowRightLine className="size-5" />
-                    </button>
+                    />
                   </div>
                 </div>
               </div>

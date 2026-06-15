@@ -113,7 +113,7 @@ const CarrierResults = () => {
             enableMouseInteraction={true}
           /> */}
         </div>
-        <div className="relative py-16 md:py-20 lg:py-24 pointer-events-none">
+        <div className="relative py-16 md:py-20 lg:py-24">
           {/* Wave — 130% width, anchored left top inside container */}
 
 
