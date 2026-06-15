@@ -51,29 +51,30 @@ export default function OpticalFiber({
     const MAX_LEN = 13 * fanReach;
     const halfSpread = Math.PI * fanSpread;
 
-    const WAVE_RADIUS = 4.0;
-    const WAVE_SEGMENTS = 24;
-    const WAVE_AMP = 0.8;
-    const WAVE_SPEED = 1.5;
-    const WAVE_FREQ = 2.0;
-    const AMBIENT_AMP = 0.5;
-    const AMBIENT_SPEED = 0.72;
-    const WANDER_RADIUS = 8.5;
+    const SWIVEL_RADIUS = 6.8;
+    const SWIVEL_STRENGTH = 1.25;
+    const AMBIENT_SWIVEL = 0.38;
+    const AMBIENT_Z_SWIVEL = 0.22;
+    const AMBIENT_SPEED = 0.85;
+    const Z_SWIVEL_STRENGTH = 0.55;
+    const SWIVEL_FOLLOW = 0.34;
+    const SWIVEL_RETURN = 0.13;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const ambientAmp = reducedMotion ? 0 : AMBIENT_AMP;
-    const wanderRadius = reducedMotion ? 0 : WANDER_RADIUS;
+    const swivelStrength = reducedMotion ? 0 : SWIVEL_STRENGTH;
+    const ambientSwivel = reducedMotion ? 0 : AMBIENT_SWIVEL;
+    const ambientZSwivel = reducedMotion ? 0 : AMBIENT_Z_SWIVEL;
+    const zSwivelStrength = reducedMotion ? 0 : Z_SWIVEL_STRENGTH;
 
     const mouse = new THREE.Vector2(0, 0);
     const mouseWorld = new THREE.Vector3();
     const smoothMouse = new THREE.Vector3(0, ORIGIN.y, 0);
     let mouseActive = false;
-    const wanderTarget = new THREE.Vector3();
-    const smoothWander = new THREE.Vector3();
     const mouseLocal = new THREE.Vector3();
+    const prevMouseLocal = new THREE.Vector3();
+    const mouseVel = new THREE.Vector3();
     const raycaster = new THREE.Raycaster();
     const hitPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    const _tmp = new THREE.Vector3();
 
     const updateMouse = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
@@ -114,11 +115,18 @@ export default function OpticalFiber({
 
     const fibers: {
       line: THREE.Line;
-      basePts: THREE.Vector3[];
+      restEnd: THREE.Vector3;
+      restLen: number;
+      restZ: number;
       perpX: number;
       perpY: number;
+      midX: number;
+      midY: number;
+      lengthT: number;
       phase: number;
-      end: THREE.Vector3;
+      smoothOffX: number;
+      smoothOffY: number;
+      smoothOffZ: number;
     }[] = [];
 
     for (let i = 0; i < LINE_COUNT; i++) {
@@ -135,20 +143,17 @@ export default function OpticalFiber({
         zJitter,
       );
 
-      const basePts: THREE.Vector3[] = [];
-      for (let s = 0; s <= WAVE_SEGMENTS; s++) {
-        basePts.push(new THREE.Vector3().lerpVectors(ORIGIN, end, s / WAVE_SEGMENTS));
-      }
-
-      const dir = new THREE.Vector3().subVectors(end, ORIGIN).normalize();
-      const perpX = -dir.y;
-      const perpY = dir.x;
+      const dirX = end.x;
+      const dirY = end.y - ORIGIN.y;
+      const invLen = 1 / Math.hypot(dirX, dirY);
+      const perpX = -dirY * invLen;
+      const perpY = dirX * invLen;
 
       const t = (length - MIN_LEN) / (MAX_LEN - MIN_LEN);
       const opacity = THREE.MathUtils.lerp(0.55, 0.1, t);
       const phase = Math.random() * Math.PI * 2;
 
-      const geo = new THREE.BufferGeometry().setFromPoints(basePts);
+      const geo = new THREE.BufferGeometry().setFromPoints([ORIGIN.clone(), end.clone()]);
       const mat = new THREE.LineBasicMaterial({
         color: 0xffffff,
         transparent: true,
@@ -159,14 +164,28 @@ export default function OpticalFiber({
       const line = new THREE.Line(geo, mat);
       content.add(line);
 
-      fibers.push({ line, basePts, perpX, perpY, phase, end: end.clone() });
+      fibers.push({
+        line,
+        restEnd: end.clone(),
+        restLen: length,
+        restZ: zJitter,
+        perpX,
+        perpY,
+        midX: end.x * 0.5,
+        midY: (ORIGIN.y + end.y) * 0.5,
+        lengthT: t,
+        phase,
+        smoothOffX: 0,
+        smoothOffY: 0,
+        smoothOffZ: 0,
+      });
     }
 
     const dotPositions = new Float32Array(LINE_COUNT * 3);
     const dotColors = new Float32Array(LINE_COUNT * 3);
 
     for (let i = 0; i < LINE_COUNT; i++) {
-      const ep = fibers[i].end;
+      const ep = fibers[i].restEnd;
       const dist = ep.distanceTo(ORIGIN);
       const t = THREE.MathUtils.clamp((dist - MIN_LEN) / (MAX_LEN - MIN_LEN), 0, 1);
 
@@ -264,6 +283,8 @@ export default function OpticalFiber({
     );
     visibilityObserver.observe(container);
 
+    const _end = new THREE.Vector3();
+
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (!visible) return;
@@ -277,51 +298,72 @@ export default function OpticalFiber({
         smoothMouse.lerp(mouseWorld, mouseGap > 5 ? 0.4 : 0.22);
       }
 
-      wanderTarget.set(
-        Math.sin(t * 0.28) * wanderRadius,
-        ORIGIN.y + 2.2 + Math.cos(t * 0.23) * 2.4,
-        0,
-      );
-      smoothWander.lerp(wanderTarget, 0.055);
       mouseLocal.set(smoothMouse.x - fanOffsetX, smoothMouse.y, smoothMouse.z);
+      mouseVel.subVectors(mouseLocal, prevMouseLocal);
+      prevMouseLocal.copy(mouseLocal);
+      const moveBoost = 1 + Math.min(mouseVel.length() * 0.55, 1.35);
 
       for (let i = 0; i < LINE_COUNT; i++) {
-        const { line, basePts, perpX, perpY, phase } = fibers[i];
+        const fiber = fibers[i];
+        const { line, restEnd, restLen, restZ, perpX, perpY, midX, midY, lengthT, phase } = fiber;
         const posAttr = line.geometry.attributes.position as THREE.BufferAttribute;
 
-        for (let s = 0; s <= WAVE_SEGMENTS; s++) {
-          const base = basePts[s];
-          const u = s / WAVE_SEGMENTS;
+        const ambient = ambientSwivel * Math.sin(t * AMBIENT_SPEED + phase);
+        const ambientZ = ambientZSwivel * Math.sin(t * AMBIENT_SPEED * 0.82 + phase * 1.65);
+        let targetOffX = perpX * ambient;
+        let targetOffY = perpY * ambient;
+        let targetOffZ = ambientZ;
 
-          _tmp.set(base.x, base.y, base.z);
-          const mouseDist = _tmp.distanceTo(mouseLocal);
-          const mouseInfluence = mouseActive ? Math.max(0, 1 - mouseDist / WAVE_RADIUS) : 0;
-          const wanderDist = _tmp.distanceTo(smoothWander);
-          const wanderInfluence = Math.max(0, 1 - wanderDist / (WAVE_RADIUS * 1.65));
-
-          const ambientWave =
-            ambientAmp * u * Math.sin(WAVE_FREQ * Math.PI * u * 0.85 - t * AMBIENT_SPEED + phase);
-          const mouseWave =
-            mouseInfluence *
-            WAVE_AMP *
-            u *
-            Math.sin(WAVE_FREQ * Math.PI * u - t * WAVE_SPEED + phase);
-          const wanderWave =
-            wanderInfluence *
-            ambientAmp *
-            1.9 *
-            u *
-            Math.sin(WAVE_FREQ * Math.PI * u * 0.7 - t * AMBIENT_SPEED * 0.85 + phase * 1.2);
-          const wave = ambientWave + mouseWave + wanderWave;
-
-          posAttr.setXYZ(s, base.x + perpX * wave, base.y + perpY * wave, base.z);
+        if (mouseActive && swivelStrength > 0) {
+          const dx = midX - mouseLocal.x;
+          const dy = midY - mouseLocal.y;
+          const dist2 = dx * dx + dy * dy;
+          const dist = Math.sqrt(dist2) || 0.0001;
+          const influence = Math.exp(-dist2 / (SWIVEL_RADIUS * SWIVEL_RADIUS));
+          const lengthBoost = 0.7 + lengthT * 0.85;
+          const push = swivelStrength * influence * lengthBoost * moveBoost;
+          targetOffX += (dx / dist) * push;
+          targetOffY += (dy / dist) * push;
+          if (zSwivelStrength > 0) {
+            const depthPush = zSwivelStrength * influence * lengthBoost * moveBoost;
+            const verticalBias = THREE.MathUtils.clamp((mouseLocal.y - midY) * 0.22, -1, 1);
+            targetOffZ += depthPush * (0.45 + verticalBias * 0.55);
+          }
         }
+
+        const pullMag = Math.hypot(
+          targetOffX - perpX * ambient,
+          targetOffY - perpY * ambient,
+          targetOffZ - ambientZ,
+        );
+        const smoothMag = Math.hypot(fiber.smoothOffX, fiber.smoothOffY, fiber.smoothOffZ);
+        const offsetLerp = pullMag > smoothMag ? SWIVEL_FOLLOW : SWIVEL_RETURN;
+
+        fiber.smoothOffX += (targetOffX - fiber.smoothOffX) * offsetLerp;
+        fiber.smoothOffY += (targetOffY - fiber.smoothOffY) * offsetLerp;
+        fiber.smoothOffZ += (targetOffZ - fiber.smoothOffZ) * offsetLerp;
+
+        const tipX = restEnd.x + fiber.smoothOffX;
+        const tipY = restEnd.y + fiber.smoothOffY;
+        const tipZ = restZ + fiber.smoothOffZ;
+        const dirX = tipX - ORIGIN.x;
+        const dirY = tipY - ORIGIN.y;
+        const dirZ = tipZ - ORIGIN.z;
+        const dirLen = Math.hypot(dirX, dirY, dirZ) || restLen;
+
+        _end.set(
+          ORIGIN.x + (dirX / dirLen) * restLen,
+          ORIGIN.y + (dirY / dirLen) * restLen,
+          ORIGIN.z + (dirZ / dirLen) * restLen,
+        );
+
+        posAttr.setXYZ(0, ORIGIN.x, ORIGIN.y, ORIGIN.z);
+        posAttr.setXYZ(1, _end.x, _end.y, _end.z);
         posAttr.needsUpdate = true;
 
-        const tip = WAVE_SEGMENTS;
-        dotPositions[i * 3] = posAttr.getX(tip);
-        dotPositions[i * 3 + 1] = posAttr.getY(tip);
-        dotPositions[i * 3 + 2] = posAttr.getZ(tip);
+        dotPositions[i * 3] = _end.x;
+        dotPositions[i * 3 + 1] = _end.y;
+        dotPositions[i * 3 + 2] = _end.z;
       }
 
       dotGeo.attributes.position.needsUpdate = true;

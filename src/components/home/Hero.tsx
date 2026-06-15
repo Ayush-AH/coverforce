@@ -328,8 +328,8 @@ const Hero = () => {
                 className="h-full w-full"
                 contentScale={1.5}
                 fanSpread={0.58}
-                fanReach={1.28}
-                fanHeight={0.85}
+                fanReach={1.2}
+                fanHeight={0.7}
                 fanOffsetX={0.45}
                 fov={86}
               />
