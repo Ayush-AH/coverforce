@@ -57,6 +57,7 @@ const WhyCoverforce = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const animatingRef = useRef(false);
@@ -87,8 +88,9 @@ const WhyCoverforce = () => {
 
   useGSAP(() => {
     const container = containerRef.current;
+    const overlay = overlayRef.current;
     const section = sectionRef.current;
-    if (!container || !section) return;
+    if (!container || !overlay || !section) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) return;
@@ -102,28 +104,43 @@ const WhyCoverforce = () => {
       transformOrigin: "50% 50%",
       backfaceVisibility: "hidden",
     });
+    gsap.set(overlay, { opacity: 0, pointerEvents: "none" });
 
-    const tl = gsap.timeline({
+    const scrollEnd = "bottom -180%";
+    const scrollConfig = {
+      trigger: section,
+      scrub: 0.35,
+      invalidateOnRefresh: true,
+      fastScrollEnd: true,
+    };
+
+    const parallaxTl = gsap.timeline({
       scrollTrigger: {
-        trigger: section,
+        ...scrollConfig,
         start: "bottom bottom",
-        end: "bottom -180%",
-        scrub: 0.35,
-        invalidateOnRefresh: true,
-        fastScrollEnd: true,
+        end: scrollEnd,
       },
     });
 
-    tl.to(
-      container,
-      {
-        y: getShift,
-        scale: 0.8,
-        ease: "none",
-        force3D: true,
+    parallaxTl.to(container, {
+      y: getShift,
+      scale: 0.8,
+      ease: "none",
+      force3D: true,
+    });
+
+    const overlayTl = gsap.timeline({
+      scrollTrigger: {
+        ...scrollConfig,
+        start: "bottom center",
+        end: scrollEnd,
       },
-      0,
-    );
+    });
+
+    overlayTl.to(overlay, {
+      opacity: 0.85,
+      ease: "none",
+    });
 
     const lenis = window.lenis;
     let scrollPending = false;
@@ -141,12 +158,14 @@ const WhyCoverforce = () => {
 
     return () => {
       lenis?.off("scroll", onLenisScroll);
-      tl.scrollTrigger?.kill();
-      tl.kill();
+      parallaxTl.scrollTrigger?.kill();
+      parallaxTl.kill();
+      overlayTl.scrollTrigger?.kill();
+      overlayTl.kill();
     };
   }, { scope: sectionRef });
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-white text-[#0a143b]">
+    <section ref={sectionRef} className="relative z-30 overflow-hidden bg-white text-[#0a143b]">
       {/* Slider CSS — scoped to this section */}
       <style>{`
         .why-slider-track {
@@ -281,6 +300,11 @@ const WhyCoverforce = () => {
           </div>
         </Container>
       </div>
+      <div
+        ref={overlayRef}
+        className="pointer-events-none absolute inset-0 z-20 bg-[#080808]"
+        aria-hidden
+      />
 
     </section>
   );
