@@ -23,6 +23,7 @@ import {
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
 import { animateLoaderWordsWave } from "@/lib/animateSplitTextReveal";
+import { GdpCounter } from "./GdpCounter";
 
 const INTRO_TITLE_LINES = [
   ["AI-Native", "Insurance"],
@@ -351,6 +352,12 @@ const Hero = () => {
             className="relative z-10 flex flex-1 flex-col items-center justify-center text-center"
           >
             <div ref={titleSlotRef} className="relative z-30 mt-6 flex w-full justify-center">
+              <div className="absolute left-1/2 -top-9 z-20 -translate-x-1/2">
+                <div className="inline-flex items-center gap-2 text-xs font-sans tracking-wide text-white/85">
+                  <span className="whitespace-nowrap">Global GDP running on coverforce:</span>
+                  <GdpCounter/>
+                </div>
+              </div>
               <div
                 ref={titleSpacerRef}
                 className="pointer-events-none invisible max-w-4xl px-6 text-3xl font-heading font-regular leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl"
