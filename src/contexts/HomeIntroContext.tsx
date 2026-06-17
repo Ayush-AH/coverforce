@@ -4,8 +4,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 export type HomeIntroPhase =
   | "loader-in"
+  | "loader-fade"
   | "loader-wave"
-  | "loader-out"
   | "hero-rise"
   | "nav"
   | "text"
@@ -22,16 +22,16 @@ const HomeIntroContext = createContext<HomeIntroContextValue>({
   phase: "done",
 });
 
-export const HOME_INTRO_LOADER_IN_MS = 350;
+export const HOME_INTRO_LOADER_IN_MS = 400;
+export const HOME_INTRO_LOADER_FADE_MS = 550;
 export const HOME_INTRO_LOADER_WAVE_MS = 2000;
-export const HOME_INTRO_LOADER_OUT_MS = 0;
-export const HOME_INTRO_HERO_RISE_MS = 1000;
+export const HOME_INTRO_HERO_RISE_MS = 1100;
 export const HOME_INTRO_NAV_MS = 1200;
 export const HOME_INTRO_TEXT_MS = 1000;
 export const HOME_INTRO_NETWORK_MS = 850;
 export const HOME_INTRO_EASE = "cubic-bezier(0.76, 0, 0.24, 1)";
 
-const PRE_NAV_PHASES: HomeIntroPhase[] = ["loader-in", "loader-wave", "loader-out", "hero-rise"];
+const PRE_NAV_PHASES: HomeIntroPhase[] = ["loader-in", "loader-fade", "loader-wave", "hero-rise"];
 
 export function isPreNavIntroPhase(phase: HomeIntroPhase) {
   return PRE_NAV_PHASES.includes(phase);
@@ -59,17 +59,17 @@ export function HomeIntroProvider({
 
     setPhase("loader-in");
 
-    const loaderWaveAt = HOME_INTRO_LOADER_IN_MS;
-    const loaderOutAt = loaderWaveAt + HOME_INTRO_LOADER_WAVE_MS;
-    const heroRiseAt = loaderOutAt + HOME_INTRO_LOADER_OUT_MS;
+    const loaderFadeAt = HOME_INTRO_LOADER_IN_MS;
+    const loaderWaveAt = loaderFadeAt + HOME_INTRO_LOADER_FADE_MS;
+    const heroRiseAt = loaderWaveAt + HOME_INTRO_LOADER_WAVE_MS;
     const navAt = heroRiseAt + HOME_INTRO_HERO_RISE_MS;
     const textAt = navAt + HOME_INTRO_NAV_MS;
     const networkAt = textAt + HOME_INTRO_TEXT_MS;
     const doneAt = networkAt + HOME_INTRO_NETWORK_MS;
 
     const timers = [
+      setTimeout(() => setPhase("loader-fade"), loaderFadeAt),
       setTimeout(() => setPhase("loader-wave"), loaderWaveAt),
-      setTimeout(() => setPhase("loader-out"), loaderOutAt),
       setTimeout(() => setPhase("hero-rise"), heroRiseAt),
       setTimeout(() => setPhase("nav"), navAt),
       setTimeout(() => setPhase("text"), textAt),

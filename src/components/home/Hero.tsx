@@ -6,7 +6,6 @@ import Button from "@/components/common/Button";
 import Container from "../common/Container";
 import SectionRadialGlow from "../common/SectionRadialGlow";
 import dynamic from "next/dynamic";
-import { SplitText } from "@/lib/SplitText";
 import { RiPlayFill } from "@remixicon/react";
 
 const OpticalFiber = dynamic(() => import("./OpticalFiber"), {
@@ -16,10 +15,18 @@ const OpticalFiber = dynamic(() => import("./OpticalFiber"), {
 import {
   HOME_INTRO_EASE,
   HOME_INTRO_HERO_RISE_MS,
+  HOME_INTRO_LOADER_FADE_MS,
+  HOME_INTRO_LOADER_WAVE_MS,
   HOME_INTRO_NAV_MS,
   HOME_INTRO_NETWORK_MS,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
+import { animateLoaderWordsWave } from "@/lib/animateSplitTextReveal";
+
+const INTRO_TITLE_LINES = [
+  ["AI-Native", "Insurance"],
+  ["Distribution", "Platform"],
+] as const;
 
 type StatItem = {
   value: string;
@@ -36,18 +43,34 @@ const stats: StatItem[] = [
 const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
+  const [introSettled, setIntroSettled] = useState(!introEnabled);
   const introComplete = !introEnabled || introPhase === "done";
-  const headingVisible =
-    !introEnabled || introPhase === "text" || introPhase === "network" || introPhase === "done";
+  const isIntroWhiteBg =
+    introEnabled &&
+    !introSettled &&
+    (introPhase === "loader-in" ||
+      introPhase === "loader-fade" ||
+      introPhase === "loader-wave");
+  const introTitleMuted =
+    introEnabled &&
+    (introPhase === "loader-in" ||
+      introPhase === "loader-fade" ||
+      introPhase === "loader-wave" ||
+      introPhase === "hero-rise");
   const networkVisible = !introEnabled || introPhase === "network" || introPhase === "done";
   const heroRiseStartedRef = useRef(false);
+  const introFadeStartedRef = useRef(false);
+  const introWaveStartedRef = useRef(false);
+  const waveCleanupRef = useRef<(() => void) | null>(null);
+  const moveTargetRef = useRef({ x: 0, y: 0 });
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
   const headingRef = useRef<HTMLDivElement | null>(null);
+  const titleSlotRef = useRef<HTMLDivElement | null>(null);
+  const titleLineRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
   const textAnimatedRef = useRef(false);
-  const splitsRef = useRef<SplitText[]>([]);
   const borderAnimatedRef = useRef(false);
   const [borderOpacity, setBorderOpacity] = useState(introEnabled ? 0 : 1);
 
@@ -58,39 +81,139 @@ const Hero = () => {
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    if (!section || !introEnabled) return;
+    const slot = titleSlotRef.current;
+    const title = titleLineRef.current;
+    if (!section || !slot || !title || !introEnabled) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set(section, { clearProps: "all" });
+      gsap.set(slot, { clearProps: "all" });
+      gsap.set(title, { clearProps: "all" });
       return;
     }
 
-    gsap.set(section, {
-      opacity: 0,
-      force3D: true,
-    });
+    gsap.set(section, { backgroundColor: "#ffffff" });
+
+    const pinTitleCenter = () => {
+      const slotRect = slot.getBoundingClientRect();
+
+      moveTargetRef.current = {
+        x: slotRect.left + slotRect.width / 2 - window.innerWidth / 2,
+        y: slotRect.top + slotRect.height / 2 - window.innerHeight / 2,
+      };
+
+      gsap.set(slot, {
+        position: "fixed",
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%",
+        margin: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 30,
+        pointerEvents: "none",
+      });
+      gsap.set(title, {
+        x: 0,
+        y: 0,
+        force3D: true,
+      });
+    };
+
+    pinTitleCenter();
   }, [introEnabled]);
 
   useEffect(() => {
+    return () => {
+      waveCleanupRef.current?.();
+      waveCleanupRef.current = null;
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!introEnabled || introPhase !== "loader-fade" || introFadeStartedRef.current) return;
+    const title = titleLineRef.current;
+    if (!title) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    introFadeStartedRef.current = true;
+    gsap.fromTo(
+      title,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: HOME_INTRO_LOADER_FADE_MS / 1000,
+        ease: "power2.out",
+      },
+    );
+  }, [introEnabled, introPhase]);
+
+  useEffect(() => {
+    if (!introEnabled || introPhase !== "loader-wave" || introWaveStartedRef.current) return;
+    const line = titleLineRef.current;
+    if (!line) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    introWaveStartedRef.current = true;
+    waveCleanupRef.current?.();
+    waveCleanupRef.current = animateLoaderWordsWave(line, {
+      theme: "light",
+      colors: {
+        idle: "#BCC5D6",
+        active: "#0032C9",
+        done: "#0a143b",
+      },
+      duration: HOME_INTRO_LOADER_WAVE_MS / 1000 - 0.15,
+      delay: 0.05,
+      charsClass: "loader-wave-char",
+      wordsClass: "loader-wave-word",
+    });
+  }, [introEnabled, introPhase]);
+
+  useEffect(() => {
     const section = sectionRef.current;
-    if (!section || !introEnabled || introPhase !== "hero-rise" || heroRiseStartedRef.current) {
+    const slot = titleSlotRef.current;
+    const title = titleLineRef.current;
+    if (!section || !slot || !title || !introEnabled || introPhase !== "hero-rise" || heroRiseStartedRef.current) {
       return;
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(section, { clearProps: "all" });
+      gsap.set(section, { backgroundColor: "#121C49" });
+      gsap.set(slot, { clearProps: "all" });
+      gsap.set(title, { clearProps: "all" });
+      setIntroSettled(true);
       return;
     }
 
     heroRiseStartedRef.current = true;
-    gsap.to(section, {
-      opacity: 1,
-      duration: HOME_INTRO_HERO_RISE_MS / 1000,
-      ease: "power3.out",
+    const chars = title.querySelectorAll<HTMLElement>(".loader-wave-char");
+    const { x, y } = moveTargetRef.current;
+    const riseDur = HOME_INTRO_HERO_RISE_MS / 1000;
+
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.inOut" },
       onComplete: () => {
-        gsap.set(section, { clearProps: "opacity" });
+        waveCleanupRef.current?.();
+        waveCleanupRef.current = null;
+        gsap.set(slot, {
+          clearProps: "position,left,top,width,height,margin,display,alignItems,justifyContent,zIndex,pointerEvents",
+        });
+        gsap.set(title, { clearProps: "transform" });
+        gsap.set(section, { backgroundColor: "#121C49" });
+        setIntroSettled(true);
       },
     });
+
+    tl.to(section, { backgroundColor: "#121C49", duration: riseDur }, 0);
+    tl.to(title, { x, y, duration: riseDur }, 0);
+    if (chars.length) {
+      tl.to(chars, { color: "#ffffff", duration: riseDur * 0.85 }, 0.1);
+    }
   }, [introEnabled, introPhase]);
 
   useEffect(() => {
@@ -116,49 +239,12 @@ const Hero = () => {
   }, [introEnabled, introPhase]);
 
   useEffect(() => {
-    if (introPhase !== "text" || textAnimatedRef.current || !headingRef.current) return;
+    if (introPhase !== "text" || textAnimatedRef.current) return;
     textAnimatedRef.current = true;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
-
-    const lines = headingRef.current.querySelectorAll<HTMLElement>("[data-split]");
-    const splits: SplitText[] = [];
-    const chars: HTMLSpanElement[] = [];
-
-    lines.forEach((el) => {
-      const split = new SplitText(el, {
-        type: "chars",
-        charsClass: "hero-split-char",
-        wordsClass: "hero-split-word",
-      });
-      splits.push(split);
-      chars.push(...split.chars);
-    });
-
-    if (!chars.length) return;
-
-    splits.forEach((split) => {
-      split.words.forEach((word) => {
-        word.style.display = "inline";
-        word.style.whiteSpace = "normal";
-      });
-    });
-
-    splitsRef.current = splits;
-
-    gsap.set(chars, { opacity: 0, y: 14, force3D: true });
-    gsap.to(chars, {
-      opacity: 1,
-      y: 0,
-      duration: 0.45,
-      stagger: 0.028,
-      ease: "power2.out",
-      onComplete: () => {
-        gsap.set(chars, { clearProps: "transform" });
-      },
-    });
 
     if (buttonsRef.current) {
       gsap.set(buttonsRef.current, { opacity: 0, y: 18 });
@@ -166,7 +252,6 @@ const Hero = () => {
         opacity: 1,
         y: 0,
         duration: 0.55,
-        delay: 0.35,
         ease: "power2.out",
         onComplete: () => {
           if (buttonsRef.current) {
@@ -176,13 +261,6 @@ const Hero = () => {
       });
     }
   }, [introPhase]);
-
-  useEffect(() => {
-    return () => {
-      splitsRef.current.forEach((split) => split.revert());
-      splitsRef.current = [];
-    };
-  }, []);
 
   useLayoutEffect(() => {
     const update = () => {
@@ -203,10 +281,17 @@ const Hero = () => {
     return () => window.removeEventListener("resize", update);
   }, [activeIndex, statCount]);
 
+  const sectionBgClass =
+    !introEnabled || introSettled || introPhase === "nav" || introPhase === "text" || introPhase === "network" || introPhase === "done"
+      ? "bg-[#121C49]"
+      : isIntroWhiteBg
+        ? "bg-white"
+        : "";
+
   return (
     <section
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-[#121C49] text-white"
+      className={`relative isolate overflow-hidden text-white ${sectionBgClass}`}
     >
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="px-0! pb-2">
 
@@ -218,19 +303,46 @@ const Hero = () => {
             ref={headingRef}
             className="flex flex-1 flex-col items-center justify-center text-center"
           >
-            <h1
-              className={`mt-6 max-w-4xl text-3xl font-heading font-regular leading-[1.1] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl ${
-                headingVisible ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <span data-split>AI-Native Insurance</span>
-              <br />
-              <span data-split>Distribution Platform</span>
+            <div ref={titleSlotRef} className="mt-6 flex w-full justify-center">
+              <h1
+                ref={titleLineRef}
+                data-loader-line
+                className={`max-w-4xl px-6 text-3xl font-heading font-medium leading-[1.15] tracking-tight will-change-transform md:text-4xl lg:text-5xl xl:text-5xl ${
+                  introEnabled && introPhase === "loader-in" ? "opacity-0" : ""
+                } ${introTitleMuted ? "text-[#BCC5D6]" : "text-white"}`}
+              >
+              {INTRO_TITLE_LINES.map((line, lineIndex) => (
+                <React.Fragment key={lineIndex}>
+                  {lineIndex > 0 ? <br /> : null}
+                  {line.map((word, wordIndex) => (
+                    <React.Fragment key={word}>
+                      <span className="inline-block overflow-hidden align-bottom pb-0.5">
+                        <span data-loader-word-inner className="inline-block">
+                          {word}
+                        </span>
+                      </span>
+                      {wordIndex < line.length - 1 ? (
+                        <span aria-hidden className="inline">
+                          {" "}
+                        </span>
+                      ) : null}
+                    </React.Fragment>
+                  ))}
+                </React.Fragment>
+              ))}
             </h1>
+            </div>
             <div
               ref={buttonsRef}
               className={`mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center ${
-                introEnabled && !introComplete ? "opacity-0" : "opacity-100"
+                introEnabled &&
+                (introPhase === "loader-in" ||
+                  introPhase === "loader-fade" ||
+                  introPhase === "loader-wave" ||
+                  introPhase === "hero-rise" ||
+                  introPhase === "nav")
+                  ? "pointer-events-none opacity-0"
+                  : ""
               }`}
             >
               <Button href="/" variant="primary">
