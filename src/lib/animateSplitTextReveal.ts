@@ -246,15 +246,16 @@ export function animateSplitTextReveal(
 
     let maxProgress = 0;
     let completed = false;
+    let st: ScrollTrigger | null = null;
 
     const finish = () => {
         if (completed) return;
         completed = true;
         updateWave(1);
-        st.kill();
+        st?.kill();
     };
 
-    const st = ScrollTrigger.create({
+    st = ScrollTrigger.create({
         trigger,
         start,
         end,

@@ -566,11 +566,13 @@ const ProcessFlow = () => {
                 });
             }
 
-            const tl = gsap.timeline({
+            const timelineRef: { current: gsap.core.Timeline | null } = { current: null };
+            timelineRef.current = gsap.timeline({
                 scrollTrigger: {
                     trigger: section,
                     start: "top top",
-                    end: () => `+=${Math.max(tl.duration(), T(100)) * VH_PER_UNIT}vh`,
+                    end: () =>
+                        `+=${Math.max(timelineRef.current?.duration() ?? T(100), T(100)) * VH_PER_UNIT}vh`,
                     pin: true,
                     pinSpacing: true,
                     scrub: 1,
@@ -582,6 +584,7 @@ const ProcessFlow = () => {
                     },
                 },
             });
+            const tl = timelineRef.current!;
 
             const CHAR_STAG = T(0.48);
             const CHAR_DUR = T(0.34);

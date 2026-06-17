@@ -21,7 +21,7 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative bg-red-500 flex items-center justify-center">
+          <div className="relative flex items-center justify-center">
             <Image
               src="/images/startups/startuphero.png"
               alt="CoverForce startups program"
