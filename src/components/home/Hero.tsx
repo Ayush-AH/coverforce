@@ -44,6 +44,7 @@ const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const [introSettled, setIntroSettled] = useState(!introEnabled);
+  const [fiberGlowVisible, setFiberGlowVisible] = useState(!introEnabled);
   const introComplete = !introEnabled || introPhase === "done";
   const isIntroWhiteBg =
     introEnabled &&
@@ -68,6 +69,7 @@ const Hero = () => {
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
   const headingRef = useRef<HTMLDivElement | null>(null);
   const titleSlotRef = useRef<HTMLDivElement | null>(null);
+  const titleSpacerRef = useRef<HTMLDivElement | null>(null);
   const titleLineRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
   const textAnimatedRef = useRef(false);
@@ -79,50 +81,50 @@ const Hero = () => {
 
   const statCount = useMemo(() => stats.length, []);
 
+  const centerIntroTitle = () => {
+    const spacer = titleSpacerRef.current;
+    const title = titleLineRef.current;
+    if (!spacer || !title) return;
+
+    const spacerRect = spacer.getBoundingClientRect();
+    moveTargetRef.current = {
+      x: spacerRect.left + spacerRect.width / 2 - window.innerWidth / 2,
+      y: spacerRect.top + spacerRect.height / 2 - window.innerHeight / 2,
+    };
+
+    gsap.set(title, {
+      position: "fixed",
+      left: "50%",
+      top: "50%",
+      xPercent: -50,
+      yPercent: -50,
+      x: 0,
+      y: 0,
+      zIndex: 30,
+      margin: 0,
+      force3D: true,
+      backfaceVisibility: "hidden",
+    });
+  };
+
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    const slot = titleSlotRef.current;
-    const title = titleLineRef.current;
-    if (!section || !slot || !title || !introEnabled) return;
+    if (!section || !introEnabled) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set(section, { clearProps: "all" });
-      gsap.set(slot, { clearProps: "all" });
-      gsap.set(title, { clearProps: "all" });
+      gsap.set(titleLineRef.current, { clearProps: "all" });
       return;
     }
 
     gsap.set(section, { backgroundColor: "#ffffff" });
+    centerIntroTitle();
 
-    const pinTitleCenter = () => {
-      const slotRect = slot.getBoundingClientRect();
-
-      moveTargetRef.current = {
-        x: slotRect.left + slotRect.width / 2 - window.innerWidth / 2,
-        y: slotRect.top + slotRect.height / 2 - window.innerHeight / 2,
-      };
-
-      gsap.set(slot, {
-        position: "fixed",
-        left: 0,
-        top: 0,
-        width: "100%",
-        height: "100%",
-        margin: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 30,
-        pointerEvents: "none",
+    if (document.fonts?.ready) {
+      void document.fonts.ready.then(() => {
+        if (!heroRiseStartedRef.current) centerIntroTitle();
       });
-      gsap.set(title, {
-        x: 0,
-        y: 0,
-        force3D: true,
-      });
-    };
-
-    pinTitleCenter();
+    }
   }, [introEnabled]);
 
   useEffect(() => {
@@ -140,6 +142,7 @@ const Hero = () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     introFadeStartedRef.current = true;
+    title.classList.remove("opacity-0");
     gsap.fromTo(
       title,
       { opacity: 0 },
@@ -147,6 +150,7 @@ const Hero = () => {
         opacity: 1,
         duration: HOME_INTRO_LOADER_FADE_MS / 1000,
         ease: "power2.out",
+        overwrite: "auto",
       },
     );
   }, [introEnabled, introPhase]);
@@ -172,38 +176,44 @@ const Hero = () => {
       charsClass: "loader-wave-char",
       wordsClass: "loader-wave-word",
     });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!heroRiseStartedRef.current) centerIntroTitle();
+      });
+    });
   }, [introEnabled, introPhase]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const section = sectionRef.current;
-    const slot = titleSlotRef.current;
     const title = titleLineRef.current;
-    if (!section || !slot || !title || !introEnabled || introPhase !== "hero-rise" || heroRiseStartedRef.current) {
+    if (!section || !title || !introEnabled || introPhase !== "hero-rise" || heroRiseStartedRef.current) {
       return;
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set(section, { backgroundColor: "#121C49" });
-      gsap.set(slot, { clearProps: "all" });
-      gsap.set(title, { clearProps: "all" });
+      gsap.set(title, {
+        clearProps:
+          "position,left,top,xPercent,yPercent,zIndex,margin,transform,opacity",
+      });
       setIntroSettled(true);
       return;
     }
 
     heroRiseStartedRef.current = true;
+    centerIntroTitle();
     const chars = title.querySelectorAll<HTMLElement>(".loader-wave-char");
     const { x, y } = moveTargetRef.current;
     const riseDur = HOME_INTRO_HERO_RISE_MS / 1000;
 
     const tl = gsap.timeline({
-      defaults: { ease: "power3.inOut" },
+      defaults: { ease: "power2.inOut" },
       onComplete: () => {
-        waveCleanupRef.current?.();
-        waveCleanupRef.current = null;
-        gsap.set(slot, {
-          clearProps: "position,left,top,width,height,margin,display,alignItems,justifyContent,zIndex,pointerEvents",
+        gsap.set(title, {
+          clearProps:
+            "position,left,top,xPercent,yPercent,zIndex,margin,transform,opacity",
         });
-        gsap.set(title, { clearProps: "transform" });
         gsap.set(section, { backgroundColor: "#121C49" });
         setIntroSettled(true);
       },
@@ -212,8 +222,26 @@ const Hero = () => {
     tl.to(section, { backgroundColor: "#121C49", duration: riseDur }, 0);
     tl.to(title, { x, y, duration: riseDur }, 0);
     if (chars.length) {
-      tl.to(chars, { color: "#ffffff", duration: riseDur * 0.85 }, 0.1);
+      tl.to(chars, { color: "#ffffff", duration: riseDur, ease: "power2.inOut" }, 0);
     }
+  }, [introEnabled, introPhase]);
+
+  useEffect(() => {
+    if (!introEnabled) {
+      setFiberGlowVisible(true);
+      return;
+    }
+
+    if (introPhase !== "done") {
+      setFiberGlowVisible(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setFiberGlowVisible(true);
+    }, 560);
+
+    return () => window.clearTimeout(timer);
   }, [introEnabled, introPhase]);
 
   useEffect(() => {
@@ -282,7 +310,7 @@ const Hero = () => {
   }, [activeIndex, statCount]);
 
   const sectionBgClass =
-    !introEnabled || introSettled || introPhase === "nav" || introPhase === "text" || introPhase === "network" || introPhase === "done"
+    !introEnabled || introSettled
       ? "bg-[#121C49]"
       : isIntroWhiteBg
         ? "bg-white"
@@ -303,11 +331,23 @@ const Hero = () => {
             ref={headingRef}
             className="flex flex-1 flex-col items-center justify-center text-center"
           >
-            <div ref={titleSlotRef} className="mt-6 flex w-full justify-center">
+            <div ref={titleSlotRef} className="relative z-30 mt-6 flex w-full justify-center">
+              <div
+                ref={titleSpacerRef}
+                className="pointer-events-none invisible max-w-4xl px-6 text-3xl font-heading font-medium leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl"
+                aria-hidden
+              >
+                {INTRO_TITLE_LINES.map((line, lineIndex) => (
+                  <React.Fragment key={lineIndex}>
+                    {lineIndex > 0 ? <br /> : null}
+                    {line.join(" ")}
+                  </React.Fragment>
+                ))}
+              </div>
               <h1
                 ref={titleLineRef}
                 data-loader-line
-                className={`max-w-4xl px-6 text-3xl font-heading font-medium leading-[1.15] tracking-tight will-change-transform md:text-4xl lg:text-5xl xl:text-5xl ${
+                className={`absolute left-1/2 top-0 z-10 max-w-4xl -translate-x-1/2 px-6 text-3xl font-heading font-medium leading-[1.15] tracking-tight will-change-[transform,opacity] md:text-4xl lg:text-5xl xl:text-5xl ${
                   introEnabled && introPhase === "loader-in" ? "opacity-0" : ""
                 } ${introTitleMuted ? "text-[#BCC5D6]" : "text-white"}`}
               >
@@ -373,6 +413,7 @@ const Hero = () => {
                 fanHeight={0.7}
                 fanOffsetX={0.45}
                 fov={86}
+                glowVisible={fiberGlowVisible}
               />
             </div>
           </div>

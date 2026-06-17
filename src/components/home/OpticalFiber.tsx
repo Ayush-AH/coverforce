@@ -17,6 +17,8 @@ type OpticalFiberProps = {
   fanHeight?: number;
   /** Shifts the fan horizontally inside the canvas. */
   fanOffsetX?: number;
+  /** Fade in the bottom-center white glow after the stats radial glow. */
+  glowVisible?: boolean;
 };
 
 export default function OpticalFiber({
@@ -27,6 +29,7 @@ export default function OpticalFiber({
   fov = 75,
   fanHeight = 1,
   fanOffsetX = 0,
+  glowVisible = true,
 }: OpticalFiberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -390,7 +393,17 @@ export default function OpticalFiber({
 
   return (
     <div ref={containerRef} className={`relative h-full w-full overflow-hidden ${className}`}>
-      <canvas ref={canvasRef} className="block h-full w-full" aria-hidden />
+      <div
+        className={`pointer-events-none absolute bottom-0 left-1/2 z-0 aspect-square w-[min(50%,320px)] -translate-x-1/2 translate-y-[42%] rounded-full blur-[4.5rem] transition-opacity duration-700 ease-out md:w-[min(44%,380px)] md:blur-[5.5rem] ${
+          glowVisible ? "opacity-90" : "opacity-0"
+        }`}
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.72) 28%, rgba(255, 255, 255, 0.28) 52%, rgba(255, 255, 255, 0) 72%)",
+        }}
+        aria-hidden
+      />
+      <canvas ref={canvasRef} className="relative z-10 block h-full w-full" aria-hidden />
     </div>
   );
 }
