@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import dynamic from "next/dynamic";
 import Container from "./Container";
 import Button from "./Button";
 import Link from "next/link";
@@ -11,11 +10,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const WayCardDotGridScene = dynamic(() => import("../home/WayCardDotGridScene"), {
-  ssr: false,
-  loading: () => null,
-});
 
 type FooterColumnData = {
   title: string;
@@ -153,11 +147,6 @@ const Footer = () => {
       ref={sectionRef}
       className="relative overflow-hidden bg-white text-[#0a143b]"
     >
-      {/* Dot-grid bulge background (matches ThreeWays cards) */}
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.6]">
-        <WayCardDotGridScene variant="light" tone="blueLight" track="window" active />
-      </div>
-
       <Container borderColor="#53535380">
         <div ref={contentRef} className="relative z-10 will-change-transform">
 

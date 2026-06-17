@@ -1,209 +1,432 @@
-import React from 'react';
-import { CalculatorInputs, LOB_COMMERCIAL, LOB_PERSONAL } from '@/lib/calculations';
-import { FolderGit2, BarChart3, Zap, Wrench, Blocks, CheckCircle2, PlusCircle } from 'lucide-react';
+"use client";
+
+import React, { useState } from "react";
+import { CalculatorInputs, LOB_COMMERCIAL, LOB_PERSONAL } from "@/lib/calculations";
+import {
+  BarChart3,
+  Blocks,
+  CheckCircle2,
+  ChevronDown,
+  FolderGit2,
+  PlusCircle,
+  Wrench,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 
 interface Props {
   inputs: CalculatorInputs;
-  updateInput: (key: keyof CalculatorInputs, value: any) => void;
+  updateInput: <K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) => void;
   toggleCommercialLob: (id: string) => void;
   setCommercialLobPct: (id: string, pct: number) => void;
   setPersonalLobPct: (id: string, pct: number) => void;
 }
 
-export default function Sidebar({ inputs, updateInput, toggleCommercialLob, setCommercialLobPct, setPersonalLobPct }: Props) {
-  
-  const InputRow = ({ label, prop, suffix, prefix, note, step = 1, type = "number" }: any) => (
+type SectionId =
+  | "business-mix"
+  | "business-profile"
+  | "quoting-ops"
+  | "quality"
+  | "technology";
+
+type InputRowProps = {
+  label: string;
+  prop: keyof CalculatorInputs;
+  suffix?: string;
+  prefix?: string;
+  note?: string;
+  step?: number | string;
+  type?: "number" | "text";
+};
+
+function ControlLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mb-1.5 block font-heading text-xs font-medium text-[#5B35E0]">
+      {children}
+    </span>
+  );
+}
+
+function SidebarAccordion({
+  title,
+  icon: Icon,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  icon: LucideIcon;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#121C49]/3"
+      >
+        <span className="flex items-center gap-2.5 font-heading text-sm font-semibold tracking-tight text-[#0a143b]">
+          <Icon className="size-4 shrink-0 text-[#5B35E0]" aria-hidden />
+          {title}
+        </span>
+        <ChevronDown
+          className={`size-4 shrink-0 text-[#8296B0] transition-transform duration-300 ease-out ${
+            open ? "rotate-180" : ""
+          }`}
+          aria-hidden
+        />
+      </button>
+
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="border-t border-neutral-200 px-4 pb-4 pt-3">{children}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Sidebar({
+  inputs,
+  updateInput,
+  toggleCommercialLob,
+  setCommercialLobPct,
+  setPersonalLobPct,
+}: Props) {
+  const [openSection, setOpenSection] = useState<SectionId | null>("business-mix");
+
+  const toggleSection = (id: SectionId) => {
+    setOpenSection((prev) => (prev === id ? null : id));
+  };
+
+  const InputRow = ({
+    label,
+    prop,
+    suffix,
+    prefix,
+    note,
+    step = 1,
+    type = "number",
+  }: InputRowProps) => (
     <div className="mb-3.5">
-      <label className="block text-xs font-semibold text-[#50617a] mb-1.5 font-sans">{label}</label>
-      <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#3834a4] focus-within:ring-1 focus-within:ring-[#3834a4] transition-all">
-        {prefix && <span className="pl-3 pr-1 text-sm font-semibold text-gray-400">{prefix}</span>}
-        <input 
+      <ControlLabel>{label}</ControlLabel>
+      <div className="relative flex items-center overflow-hidden rounded-lg border border-neutral-200 bg-white transition-all focus-within:border-[#5B35E0] focus-within:ring-1 focus-within:ring-[#5B35E0]/25">
+        {prefix ? (
+          <span className="pl-3 pr-1 font-heading text-sm font-semibold text-[#8296B0]">
+            {prefix}
+          </span>
+        ) : null}
+        <input
           type={type}
-          className="w-full bg-transparent border-none outline-none text-sm font-bold text-[#0a143b] py-2.5 px-3"
-          value={inputs[prop as keyof CalculatorInputs] as any}
+          className="w-full border-none bg-transparent px-3 py-2.5 font-heading text-sm font-semibold text-[#0a143b] outline-none"
+          value={inputs[prop] as string | number}
           onChange={(e) => {
             const val = type === "number" ? parseFloat(e.target.value) : e.target.value;
-            updateInput(prop, isNaN(val as any) && type === "number" ? 0 : val);
+            updateInput(
+              prop,
+              (type === "number" && Number.isNaN(val as number) ? 0 : val) as CalculatorInputs[typeof prop],
+            );
           }}
           step={step}
         />
-        {suffix && <span className="pr-3 pl-1 text-sm font-semibold text-gray-400">{suffix}</span>}
+        {suffix ? (
+          <span className="pr-3 pl-1 font-heading text-sm font-semibold text-[#8296B0]">
+            {suffix}
+          </span>
+        ) : null}
       </div>
-      {note && <div className="text-[10px] text-gray-400 mt-1 font-sans">{note}</div>}
+      {note ? <p className="mt-1 font-sans text-[10px] leading-relaxed text-[#8296B0]">{note}</p> : null}
+    </div>
+  );
+
+  const RangeField = ({
+    label,
+    value,
+    onChange,
+    leftLabel,
+    rightLabel,
+  }: {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    leftLabel: string;
+    rightLabel: string;
+  }) => (
+    <div className="mb-5">
+      <ControlLabel>{label}</ControlLabel>
+      <div className="mb-1 flex justify-between font-sans text-[11px] font-semibold">
+        <span className="text-[#0a143b]">{leftLabel}</span>
+        <span className="text-[#8296B0]">{rightLabel}</span>
+      </div>
+      <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-neutral-100">
+        <div className="h-full bg-[#3834a4] transition-[width] duration-150" style={{ width: `${value}%` }} />
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        className="w-full accent-[#3834a4]"
+        value={value}
+        onChange={(e) => onChange(parseInt(e.target.value, 10))}
+      />
     </div>
   );
 
   return (
-    <aside className="w-full md:w-[340px] print:w-full flex-shrink-0 flex flex-col gap-5">
-      
-      {/* Business Mix Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-4 flex items-center font-heading">
-          <FolderGit2 className="w-4 h-4 text-[#3834a4] mr-2" /> Business Mix
-        </h3>
+    <aside className="flex w-full shrink-0 flex-col gap-3 print:w-full md:w-[340px]">
+      <SidebarAccordion
+        title="Business Mix"
+        icon={FolderGit2}
+        open={openSection === "business-mix"}
+        onToggle={() => toggleSection("business-mix")}
+      >
+        <RangeField
+          label="Commercial vs personal lines"
+          value={inputs.commPct}
+          onChange={(v) => updateInput("commPct", v)}
+          leftLabel={`Commercial ${inputs.commPct}%`}
+          rightLabel={`Personal ${100 - inputs.commPct}%`}
+        />
 
-        {/* Commercial vs Personal Slider */}
-        <div className="mb-5">
-          <div className="text-xs font-semibold text-[#50617a] mb-2 font-sans">Commercial vs Personal Lines</div>
-          <div className="flex justify-between text-[11px] font-bold mb-1 font-sans">
-            <span className="text-[#0a143b]">Commercial {inputs.commPct}%</span>
-            <span className="text-gray-500">Personal {100 - inputs.commPct}%</span>
-          </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-2 shadow-inner">
-            <div className="h-full bg-[#3834a4]" style={{ width: `${inputs.commPct}%` }}></div>
-          </div>
-          <input 
-            type="range" min="0" max="100" 
-            className="w-full accent-[#3834a4]"
-            value={inputs.commPct}
-            onChange={(e) => updateInput('commPct', parseInt(e.target.value))}
-          />
-        </div>
+        <RangeField
+          label="Admitted vs E&S (commercial only)"
+          value={inputs.admittedPct}
+          onChange={(v) => updateInput("admittedPct", v)}
+          leftLabel={`Admitted ${inputs.admittedPct}%`}
+          rightLabel={`E&S ${100 - inputs.admittedPct}%`}
+        />
 
-        {/* Admitted vs E&S Slider */}
-        <div className="mb-6">
-          <div className="text-xs font-semibold text-[#50617a] mb-2 font-sans">Admitted vs E&amp;S (Commercial only)</div>
-          <div className="flex justify-between text-[11px] font-bold mb-1 font-sans">
-            <span className="text-[#0a143b]">Admitted {inputs.admittedPct}%</span>
-            <span className="text-gray-500">E&amp;S {100 - inputs.admittedPct}%</span>
-          </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-2 shadow-inner">
-            <div className="h-full bg-[#3834a4]" style={{ width: `${inputs.admittedPct}%` }}></div>
-          </div>
-          <input 
-            type="range" min="0" max="100" 
-            className="w-full accent-[#3834a4]"
-            value={inputs.admittedPct}
-            onChange={(e) => updateInput('admittedPct', parseInt(e.target.value))}
-          />
-        </div>
+        <div className="my-4 border-t border-neutral-200" />
 
-        <hr className="border-gray-100 my-4" />
-
-        {/* Commercial LOBs */}
-        <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-widest mb-2 font-heading flex items-center"><CheckCircle2 className="w-3.5 h-3.5 text-[#3834a4] mr-1.5" /> Commercial Lines — CF can help</div>
-        <div className="flex flex-col gap-1.5 mb-4 font-sans">
-          {LOB_COMMERCIAL.map(lob => {
+        <p className="mb-2 flex items-center font-heading text-[10px] font-semibold uppercase tracking-widest text-[#5B35E0]">
+          <CheckCircle2 className="mr-1.5 size-3.5" aria-hidden />
+          Commercial lines — CF can help
+        </p>
+        <div className="mb-4 flex flex-col gap-1.5 font-sans">
+          {LOB_COMMERCIAL.map((lob) => {
             const st = inputs.commercialLobs[lob.id] || { on: true, pct: lob.pct };
             return (
-              <label key={lob.id} className={`flex items-center gap-2 p-1.5 rounded-md border ${st.on ? 'border-[#3834a4]/30 bg-[#f0f4ff]' : 'border-gray-200 bg-gray-50'} cursor-pointer select-none transition-colors`}>
-                <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${st.on ? 'border-[#3834a4] bg-[#3834a4] text-white' : 'border-gray-300 bg-white'}`}>
-                  {st.on && <span className="text-[10px]">✓</span>}
+              <label
+                key={lob.id}
+                className={`flex cursor-pointer select-none items-center gap-2 rounded-md border p-1.5 transition-colors ${
+                  st.on
+                    ? "border-[#3834a4]/30 bg-[#3834a4]/6"
+                    : "border-neutral-200 bg-neutral-50"
+                }`}
+              >
+                <div
+                  className={`flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
+                    st.on
+                      ? "border-[#3834a4] bg-[#3834a4] text-white"
+                      : "border-neutral-300 bg-white"
+                  }`}
+                >
+                  {st.on ? <span className="text-[10px]">✓</span> : null}
                 </div>
-                <input type="checkbox" className="hidden" checked={st.on} onChange={() => toggleCommercialLob(lob.id)} />
-                <span className={`text-xs font-semibold flex-1 ${st.on ? 'text-[#0a143b]' : 'text-gray-400'}`}>{lob.label}</span>
-                <div className="flex items-center gap-1 border-l border-gray-200 pl-2">
-                  <input 
-                    type="number" min="0" max="100" 
-                    className="w-8 text-right bg-transparent border-none outline-none text-xs font-bold text-[#0a143b] p-0"
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={st.on}
+                  onChange={() => toggleCommercialLob(lob.id)}
+                />
+                <span
+                  className={`flex-1 text-xs font-semibold ${st.on ? "text-[#0a143b]" : "text-[#8296B0]"}`}
+                >
+                  {lob.label}
+                </span>
+                <div className="flex items-center gap-1 border-l border-neutral-200 pl-2">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
                     value={st.pct}
                     onChange={(e) => setCommercialLobPct(lob.id, parseFloat(e.target.value) || 0)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-[10px] font-bold text-gray-400">%</span>
+                  <span className="text-[10px] font-bold text-[#8296B0]">%</span>
                 </div>
               </label>
-            )
+            );
           })}
         </div>
 
-        {/* Personal LOBs */}
-        <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-widest mb-2 mt-4 font-heading flex items-center"><BarChart3 className="w-3.5 h-3.5 text-gray-400 mr-1.5" /> Personal Lines — quantify pain only</div>
+        <p className="mb-2 mt-4 flex items-center font-heading text-[10px] font-semibold uppercase tracking-widest text-[#8296B0]">
+          <BarChart3 className="mr-1.5 size-3.5" aria-hidden />
+          Personal lines — quantify pain only
+        </p>
         <div className="flex flex-col gap-1.5 font-sans">
-          {LOB_PERSONAL.map(lob => {
+          {LOB_PERSONAL.map((lob) => {
             const st = inputs.personalLobs[lob.id] || { on: true, pct: lob.pct };
             return (
-              <label key={lob.id} className={`flex items-center gap-2 p-1.5 rounded-md border ${st.on ? 'border-[#50617a]/30 bg-gray-100' : 'border-gray-200 bg-gray-50'} cursor-pointer select-none transition-colors`}>
-                <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${st.on ? 'border-[#50617a] bg-[#50617a] text-white' : 'border-gray-300 bg-white'}`}>
-                  {st.on && <span className="text-[10px]">✓</span>}
+              <label
+                key={lob.id}
+                className={`flex cursor-pointer select-none items-center gap-2 rounded-md border p-1.5 transition-colors ${
+                  st.on ? "border-[#50617a]/30 bg-neutral-100" : "border-neutral-200 bg-neutral-50"
+                }`}
+              >
+                <div
+                  className={`flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
+                    st.on
+                      ? "border-[#50617a] bg-[#50617a] text-white"
+                      : "border-neutral-300 bg-white"
+                  }`}
+                >
+                  {st.on ? <span className="text-[10px]">✓</span> : null}
                 </div>
-                {/* Personal LOBs are mostly always on for pain quantification, but keeping toggle for parity */}
-                <input type="checkbox" className="hidden" checked={st.on} onChange={() => {
-                }} />
-                <span className={`text-xs font-semibold flex-1 ${st.on ? 'text-[#0a143b]' : 'text-gray-400'}`}>{lob.label}</span>
-                <div className="flex items-center gap-1 border-l border-gray-300 pl-2">
-                  <input 
-                    type="number" min="0" max="100" 
-                    className="w-8 text-right bg-transparent border-none outline-none text-xs font-bold text-[#0a143b] p-0"
+                <input type="checkbox" className="hidden" checked={st.on} onChange={() => {}} />
+                <span
+                  className={`flex-1 text-xs font-semibold ${st.on ? "text-[#0a143b]" : "text-[#8296B0]"}`}
+                >
+                  {lob.label}
+                </span>
+                <div className="flex items-center gap-1 border-l border-neutral-300 pl-2">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
                     value={st.pct}
                     onChange={(e) => setPersonalLobPct(lob.id, parseFloat(e.target.value) || 0)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-[10px] font-bold text-gray-400">%</span>
+                  <span className="text-[10px] font-bold text-[#8296B0]">%</span>
                 </div>
               </label>
-            )
+            );
           })}
         </div>
-        
-        {/* Other LOB */}
-        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 mt-4 font-heading flex items-center"><PlusCircle className="w-3.5 h-3.5 text-gray-400 mr-1.5" /> Other Line of Business</div>
+
+        <p className="mb-2 mt-4 flex items-center font-heading text-[10px] font-semibold uppercase tracking-widest text-[#8296B0]">
+          <PlusCircle className="mr-1.5 size-3.5" aria-hidden />
+          Other line of business
+        </p>
         <div className="flex items-center gap-2 font-sans">
-          <input 
-            type="text" placeholder="e.g. Marine Cargo..."
-            className="flex-1 bg-gray-50 border border-gray-200 rounded-md text-xs p-2 outline-none focus:border-[#3834a4] text-[#0a143b] placeholder-gray-400"
+          <input
+            type="text"
+            placeholder="e.g. Marine Cargo..."
+            className="flex-1 rounded-lg border border-neutral-200 bg-white p-2 text-xs text-[#0a143b] outline-none transition-colors placeholder:text-[#8296B0] focus:border-[#5B35E0]"
             value={inputs.otherLobName}
-            onChange={e => updateInput('otherLobName', e.target.value)}
+            onChange={(e) => updateInput("otherLobName", e.target.value)}
           />
-          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-md px-2 py-1 focus-within:border-[#3834a4]">
-            <input 
-              type="number" min="0" max="100" placeholder="0"
-              className="w-6 text-right bg-transparent border-none outline-none text-xs font-bold text-[#0a143b] p-0"
-              value={inputs.otherLobPct || ''}
-              onChange={e => updateInput('otherLobPct', parseFloat(e.target.value) || 0)}
+          <div className="flex items-center gap-1 rounded-lg border border-neutral-200 bg-white px-2 py-1 focus-within:border-[#5B35E0]">
+            <input
+              type="number"
+              min={0}
+              max={100}
+              placeholder="0"
+              className="w-6 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
+              value={inputs.otherLobPct || ""}
+              onChange={(e) => updateInput("otherLobPct", parseFloat(e.target.value) || 0)}
             />
-            <span className="text-[10px] font-bold text-gray-400">%</span>
+            <span className="text-[10px] font-bold text-[#8296B0]">%</span>
           </div>
         </div>
-        <label className="flex items-center gap-1.5 mt-2 text-xs text-[#50617a] cursor-pointer font-sans">
-          <input 
-            type="checkbox" className="accent-[#3834a4]"
+        <label className="mt-2 flex cursor-pointer items-center gap-1.5 font-sans text-xs text-[#50617a]">
+          <input
+            type="checkbox"
+            className="accent-[#3834a4]"
             checked={inputs.otherLobCF}
-            onChange={e => updateInput('otherLobCF', e.target.checked)}
+            onChange={(e) => updateInput("otherLobCF", e.target.checked)}
           />
           CF helps
         </label>
-      </div>
+      </SidebarAccordion>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-4 font-heading flex items-center"><BarChart3 className="w-4 h-4 text-[#3834a4] mr-2" /> Business Profile</h3>
-        <InputRow label="Annual Premium Volume" prop="annualPremium" prefix="$" step="1000000" note="Total bound premium written today" />
-        <InputRow label="Commission / Net Revenue Rate" prop="commissionRate" suffix="%" step="0.5" />
-        <InputRow label="Annual New Business Growth Rate" prop="newBizRate" suffix="%" step="1" note="% of current book added as new business each year" />
-        <InputRow label="Policy Renewal Retention Rate" prop="renewalRate" suffix="%" step="1" note="Industry avg 75–85%" />
-      </div>
+      <SidebarAccordion
+        title="Business Profile"
+        icon={BarChart3}
+        open={openSection === "business-profile"}
+        onToggle={() => toggleSection("business-profile")}
+      >
+        <InputRow
+          label="Annual premium volume"
+          prop="annualPremium"
+          prefix="$"
+          step="1000000"
+          note="Total bound premium written today"
+        />
+        <InputRow label="Commission / net revenue rate" prop="commissionRate" suffix="%" step={0.5} />
+        <InputRow
+          label="Annual new business growth rate"
+          prop="newBizRate"
+          suffix="%"
+          step={1}
+          note="% of current book added as new business each year"
+        />
+        <InputRow
+          label="Policy renewal retention rate"
+          prop="renewalRate"
+          suffix="%"
+          step={1}
+          note="Industry avg 75–85%"
+        />
+      </SidebarAccordion>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-4 font-heading flex items-center"><Zap className="w-4 h-4 text-[#3834a4] mr-2" /> Quoting Operations</h3>
-        <InputRow label="Monthly Quote Volume" prop="quoteVol" step="50" />
-        <InputRow label="Current Bind Rate" prop="bindCurrent" suffix="%" step="1" />
-        <InputRow label="Bind Rate With CoverForce" prop="bindCF" suffix="%" step="1" />
-        <InputRow label="Minutes per Quote — Current" prop="minCurrent" suffix="min" step="5" />
-        <InputRow label="Minutes per Quote — CoverForce" prop="minCF" suffix="min" step="1" />
-        <InputRow label="Blended Staff Hourly Cost" prop="hourlyCost" prefix="$" step="5" />
-        <InputRow label="Number of Producers / Underwriters" prop="staffCount" step="1" note="Used to calculate capacity unlock" />
-      </div>
+      <SidebarAccordion
+        title="Quoting Operations"
+        icon={Zap}
+        open={openSection === "quoting-ops"}
+        onToggle={() => toggleSection("quoting-ops")}
+      >
+        <InputRow label="Monthly quote volume" prop="quoteVol" step={50} />
+        <InputRow label="Current bind rate" prop="bindCurrent" suffix="%" step={1} />
+        <InputRow label="Bind rate with CoverForce" prop="bindCF" suffix="%" step={1} />
+        <InputRow label="Minutes per quote — current" prop="minCurrent" suffix="min" step={5} />
+        <InputRow label="Minutes per quote — CoverForce" prop="minCF" suffix="min" step={1} />
+        <InputRow label="Blended staff hourly cost" prop="hourlyCost" prefix="$" step={5} />
+        <InputRow
+          label="Number of producers / underwriters"
+          prop="staffCount"
+          step={1}
+          note="Used to calculate capacity unlock"
+        />
+      </SidebarAccordion>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-4 font-heading flex items-center"><Wrench className="w-4 h-4 text-[#3834a4] mr-2" /> Quality & Compliance</h3>
-        <InputRow label="Manual Error Rate — Current" prop="errorCurrent" suffix="%" step="0.5" />
-        <InputRow label="Manual Error Rate — CoverForce" prop="errorCF" suffix="%" step="0.5" />
-        <InputRow label="Cost per Error / Rework Event" prop="costPerError" prefix="$" step="25" />
-      </div>
+      <SidebarAccordion
+        title="Quality & Compliance"
+        icon={Wrench}
+        open={openSection === "quality"}
+        onToggle={() => toggleSection("quality")}
+      >
+        <InputRow label="Manual error rate — current" prop="errorCurrent" suffix="%" step={0.5} />
+        <InputRow label="Manual error rate — CoverForce" prop="errorCF" suffix="%" step={0.5} />
+        <InputRow label="Cost per error / rework event" prop="costPerError" prefix="$" step={25} />
+      </SidebarAccordion>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-4 font-heading flex items-center"><Blocks className="w-4 h-4 text-[#3834a4] mr-2" /> Technology Investment</h3>
-        <InputRow label="CoverForce Implementation Fee" prop="implFee" prefix="$" step="1000" />
-        <InputRow label="CoverForce Monthly Fee" prop="monthlyFee" prefix="$" step="500" />
-        <hr className="border-gray-200 my-4" />
-        <InputRow label="In-House Build Cost (Year 1)" prop="buildYear1" prefix="$" step="50000" />
-        <InputRow label="In-House Annual Maintenance" prop="buildAnnual" prefix="$" step="10000" />
-        <InputRow label="IT Staff Hourly Rate" prop="itRate" prefix="$" step="5" />
-        <InputRow label="IT Hours/Month on Maintenance" prop="itHours" step="5" note="Ongoing hours to maintain in-house connections" />
-        <hr className="border-gray-200 my-4" />
-        <InputRow label="Carrier API Integrations (Current)" prop="carrierIntegrations" step="1" note="Each integration = dev + annual maintenance cost. Complexity scales with every carrier added." />
-      </div>
-
+      <SidebarAccordion
+        title="Technology Investment"
+        icon={Blocks}
+        open={openSection === "technology"}
+        onToggle={() => toggleSection("technology")}
+      >
+        <InputRow label="CoverForce implementation fee" prop="implFee" prefix="$" step={1000} />
+        <InputRow label="CoverForce monthly fee" prop="monthlyFee" prefix="$" step={500} />
+        <div className="my-4 border-t border-neutral-200" />
+        <InputRow label="In-house build cost (year 1)" prop="buildYear1" prefix="$" step={50000} />
+        <InputRow label="In-house annual maintenance" prop="buildAnnual" prefix="$" step={10000} />
+        <InputRow label="IT staff hourly rate" prop="itRate" prefix="$" step={5} />
+        <InputRow
+          label="IT hours/month on maintenance"
+          prop="itHours"
+          step={5}
+          note="Ongoing hours to maintain in-house connections"
+        />
+        <div className="my-4 border-t border-neutral-200" />
+        <InputRow
+          label="Carrier API integrations (current)"
+          prop="carrierIntegrations"
+          step={1}
+          note="Each integration = dev + annual maintenance cost. Complexity scales with every carrier added."
+        />
+      </SidebarAccordion>
     </aside>
   );
 }

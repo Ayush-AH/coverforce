@@ -1,19 +1,58 @@
-import React, { useState } from 'react';
-import { CalculatorInputs, SEGMENTS, CalculationResult } from '@/lib/calculations';
-import { exportToCSV, exportToPDF, copyShareText } from '@/lib/exportUtils';
-import { Copy, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
-import Button from '@/components/common/Button';
+import React, { useState } from "react";
+import { CalculatorInputs, SEGMENTS, CalculationResult } from "@/lib/calculations";
+import { exportToCSV, exportToPDF, copyShareText } from "@/lib/exportUtils";
+import { Copy, FileSpreadsheet, FileText } from "lucide-react";
+import Button from "@/components/common/Button";
 
 interface Props {
   inputs: CalculatorInputs;
-  updateInput: (key: keyof CalculatorInputs, value: any) => void;
+  updateInput: <K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) => void;
   applySegment: (segment: keyof typeof SEGMENTS) => void;
   results: CalculationResult;
 }
 
+const SEGMENT_OPTIONS = [
+  { id: "startup" as const, label: "Startup" },
+  { id: "mid" as const, label: "Mid-Market" },
+  { id: "enterprise" as const, label: "Enterprise" },
+];
+
+const PROJECTION_OPTIONS = [3, 5] as const;
+
+function ControlLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="mb-2 block font-heading text-xs font-medium text-[#5B35E0]">
+      {children}
+    </span>
+  );
+}
+
+function SegmentButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-lg border px-3.5 py-2 font-heading text-xs font-semibold tracking-tight transition-colors md:px-4 ${
+        active
+          ? "border-[#3834a4] bg-[#3834a4] text-white shadow-sm"
+          : "border-[#3834a4] bg-white text-[#121C49] hover:bg-[#121C49]/5"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function CompanyBar({ inputs, updateInput, applySegment, results }: Props) {
-  const [activeSegment, setActiveSegment] = useState<keyof typeof SEGMENTS>('mid');
-  const [isExporting, setIsExporting] = useState(false);
+  const [activeSegment, setActiveSegment] = useState<keyof typeof SEGMENTS>("mid");
 
   const handleSegmentClick = (seg: keyof typeof SEGMENTS) => {
     setActiveSegment(seg);
@@ -21,84 +60,81 @@ export default function CompanyBar({ inputs, updateInput, applySegment, results 
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 md:px-10 mt-20">
-      <div className="flex-1">
-        <div className="flex items-center gap-3">
+    <div className="border-b border-neutral-200 pt-20 pb-6 md:pt-24 md:pb-5">
+      <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+        <div className="min-w-0 flex-1">
+          <ControlLabel>Company</ControlLabel>
           <input
             type="text"
-            className="bg-transparent border-b border-gray-200 outline-none text-xl md:text-2xl font-bold text-[#0a143b] placeholder-gray-400 focus:border-[#3834a4] transition-colors pb-1 max-w-[300px]"
-            placeholder="Company Name"
+            className="w-full max-w-xl border-b border-neutral-200 bg-transparent pb-2 font-heading text-2xl font-semibold tracking-tight text-[#0a143b] outline-none transition-colors placeholder:text-[#8296B0] focus:border-[#5B35E0] md:text-3xl"
+            placeholder="Company name"
             value={inputs.companyName}
-            onChange={e => updateInput('companyName', e.target.value)}
+            onChange={(e) => updateInput("companyName", e.target.value)}
           />
         </div>
-      </div>
 
-      <div className="flex items-center gap-3">
-        <div className="text-xs font-semibold text-[#50617a] uppercase tracking-widest font-heading">Company Size</div>
-        <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200/50">
-          {(['startup', 'mid', 'enterprise'] as const).map(seg => (
-            <button
-              key={seg}
-              onClick={() => handleSegmentClick(seg)}
-              className={`px-3 py-1.5 text-[11.5px] font-semibold rounded-md transition-all ${activeSegment === seg
-                ? 'bg-white text-[#0a143b] shadow-sm'
-                : 'text-[#50617a] hover:text-[#0a143b] hover:bg-gray-200/50'
-                }`}
+        <div className="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:items-end lg:gap-8">
+          <div>
+            <ControlLabel>Company size</ControlLabel>
+            <div className="flex flex-wrap gap-2">
+              {SEGMENT_OPTIONS.map(({ id, label }) => (
+                <SegmentButton
+                  key={id}
+                  active={activeSegment === id}
+                  onClick={() => handleSegmentClick(id)}
+                >
+                  {label}
+                </SegmentButton>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <ControlLabel>Projection</ControlLabel>
+            <div className="flex flex-wrap gap-2">
+              {PROJECTION_OPTIONS.map((years) => (
+                <SegmentButton
+                  key={years}
+                  active={inputs.projYears === years}
+                  onClick={() => updateInput("projYears", years)}
+                >
+                  {years} years
+                </SegmentButton>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 sm:border-l sm:border-neutral-200 sm:pl-6">
+            <Button
+              onClick={() => copyShareText(results, inputs.companyName)}
+              variant="outline"
+              size="sm"
+              icon={Copy}
+              title="Copy executive summary to clipboard"
             >
-              {seg === 'startup' ? 'Startup' : seg === 'mid' ? 'Mid-Market' : 'Enterprise'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="text-xs font-semibold text-[#50617a] uppercase tracking-widest font-heading">Projection</div>
-        <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200/50">
-          {[3, 5].map(years => (
-            <button
-              key={years}
-              onClick={() => updateInput('projYears', years)}
-              className={`px-3 py-1.5 text-[11.5px] font-semibold rounded-md transition-all ${inputs.projYears === years
-                ? 'bg-white text-[#0a143b] shadow-sm'
-                : 'text-[#50617a] hover:text-[#0a143b] hover:bg-gray-200/50'
-                }`}
+              Copy
+            </Button>
+            <Button
+              onClick={() => exportToCSV(results, inputs.companyName)}
+              variant="outline"
+              size="sm"
+              icon={FileSpreadsheet}
+              title="Export model to CSV"
             >
-              {years} Years
-            </button>
-          ))}
+              CSV
+            </Button>
+            <Button
+              onClick={() => exportToPDF("calculator-main-view", inputs.companyName)}
+              variant="outline"
+              size="sm"
+              icon={FileText}
+              title="Print or save as PDF"
+              className="print:hidden"
+            >
+              PDF
+            </Button>
+          </div>
         </div>
-      </div>
-
-      <div className="flex items-center gap-4 border-l border-gray-200 pl-4 md:pl-6 ml-2">
-        <Button
-          onClick={() => copyShareText(results, inputs.companyName)}
-          variant="outline"
-          size="sm"
-          icon={Copy}
-          title="Copy Executive Summary to Clipboard"
-        >
-          Copy
-        </Button>
-        <Button
-          onClick={() => exportToCSV(results, inputs.companyName)}
-          variant="outline"
-          size="sm"
-          icon={FileSpreadsheet}
-          title="Export Model to CSV"
-        >
-          CSV
-        </Button>
-        <Button
-          onClick={() => exportToPDF('calculator-main-view', inputs.companyName)}
-          variant="outline"
-          size="sm"
-          icon={FileText}
-          title="Print or Save as PDF"
-          className="print:hidden"
-        >
-          PDF
-        </Button>
       </div>
     </div>
   );
