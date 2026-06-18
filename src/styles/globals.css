@@ -65,7 +65,7 @@ button {
   display: flex;
   width: max-content;
   align-items: center;
-  gap: 3.5rem;
+  gap: 5.5rem;
   animation: logo-marquee-left 42s linear infinite;
   will-change: transform;
 }
@@ -85,7 +85,7 @@ button {
 
 @media (min-width: 768px) {
   .logo-marquee-track {
-    gap: 5rem;
+    gap: 8rem;
   }
 
   .logo-marquee-viewport--offset {

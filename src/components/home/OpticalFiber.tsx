@@ -21,13 +21,16 @@ type OpticalFiberProps = {
   glowVisible?: boolean;
 };
 
-const HERO_LOGOS = Array.from({ length: 7 }, (_, i) => `/images/hero/logo${i + 1}.svg`);
-const MAX_TIP_LOGOS = 7;
-const LOGO_SIZE_MIN = 60;
-const LOGO_SIZE_MAX = 80;
-const MIN_FIBER_INDEX_GAP = 10;
-const MIN_SCREEN_GAP = 1.12;
-const MIN_TIP_LENGTH = 0.42;
+const NETWORK_LOGOS = Array.from(
+  { length: 12 },
+  (_, i) => `/images/network/logo (${i + 1}).png`,
+);
+const MAX_TIP_LOGOS = 8;
+const LOGO_SIZE_MIN = 52;
+const LOGO_SIZE_MAX = 72;
+const MIN_SCREEN_GAP = 0.72;
+const MIN_TIP_LENGTH = 0.28;
+const VIEWPORT_MARGIN = 28;
 
 type LogoTraveler = {
   el: HTMLImageElement;
@@ -40,6 +43,7 @@ type LogoTraveler = {
   size: number;
   screenX: number;
   screenY: number;
+  offScreenTime: number;
 };
 
 export default function OpticalFiber({
@@ -312,7 +316,8 @@ export default function OpticalFiber({
     const _end = new THREE.Vector3();
     const _tipWorld = new THREE.Vector3();
     const logoTravelers: LogoTraveler[] = [];
-    let spawnCooldown = 0.35;
+    let spawnCooldown = 0;
+    let initialFillDone = false;
 
     const projectFiberTip = (fiberIndex: number, width: number, height: number) => {
       _tipWorld.set(
@@ -329,26 +334,41 @@ export default function OpticalFiber({
       };
     };
 
-    const pickTipFiber = () => {
-      const pool: number[] = [];
+    const getOnScreenFiberTips = (width: number, height: number) => {
+      const tips: { index: number; x: number; y: number }[] = [];
+
       for (let i = 0; i < LINE_COUNT; i++) {
         if (fibers[i].lengthT < MIN_TIP_LENGTH) continue;
-        const weight = 1 + Math.floor(fibers[i].lengthT * 4);
-        for (let w = 0; w < weight; w++) pool.push(i);
+
+        const screenPos = projectFiberTip(i, width, height);
+        if (!screenPos) continue;
+
+        if (
+          screenPos.x < VIEWPORT_MARGIN ||
+          screenPos.x > width - VIEWPORT_MARGIN ||
+          screenPos.y < VIEWPORT_MARGIN ||
+          screenPos.y > height - VIEWPORT_MARGIN
+        ) {
+          continue;
+        }
+
+        tips.push({ index: i, x: screenPos.x, y: screenPos.y });
       }
-      if (!pool.length) return Math.floor(Math.random() * LINE_COUNT);
-      return pool[Math.floor(Math.random() * pool.length)];
+
+      return tips;
+    };
+
+    const fillLogoSlots = () => {
+      for (let i = 0; i < MAX_TIP_LOGOS * 8 && logoTravelers.length < MAX_TIP_LOGOS; i++) {
+        spawnLogoTraveler();
+      }
     };
 
     const isSpawnSlotClear = (
-      fiberIndex: number,
       size: number,
       screenPos: { x: number; y: number },
     ) => {
       for (const traveler of logoTravelers) {
-        if (traveler.fiberIndex === fiberIndex) return false;
-        if (Math.abs(traveler.fiberIndex - fiberIndex) < MIN_FIBER_INDEX_GAP) return false;
-
         const minDist = ((traveler.size + size) / 2) * MIN_SCREEN_GAP;
         if (Math.hypot(screenPos.x - traveler.screenX, screenPos.y - traveler.screenY) < minDist) {
           return false;
@@ -359,8 +379,8 @@ export default function OpticalFiber({
 
     const pickLogoSrc = () => {
       const active = new Set(logoTravelers.map((t) => t.logoSrc));
-      const available = HERO_LOGOS.filter((src) => !active.has(src));
-      const pool = available.length ? available : HERO_LOGOS;
+      const available = NETWORK_LOGOS.filter((src) => !active.has(src));
+      const pool = available.length ? available : NETWORK_LOGOS;
       return pool[Math.floor(Math.random() * pool.length)];
     };
 
@@ -373,16 +393,21 @@ export default function OpticalFiber({
       if (!width || !height) return;
 
       const size = LOGO_SIZE_MIN + Math.random() * (LOGO_SIZE_MAX - LOGO_SIZE_MIN);
+      const onScreenTips = getOnScreenFiberTips(width, height);
+      if (!onScreenTips.length) return;
 
       let chosenFiber = -1;
       let chosenPos: { x: number; y: number } | null = null;
 
-      for (let attempt = 0; attempt < 28; attempt++) {
-        const fiberIndex = pickTipFiber();
-        const screenPos = projectFiberTip(fiberIndex, width, height);
-        if (!screenPos || !isSpawnSlotClear(fiberIndex, size, screenPos)) continue;
-        chosenFiber = fiberIndex;
-        chosenPos = screenPos;
+      const shuffled = onScreenTips
+        .map((tip) => ({ tip, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ tip }) => tip);
+
+      for (const tip of shuffled) {
+        if (!isSpawnSlotClear(size, tip)) continue;
+        chosenFiber = tip.index;
+        chosenPos = { x: tip.x, y: tip.y };
         break;
       }
 
@@ -400,7 +425,7 @@ export default function OpticalFiber({
       img.style.left = `${chosenPos.x}px`;
       img.style.top = `${chosenPos.y}px`;
       img.style.opacity = "0";
-      img.style.transform = "translate(-50%, -50%) rotate(180deg)";
+      img.style.transform = "translate(-50%, -50%)";
       logosLayer.appendChild(img);
 
       logoTravelers.push({
@@ -408,19 +433,15 @@ export default function OpticalFiber({
         fiberIndex: chosenFiber,
         logoSrc,
         life: 0,
-        maxLife: 4.8 + Math.random() * 2.4,
-        fadeIn: 0.38 + Math.random() * 0.18,
+        maxLife: 5.5 + Math.random() * 2.5,
+        fadeIn: 0.22 + Math.random() * 0.12,
         fadeOut: 0.75 + Math.random() * 0.35,
         size,
         screenX: chosenPos.x,
         screenY: chosenPos.y,
+        offScreenTime: 0,
       });
     };
-
-    if (!reducedMotion) {
-      spawnLogoTraveler();
-      spawnLogoTraveler();
-    }
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -507,26 +528,45 @@ export default function OpticalFiber({
       dotGeo.attributes.position.needsUpdate = true;
 
       if (!reducedMotion) {
-        spawnCooldown -= delta;
-        if (spawnCooldown <= 0) {
-          spawnCooldown = 0.55 + Math.random() * 1.1;
-          if (Math.random() > 0.2) spawnLogoTraveler();
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        if (!initialFillDone && width > 0 && height > 0) {
+          initialFillDone = true;
+          fillLogoSlots();
+        }
+
+        if (logoTravelers.length < MAX_TIP_LOGOS) {
+          spawnCooldown -= delta;
+          if (spawnCooldown <= 0) {
+            spawnLogoTraveler();
+            spawnCooldown = 0.12 + Math.random() * 0.18;
+          }
+        } else {
+          spawnCooldown = 0.12;
         }
 
         content.updateMatrixWorld(true);
 
-        const width = container.clientWidth;
-        const height = container.clientHeight;
+        const frameWidth = container.clientWidth;
+        const frameHeight = container.clientHeight;
 
         for (let j = logoTravelers.length - 1; j >= 0; j--) {
           const traveler = logoTravelers[j];
           traveler.life += delta;
 
-          const projected = projectFiberTip(traveler.fiberIndex, width, height);
+          const projected = projectFiberTip(traveler.fiberIndex, frameWidth, frameHeight);
 
           if (!projected) {
+            traveler.offScreenTime += delta;
             traveler.el.style.opacity = "0";
+            if (traveler.offScreenTime > 0.35) {
+              traveler.el.remove();
+              logoTravelers.splice(j, 1);
+              continue;
+            }
           } else {
+            traveler.offScreenTime = 0;
             traveler.screenX = projected.x;
             traveler.screenY = projected.y;
 
@@ -545,7 +585,7 @@ export default function OpticalFiber({
             traveler.el.style.left = `${traveler.screenX}px`;
             traveler.el.style.top = `${traveler.screenY}px`;
             traveler.el.style.opacity = String(opacity * 0.92);
-            traveler.el.style.transform = `translate(-50%, -50%) rotate(180deg) scale(${breathe})`;
+            traveler.el.style.transform = `translate(-50%, -50%) scale(${breathe})`;
           }
 
           if (traveler.life >= traveler.maxLife) {

@@ -7,12 +7,10 @@ import { useGSAP } from "@gsap/react";
 import Container from "../common/Container";
 import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
 
-const LOGOS = [
-    { src: "/images/logos/logo1.svg", alt: "RT Specialty" },
-    { src: "/images/logos/logo2.svg", alt: "First Connect" },
-    { src: "/images/logos/logo3.svg", alt: "Amwins" },
-    { src: "/images/logos/logo4.svg", alt: "Jencap" },
-] as const;
+const LOGOS = Array.from({ length: 15 }, (_, index) => ({
+    src: `/images/marquee/logo (${index + 1}).png`,
+    alt: `Partner logo ${index + 1}`,
+}));
 
 type MarqueeRowProps = {
     reverse?: boolean;
@@ -33,9 +31,9 @@ function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
                         <Image
                             src={logo.src}
                             alt=""
-                            width={207}
-                            height={74}
-                            className="h-7 w-auto object-contain grayscale contrast-200 brightness-0 md:h-9 lg:h-14"
+                            width={120}
+                            height={40}
+                            className="h-5 w-auto max-h-5 object-contain opacity-90 grayscale contrast-200 brightness-0 md:h-6 md:max-h-6 lg:h-7 lg:max-h-7"
                             draggable={false}
                         />
                     </div>
