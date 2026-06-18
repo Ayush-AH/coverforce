@@ -486,9 +486,9 @@ const Hero = () => {
 
         </div>
         {/* Network image — inside 100vh, pushed to bottom via justify-between */}
-        <div className="relative h-[min(420px,55vw)] w-full overflow-hidden md:h-[480px] lg:h-[580px] pb-20">
+        <div className="relative h-[min(420px,55vw)] w-full overflow-hidden md:h-[480px] lg:h-[550px] ">
           <div
-            className={`relative z-10 rotate-180 h-full w-full motion-reduce:translate-y-0 motion-reduce:opacity-100 ${networkVisible ? "translate-y-0 opacity-100" : "translate-y-[22%] opacity-0"
+            className={`relative z-10  h-full w-full motion-reduce:translate-y-0 motion-reduce:opacity-100 ${networkVisible ? "translate-y-0 opacity-100" : "translate-y-[22%] opacity-0"
               }`}
             style={{
               transition: `transform ${HOME_INTRO_NETWORK_MS}ms ${HOME_INTRO_EASE}, opacity ${HOME_INTRO_NETWORK_MS}ms ${HOME_INTRO_EASE}`,
