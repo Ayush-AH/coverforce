@@ -491,3 +491,18 @@ button {
     page-break-inside: avoid;
   }
 }
+
+/* Hero intro: hide reveal targets on first paint before GSAP runs */
+[data-intro-reveal="pending"] [data-hero-reveal] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-intro-reveal="pending"] [data-hero-reveal] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}

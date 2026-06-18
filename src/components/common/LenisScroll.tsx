@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { disableScrollRestoration, scrollToTop } from "@/lib/scrollToTop";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 
 type LenisScrollProps = {
   children: ReactNode;
@@ -12,8 +13,15 @@ export default function LenisScroll({ children }: LenisScrollProps) {
   const lenis = useRef<Lenis | null>(null);
   const pathname = usePathname();
 
+  useLayoutEffect(() => {
+    const restoreScrollRestoration = disableScrollRestoration();
+    scrollToTop();
+
+    return restoreScrollRestoration;
+  }, []);
+
   useEffect(() => {
-    lenis.current?.scrollTo(0, { immediate: true });
+    scrollToTop();
   }, [pathname]);
 
   useEffect(() => {
@@ -28,6 +36,7 @@ export default function LenisScroll({ children }: LenisScrollProps) {
 
     lenis.current = instance;
     window.lenis = instance;
+    scrollToTop();
 
     let frame: number;
     const raf = (time: number) => {
@@ -39,11 +48,31 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     const handleResize = () => {
       instance.resize();
     };
+
+    const handlePageShow = () => {
+      scrollToTop();
+    };
+
+    const handleLoad = () => {
+      scrollToTop();
+      window.requestAnimationFrame(() => scrollToTop());
+    };
+
     window.addEventListener("resize", handleResize);
+    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener("load", handleLoad);
+
+    const settleFrames = window.requestAnimationFrame(() => {
+      scrollToTop();
+      window.requestAnimationFrame(() => scrollToTop());
+    });
 
     return () => {
-      cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(settleFrames);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("load", handleLoad);
       instance.destroy();
       lenis.current = null;
       window.lenis = null;

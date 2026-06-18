@@ -86,6 +86,7 @@ const Header = () => {
   const styles = headerThemes[theme];
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const navBarRef = useRef<HTMLDivElement>(null);
+  const navRevealedRef = useRef(false);
 
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [renderedMenu, setRenderedMenu] = useState<string | null>(null);
@@ -113,10 +114,10 @@ const Header = () => {
       return;
     }
 
-    gsap.set(navBar, { yPercent: -100, opacity: 0 });
+    gsap.set(navBar, { yPercent: -100, autoAlpha: 0 });
   }, [introEnabled]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const navBar = navBarRef.current;
     if (!navBar || !introEnabled) return;
 
@@ -125,14 +126,16 @@ const Header = () => {
       return;
     }
 
-    if (introPhase === "text" || introPhase === "network" || introPhase === "done") {
-      gsap.to(navBar, {
-        yPercent: 0,
-        opacity: 1,
-        duration: HOME_INTRO_NAV_MS / 1000,
-        ease: "power3.out",
-      });
-    }
+    if (introPhase !== "nav" || navRevealedRef.current) return;
+
+    navRevealedRef.current = true;
+    gsap.to(navBar, {
+      yPercent: 0,
+      autoAlpha: 1,
+      duration: HOME_INTRO_NAV_MS / 1000,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
   }, [introEnabled, introPhase]);
 
   const clearCloseTimer = useCallback(() => {

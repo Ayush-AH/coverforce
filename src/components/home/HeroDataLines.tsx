@@ -1,19 +1,38 @@
 "use client";
 
-import { useMemo } from "react";
-
 type DataLine = {
   id: number;
-  left: number;
-  duration: number;
-  delay: number;
-  opacity: number;
+  left: string;
+  duration: string;
+  delay: string;
+  opacity: string;
 };
 
 function seededRandom(seed: number) {
   const x = Math.sin(seed * 9999) * 10000;
   return x - Math.floor(x);
 }
+
+function formatLine(index: number): DataLine {
+  const left = 4 + seededRandom(index + 1) * 92;
+  const duration = 4.5 + seededRandom(index + 3) * 4;
+  const delay = seededRandom(index + 4) * 10;
+  const opacity = 0.2 + seededRandom(index + 5) * 0.28;
+
+  return {
+    id: index,
+    left: `${left.toFixed(2)}%`,
+    duration: `${duration.toFixed(2)}s`,
+    delay: `${delay.toFixed(2)}s`,
+    opacity: opacity.toFixed(2),
+  };
+}
+
+const LINE_COUNT = 5;
+
+const DATA_LINES: DataLine[] = Array.from({ length: LINE_COUNT }, (_, index) =>
+  formatLine(index),
+);
 
 function DataLineMarker() {
   return (
@@ -26,41 +45,21 @@ function DataLineMarker() {
   );
 }
 
-type HeroDataLinesProps = {
-  visible?: boolean;
-};
-
-const LINE_COUNT = 5;
-
-const HeroDataLines = ({ visible = true }: HeroDataLinesProps) => {
-  const lines = useMemo<DataLine[]>(
-    () =>
-      Array.from({ length: LINE_COUNT }, (_, i) => ({
-        id: i,
-        left: 4 + seededRandom(i + 1) * 92,
-        duration: 4.5 + seededRandom(i + 3) * 4,
-        delay: seededRandom(i + 4) * 10,
-        opacity: 0.2 + seededRandom(i + 5) * 0.28,
-      })),
-    [],
-  );
-
-  if (!visible) return null;
-
+export default function HeroDataLines() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden motion-reduce:hidden"
+      className="pointer-events-none h-full w-full overflow-hidden motion-reduce:hidden"
       aria-hidden
     >
-      {lines.map((line) => (
+      {DATA_LINES.map((line) => (
         <div
           key={line.id}
           className="hero-data-drop absolute top-0 -translate-x-1/2 will-change-transform"
           style={{
-            left: `${line.left}%`,
-            ["--line-opacity" as string]: String(line.opacity),
-            animationDuration: `${line.duration}s`,
-            animationDelay: `${line.delay}s`,
+            left: line.left,
+            ["--line-opacity" as string]: line.opacity,
+            animationDuration: line.duration,
+            animationDelay: line.delay,
           }}
         >
           <DataLineMarker />
@@ -68,6 +67,4 @@ const HeroDataLines = ({ visible = true }: HeroDataLinesProps) => {
       ))}
     </div>
   );
-};
-
-export default HeroDataLines;
+}

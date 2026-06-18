@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { forwardRef, type ReactNode } from "react";
 import {
   containerPadding,
   DEFAULT_BORDER_COLOR,
@@ -17,17 +17,21 @@ type ContainerProps = {
   borderOpacity?: number;
 };
 
-const Container = ({
-  children,
-  className = "",
-  borderColor,
-  borderBottom = false,
-  borderOpacity = 1,
-}: ContainerProps) => {
+const Container = forwardRef<HTMLDivElement, ContainerProps>(function Container(
+  {
+    children,
+    className = "",
+    borderColor,
+    borderBottom = false,
+    borderOpacity = 1,
+  },
+  ref,
+) {
   const resolvedColor = borderColor ?? DEFAULT_BORDER_COLOR;
 
   return (
     <div
+      ref={ref}
       className={`relative z-10 mx-auto w-full max-w-7xl ${containerPadding} ${className}`}
       style={
         borderColor !== undefined
@@ -45,6 +49,6 @@ const Container = ({
       {children}
     </div>
   );
-};
+});
 
 export default Container;

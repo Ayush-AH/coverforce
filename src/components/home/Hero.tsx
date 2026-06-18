@@ -4,6 +4,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 import gsap from "gsap";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
+import { getSideBorderStyle } from "../common/containerStyles";
 import SectionRadialGlow from "../common/SectionRadialGlow";
 import dynamic from "next/dynamic";
 import { RiPlayFill } from "@remixicon/react";
@@ -18,8 +19,6 @@ import {
   HOME_INTRO_HERO_RISE_MS,
   HOME_INTRO_LOADER_FADE_MS,
   HOME_INTRO_LOADER_WAVE_MS,
-  HOME_INTRO_NAV_MS,
-  HOME_INTRO_NETWORK_MS,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
 import { animateLoaderWordsWave } from "@/lib/animateSplitTextReveal";
@@ -47,7 +46,6 @@ const Hero = () => {
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const [introSettled, setIntroSettled] = useState(!introEnabled);
   const [fiberGlowVisible, setFiberGlowVisible] = useState(!introEnabled);
-  const introComplete = !introEnabled || introPhase === "done";
   const isIntroWhiteBg =
     introEnabled &&
     !introSettled &&
@@ -60,7 +58,7 @@ const Hero = () => {
       introPhase === "loader-fade" ||
       introPhase === "loader-wave" ||
       introPhase === "hero-rise");
-  const networkVisible = !introEnabled || introPhase === "network" || introPhase === "done";
+  const introUiLocked = introEnabled && introPhase !== "done";
   const heroRiseStartedRef = useRef(false);
   const introFadeStartedRef = useRef(false);
   const introWaveStartedRef = useRef(false);
@@ -75,8 +73,11 @@ const Hero = () => {
   const titleSpacerRef = useRef<HTMLDivElement | null>(null);
   const titleLineRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
-  const textAnimatedRef = useRef(false);
-  const borderAnimatedRef = useRef(false);
+  const gdpLineRef = useRef<HTMLDivElement | null>(null);
+  const dataLinesRef = useRef<HTMLDivElement | null>(null);
+  const networkRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const revealAnimatedRef = useRef(false);
   const [borderOpacity, setBorderOpacity] = useState(introEnabled ? 0 : 1);
 
   const [activeIndex, setActiveIndex] = useState(1);
@@ -127,6 +128,31 @@ const Hero = () => {
       void document.fonts.ready.then(() => {
         if (!heroRiseStartedRef.current) centerIntroTitle();
       });
+    }
+  }, [introEnabled]);
+
+  useLayoutEffect(() => {
+    if (!introEnabled) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      sectionRef.current?.removeAttribute("data-intro-reveal");
+      return;
+    }
+
+    if (gdpLineRef.current) {
+      gsap.set(gdpLineRef.current, { autoAlpha: 0, y: 8 });
+    }
+    if (buttonsRef.current) {
+      gsap.set(buttonsRef.current, { autoAlpha: 0, y: 14 });
+    }
+    if (statsWrapRef.current) {
+      gsap.set(statsWrapRef.current, { autoAlpha: 0, y: 14 });
+    }
+    if (networkRef.current) {
+      gsap.set(networkRef.current, { autoAlpha: 0, y: "12%" });
+    }
+    if (dataLinesRef.current) {
+      gsap.set(dataLinesRef.current, { autoAlpha: 0 });
     }
   }, [introEnabled]);
 
@@ -235,78 +261,99 @@ const Hero = () => {
       return;
     }
 
-    if (introPhase !== "done") {
-      setFiberGlowVisible(false);
+    if (introPhase === "done") {
+      setFiberGlowVisible(true);
+    }
+  }, [introEnabled, introPhase]);
+
+  useLayoutEffect(() => {
+    if (!introEnabled || introPhase !== "nav" || revealAnimatedRef.current) return;
+    revealAnimatedRef.current = true;
+    setFiberGlowVisible(true);
+    sectionRef.current?.removeAttribute("data-intro-reveal");
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setBorderOpacity(1);
+      if (gdpLineRef.current) gsap.set(gdpLineRef.current, { clearProps: "all" });
+      if (buttonsRef.current) gsap.set(buttonsRef.current, { clearProps: "all" });
+      if (statsWrapRef.current) gsap.set(statsWrapRef.current, { clearProps: "all" });
+      if (networkRef.current) gsap.set(networkRef.current, { clearProps: "all" });
+      if (dataLinesRef.current) gsap.set(dataLinesRef.current, { clearProps: "all" });
       return;
     }
 
-    const timer = window.setTimeout(() => {
-      setFiberGlowVisible(true);
-    }, 560);
+    const revealDur = 0.5;
+    const tl = gsap.timeline({
+      defaults: { ease: "power2.out" },
+      onComplete: () => {
+        setBorderOpacity(1);
+        if (gdpLineRef.current) gsap.set(gdpLineRef.current, { clearProps: "all" });
+        if (buttonsRef.current) gsap.set(buttonsRef.current, { clearProps: "all" });
+        if (statsWrapRef.current) gsap.set(statsWrapRef.current, { clearProps: "all" });
+        if (networkRef.current) gsap.set(networkRef.current, { clearProps: "all" });
+        if (dataLinesRef.current) gsap.set(dataLinesRef.current, { clearProps: "all" });
+      },
+    });
 
-    return () => window.clearTimeout(timer);
+    const borderProxy = { value: 0 };
+    tl.fromTo(
+      borderProxy,
+      { value: 0 },
+      {
+        value: 1,
+        duration: revealDur,
+        ease: "power3.out",
+        onUpdate: () => {
+          const el = containerRef.current;
+          if (!el) return;
+          Object.assign(el.style, getSideBorderStyle("#FFFFFF33", borderProxy.value));
+        },
+      },
+      0,
+    );
+
+    if (gdpLineRef.current) {
+      tl.to(
+        gdpLineRef.current,
+        { autoAlpha: 1, y: 0, duration: revealDur },
+        0,
+      );
+    }
+
+    if (buttonsRef.current) {
+      tl.to(
+        buttonsRef.current,
+        { autoAlpha: 1, y: 0, duration: revealDur },
+        0,
+      );
+    }
+
+    if (statsWrapRef.current) {
+      tl.to(
+        statsWrapRef.current,
+        { autoAlpha: 1, y: 0, duration: revealDur },
+        0.05,
+      );
+    }
+
+    if (networkRef.current) {
+      tl.to(
+        networkRef.current,
+        { autoAlpha: 1, y: 0, duration: revealDur, ease: "power2.out" },
+        0.08,
+      );
+    }
+
+    if (dataLinesRef.current) {
+      tl.to(dataLinesRef.current, { autoAlpha: 1, duration: revealDur }, 0.04);
+    }
   }, [introEnabled, introPhase]);
 
   useEffect(() => {
     if (!introEnabled) {
       setBorderOpacity(1);
-      return;
     }
-
-    if (introPhase === "nav" && !borderAnimatedRef.current) {
-      borderAnimatedRef.current = true;
-      const borderProxy = { value: 0 };
-      gsap.fromTo(
-        borderProxy,
-        { value: 0 },
-        {
-          value: 1,
-          duration: HOME_INTRO_NAV_MS / 1000,
-          ease: "power3.out",
-          onUpdate: () => setBorderOpacity(borderProxy.value),
-        },
-      );
-    }
-  }, [introEnabled, introPhase]);
-
-  useEffect(() => {
-    if (introPhase !== "text" || textAnimatedRef.current) return;
-    textAnimatedRef.current = true;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    if (buttonsRef.current) {
-      gsap.set(buttonsRef.current, { opacity: 0, y: 18 });
-      gsap.to(buttonsRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.55,
-        ease: "power2.out",
-        onComplete: () => {
-          if (buttonsRef.current) {
-            gsap.set(buttonsRef.current, { clearProps: "transform" });
-          }
-        },
-      });
-    }
-
-    if (statsWrapRef.current) {
-      gsap.set(statsWrapRef.current, { opacity: 0, y: 18 });
-      gsap.to(statsWrapRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.55,
-        ease: "power2.out",
-        onComplete: () => {
-          if (statsWrapRef.current) {
-            gsap.set(statsWrapRef.current, { clearProps: "transform" });
-          }
-        },
-      });
-    }
-  }, [introPhase]);
+  }, [introEnabled]);
 
   useLayoutEffect(() => {
     const update = () => {
@@ -337,14 +384,22 @@ const Hero = () => {
   return (
     <section
       ref={sectionRef}
+      data-intro-reveal={introEnabled ? "pending" : undefined}
       className={`relative isolate overflow-hidden text-white ${sectionBgClass}`}
     >
-      <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="px-0! relative">
+      <Container
+        ref={containerRef}
+        borderColor="#FFFFFF33"
+        borderOpacity={borderOpacity}
+        className="px-0! relative"
+      >
 
 
         {/* ── 100vh block: heading + button + network ── */}
         <div className="relative z-10 flex h-screen flex-col justify-between pt-16 md:pt-20 lg:pt-20">
-          <HeroDataLines visible={networkVisible} />
+          <div ref={dataLinesRef} data-hero-reveal className="absolute inset-0 z-0">
+            <HeroDataLines />
+          </div>
 
           {/* Heading + CTA */}
           <div
@@ -352,7 +407,11 @@ const Hero = () => {
             className="relative z-10 flex flex-1 flex-col items-center justify-center text-center"
           >
             <div ref={titleSlotRef} className="relative z-30 mt-6 flex w-full justify-center">
-              <div className="absolute left-1/2 -top-9 z-20 -translate-x-1/2">
+              <div
+                ref={gdpLineRef}
+                data-hero-reveal
+                className="absolute left-1/2 -top-9 z-20 -translate-x-1/2"
+              >
                 <div className="inline-flex items-center gap-2 text-xs font-sans tracking-wide text-white/85">
                   <span className="whitespace-nowrap">Global GDP running on coverforce:</span>
                   <GdpCounter/>
@@ -399,10 +458,9 @@ const Hero = () => {
             </div>
             <div
               ref={buttonsRef}
+              data-hero-reveal
               className={`mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center ${
-                introEnabled && introPhase !== "text" && introPhase !== "done"
-                  ? "pointer-events-none opacity-0"
-                  : ""
+                introUiLocked ? "pointer-events-none" : ""
               }`}
             >
               <Button href="/" variant="primary">
@@ -416,14 +474,10 @@ const Hero = () => {
           {/* ── Stats — below the fold ── */}
           <div
             ref={statsWrapRef}
+            data-hero-reveal
             className={`relative motion-reduce:opacity-100 ${
-              introEnabled && introPhase !== "text" && introPhase !== "done"
-                ? "pointer-events-none opacity-0"
-                : "opacity-100"
+              introUiLocked ? "pointer-events-none" : ""
             }`}
-            style={{
-              transition: `opacity 500ms ${HOME_INTRO_EASE}`,
-            }}
           >
             <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
             <ul
@@ -486,13 +540,11 @@ const Hero = () => {
 
         </div>
         {/* Network image — inside 100vh, pushed to bottom via justify-between */}
-        <div className="relative h-[min(420px,55vw)] w-full overflow-hidden md:h-[480px] lg:h-[550px] ">
+        <div className="relative h-[min(420px,55vw)] w-full overflow-hidden md:h-[480px] lg:h-[500px] pt-10">
           <div
-            className={`relative z-10  h-full w-full motion-reduce:translate-y-0 motion-reduce:opacity-100 ${networkVisible ? "translate-y-0 opacity-100" : "translate-y-[22%] opacity-0"
-              }`}
-            style={{
-              transition: `transform ${HOME_INTRO_NETWORK_MS}ms ${HOME_INTRO_EASE}, opacity ${HOME_INTRO_NETWORK_MS}ms ${HOME_INTRO_EASE}`,
-            }}
+            ref={networkRef}
+            data-hero-reveal
+            className="relative z-10 h-full w-full motion-reduce:translate-y-0 motion-reduce:opacity-100"
             aria-label="Partner network"
           >
             <OpticalFiber

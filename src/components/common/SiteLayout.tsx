@@ -9,6 +9,7 @@ import {
   isPreNavIntroPhase,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
+import { scrollToTop } from "@/lib/scrollToTop";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import gsap from "gsap";
@@ -31,6 +32,7 @@ function SiteLayoutInner({ children }: { children: ReactNode }) {
     const id = window.requestAnimationFrame(() => {
       ScrollTrigger.refresh();
       window.lenis?.resize();
+      scrollToTop();
     });
 
     return () => window.cancelAnimationFrame(id);
@@ -67,6 +69,7 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
     const timeout = setTimeout(() => {
       ScrollTrigger.refresh();
       window.lenis?.resize();
+      scrollToTop();
     }, 500);
 
     return () => clearTimeout(timeout);

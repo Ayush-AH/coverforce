@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { scrollToTop } from "@/lib/scrollToTop";
+import { createContext, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 
 export type HomeIntroPhase =
   | "loader-in"
@@ -26,9 +27,11 @@ export const HOME_INTRO_LOADER_IN_MS = 400;
 export const HOME_INTRO_LOADER_FADE_MS = 550;
 export const HOME_INTRO_LOADER_WAVE_MS = 2000;
 export const HOME_INTRO_HERO_RISE_MS = 1100;
-export const HOME_INTRO_NAV_MS = 1200;
-export const HOME_INTRO_TEXT_MS = 1000;
-export const HOME_INTRO_NETWORK_MS = 850;
+export const HOME_INTRO_NAV_MS = 600;
+export const HOME_INTRO_REVEAL_MS = 650;
+/** @deprecated Use HOME_INTRO_REVEAL_MS */
+export const HOME_INTRO_TEXT_MS = HOME_INTRO_REVEAL_MS;
+export const HOME_INTRO_NETWORK_MS = 600;
 export const HOME_INTRO_EASE = "cubic-bezier(0.76, 0, 0.24, 1)";
 
 const PRE_NAV_PHASES: HomeIntroPhase[] = ["loader-in", "loader-fade", "loader-wave", "hero-rise"];
@@ -45,6 +48,11 @@ export function HomeIntroProvider({
   children: ReactNode;
 }) {
   const [phase, setPhase] = useState<HomeIntroPhase>(enabled ? "loader-in" : "done");
+
+  useLayoutEffect(() => {
+    if (!enabled) return;
+    scrollToTop();
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled) {
@@ -63,17 +71,13 @@ export function HomeIntroProvider({
     const loaderWaveAt = loaderFadeAt + HOME_INTRO_LOADER_FADE_MS;
     const heroRiseAt = loaderWaveAt + HOME_INTRO_LOADER_WAVE_MS;
     const navAt = heroRiseAt + HOME_INTRO_HERO_RISE_MS;
-    const textAt = navAt + HOME_INTRO_NAV_MS;
-    const networkAt = textAt + HOME_INTRO_TEXT_MS;
-    const doneAt = networkAt + HOME_INTRO_NETWORK_MS;
+    const doneAt = navAt + HOME_INTRO_REVEAL_MS;
 
     const timers = [
       setTimeout(() => setPhase("loader-fade"), loaderFadeAt),
       setTimeout(() => setPhase("loader-wave"), loaderWaveAt),
       setTimeout(() => setPhase("hero-rise"), heroRiseAt),
       setTimeout(() => setPhase("nav"), navAt),
-      setTimeout(() => setPhase("text"), textAt),
-      setTimeout(() => setPhase("network"), networkAt),
       setTimeout(() => setPhase("done"), doneAt),
     ];
 
@@ -81,13 +85,21 @@ export function HomeIntroProvider({
   }, [enabled]);
 
   useEffect(() => {
+    if (!enabled || phase === "done") return;
+    scrollToTop();
+  }, [enabled, phase]);
+
+  useEffect(() => {
     if (!enabled || phase === "done") {
       document.body.style.overflow = "";
       window.lenis?.start();
+      scrollToTop();
+      window.requestAnimationFrame(() => scrollToTop());
       return;
     }
 
     document.body.style.overflow = "hidden";
+    scrollToTop();
     window.lenis?.stop();
 
     return () => {
