@@ -30,6 +30,16 @@ export function positionToSpectrumColor(lng: number, lat = 0): string {
   return spectrumAt(t);
 }
 
+export function positionToBlueColor(lng: number, lat = 0): string {
+  const lngT = (lng + 180) / 360;
+  const latT = (lat + 90) / 180;
+  const t = lngT * 0.75 + latT * 0.25;
+  const r = Math.round(lerp(18, 72, t));
+  const g = Math.round(lerp(28, 99, t));
+  const b = Math.round(lerp(80, 190, t));
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 export function featureCentroidLngLat(feature: {
   geometry: { type: string; coordinates: unknown };
 }): { lat: number; lng: number } {

@@ -44,26 +44,14 @@ const WayCardDotGridScene = dynamic(() => import("./WayCardDotGridScene"), {
   ssr: false,
   loading: () => null,
 });
+const BrokersCardEarth = dynamic(() => import("@/components/home/BrokersCardEarth"), {
+  ssr: false,
+  loading: () => null,
+});
 const GlobeScene = dynamic(() => import("@/components/home/GlobeScene"), {
   ssr: false,
   loading: () => null,
 });
-
-function BrokersCardBgVideo() {
-  return (
-    <div className="h-full w-full overflow-hidden">
-      <video
-        className="block h-full w-full opacity-85 scale-120 min-h-full min-w-full object-cover object-center"
-        src="/videos/cardbg.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        aria-hidden
-      />
-    </div>
-  );
-}
 
 function MockPlaceholder({ className = "max-w-[290px]" }: { className?: string }) {
   return (
@@ -128,7 +116,7 @@ const WAY_CARDS: WayCardConfig[] = [
     tagline: "One workflow for every producer",
     variant: "light",
     background: "light",
-    backgroundScene: <BrokersCardBgVideo />,
+    backgroundScene: <BrokersCardEarth />,
     mock: <BrokerMockWithCardHover />,
     modalPreview: <BrokerMock />,
   },

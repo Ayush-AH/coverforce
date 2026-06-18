@@ -6,6 +6,7 @@ import * as THREE from "three";
 // ─── constants ────────────────────────────────────────────────────────────────
 const COUNT_FULL = 1400;
 const COUNT_LITE = 880;
+const COUNT_AMBIENT = 680;
 const ATTRACT_DIST_SQ = 0.88 * 0.88;
 const RING_R = 0.9;
 const RING_CORE = 0.38;       // more particles on the ring spine
@@ -72,7 +73,15 @@ const fragmentShader = /* glsl */ `
 `;
 
 // ─── main particle component ──────────────────────────────────────────────────
-function Particles({ count }: { count: number }) {
+function Particles({
+  count,
+  tone = "warm",
+  soft = false,
+}: {
+  count: number;
+  tone?: "warm" | "blue";
+  soft?: boolean;
+}) {
   const meshRef = useRef<THREE.Points>(null!);
   const mouse = useRef({ x: 0, y: 0, active: false });
   const { camera, gl } = useThree();
@@ -139,23 +148,27 @@ function Particles({ count }: { count: number }) {
 
       // Slightly smaller point sprites → “thinner” particles.
       sizes[i] = onRing
-        ? 0.068 + Math.random() * 0.028
-        : 0.056 + Math.random() * 0.036;
-      alphas[i] = onRing
+        ? (soft ? 0.058 : 0.068) + Math.random() * (soft ? 0.022 : 0.028)
+        : (soft ? 0.048 : 0.056) + Math.random() * (soft ? 0.028 : 0.036);
+      const alphaBase = onRing
         ? 0.92 + Math.random() * 0.08
         : 0.5 + Math.random() * 0.38;
+      alphas[i] = soft ? alphaBase * 0.62 : alphaBase;
 
-      // pink (top) → purple (bottom) by Y position
       const gradT = THREE.MathUtils.clamp((y / (RING_R + HALO_MAX) + 1) * 0.5, 0, 1);
-      const pink = [1.0, 0.43, 0.71];
-      const purple = [0.63, 0.25, 0.82];
-      colors[i * 3] = purple[0] + (pink[0] - purple[0]) * gradT;
-      colors[i * 3 + 1] = purple[1] + (pink[1] - purple[1]) * gradT;
-      colors[i * 3 + 2] = purple[2] + (pink[2] - purple[2]) * gradT;
+      const warmTop = [1.0, 0.43, 0.71];
+      const warmBottom = [0.63, 0.25, 0.82];
+      const blueTop = [0.55, 0.62, 0.92];
+      const blueBottom = [0.12, 0.18, 0.48];
+      const top = tone === "blue" ? blueTop : warmTop;
+      const bottom = tone === "blue" ? blueBottom : warmBottom;
+      colors[i * 3] = bottom[0] + (top[0] - bottom[0]) * gradT;
+      colors[i * 3 + 1] = bottom[1] + (top[1] - bottom[1]) * gradT;
+      colors[i * 3 + 2] = bottom[2] + (top[2] - bottom[2]) * gradT;
     }
 
     return { angles, baseRadii, noiseOffset, positions, velocities, sizes, alphas, colors, ringCore, haloSide, haloBaseX, haloBaseY, wavePhase };
-  }, [count]);
+  }, [count, soft, tone]);
 
   // ── build geometry ─────────────────────────────────────────────────────────
   const geometry = useMemo(() => {
@@ -302,16 +315,23 @@ function Particles({ count }: { count: number }) {
 type GlobeSceneProps = {
   className?: string;
   interactive?: boolean;
+  ambient?: boolean;
+  tone?: "warm" | "blue";
 };
 
 const RADIAL_BG =
   "radial-gradient(ellipse 95% 85% at 50% 50%, hsla(24, 92%, 70%, 0) 0%, rgba(249, 109, 149, 0.16) 32%, rgba(153, 61, 240, 0.1) 58%, rgba(125, 31, 255, 0.04) 78%, rgba(125, 31, 255, 0) 92%)";
 
-export default function GlobeScene({ className = "", interactive = false }: GlobeSceneProps) {
+export default function GlobeScene({
+  className = "",
+  interactive = false,
+  ambient = false,
+  tone = "warm",
+}: GlobeSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
-  const lite = interactive;
-  const count = lite ? COUNT_LITE : COUNT_FULL;
+  const lite = interactive || ambient;
+  const count = ambient ? COUNT_AMBIENT : lite ? COUNT_LITE : COUNT_FULL;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -327,23 +347,25 @@ export default function GlobeScene({ className = "", interactive = false }: Glob
   return (
     <div
       ref={containerRef}
-      className={`relative h-full w-full overflow-hidden bg-white ${interactive ? "pointer-events-auto" : ""} ${className}`}
+      className={`relative h-full w-full overflow-hidden ${ambient ? "" : "bg-white"} ${interactive ? "pointer-events-auto" : ""} ${className}`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{ background: RADIAL_BG }}
-        aria-hidden
-      />
+      {!ambient ? (
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: RADIAL_BG }}
+          aria-hidden
+        />
+      ) : null}
       <Canvas
         orthographic
         frameloop={visible ? "always" : "never"}
         camera={{ position: [0, 0, 10], zoom: 185, near: 0.1, far: 100 }}
-        className={`relative z-[1] ${interactive ? "pointer-events-auto" : ""}`}
-        style={{ width: "100%", height: "100%", pointerEvents: interactive ? "auto" : undefined }}
-        gl={{ antialias: !lite, alpha: true, powerPreference: "high-performance" }}
+        className={`relative z-[1] ${interactive ? "pointer-events-auto" : "pointer-events-none"}`}
+        style={{ width: "100%", height: "100%", pointerEvents: interactive ? "auto" : "none" }}
+        gl={{ antialias: !lite, alpha: true, powerPreference: lite ? "low-power" : "high-performance" }}
         dpr={lite ? [1, 1.25] : [1, 1.5]}
       >
-        <Particles count={count} />
+        <Particles count={count} tone={tone} soft={ambient} />
       </Canvas>
     </div>
   );

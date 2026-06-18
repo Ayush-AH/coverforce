@@ -19,7 +19,7 @@ const RING_PROPAGATION_SPEED = 3;
 const aspect = 1.2;
 const cameraZ = 380;
 
-import { featureCentroidLngLat, positionToSpectrumColor } from "@/lib/globe-colors";
+import { featureCentroidLngLat, positionToBlueColor, positionToSpectrumColor } from "@/lib/globe-colors";
 
 type Position = {
   order: number;
@@ -59,6 +59,7 @@ export type GlobeConfig = {
   lite?: boolean;
   hexPolygonResolution?: number;
   maxDpr?: number;
+  tone?: "spectrum" | "blue";
 };
 
 interface WorldProps {
@@ -175,7 +176,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
         const { lat, lng } = featureCentroidLngLat(
           d as { geometry: { type: string; coordinates: unknown } },
         );
-        return positionToSpectrumColor(lng, lat);
+        return globeConfig.tone === "blue"
+          ? positionToBlueColor(lng, lat)
+          : positionToSpectrumColor(lng, lat);
       });
 
     globeRef.current
@@ -228,6 +231,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
     defaultProps.arcTime,
     defaultProps.rings,
     defaultProps.maxRings,
+    globeConfig.hexPolygonResolution,
+    globeConfig.lite,
+    globeConfig.tone,
   ]);
 
   // Handle rings animation with cleanup
@@ -298,7 +304,7 @@ export function World({ visible = true, ...props }: WorldProps) {
       gl={{
         antialias: !globeConfig.lite,
         alpha: true,
-        powerPreference: "high-performance",
+        powerPreference: globeConfig.lite ? "low-power" : "high-performance",
       }}
     >
       <WebGLRendererConfig maxDpr={maxDpr} />
