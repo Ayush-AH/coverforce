@@ -203,8 +203,7 @@ const Footer = () => {
           {/* ── Bottom bar (mirrors Lumena bottom bar) ── */}
           <div className="relative flex flex-wrap items-center justify-between gap-4 border-t border-neutral-200 py-6 font-heading text-xs font-medium tracking-wider text-[#3F3F3F] md:py-8">
             {/* Left: copyright */}
-            <p>© {new Date().getFullYear()} — Copyright Insuredge Technologies</p>
-
+            <p>CoverForce, Inc. All Rights Reserved, {new Date().getFullYear()}.</p>
             {/* Center: back to top */}
             <Link
               href="#"
