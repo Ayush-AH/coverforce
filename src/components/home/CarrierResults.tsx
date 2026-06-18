@@ -51,13 +51,13 @@ const carrierResults: CarrierResult[] = [
 
 function CarrierLogo({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative h-8 w-[112px] max-w-full md:h-9 md:w-[128px]">
+    <div className="relative h-10 w-[132px] max-w-full md:h-11 md:w-[148px]">
       <Image
         src={src}
         alt={alt}
         fill
         className="object-contain object-left"
-        sizes="(max-width: 768px) 112px, 128px"
+        sizes="(max-width: 768px) 132px, 148px"
       />
     </div>
   );
@@ -66,7 +66,7 @@ function CarrierLogo({ src, alt }: { src: string; alt: string }) {
 function CarrierCard({ result }: { result: CarrierResult }) {
   return (
     <article className="flex flex-col gap-10 lg:gap-12 lg:px-8 xl:px-10 first:lg:pl-0 last:lg:pr-0">
-      <div className="min-h-[2.25rem]">
+      <div className="min-h-[2.75rem]">
         <CarrierLogo src={result.logo} alt={result.logoAlt} />
       </div>
       <div className="space-y-3">
