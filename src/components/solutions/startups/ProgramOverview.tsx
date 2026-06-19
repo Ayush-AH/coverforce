@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Container from "@/components/common/Container";
+import Button from "@/components/common/Button";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 type ProgramItem = {
@@ -47,45 +48,48 @@ const ProgramOverview = () => {
   return (
     <section id="program-overview" ref={sectionRef} className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
-        <div className="flex flex-col gap-12 py-16 md:gap-14 md:py-20 lg:gap-16 lg:py-24">
+        <div className="flex flex-col gap-10 py-16 md:gap-12 md:py-20 lg:gap-42 lg:py-24">
           <div
             ref={headerRef}
-            className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-12"
+            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
           >
-            <div className="space-y-5">
-              <p className="text-[0.6875rem] font-sans font-medium uppercase tracking-[0.18em] text-[#8B95A8]">
-                <span className="mr-2 text-[#A483FE]">•</span>
-                Program overview
-              </p>
+            <div className="flex flex-col justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[2.5rem] lg:leading-[1.1]"
+                className="max-w-sm text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
               >
-                <span data-split>Everything you need to launch.</span>
+                <span data-split>Everything you need to </span>
+                <span
+                  data-split
+                  className="bg-linear-to-r from-[#A483FE] via-[#8B7CFF] to-[#C4B5FF] bg-clip-text text-transparent"
+                >
+                  launch.
+                </span>
               </h2>
             </div>
 
-            <p
-              ref={descRef}
-              className="max-w-md font-sans text-sm font-regular leading-[1.5] text-[#50617a] md:text-[1.125rem] lg:pt-8"
-            >
-              We&apos;ve packaged the infrastructure, pricing, and relationships that used to
-              take years to build so you can focus on customer acquisition and placement.
-            </p>
+            <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
+              <p
+                ref={descRef}
+                className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
+              >
+                We&apos;ve packaged the infrastructure, pricing, and relationships that used to take years to build so you can focus on customer acquisition and placement.
+              </p>
+            </div>
           </div>
 
-          <div className="grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-10">
+          <div className="grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-24">
             {programItems.map((item) => (
               <article key={item.number} className="space-y-4">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-2xl font-heading font-medium leading-none text-[#4F63E8] md:text-[1.75rem]">
+                  <span className="text-2xl font-heading font-medium leading-none text-[#0101BE] md:text-lg">
                     {item.number}
                   </span>
-                  <h3 className="text-lg font-heading font-medium leading-snug text-[#0a143b] md:text-xl">
+                  <h3 className="text-lg font-sans font-medium leading-snug text-[#000000] md:text-base">
                     {item.title}
                   </h3>
                 </div>
-                <p className="max-w-sm font-sans text-sm font-regular leading-relaxed text-[#50617a] md:text-[0.9375rem]">
+                <p className="max-w-sm font-sans text-sm font-regular leading-relaxed text-[#3E3E3E] md:text-sm">
                   {item.description}
                 </p>
               </article>

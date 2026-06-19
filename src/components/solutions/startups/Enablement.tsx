@@ -189,7 +189,7 @@ const Enablement = () => {
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
-        <div className="pb-16 md:pb-20 lg:pb-24">
+        <div className="py-16 md:py-20 lg:py-24">
           <div
             ref={headerRef}
             className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"

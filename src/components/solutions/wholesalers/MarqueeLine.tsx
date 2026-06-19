@@ -40,11 +40,11 @@ function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
   );
 }
 
-const MarqueeLine = () => {
+const MarqueeLine = ({ className }: { className?: string }) => {
   return (
     <section className="relative overflow-hidden">
       <Container borderColor="#53535380" borderBottom>
-        <div className="relative z-10 py-16 md:py-20 lg:py-46">
+        <div className={`relative z-10 py-16 md:py-20 lg:py-46 ${className}`}>
           <MarqueeRow />
         </div>
       </Container>

@@ -58,7 +58,7 @@ const WhosFor = () => {
             <div className="flex flex-col justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
+                className="max-w-sm text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
               >
                 <span data-split>Built for founders who are </span>
                 <span
@@ -92,13 +92,13 @@ const WhosFor = () => {
                 style={{ backgroundColor: "#FAFAFA" }}
               >
                 <p
-                  className="text-[0.6875rem] font-mono font-medium uppercase tracking-[0.14em]"
+                  className="text-sm font-mono font-medium uppercase"
                   style={{ color: "#3933A1" }}
                 >
                   {card.title}
                 </p>
                 <p
-                  className="mt-4 max-w-[16rem] font-sans text-sm font-regular leading-relaxed md:text-[0.9375rem]"
+                  className="mt-4 font-sans text-sm font-regular leading-relaxed md:text-sm"
                   style={{ color: "#3A34A5" }}
                 >
                   {card.description}
@@ -109,7 +109,7 @@ const WhosFor = () => {
                     alt=""
                     width={280}
                     height={200}
-                    className="h-auto w-full max-w-[14rem] object-contain object-bottom md:max-w-[16rem]"
+                    className="h-auto w-full max-w-[14rem] object-contain object-bottom md:max-w-[19rem]"
                   />
                 </div>
               </article>
