@@ -1,8 +1,9 @@
 "use client";
 
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
-import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
-import OperatingAiMock from "@/components/solutions/brokers/OperatingAiMock";
+import ProductDigitizationMock from "@/components/solutions/wholesalers/ProductDigitizationMock";
+import AiAppetiteEngineMock from "@/components/solutions/wholesalers/AiAppetiteEngineMock";
+import AiDocumentReaderMock from "@/components/solutions/wholesalers/AiDocumentReaderMock";
 import BrokerCodeControlsMock from "@/components/solutions/wholesalers/BrokerCodeControlsMock";
 
 const operatingRows = [
@@ -13,7 +14,7 @@ const operatingRows = [
       "AI turns emails, ACORDs, loss runs, and proposals into structured applications with 95%+ accuracy, then generates COIs from bound policy data eliminating manual rekeying.",
     stat: "95%+",
     statLabelLines: ["Extraction", "Accuracy"] as [string, string],
-    Mock: OperatingAiMock,
+    Mock: AiDocumentReaderMock,
   },
   {
     id: "appetite",
@@ -22,7 +23,7 @@ const operatingRows = [
       "Every submission is checked against live carrier appetite before underwriting, so your team avoids no-quote markets and gives agents faster answers.",
     stat: "40+",
     statLabelLines: ["Carriers In", "One Submission"] as [string, string],
-    Mock: OperatingAiMock,
+    Mock: AiAppetiteEngineMock,
   },
   {
     id: "broker-codes",
@@ -40,7 +41,7 @@ const operatingRows = [
       "Put your proprietary programs on API rails without rip-and-replace. CoverForce wraps existing systems into unified endpoints, giving retailers permitted access, cross-quoting, more at-bats, and full visibility before E&S escalation.",
     stat: "1",
     statLabelLines: ["Unified API", "For Programs"] as [string, string],
-    Mock: OperatingPlatformMock,
+    Mock: ProductDigitizationMock,
   },
 ];
 
@@ -49,8 +50,7 @@ export default function OperatingSystem() {
     <OperatingSystemSection
       sectionTitle={
         <>
-          Precision engineering for
-          wholesale distribution
+          Precision engineering for professional workflow
         </>
       }
       sectionDescription="See how fragmented broker workflows compare to CoverForce — from delegated intake through bind, on one platform built to scale your wholesale operation."
