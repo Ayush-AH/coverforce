@@ -178,7 +178,7 @@ const Workflow = () => {
                 </span>
                 <span data-split>.</span>
               </h2>
-              <Button href="/" variant="outline">
+              <Button href="/">
                 Start a quote
               </Button>
             </div>

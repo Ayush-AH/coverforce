@@ -14,7 +14,7 @@ type MarqueeRowProps = {
   offset?: boolean;
 };
 
-function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
+export function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps) {
   const items = [...LOGOS, ...LOGOS];
 
   return (

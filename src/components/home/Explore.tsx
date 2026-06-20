@@ -158,10 +158,10 @@ const Explore = () => {
             ref={buttonsRef}
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
           >
-            <Button href="/" variant="primary">
+            <Button href="/" balanced surface="on-dark">
               Request demo
             </Button>
-            <Button href="/" variant="secondary">
+            <Button href="/" balanced variant="secondary" surface="on-dark">
               Book a call
             </Button>
           </div>

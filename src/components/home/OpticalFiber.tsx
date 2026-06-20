@@ -17,9 +17,32 @@ type OpticalFiberProps = {
   fanHeight?: number;
   /** Shifts the fan horizontally inside the canvas. */
   fanOffsetX?: number;
-  /** Fade in the bottom-center white glow after the stats radial glow. */
+  /** Fiber line and glow color (hex). */
+  color?: string;
+  /** Enable bottom-center origin glow (3D sprites + CSS halo). */
+  originGlow?: boolean;
+  /** Fade in the CSS halo — used by home intro on dark hero. */
   glowVisible?: boolean;
 };
+
+function hexToRgb(hex: string) {
+  const normalized = hex.replace("#", "");
+  const num = parseInt(normalized, 16);
+  return {
+    r: ((num >> 16) & 255) / 255,
+    g: ((num >> 8) & 255) / 255,
+    b: (num & 255) / 255,
+  };
+}
+
+function hexToThreeColor(hex: string) {
+  return parseInt(hex.replace("#", ""), 16);
+}
+
+function hexToRgba(hex: string, alpha: number) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${alpha})`;
+}
 
 const NETWORK_LOGOS = Array.from(
   { length: 12 },
@@ -54,6 +77,8 @@ export default function OpticalFiber({
   fov = 75,
   fanHeight = 1,
   fanOffsetX = 0,
+  color = "#ffffff",
+  originGlow = false,
   glowVisible = true,
 }: OpticalFiberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -159,6 +184,9 @@ export default function OpticalFiber({
       smoothOffZ: number;
     }[] = [];
 
+    const fiberColor = hexToThreeColor(color);
+    const { r: fiberR, g: fiberG, b: fiberB } = hexToRgb(color);
+
     for (let i = 0; i < LINE_COUNT; i++) {
       const baseAngle =
         LINE_COUNT > 1 ? -halfSpread + (i / (LINE_COUNT - 1)) * 2 * halfSpread : 0;
@@ -185,7 +213,7 @@ export default function OpticalFiber({
 
       const geo = new THREE.BufferGeometry().setFromPoints([ORIGIN.clone(), end.clone()]);
       const mat = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: fiberColor,
         transparent: true,
         opacity,
         blending: THREE.AdditiveBlending,
@@ -223,9 +251,11 @@ export default function OpticalFiber({
       dotPositions[i * 3 + 1] = ep.y;
       dotPositions[i * 3 + 2] = ep.z;
 
-      dotColors[i * 3] = THREE.MathUtils.lerp(1.0, 0.72, t);
-      dotColors[i * 3 + 1] = THREE.MathUtils.lerp(1.0, 0.7, t);
-      dotColors[i * 3 + 2] = 1.0;
+      const fade = THREE.MathUtils.lerp(1.0, 0.65, t);
+
+      dotColors[i * 3] = fiberR * fade;
+      dotColors[i * 3 + 1] = fiberG * fade;
+      dotColors[i * 3 + 2] = fiberB * fade;
     }
 
     const dotGeo = new THREE.BufferGeometry();
@@ -243,46 +273,51 @@ export default function OpticalFiber({
     });
     content.add(new THREE.Points(dotGeo, dotMat));
 
-    const buildGlowTexture = (size = 256) => {
-      const c = document.createElement("canvas");
-      c.width = c.height = size;
-      const ctx = c.getContext("2d")!;
-      const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-      grad.addColorStop(0.0, "rgba(255,255,255,1.0)");
-      grad.addColorStop(0.1, "rgba(210,205,255,0.85)");
-      grad.addColorStop(0.35, "rgba(150,140,255,0.35)");
-      grad.addColorStop(0.7, "rgba(80,70,200,0.10)");
-      grad.addColorStop(1.0, "rgba(0,0,0,0.00)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, size, size);
-      return new THREE.CanvasTexture(c);
-    };
+    let glowSprite: THREE.Sprite | null = null;
+    let innerSprite: THREE.Sprite | null = null;
 
-    const glowSprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: buildGlowTexture(512),
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        opacity: 1.0,
-      }),
-    );
-    glowSprite.scale.set(5, 5, 1);
-    glowSprite.position.copy(ORIGIN);
-    content.add(glowSprite);
+    if (originGlow) {
+      const buildGlowTexture = (size = 256) => {
+        const c = document.createElement("canvas");
+        c.width = c.height = size;
+        const ctx = c.getContext("2d")!;
+        const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        grad.addColorStop(0.0, hexToRgba(color, 1.0));
+        grad.addColorStop(0.1, hexToRgba(color, 0.85));
+        grad.addColorStop(0.35, hexToRgba(color, 0.35));
+        grad.addColorStop(0.7, hexToRgba(color, 0.1));
+        grad.addColorStop(1.0, "rgba(0,0,0,0.00)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, size, size);
+        return new THREE.CanvasTexture(c);
+      };
 
-    const innerSprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: buildGlowTexture(256),
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        opacity: 1.0,
-      }),
-    );
-    innerSprite.scale.set(1.4, 1.4, 1);
-    innerSprite.position.copy(ORIGIN);
-    content.add(innerSprite);
+      glowSprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: buildGlowTexture(512),
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          opacity: 1.0,
+        }),
+      );
+      glowSprite.scale.set(5, 5, 1);
+      glowSprite.position.copy(ORIGIN);
+      content.add(glowSprite);
+
+      innerSprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: buildGlowTexture(256),
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          opacity: 1.0,
+        }),
+      );
+      innerSprite.scale.set(1.4, 1.4, 1);
+      innerSprite.position.copy(ORIGIN);
+      content.add(innerSprite);
+    }
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setClearColor(0x000000, 0);
@@ -595,9 +630,11 @@ export default function OpticalFiber({
         }
       }
 
-      const pulse = 0.9 + Math.sin(t * 1.4) * 0.1;
-      glowSprite.scale.set(5 * pulse, 5 * pulse, 1);
-      innerSprite.material.opacity = 0.85 + Math.sin(t * 2.1) * 0.15;
+      if (originGlow && glowSprite && innerSprite) {
+        const pulse = 0.9 + Math.sin(t * 1.4) * 0.1;
+        glowSprite.scale.set(5 * pulse, 5 * pulse, 1);
+        innerSprite.material.opacity = 0.85 + Math.sin(t * 2.1) * 0.15;
+      }
 
       renderer.render(scene, camera);
     };
@@ -615,20 +652,21 @@ export default function OpticalFiber({
       logoTravelers.length = 0;
       renderer.dispose();
     };
-  }, [contentScale, fanSpread, fanReach, fov, fanHeight, fanOffsetX]);
+  }, [contentScale, fanSpread, fanReach, fov, fanHeight, fanOffsetX, color, originGlow]);
 
   return (
     <div ref={containerRef} className={`relative h-full w-full overflow-hidden ${className}`}>
-      <div
-        className={`pointer-events-none absolute bottom-0 left-1/2 z-0 aspect-square w-[min(50%,320px)] -translate-x-1/2 translate-y-[42%] rounded-full blur-[4.5rem] transition-opacity duration-700 ease-out md:w-[min(44%,380px)] md:blur-[5.5rem] ${
-          glowVisible ? "opacity-90" : "opacity-0"
-        }`}
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.72) 28%, rgba(255, 255, 255, 0.28) 52%, rgba(255, 255, 255, 0) 72%)",
-        }}
-        aria-hidden
-      />
+      {originGlow ? (
+        <div
+          className={`pointer-events-none absolute bottom-0 left-1/2 z-0 aspect-square w-[min(50%,320px)] -translate-x-1/2 translate-y-[42%] rounded-full blur-[4.5rem] transition-opacity duration-700 ease-out md:w-[min(44%,380px)] md:blur-[5.5rem] ${
+            glowVisible ? "opacity-90" : "opacity-0"
+          }`}
+          style={{
+            background: `radial-gradient(circle, ${hexToRgba(color, 1)} 0%, ${hexToRgba(color, 0.72)} 28%, ${hexToRgba(color, 0.28)} 52%, ${hexToRgba(color, 0)} 72%)`,
+          }}
+          aria-hidden
+        />
+      ) : null}
       <canvas ref={canvasRef} className="relative z-10 block h-full w-full" aria-hidden />
       <div
         ref={logosLayerRef}

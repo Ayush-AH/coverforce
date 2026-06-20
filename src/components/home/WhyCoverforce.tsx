@@ -241,7 +241,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                 >
                   <span data-split>Infrastructure to Run Your Distribution Not a Tool to Quote One Risk.</span>
                 </h2>
-                <Button href="/" variant="outline">
+                <Button href="/">
                   Start a quote
                 </Button>
               </div>

@@ -7,7 +7,6 @@ import Container from "../common/Container";
 import { getSideBorderStyle } from "../common/containerStyles";
 import SectionRadialGlow from "../common/SectionRadialGlow";
 import dynamic from "next/dynamic";
-import { RiPlayFill } from "@remixicon/react";
 
 const OpticalFiber = dynamic(() => import("./OpticalFiber"), {
   ssr: false,
@@ -41,11 +40,74 @@ const stats: StatItem[] = [
   { value: "$500M+", label: "Gross Quoted Premium" },
 ];
 
-const Hero = () => {
+type HeroVariant = "dark" | "light";
+
+const heroThemes = {
+  dark: {
+    settledBg: "bg-[#121C49]",
+    sectionText: "text-white",
+    borderColor: "#FFFFFF33",
+    gdpText: "text-white/85",
+    title: "text-white",
+    titleMuted: "text-[#BCC5D6]",
+    statValueActive: "text-white",
+    statValueInactive: "text-[#8296B0]",
+    statLabelActive: "text-white/80",
+    statLabelInactive: "text-[#8296B0]",
+    statLine: "bg-white/5",
+    fiberColor: "#ffffff",
+    sectionGradient: undefined,
+    fiberOriginGlow: true,
+  },
+  light: {
+    settledBg: "bg-white",
+    sectionText: "text-[#0a143b]",
+    borderColor: "#53535380",
+    gdpText: "text-[#0a143b]/85",
+    title: "text-[#0a143b]",
+    titleMuted: "text-[#BCC5D6]",
+    statValueActive: "text-[#0a143b]",
+    statValueInactive: "text-[#8296B0]",
+    statLabelActive: "text-[#0a143b]/80",
+    statLabelInactive: "text-[#8296B0]",
+    statLine: "bg-[#0a143b]/5",
+    fiberColor: "#0810bf",
+    sectionGradient:
+      "radial-gradient(102.84% 104.98% at 50% 104.98%, #0071c1 1.33%, #60a8e2 15.71%, #b4d8ff 33.15%, #d9ebff 45%, #f8fafd 60%)",
+    fiberOriginGlow: false,
+  },
+} satisfies Record<
+  HeroVariant,
+  {
+    settledBg: string;
+    sectionText: string;
+    borderColor: string;
+    gdpText: string;
+    title: string;
+    titleMuted: string;
+    statValueActive: string;
+    statValueInactive: string;
+    statLabelActive: string;
+    statLabelInactive: string;
+    statLine: string;
+    fiberColor: string;
+    sectionGradient?: string;
+    fiberOriginGlow: boolean;
+  }
+>;
+
+type HeroProps = {
+  variant?: HeroVariant;
+};
+
+const Hero = ({ variant = "dark" }: HeroProps) => {
+  const theme = heroThemes[variant];
   const sectionRef = useRef<HTMLElement>(null);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const [introSettled, setIntroSettled] = useState(!introEnabled);
-  const [fiberGlowVisible, setFiberGlowVisible] = useState(!introEnabled);
+  const [fiberGlowVisible, setFiberGlowVisible] = useState(
+    !theme.fiberOriginGlow || !introEnabled,
+  );
   const isIntroWhiteBg =
     introEnabled &&
     !introSettled &&
@@ -256,6 +318,8 @@ const Hero = () => {
   }, [introEnabled, introPhase]);
 
   useEffect(() => {
+    if (!theme.fiberOriginGlow) return;
+
     if (!introEnabled) {
       setFiberGlowVisible(true);
       return;
@@ -264,12 +328,12 @@ const Hero = () => {
     if (introPhase === "done") {
       setFiberGlowVisible(true);
     }
-  }, [introEnabled, introPhase]);
+  }, [theme.fiberOriginGlow, introEnabled, introPhase]);
 
   useLayoutEffect(() => {
     if (!introEnabled || introPhase !== "nav" || revealAnimatedRef.current) return;
     revealAnimatedRef.current = true;
-    setFiberGlowVisible(true);
+    if (theme.fiberOriginGlow) setFiberGlowVisible(true);
     sectionRef.current?.removeAttribute("data-intro-reveal");
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -306,7 +370,7 @@ const Hero = () => {
         onUpdate: () => {
           const el = containerRef.current;
           if (!el) return;
-          Object.assign(el.style, getSideBorderStyle("#FFFFFF33", borderProxy.value));
+          Object.assign(el.style, getSideBorderStyle(theme.borderColor, borderProxy.value));
         },
       },
       0,
@@ -347,7 +411,7 @@ const Hero = () => {
     if (dataLinesRef.current) {
       tl.to(dataLinesRef.current, { autoAlpha: 1, duration: revealDur }, 0.04);
     }
-  }, [introEnabled, introPhase]);
+  }, [introEnabled, introPhase, theme.borderColor]);
 
   useEffect(() => {
     if (!introEnabled) {
@@ -374,9 +438,10 @@ const Hero = () => {
     return () => window.removeEventListener("resize", update);
   }, [activeIndex, statCount]);
 
-  const sectionBgClass =
-    !introEnabled || introSettled
-      ? "bg-[#121C49]"
+  const sectionBgClass = theme.sectionGradient
+    ? ""
+    : !introEnabled || introSettled
+      ? theme.settledBg
       : isIntroWhiteBg
         ? "bg-white"
         : "";
@@ -385,13 +450,20 @@ const Hero = () => {
     <section
       ref={sectionRef}
       data-intro-reveal={introEnabled ? "pending" : undefined}
-      className={`relative isolate overflow-hidden text-white ${sectionBgClass}`}
+      className={`relative isolate overflow-hidden ${theme.sectionText} ${sectionBgClass}`}
     >
+      {theme.sectionGradient ? (
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: theme.sectionGradient }}
+          aria-hidden
+        />
+      ) : null}
       <Container
         ref={containerRef}
-        borderColor="#FFFFFF33"
+        borderColor={theme.borderColor}
         borderOpacity={borderOpacity}
-        className="px-0! relative"
+        className="relative z-10 px-0!"
       >
 
 
@@ -412,7 +484,7 @@ const Hero = () => {
                 data-hero-reveal
                 className="absolute left-1/2 -top-9 z-20 -translate-x-1/2"
               >
-                <div className="inline-flex items-center gap-2 text-xs font-sans tracking-wide text-white/85">
+                <div className={`inline-flex items-center gap-2 text-xs font-sans tracking-wide ${theme.gdpText}`}>
                   <span className="whitespace-nowrap">Global GDP running on coverforce:</span>
                   <GdpCounter/>
                 </div>
@@ -433,7 +505,7 @@ const Hero = () => {
                 ref={titleLineRef}
                 data-loader-line
                 className={`absolute left-1/2 top-0 z-10 max-w-4xl -translate-x-1/2 px-6 text-3xl font-heading font-normal leading-[1.15] tracking-tight will-change-[transform,opacity] md:text-4xl lg:text-5xl xl:text-5xl ${introEnabled && introPhase === "loader-in" ? "opacity-0" : ""
-                  } ${introTitleMuted ? "text-[#BCC5D6]" : "text-white"}`}
+                  } ${introTitleMuted ? theme.titleMuted : theme.title}`}
               >
                 {INTRO_TITLE_LINES.map((line, lineIndex) => (
                   <React.Fragment key={lineIndex}>
@@ -463,10 +535,15 @@ const Hero = () => {
                 introUiLocked ? "pointer-events-none" : ""
               }`}
             >
-              <Button href="/" variant="primary">
+              <Button href="/" balanced surface={variant === "dark" ? "on-dark" : "default"}>
                 Request Demo
               </Button>
-              <Button href="/" variant="secondary" icon={RiPlayFill}>
+              <Button
+                href="/"
+                balanced
+                variant="secondary"
+                surface={variant === "dark" ? "on-dark" : "default"}
+              >
                 Watch Demo
               </Button>
             </div>
@@ -479,7 +556,11 @@ const Hero = () => {
               introUiLocked ? "pointer-events-none" : ""
             }`}
           >
-            <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
+            {
+              variant === "dark" && (
+                <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
+              )
+            }
             <ul
               ref={listRef}
               className="relative grid grid-cols-2 gap-x-6 gap-y-10 md:flex md:py-10"
@@ -490,7 +571,7 @@ const Hero = () => {
                 aria-hidden
               >
                 {/* Top full-width line + moving segment */}
-                <div className="absolute left-0 top-0 h-[0.05rem] w-full bg-white/5">
+                <div className={`absolute left-0 top-0 h-[0.05rem] w-full ${theme.statLine}`}>
                   <div
                     className="h-full rounded-full linear-line_color transition-[transform,width] duration-300 ease-out"
                     style={{
@@ -501,7 +582,7 @@ const Hero = () => {
                 </div>
 
                 {/* Bottom full-width line + moving segment */}
-                <div className="absolute left-0 bottom-0 h-[0.05rem] w-full bg-white/5">
+                <div className={`absolute left-0 bottom-0 h-[0.05rem] w-full ${theme.statLine}`}>
                   <div
                     className="h-full rounded-full linear-line_color transition-[transform,width] duration-300 ease-out"
                     style={{
@@ -522,13 +603,13 @@ const Hero = () => {
                   className="flex flex-col items-center gap-2 md:flex-1 md:px-8"
                 >
                   <p
-                    className={`text-2xl font-heading font-regular tracking-tight transition-colors md:text-3xl lg:text-4xl ${index === activeIndex ? "text-white" : "text-[#8296B0]"
+                    className={`text-2xl font-heading font-regular tracking-tight transition-colors md:text-3xl lg:text-4xl ${index === activeIndex ? theme.statValueActive : theme.statValueInactive
                       }`}
                   >
                     {stat.value}
                   </p>
                   <p
-                    className={`text-xs font-sans font-regular text-center leading-relaxed transition-colors md:text-lg ${index === activeIndex ? "text-white/80" : "text-[#8296B0]"
+                    className={`text-xs font-sans font-regular text-center leading-relaxed transition-colors md:text-lg ${index === activeIndex ? theme.statLabelActive : theme.statLabelInactive
                       }`}
                   >
                     {stat.label}
@@ -555,7 +636,9 @@ const Hero = () => {
               fanHeight={0.62}
               fanOffsetX={0.45}
               fov={86}
-              glowVisible={fiberGlowVisible}
+              color={theme.fiberColor}
+              originGlow={theme.fiberOriginGlow}
+              glowVisible={theme.fiberOriginGlow ? fiberGlowVisible : false}
             />
           </div>
         </div>

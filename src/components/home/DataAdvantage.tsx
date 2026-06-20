@@ -33,7 +33,7 @@ const DataAdvantage = () => {
                 <br />
                 <span data-split>no One Else has</span>
               </h2>
-              <Button href="/" variant="primary">
+              <Button href="/" surface="on-dark">
                 Explore AI
               </Button>
             </div>

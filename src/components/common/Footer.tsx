@@ -193,8 +193,8 @@ const Footer = () => {
             </div>
 
             {/* Get a demo pill — mirrors "JOIN THE NEWSLETTER" button */}
-            <div className="">
-              <Button href="/" variant="outline">
+            <div className="flex justify-end">
+              <Button href="/">
                 Get a demo
               </Button>
             </div>

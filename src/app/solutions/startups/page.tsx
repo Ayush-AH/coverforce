@@ -16,7 +16,7 @@ const page = () => {
     <ProgramOverview/>
     <Launch/>
     <Enablement/>
-    <WhyCoverforce/>
+    <WhyCoverforce paddingTop={true} />
     <Review/>
     <CarrierResults/>
     <Explore/>

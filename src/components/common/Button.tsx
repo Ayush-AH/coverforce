@@ -1,88 +1,78 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
-import { RiArrowRightLine } from "@remixicon/react";
 import type { ComponentProps } from "react";
+import ButtonArrowIcon from "./ButtonArrowIcon";
+import ButtonText from "./ButtonText";
 
 export type ButtonVariant = "primary" | "secondary" | "outline";
 export type ButtonSize = "sm" | "md";
+export type ButtonSurface = "default" | "on-dark";
 
 type BaseButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  surface?: ButtonSurface;
+  balanced?: boolean;
   children: React.ReactNode;
   icon?: React.ComponentType<{ className?: string }>;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
 };
 
-type ButtonAsLinkProps = BaseButtonProps & Omit<ComponentProps<typeof Link>, "href" | "className" | "children" | "onClick"> & {
-  href: string;
-};
+type ButtonAsLinkProps = BaseButtonProps &
+  Omit<ComponentProps<typeof Link>, "href" | "className" | "children" | "onClick"> & {
+    href: string;
+  };
 
-type ButtonAsButtonProps = BaseButtonProps & Omit<ComponentProps<"button">, "className" | "children" | "onClick"> & {
-  href?: never;
-};
+type ButtonAsButtonProps = BaseButtonProps &
+  Omit<ComponentProps<"button">, "className" | "children" | "onClick"> & {
+    href?: never;
+  };
 
 type ButtonProps = ButtonAsLinkProps | ButtonAsButtonProps;
 
-const HOVER_EASE = "duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]";
+const BUTTON_HEIGHT =
+  "group box-border inline-flex h-10 min-h-10 max-h-10 w-fit shrink-0 items-center rounded-[5px] font-heading tracking-[0.02em]";
 
-const variantStyles: Record<
-  ButtonVariant,
-  { root: string; label: string; iconWrap: string; iconIncoming: string; iconOutgoing: string }
-> = {
-  primary: {
-    root: `border border-white transition-colors ${HOVER_EASE} group-hover:border-white`,
-    label: `bg-white text-black transition-colors ${HOVER_EASE} group-hover:bg-[#121C49] group-hover:text-white`,
-    iconWrap: `border-l border-white transition-colors ${HOVER_EASE} group-hover:border-white`,
-    iconIncoming: `bg-transparent text-transparent transition-colors ${HOVER_EASE} group-hover:bg-[#3834A4] group-hover:text-white`,
-    iconOutgoing: "bg-white text-black",
-  },
-  secondary: {
-    root: `border border-white transition-colors ${HOVER_EASE} group-hover:border-white`,
-    label: `bg-transparent text-white transition-colors ${HOVER_EASE} group-hover:bg-[#3834A4] group-hover:text-white`,
-    iconWrap: `border-l border-white transition-colors ${HOVER_EASE} group-hover:border-white`,
-    iconIncoming: `bg-transparent text-transparent transition-colors ${HOVER_EASE} group-hover:bg-white group-hover:text-[#121C49]`,
-    iconOutgoing: "bg-transparent text-white",
-  },
-  outline: {
-    root: "border border-[#121C49]",
-    label: `bg-transparent text-black transition-colors ${HOVER_EASE} group-hover:bg-[#121C49] group-hover:text-white`,
-    iconWrap: "border-l border-[#121C49]",
-    iconIncoming: `bg-transparent text-transparent transition-colors ${HOVER_EASE} group-hover:bg-white group-hover:text-[#121C49]`,
-    iconOutgoing: "bg-[#3834A4] text-white",
-  },
+const variantSurfaceStyles: Record<`${ButtonVariant}-${ButtonSurface}`, string> = {
+  "primary-default": "border border-transparent bg-[#121C49] text-white",
+  "secondary-default":
+    "border border-[#121C49] bg-transparent text-[#121C49] transition-colors hover:bg-[#121C49]/[0.06]",
+  "outline-default":
+    "border border-[#535353]/40 bg-transparent text-[#2E2E2E] transition-colors hover:bg-[#2E2E2E]/[0.04]",
+
+  "primary-on-dark": "border border-transparent bg-white text-[#2E2E2E]",
+  "secondary-on-dark":
+    "border border-white/40 bg-transparent text-white transition-colors hover:border-white/60 hover:bg-white/[0.08]",
+  "outline-on-dark":
+    "border border-white/40 bg-transparent text-white transition-colors hover:border-white/60 hover:bg-white/[0.08]",
 };
 
 const sizeStyles: Record<
   ButtonSize,
   {
-    label: string;
+    button: string;
+    balanced: string;
     icon: string;
-    arrow: string;
     textClip: string;
     textLine: string;
-    textShift: string;
-    iconShift: string;
   }
 > = {
   sm: {
-    label: "h-9 px-5 font-heading text-xs font-semibold tracking-[0.06em]",
-    icon: "size-9",
-    arrow: "size-4",
+    button: "gap-2.5 px-5 text-xs font-medium leading-none",
+    balanced: "min-w-[148px] justify-center",
+    icon: "h-[6px] w-[9px]",
     textClip: "h-4",
     textLine: "h-4 leading-4",
-    textShift: "-translate-y-4 group-hover:translate-y-0",
-    iconShift: "-translate-x-9 group-hover:translate-x-0",
   },
   md: {
-    label: "h-11 px-6 font-heading text-sm font-semibold tracking-[0.04em]",
-    icon: "size-11",
-    arrow: "size-[18px]",
+    button: "gap-3 px-6 text-sm font-medium leading-none",
+    balanced: "min-w-[168px] justify-center",
+    icon: "h-2 w-3",
     textClip: "h-5",
     textLine: "h-5 leading-5",
-    textShift: "-translate-y-5 group-hover:translate-y-0",
-    iconShift: "-translate-x-11 group-hover:translate-x-0",
   },
 };
 
@@ -90,61 +80,67 @@ const Button = ({
   href,
   variant = "primary",
   size = "sm",
+  surface = "default",
+  balanced = false,
   children,
-  icon: Icon = RiArrowRightLine,
+  icon: Icon,
   className = "",
+  onClick,
   ...props
 }: ButtonProps) => {
-  const styles = variantStyles[variant];
+  const [hovered, setHovered] = useState(false);
+  const ButtonIcon = Icon ?? ButtonArrowIcon;
   const sizes = sizeStyles[size];
+  const variantClass = variantSurfaceStyles[`${variant}-${surface}`];
+  const buttonClasses = `${BUTTON_HEIGHT} ${variantClass} ${sizes.button} ${balanced ? sizes.balanced : ""} ${className}`;
 
-  const commonClasses = `group inline-flex w-fit items-stretch overflow-hidden leading-none ${styles.root} ${className}`;
+  const hoverHandlers = {
+    onMouseEnter: () => setHovered(true),
+    onMouseLeave: () => setHovered(false),
+  };
 
-  const innerContent = (
+  const content = (
     <>
-      <span className={`flex items-center ${styles.label} ${sizes.label}`}>
-        <span className={`block overflow-hidden ${sizes.textClip}`}>
-          <span
-            className={`block transition-transform will-change-transform motion-reduce:transition-none ${HOVER_EASE} ${sizes.textShift}`}
-          >
-            <span className={`block whitespace-nowrap ${sizes.textLine}`}>{children}</span>
-            <span className={`block whitespace-nowrap ${sizes.textLine}`}>{children}</span>
-          </span>
-        </span>
-      </span>
       <span
-        className={`relative shrink-0 overflow-hidden ${sizes.icon} ${styles.iconWrap}`}
+        className="shrink-0 motion-reduce:animate-none group-hover:animate-[button-arrow-nudge_0.55s_cubic-bezier(0.76,0,0.24,1)_both]"
         aria-hidden
       >
-        <span
-          className={`flex h-full backface-hidden transition-transform will-change-transform motion-reduce:transition-none ${HOVER_EASE} ${sizes.iconShift}`}
-        >
-          <span
-            className={`flex shrink-0 items-center justify-center ${sizes.icon} ${styles.iconIncoming}`}
-          >
-            <Icon className={sizes.arrow} />
-          </span>
-          <span
-            className={`flex shrink-0 items-center justify-center ${sizes.icon} ${styles.iconOutgoing}`}
-          >
-            <Icon className={sizes.arrow} />
-          </span>
-        </span>
+        <ButtonIcon className={sizes.icon} />
       </span>
+      <ButtonText
+        textClip={sizes.textClip}
+        textLine={sizes.textLine}
+        hovered={hovered}
+      >
+        {children}
+      </ButtonText>
     </>
   );
 
   if (href) {
+    const linkProps = props as Omit<ComponentProps<typeof Link>, "href" | "className">;
+
     return (
-      <Link href={href} className={commonClasses} {...(props as any)}>
-        {innerContent}
+      <Link
+        href={href}
+        className={buttonClasses}
+        onClick={onClick}
+        {...hoverHandlers}
+        {...linkProps}
+      >
+        {content}
       </Link>
     );
   }
 
   return (
-    <button className={commonClasses} {...(props as any)}>
-      {innerContent}
+    <button
+      className={buttonClasses}
+      onClick={onClick}
+      {...hoverHandlers}
+      {...(props as ComponentProps<"button">)}
+    >
+      {content}
     </button>
   );
 };

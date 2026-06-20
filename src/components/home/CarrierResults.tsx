@@ -332,7 +332,7 @@ const CarrierResults = () => {
                   <br />
                   <span data-split>speak for themselves</span>
                 </h2>
-                <Button href="/" variant="primary">
+                <Button href="/" surface="on-dark">
                   Explore Carrier
                 </Button>
               </div>

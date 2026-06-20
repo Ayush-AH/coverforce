@@ -121,12 +121,12 @@ const Launch = () => {
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
-        <div className="grid h-screen gap-12 pt-24 pb-12 md:gap-14 lg:grid-cols-7 lg:items-center lg:gap-23">
+        <div className="grid h-screen gap-12 pt-27 pb-12 md:gap-14 lg:grid-cols-7 lg:items-center lg:gap-23">
           <div className="h-full flex flex-col justify-between lg:col-span-3">
             <div ref={headerRef} className="space-y-5">
               <h2
                 ref={headingRef}
-                className="mt-4 max-w-xs text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b] md:text-3xl lg:max-w-xs lg:text-[1.75rem] lg:leading-[1.25]"
+                className="max-w-xs text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b] md:text-3xl lg:max-w-xs lg:text-[1.75rem] lg:leading-[1.25]"
               >
                 <span data-split>From idea to first bind Three steps</span>
               </h2>
@@ -180,7 +180,7 @@ const Launch = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-4 relative mx-auto h-full w-full">
+          <div className="lg:col-span-4 relative bg-gray-50 mx-auto h-full w-full rounded-md overflow-hidden">
             {launchSteps.map((step, index) => (
               <div
                 key={step.id}
@@ -191,7 +191,7 @@ const Launch = () => {
                 style={{ clipPath: CLIP_HIDDEN_BOTTOM }}
               >
                 <Image
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-cover"
                   src={step.image}
                   alt={step.title}
                   width={500}

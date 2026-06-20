@@ -2,9 +2,14 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type AudienceCard = {
   title: string;
@@ -33,11 +38,15 @@ const audienceCards: AudienceCard[] = [
   },
 ];
 
+const REVEAL_EASE = "power3.out";
+
 const WhosFor = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const cardsGridRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -46,6 +55,48 @@ const WhosFor = () => {
     descRef,
     theme: "dark",
   });
+
+  useGSAP(
+    () => {
+      const grid = cardsGridRef.current;
+      const cards = cardRefs.current.filter(Boolean) as HTMLElement[];
+      if (!grid || !cards.length) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reducedMotion) return;
+
+      cards.forEach((card) => {
+        gsap.set(card, { opacity: 0, x: 72, force3D: true });
+      });
+
+      const st = ScrollTrigger.create({
+        trigger: grid,
+        start: "top 85%",
+        once: true,
+        onEnter: () => {
+          gsap.to(cards, {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.14,
+            ease: REVEAL_EASE,
+            onComplete: () => gsap.set(cards, { clearProps: "transform" }),
+          });
+        },
+      });
+
+      const lenis = window.lenis;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis?.on("scroll", onLenisScroll);
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+        st.kill();
+      };
+    },
+    { scope: sectionRef },
+  );
 
   return (
     <section ref={sectionRef} className="bg-[#121C49] text-white">
@@ -69,7 +120,7 @@ const WhosFor = () => {
                 </span>
                 <span data-split> about insurance.</span>
               </h2>
-              <Button href="/solutions/startups" variant="primary">
+              <Button href="/solutions/startups" surface="on-dark">
                 Apply to Start Up Program
               </Button>
             </div>
@@ -84,11 +135,14 @@ const WhosFor = () => {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3 md:gap-5">
-            {audienceCards.map((card) => (
+          <div ref={cardsGridRef} className="grid gap-4 md:grid-cols-3 md:gap-5">
+            {audienceCards.map((card, index) => (
               <article
                 key={card.title}
-                className="flex min-h-[22rem] flex-col p-6 md:min-h-[24rem] md:p-8"
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                className="flex min-h-[22rem] flex-col p-6 will-change-transform md:min-h-[24rem] md:p-8"
                 style={{ backgroundColor: "#FAFAFA" }}
               >
                 <p

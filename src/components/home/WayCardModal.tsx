@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { RiArrowRightSLine, RiCheckLine, RiCloseLine } from "@remixicon/react";
+import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 
 import type { WayCardModalContent } from "@/data/wayCardModals";
 import { WAY_MODAL_CLOSE_TOTAL_MS, prefersReducedMotion } from "@/lib/wayModalMotion";
@@ -156,11 +156,7 @@ export default function WayCardModal({
                 </p>
               </div>
 
-              <Button
-                href={stored.content.primaryCta.href}
-                variant="outline"
-                icon={RiArrowRightSLine}
-              >
+              <Button href={stored.content.primaryCta.href}>
                 {stored.content.primaryCta.label}
               </Button>
             </div>

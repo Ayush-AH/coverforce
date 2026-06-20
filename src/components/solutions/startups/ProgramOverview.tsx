@@ -47,7 +47,7 @@ const ProgramOverview = () => {
 
   return (
     <section id="program-overview" ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535380">
+      <Container borderColor="#53535380" borderBottom={true}>
         <div className="flex flex-col gap-10 py-16 md:gap-12 md:py-20 lg:gap-42 lg:py-24">
           <div
             ref={headerRef}

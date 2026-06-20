@@ -33,6 +33,18 @@ button {
   cursor: pointer;
 }
 
+@keyframes button-arrow-nudge {
+  0% {
+    transform: translateX(0);
+  }
+  45% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 @keyframes logo-marquee-left {
   from {
     transform: translate3d(0, 0, 0);

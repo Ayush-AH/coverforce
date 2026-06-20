@@ -14,10 +14,10 @@ const Hero = () => {
               </h1>
               <p className="max-w-sm font-heading text-sm font-regular leading-relaxed text-[#444444]  md:text-sm">CoverForce gives early-stage startups the infrastructure, carriers, and ecosystem support to go from zero to launch in days.</p>
             <div className="flex flex-wrap gap-4">
-              <Button href="/solutions/startups" variant="outline">
+              <Button href="/solutions/startups" balanced>
                 Apply to Start Up Program
               </Button>
-              <Button href="#program-overview" variant="outline">
+              <Button href="#program-overview" balanced variant="secondary">
                 How Program Works
               </Button>
             </div>
@@ -33,7 +33,7 @@ const Hero = () => {
               alt="CoverForce startups program"
               width={1200}
               height={900}
-              className="absolute -bottom-[70%] right-0 h-auto w-full object-contain"
+              className="absolute -bottom-[65%] right-0 h-auto w-full object-contain"
               priority
             />
     </section>

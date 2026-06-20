@@ -12,10 +12,10 @@ const Hero = () => {
               Standardise <br/> <span className="text-[#7E54F2]">commercial</span> lines <br/> everywhere.
             </h1>
             <div className="flex flex-wrap gap-4">
-              <Button href="/solutions/startups" variant="outline">
+              <Button href="/solutions/startups" balanced>
                 Apply to Start Up Program
               </Button>
-              <Button href="#program-overview" variant="outline">
+              <Button href="#program-overview" balanced variant="secondary">
                 How Program Works
               </Button>
             </div>

@@ -67,7 +67,7 @@ export default function OperatingSystemSection({
               >
                 <span data-split>{sectionTitle}</span>
               </h2>
-              <Button href={ctaHref} variant="outline">
+              <Button href={ctaHref}>
                 {ctaLabel}
               </Button>
             </div>

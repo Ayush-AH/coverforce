@@ -73,7 +73,7 @@ export const GdpCounter = ({
 
   return (
     <span
-      className={`inline-flex items-baseline font-mono text-white/90 ${className ?? ""}`}
+      className={`inline-flex items-baseline font-mono text-inherit ${className ?? ""}`}
       aria-label={`$0.999${d3}${d2}${d1} trillion`}
     >
       <span aria-hidden>$0.999</span>

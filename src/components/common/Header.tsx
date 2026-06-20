@@ -31,7 +31,7 @@ const HOVER_CLOSE_DELAY = 120;
 type HeaderTheme = "dark" | "light";
 
 function getHeaderTheme(pathname: string): HeaderTheme {
-  if (pathname.startsWith("/solutions")) {
+  if (pathname.startsWith("/solutions") || pathname === "/home") {
     return "light";
   }
   return "dark";
@@ -44,7 +44,6 @@ const headerThemes = {
     linkActive: "text-white",
     linkIdle: "text-white/80 hover:text-white",
     login: "text-white/95 hover:text-white",
-    buttonVariant: "primary" as const,
   },
   light: {
     bar: "border-b border-[#E8ECF0] bg-white",
@@ -52,7 +51,6 @@ const headerThemes = {
     linkActive: "text-[#0a143b]",
     linkIdle: "text-[#0a143b]/75 hover:text-[#0a143b]",
     login: "text-[#0a143b]/90 hover:text-[#0a143b]",
-    buttonVariant: "outline" as const,
   },
 } satisfies Record<
   HeaderTheme,
@@ -62,7 +60,6 @@ const headerThemes = {
     linkActive: string;
     linkIdle: string;
     login: string;
-    buttonVariant: "primary" | "outline";
   }
 >;
 
@@ -296,7 +293,7 @@ const Header = () => {
             >
               <NavLinkLabel label="Login" />
             </Link>
-            <Button href="/" variant={styles.buttonVariant}>
+            <Button href="/" surface={theme === "dark" ? "on-dark" : "default"}>
               Request demo
             </Button>
           </div>
