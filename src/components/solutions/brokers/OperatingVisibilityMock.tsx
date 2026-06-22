@@ -3,10 +3,10 @@
 import { RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react";
 
 const PIPELINE_BARS = [
-  { label: "Submitted", width: "88%", color: "#33259F", count: "684" },
-  { label: "Quoted", width: "68%", color: "#4683E5" },
-  { label: "Bound", width: "48%", color: "#8BA849" },
-  { label: "Stalled", width: "28%", color: "#C4B5FD" },
+  { label: "Submitted", width: "100%", color: "#5B35E0" },
+  { label: "Quoted", width: "68%", color: "#1B78FB" },
+  { label: "Bound", width: "48%", color: "#72AF23" },
+  { label: "Stalled", width: "28%", color: "#B87AFF" },
 ] as const;
 
 const AXIS_LABELS = ["0K", "2K", "3K", "5K", "8K"] as const;
@@ -32,7 +32,7 @@ function DonutChart() {
           cy="22"
           r={radius}
           fill="none"
-          stroke="#33259F"
+          stroke="#5B35E0"
           strokeWidth="5"
           strokeLinecap="round"
           strokeDasharray={`${circumference * progress} ${circumference}`}
@@ -50,12 +50,12 @@ export default function OperatingVisibilityMock() {
     <div className="relative mx-auto w-full max-w-[440px] min-h-[340px] md:min-h-[380px]">
       <div className="absolute right-0 top-0 w-[94%] overflow-hidden rounded-2xl border border-[#E8EAEF] bg-white p-4 shadow-[0_8px_40px_rgba(0,0,0,0.08)] md:p-5">
         <div className="flex items-center justify-between gap-3">
-          <p className="font-heading text-sm font-medium text-[#3C3B3B] md:text-base">
+          <p className="font-heading text-sm font-semibold text-[#3C3B3B] md:text-base">
             Pipeline Overview
           </p>
           <button
             type="button"
-            className="inline-flex items-center gap-1 font-heading text-[0.65rem] font-medium text-[#33259F] md:text-xs"
+            className="inline-flex items-center gap-1 border border-[#5B35E0]/10 rounded-md px-2.5 py-1 font-heading text-[0.65rem] font-medium text-[#33259F] md:text-xs"
           >
             Weekly
             <RiArrowDownSLine size={14} />
@@ -63,10 +63,10 @@ export default function OperatingVisibilityMock() {
         </div>
 
         <div className="mt-4 md:mt-5">
-          <p className="font-heading text-[0.65rem] font-normal text-[#9CA3AF] md:text-xs">
+          <p className="font-sans text-[0.65rem] font-normal text-[#9CA3AF] md:text-xs">
             Premium Tracked
           </p>
-          <p className="mt-0.5 font-heading text-2xl font-medium text-[#3C3B3B] md:text-3xl">
+          <p className="mt-0.5 font-heading text-base font-semibold text-[#3C3B3B] md:text-lg">
             $4.2M
           </p>
         </div>
@@ -79,9 +79,9 @@ export default function OperatingVisibilityMock() {
                   {bar.label}
                 </p>
                 <div className="relative h-3">
-                  <div className="h-full overflow-hidden rounded-full bg-[#F3F4F6]">
+                  <div className="h-full overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full"
+                      className="h-full rounded-lg"
                       style={{ width: bar.width, backgroundColor: bar.color }}
                     />
                   </div>
@@ -92,14 +92,8 @@ export default function OperatingVisibilityMock() {
                         <p className="whitespace-nowrap font-heading text-[0.55rem] font-medium text-white md:text-[0.6rem]">
                           $2,850,913
                         </p>
-                        <p className="font-heading text-[0.5rem] font-normal text-white/80">
-                          {bar.count}
-                        </p>
                         <span className="absolute -bottom-1 left-4 size-2 rotate-45 bg-[#1F2937]" />
                       </div>
-                      <span className="absolute right-1 top-1/2 -translate-y-1/2 font-heading text-[0.55rem] font-medium text-[#3C3B3B] md:text-[0.6rem]">
-                        {bar.count}
-                      </span>
                     </>
                   ) : null}
                 </div>
@@ -123,16 +117,16 @@ export default function OperatingVisibilityMock() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 right-0 z-10 w-[72%] overflow-hidden rounded-2xl border border-[#E8EAEF] bg-white shadow-[0_12px_48px_rgba(0,0,0,0.12)]">
+      <div className="absolute bottom-0 -right-10 z-10 w-[50%] overflow-hidden rounded-2xl border border-[#E8EAEF] bg-white shadow-[0_12px_48px_rgba(0,0,0,0.12)]">
         <div className="flex items-start justify-between gap-3 px-4 py-4 md:px-5 md:py-5">
           <div>
-            <p className="font-heading text-sm font-medium text-[#3C3B3B] md:text-base">
+            <p className="font-heading text-sm font-semibold text-[#3C3B3B] md:text-base">
               Submissions
             </p>
-            <p className="mt-3 font-heading text-3xl font-medium leading-none text-[#3C3B3B] md:mt-4 md:text-4xl">
+            <p className="mt-3 font-heading text-3xl font-semibold leading-none text-[#3C3B3B] md:mt-4 md:text-lg">
               248
             </p>
-            <p className="mt-2 inline-flex items-center gap-1 font-heading text-[0.65rem] font-normal text-[#6B7280] md:text-xs">
+            <p className="mt-2 inline-flex whitespace-nowrap items-center gap-1 font-heading text-[0.65rem] font-normal text-[#6B7280] md:text-xs">
               <RiArrowUpSLine className="text-[#4683E5]" size={14} />
               12% vs last week
             </p>

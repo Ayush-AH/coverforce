@@ -26,7 +26,7 @@ const ACTIVITY_ROWS = [
     name: "Jackie Mora",
     approved: false,
     promote: "Tamika Bar'",
-    time: "",
+    time: "4h ago",
     icon: RiBuilding2Line,
     bg: "#ECFDF3",
     color: "#7CB518",
@@ -36,7 +36,7 @@ const ACTIVITY_ROWS = [
     name: "Lane Holden",
     approved: true,
     promote: "Lino Doug",
-    time: "",
+    time: "6h ago",
     icon: RiIdCardLine,
     bg: "#EFF6FF",
     color: "#4683E5",
@@ -46,7 +46,7 @@ const ACTIVITY_ROWS = [
     name: "Ismael Shepard",
     approved: true,
     promote: "Dewitt Va",
-    time: "",
+    time: "1d ago",
     icon: RiFocus3Line,
     bg: "#FEF2F2",
     color: "#EF4444",
@@ -58,6 +58,9 @@ const CHART_LEGEND = [
   { label: "Pending", color: "#C4B5FD", value: "18%" },
   { label: "Overdue", color: "#7CB518", value: "25%" },
 ] as const;
+
+const ACTIVITY_GRID =
+  "grid grid-cols-[1.25rem_minmax(0,1fr)_minmax(0,0.8fr)_2rem_minmax(0,0.8fr)_2.25rem] items-center gap-x-2 md:grid-cols-[1.5rem_minmax(0,1.1fr)_minmax(0,0.85fr)_2rem_minmax(0,0.85fr)_2.5rem] md:gap-x-3";
 
 function AccessControlChart() {
   return (
@@ -115,11 +118,11 @@ function AccessControlChart() {
 function ActionBadge({ approved }: { approved: boolean }) {
   return (
     <span
-      className={`inline-flex size-4 shrink-0 items-center justify-center rounded-full md:size-[18px] ${
-        approved ? "bg-[#ECFDF3] text-[#7CB518]" : "bg-[#FEF2F2] text-[#EF4444]"
+      className={`inline-flex size-2 shrink-0 items-center justify-center rounded-full md:size-2 ${
+        approved ? "bg-[#7CB518] text-[#FFFFFF]" : "bg-[#EF4444] text-[#FFFFFF]"
       }`}
     >
-      {approved ? <RiCheckLine size={10} /> : <RiCloseLine size={10} />}
+      {approved ? <RiCheckLine size={8} color="#FFFFFF" /> : <RiCloseLine size={8} color="#FFFFFF" />}
     </span>
   );
 }
@@ -128,7 +131,7 @@ export default function RecentActivityMock() {
   return (
     <div className="relative mx-auto w-full max-w-[440px] min-h-[340px] overflow-visible pb-6 md:min-h-[370px] md:pb-8">
       {/* Back card — top-left */}
-      <div className="absolute left-0 top-0 z-0 w-[94%] overflow-hidden rounded-2xl border border-[#E8EAEF] bg-white p-4 pb-10 shadow-[0_8px_40px_rgba(0,0,0,0.08)] md:p-5 md:pb-12">
+      <div className="absolute left-0 top-0 z-0 w-[94%] overflow-hidden rounded-2xl border border-[#E8EAEF] bg-white p-4 shadow-[0_8px_40px_rgba(0,0,0,0.08)] md:p-5">
         <div className="flex items-center justify-between gap-3">
           <p className="font-heading text-sm font-semibold text-[#3C3B3B] md:text-base">
             Recent Activity
@@ -143,41 +146,47 @@ export default function RecentActivityMock() {
         </div>
 
         <div className="mt-3 overflow-hidden md:mt-4">
-          <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_auto_minmax(0,0.9fr)_auto] gap-x-2 border-b border-dashed border-[#E5E7EB] pb-2 font-heading text-[0.55rem] font-medium text-[#9CA3AF] md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto_minmax(0,1fr)_auto] md:gap-x-3 md:text-[0.6rem]">
+          <div
+            className={`${ACTIVITY_GRID} border-b border-dashed border-[#E5E7EB] pb-2 font-heading text-[0.55rem] font-medium text-[#9CA3AF] md:text-[0.6rem]`}
+          >
+            <span aria-hidden />
             <span>Type</span>
             <span>Name</span>
-            <span>Action</span>
+            <span className="text-center">Action</span>
             <span>Promote</span>
-            <span>Time</span>
+            <span className="text-right">Time</span>
           </div>
 
-          {ACTIVITY_ROWS.map((row) => {
+          {ACTIVITY_ROWS.map((row, index) => {
             const Icon = row.icon;
+            const isLastRow = index === ACTIVITY_ROWS.length - 1;
 
             return (
               <div
                 key={row.name}
-                className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_auto_minmax(0,0.9fr)_auto] items-center gap-x-2 border-b border-dashed border-[#E5E7EB] py-2.5 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto_minmax(0,1fr)_auto] md:gap-x-3 md:py-3"
+                className={`${ACTIVITY_GRID} py-2.5 md:py-3 ${
+                  isLastRow ? "" : "border-b border-dashed border-[#E5E7EB]"
+                }`}
               >
-                <div className="flex min-w-0 items-center gap-1.5">
-                  <span
-                    className="flex size-5 shrink-0 items-center justify-center rounded-full md:size-6"
-                    style={{ backgroundColor: row.bg, color: row.color }}
-                  >
-                    <Icon size={11} />
-                  </span>
-                  <span className="truncate font-heading text-[0.55rem] font-medium text-[#3C3B3B] md:text-[0.6rem]">
-                    {row.type}
-                  </span>
-                </div>
+                <span
+                  className="flex size-5 shrink-0 items-center justify-center rounded-full md:size-6"
+                  style={{ backgroundColor: row.bg, color: row.color }}
+                >
+                  <Icon size={11} />
+                </span>
+                <span className="truncate font-heading text-[0.55rem] font-medium text-[#3C3B3B] md:text-[0.6rem]">
+                  {row.type}
+                </span>
                 <span className="truncate font-heading text-[0.55rem] font-normal text-[#6B7280] md:text-[0.6rem]">
                   {row.name}
                 </span>
-                <ActionBadge approved={row.approved} />
+                <div className="flex justify-center">
+                  <ActionBadge approved={row.approved} />
+                </div>
                 <span className="truncate font-heading text-[0.55rem] font-normal text-[#6B7280] md:text-[0.6rem]">
                   {row.promote}
                 </span>
-                <span className="font-heading text-[0.55rem] font-normal text-[#9CA3AF] md:text-[0.6rem]">
+                <span className="text-right font-heading text-[0.55rem] font-normal text-[#9CA3AF] md:text-[0.6rem]">
                   {row.time}
                 </span>
               </div>

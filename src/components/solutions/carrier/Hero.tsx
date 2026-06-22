@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import ApiEndpointSummaryMock from "@/components/solutions/carrier/ApiEndpointSummaryMock";
 
 const Hero = () => {
   return (
@@ -22,8 +23,10 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative flex items-center justify-center">
-           
+          <div className="relative z-10 flex items-center justify-center">
+            <div className="w-full max-w-[380px] md:max-w-[420px]">
+              <ApiEndpointSummaryMock />
+            </div>
           </div>
         </div>
       </Container>

@@ -25,7 +25,7 @@ const Hero = () => {
 
           <div className="relative flex items-center justify-center">
             <Image
-              src="/images/startups/startuphero.png"
+              src="/images/solution/developers.svg"
               alt="CoverForce startups program"
               width={1200}
               height={900}
