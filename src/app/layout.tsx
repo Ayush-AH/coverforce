@@ -7,10 +7,6 @@ import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
-export const experimental = {
-  viewTransition: true,
-};
-
 type RootLayoutProps = {
   children: ReactNode;
 };

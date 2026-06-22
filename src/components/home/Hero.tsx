@@ -40,68 +40,24 @@ const stats: StatItem[] = [
   { value: "$500M+", label: "Gross Quoted Premium" },
 ];
 
-type HeroVariant = "dark" | "light";
+const heroTheme = {
+  settledBg: "bg-[#121C49]",
+  sectionText: "text-white",
+  borderColor: "#FFFFFF33",
+  gdpText: "text-white/85",
+  title: "text-white",
+  titleMuted: "text-[#BCC5D6]",
+  statValueActive: "text-white",
+  statValueInactive: "text-[#8296B0]",
+  statLabelActive: "text-white/80",
+  statLabelInactive: "text-[#8296B0]",
+  statLine: "bg-white/5",
+  fiberColor: "#ffffff",
+  fiberOriginGlow: true,
+} as const;
 
-const heroThemes = {
-  dark: {
-    settledBg: "bg-[#121C49]",
-    sectionText: "text-white",
-    borderColor: "#FFFFFF33",
-    gdpText: "text-white/85",
-    title: "text-white",
-    titleMuted: "text-[#BCC5D6]",
-    statValueActive: "text-white",
-    statValueInactive: "text-[#8296B0]",
-    statLabelActive: "text-white/80",
-    statLabelInactive: "text-[#8296B0]",
-    statLine: "bg-white/5",
-    fiberColor: "#ffffff",
-    sectionGradient: undefined,
-    fiberOriginGlow: true,
-  },
-  light: {
-    settledBg: "bg-white",
-    sectionText: "text-[#0a143b]",
-    borderColor: "#53535380",
-    gdpText: "text-[#0a143b]/85",
-    title: "text-[#0a143b]",
-    titleMuted: "text-[#BCC5D6]",
-    statValueActive: "text-[#0a143b]",
-    statValueInactive: "text-[#8296B0]",
-    statLabelActive: "text-[#0a143b]/80",
-    statLabelInactive: "text-[#8296B0]",
-    statLine: "bg-[#0a143b]/5",
-    fiberColor: "#0810bf",
-    sectionGradient:
-      "radial-gradient(102.84% 104.98% at 50% 104.98%, #0071c1 1.33%, #60a8e2 15.71%, #b4d8ff 33.15%, #d9ebff 45%, #f8fafd 60%)",
-    fiberOriginGlow: false,
-  },
-} satisfies Record<
-  HeroVariant,
-  {
-    settledBg: string;
-    sectionText: string;
-    borderColor: string;
-    gdpText: string;
-    title: string;
-    titleMuted: string;
-    statValueActive: string;
-    statValueInactive: string;
-    statLabelActive: string;
-    statLabelInactive: string;
-    statLine: string;
-    fiberColor: string;
-    sectionGradient?: string;
-    fiberOriginGlow: boolean;
-  }
->;
-
-type HeroProps = {
-  variant?: HeroVariant;
-};
-
-const Hero = ({ variant = "dark" }: HeroProps) => {
-  const theme = heroThemes[variant];
+const Hero = () => {
+  const theme = heroTheme;
   const sectionRef = useRef<HTMLElement>(null);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const [introSettled, setIntroSettled] = useState(!introEnabled);
@@ -438,9 +394,8 @@ const Hero = ({ variant = "dark" }: HeroProps) => {
     return () => window.removeEventListener("resize", update);
   }, [activeIndex, statCount]);
 
-  const sectionBgClass = theme.sectionGradient
-    ? ""
-    : !introEnabled || introSettled
+  const sectionBgClass =
+    !introEnabled || introSettled
       ? theme.settledBg
       : isIntroWhiteBg
         ? "bg-white"
@@ -452,13 +407,6 @@ const Hero = ({ variant = "dark" }: HeroProps) => {
       data-intro-reveal={introEnabled ? "pending" : undefined}
       className={`relative isolate overflow-hidden ${theme.sectionText} ${sectionBgClass}`}
     >
-      {theme.sectionGradient ? (
-        <div
-          className="pointer-events-none absolute inset-0 z-0"
-          style={{ background: theme.sectionGradient }}
-          aria-hidden
-        />
-      ) : null}
       <Container
         ref={containerRef}
         borderColor={theme.borderColor}
@@ -535,14 +483,14 @@ const Hero = ({ variant = "dark" }: HeroProps) => {
                 introUiLocked ? "pointer-events-none" : ""
               }`}
             >
-              <Button href="/" balanced surface={variant === "dark" ? "on-dark" : "default"}>
+              <Button href="/" balanced surface="on-dark">
                 Request Demo
               </Button>
               <Button
                 href="/"
                 balanced
                 variant="secondary"
-                surface={variant === "dark" ? "on-dark" : "default"}
+                surface="on-dark"
               >
                 Watch Demo
               </Button>
@@ -556,11 +504,7 @@ const Hero = ({ variant = "dark" }: HeroProps) => {
               introUiLocked ? "pointer-events-none" : ""
             }`}
           >
-            {
-              variant === "dark" && (
-                <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
-              )
-            }
+            <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
             <ul
               ref={listRef}
               className="relative grid grid-cols-2 gap-x-6 gap-y-10 md:flex md:py-10"

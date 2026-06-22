@@ -79,19 +79,19 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
         links: [
           {
             label: "Submission & Intake",
-            href: "/",
+            href: "/product/submission-intake",
             description: "Capture every submission from email, PDF, or AMS.",
             icon: RiInboxLine,
           },
           {
             label: "Quote & Bind",
-            href: "/",
+            href: "/product/quote-bind",
             description: "Compare carriers and bind policies in one workflow.",
             icon: RiFileList3Line,
           },
           {
             label: "Intelligence",
-            href: "/",
+            href: "/product/intelligence",
             badge: "NEW",
             description: "Turn submission data into underwriting-ready insight.",
             icon: RiLineChartLine,

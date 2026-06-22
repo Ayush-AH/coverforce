@@ -19,11 +19,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: "Product", href: "/", hasDropdown: true },
-  { label: "Solutions", href: "/", hasDropdown: true },
-  { label: "Developers", href: "/", hasDropdown: false },
-  { label: "Pricing", href: "/", hasDropdown: false },
-  { label: "Company", href: "/", hasDropdown: true },
+  { label: "Product", href: "/product/submission-intake", hasDropdown: true },
+  { label: "Solutions", href: "/solutions/wholesalers", hasDropdown: true },
+  { label: "Developers", href: "/developers", hasDropdown: false },
+  { label: "Pricing", href: "/pricing", hasDropdown: false },
+  { label: "Company", href: "/company", hasDropdown: true },
 ];
 
 const HOVER_CLOSE_DELAY = 120;
@@ -31,7 +31,7 @@ const HOVER_CLOSE_DELAY = 120;
 type HeaderTheme = "dark" | "light";
 
 function getHeaderTheme(pathname: string): HeaderTheme {
-  if (pathname.startsWith("/solutions") || pathname === "/home") {
+  if (pathname.startsWith("/solutions")) {
     return "light";
   }
   return "dark";
