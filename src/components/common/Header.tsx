@@ -87,12 +87,13 @@ const Header = () => {
   const [clipOpen, setClipOpen] = useState(false);
   const [enterKey, setEnterKey] = useState(0);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const switchingToRef = useRef<string | null>(null);
   const activeMenuRef = useRef<string | null>(null);
   const renderedMenuRef = useRef<string | null>(null);
+  const clipOpenRef = useRef(false);
 
   activeMenuRef.current = activeMenu;
   renderedMenuRef.current = renderedMenu;
+  clipOpenRef.current = clipOpen;
 
   useLayoutEffect(() => {
     const navBar = navBarRef.current;
@@ -154,17 +155,18 @@ const Header = () => {
 
       setActiveMenu(label);
 
-      if (renderedMenuRef.current === label && !switchingToRef.current) {
+      if (renderedMenuRef.current === label) {
+        if (!clipOpenRef.current) {
+          revealClip();
+        }
         return;
       }
 
-      if (renderedMenuRef.current && renderedMenuRef.current !== label) {
-        switchingToRef.current = label;
-        setClipOpen(false);
+      if (clipOpenRef.current && renderedMenuRef.current) {
+        setRenderedMenu(label);
         return;
       }
 
-      switchingToRef.current = null;
       setRenderedMenu(label);
       revealClip();
     },
@@ -172,7 +174,6 @@ const Header = () => {
   );
 
   const closeMenu = useCallback(() => {
-    switchingToRef.current = null;
     setActiveMenu(null);
     setClipOpen(false);
   }, []);
@@ -183,19 +184,10 @@ const Header = () => {
   }, [clearCloseTimer, closeMenu]);
 
   const handleClipClosed = useCallback(() => {
-    const nextMenu = switchingToRef.current;
-
-    if (nextMenu) {
-      switchingToRef.current = null;
-      setRenderedMenu(nextMenu);
-      revealClip();
-      return;
-    }
-
     if (!activeMenuRef.current) {
       setRenderedMenu(null);
     }
-  }, [revealClip]);
+  }, []);
 
   useEffect(() => {
     closeMenu();
@@ -231,80 +223,79 @@ const Header = () => {
         >
           <Container>
             <div className="relative flex items-center justify-between py-4">
-          <Link href="/" onClick={closeMenu} className="relative z-10 shrink-0">
-            <Image
-              src={styles.logo}
-              alt="CoverForce"
-              width={180}
-              height={34}
-              priority
-              className="h-5 w-auto md:h-6"
-            />
-          </Link>
+              <Link href="/" onClick={closeMenu} className="relative z-10 shrink-0">
+                <Image
+                  src={styles.logo}
+                  alt="CoverForce"
+                  width={180}
+                  height={34}
+                  priority
+                  className="h-5 w-auto md:h-6"
+                />
+              </Link>
 
-          <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
-            <div className="relative flex h-full items-center">
-              <ul className="pointer-events-auto flex items-center gap-6 xl:gap-8">
-                {navItems.map(({ label, href, hasDropdown }) => {
-                  const isActive = activeMenu === label;
+              <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
+                <div className="relative flex h-full items-center">
+                  <ul className="pointer-events-auto flex items-center gap-6 xl:gap-8">
+                    {navItems.map(({ label, href, hasDropdown }) => {
+                      const isActive = activeMenu === label;
 
-                  return (
-                    <li
-                      key={label}
-                      onMouseEnter={() => {
-                        if (hasDropdown) openMenu(label);
-                        else {
-                          clearCloseTimer();
-                          closeMenu();
-                        }
-                      }}
-                    >
-                      <Link
-                        href={href}
-                        onClick={closeMenu}
-                        className={`group flex items-center gap-1 font-heading text-xs font-regular tracking-[0.12em] transition-colors ${
-                          isActive ? styles.linkActive : styles.linkIdle
-                        }`}
-                        aria-expanded={hasDropdown ? isActive : undefined}
-                        aria-haspopup={hasDropdown ? "true" : undefined}
-                      >
-                        <NavLinkLabel label={label} />
-                        {hasDropdown ? (
-                          <RiArrowDownSLine
-                            className={`size-4 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-                              isActive ? "rotate-180 opacity-100" : "opacity-80 group-hover:rotate-180"
-                            }`}
-                            aria-hidden
-                          />
-                        ) : null}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
+                      return (
+                        <li
+                          key={label}
+                          onMouseEnter={() => {
+                            if (hasDropdown) openMenu(label);
+                            else {
+                              clearCloseTimer();
+                              closeMenu();
+                            }
+                          }}
+                        >
+                          <Link
+                            href={href}
+                            onClick={closeMenu}
+                            className={`group flex items-center gap-1 font-heading text-xs font-regular tracking-[0.12em] transition-colors ${isActive ? styles.linkActive : styles.linkIdle
+                              }`}
+                            aria-expanded={hasDropdown ? isActive : undefined}
+                            aria-haspopup={hasDropdown ? "true" : undefined}
+                          >
+                            <NavLinkLabel label={label} />
+                            {hasDropdown ? (
+                              <RiArrowDownSLine
+                                className={`size-4 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isActive ? "rotate-180 opacity-100" : "opacity-80 group-hover:rotate-180"
+                                  }`}
+                                aria-hidden
+                              />
+                            ) : null}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
 
-          <div className="relative z-10 hidden items-center gap-6 lg:flex xl:gap-8">
-            <Link
-              href="/"
-              onClick={closeMenu}
-              className={`group font-heading text-xs font-medium tracking-[0.12em] transition-colors ${styles.login}`}
-            >
-              <NavLinkLabel label="Login" />
-            </Link>
-            <Button href="/" surface={theme === "dark" ? "on-dark" : "default"}>
-              Request demo
-            </Button>
-          </div>
+              <div className="relative z-10 hidden items-center gap-6 lg:flex xl:gap-8">
+                <Link
+                  href="/"
+                  onClick={closeMenu}
+                  className={`group font-heading text-xs font-medium tracking-[0.12em] transition-colors ${styles.login}`}
+                >
+                  <NavLinkLabel label="Login" />
+                </Link>
+                <Button href="/" surface={theme === "dark" ? "on-dark" : "default"}>
+                  Request demo
+                </Button>
+              </div>
             </div>
           </Container>
         </div>
 
-        {renderedConfig ? (
+        {renderedConfig && renderedMenu ? (
           <MegaMenu
             open={clipOpen}
             enterKey={enterKey}
+            menuKey={renderedMenu}
             config={renderedConfig}
             onMouseEnter={clearCloseTimer}
             onClipClosed={handleClipClosed}

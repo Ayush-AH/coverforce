@@ -143,7 +143,7 @@ const DemoSteps = () => {
 
   return (
     <section className="bg-[#121C49] text-white">
-      <Container borderColor="#FFFFFF33" className="border-t border-[#FFFFFF1A]">
+      <Container borderColor="#FFFFFF33">
         <div className="py-16 md:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[minmax(11rem,16rem)_minmax(0,1fr)] lg:gap-16 xl:gap-20">
             <aside className="lg:sticky lg:top-28 lg:self-start">

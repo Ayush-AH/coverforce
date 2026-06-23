@@ -68,7 +68,7 @@ const DataAdvantage = () => {
               <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
                 <div className="space-y-8">
                   <div>
-                    <AnimatedPercent className="text-5xl font-heading font-medium leading-none tracking-tight text-[#4F63E8]" />
+                    <AnimatedPercent className="text-5xl font-heading font-medium leading-none tracking-tight text-[#121C49]" />
                     <p className="mt-2 text-lg font-heading font-medium text-[#525252]">
                       Pre-fill Accuracy
                     </p>

@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
+import Button from "@/components/common/Button";
 import { SplitText } from "@/lib/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -173,13 +173,9 @@ const ExplorePlatform = () => {
           </p>
 
           <div ref={ctaRef} className="mt-10">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 rounded-full bg-[#4541CD] px-6 py-3.5 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90 md:px-8 md:text-xs"
-            >
+            <Button href="/" balanced surface="on-dark">
               Get full appetite data with coverforce
-              <span aria-hidden>→</span>
-            </Link>
+            </Button>
           </div>
         </div>
       </Container>

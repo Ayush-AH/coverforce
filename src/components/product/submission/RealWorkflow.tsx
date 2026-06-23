@@ -11,57 +11,91 @@ const WORKFLOW_STEPS = [
     title: "Document Intake",
     before: "50 MIN",
     after: "8 sec",
+    hoverColor: "#B97DFF",
   },
   {
     step: "02",
     title: "Carrier data entry",
     before: "15 MIN",
     after: "3 mins",
+    hoverColor: "#122775",
   },
   {
     step: "03",
     title: "Review & Submit",
     before: "HOURS",
     after: "~3mins",
+    hoverColor: "#FDA574",
   },
   {
     step: "04",
     title: "Quoting",
     before: "45 MIN",
     after: "4 sec",
+    hoverColor: "#36B6FF",
   },
   {
     step: "05",
     title: "Bind and Deliver",
     before: "5 MIN",
     after: "1 min",
+    hoverColor: "#5F950C",
   },
 ] as const;
+
+const CARD_HOVER_EASE = "cubic-bezier(0.62, 0.16, 0.13, 1.01)";
+const CARD_HOVER_DURATION = "0.55s";
+const CARD_COLOR_TRANSITION = `color ${CARD_HOVER_DURATION} ${CARD_HOVER_EASE}`;
+const CARD_OVERLAY_TRANSITION = `opacity ${CARD_HOVER_DURATION} ${CARD_HOVER_EASE}`;
 
 function WorkflowStepCard({
   step,
   title,
   before,
   after,
+  hoverColor,
 }: (typeof WORKFLOW_STEPS)[number]) {
   return (
-    <div className="relative flex min-h-[22rem] flex-col justify-between border border-[#E9E9E9] bg-white p-5 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]">
-      <div className="flex items-start justify-between gap-4">
-        <span className="font-heading text-3xl font-regular leading-none text-[#4F4F4F] md:text-6xl">
-          {step}
-        </span>
-        <div className="text-right">
-          <p className="font-mono text-[0.65rem] font-medium text-[#9A9A9A] line-through md:text-sm">
-            {before}
-          </p>
-          <p className="mt-0.5 font-heading text-sm font-medium text-[#2D3E9D] md:text-lg">
-            {after}
-          </p>
+    <div className="group relative flex min-h-[22rem] flex-col justify-between overflow-hidden border border-[#E9E9E9] bg-white p-5 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 motion-reduce:transition-none"
+        style={{
+          backgroundColor: hoverColor,
+          transition: CARD_OVERLAY_TRANSITION,
+        }}
+        aria-hidden
+      />
+
+      <div className="relative z-10 flex flex-1 flex-col justify-between">
+        <div className="flex items-start justify-between gap-4">
+          <span
+            className="font-heading text-3xl font-regular leading-none text-[#4F4F4F] group-hover:text-white md:text-6xl"
+            style={{ transition: CARD_COLOR_TRANSITION }}
+          >
+            {step}
+          </span>
+          <div className="text-right">
+            <p
+              className="font-mono text-[0.65rem] font-medium text-[#9A9A9A] line-through group-hover:text-white/70 md:text-sm"
+              style={{ transition: CARD_COLOR_TRANSITION }}
+            >
+              {before}
+            </p>
+            <p
+              className="mt-0.5 font-heading text-sm font-medium text-[#2D3E9D] group-hover:text-white md:text-lg"
+              style={{ transition: CARD_COLOR_TRANSITION }}
+            >
+              {after}
+            </p>
+          </div>
         </div>
+        <p
+          className="font-heading text-sm font-medium text-[#2D3E9D] group-hover:text-white md:text-lg"
+          style={{ transition: CARD_COLOR_TRANSITION }}
+        >
+          {title}
+        </p>
       </div>
-      <p className="font-heading text-sm font-medium text-[#2D3E9D] md:text-lg">
-        {title}
-      </p>
     </div>
   );
 }

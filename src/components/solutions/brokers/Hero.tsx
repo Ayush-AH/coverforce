@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import SolutionHeroLabel from "@/components/solutions/SolutionHeroLabel";
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
 
 const Hero = () => {
@@ -9,6 +10,7 @@ const Hero = () => {
       <Container borderColor="#53535380" borderBottom={true}>
         <div className="grid h-screen grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="flex h-full flex-col justify-center space-y-8">
+            <SolutionHeroLabel>Brokers</SolutionHeroLabel>
             <h1 className="max-w-xl text-3xl font-heading font-normal tracking-normal text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-none">
             Standardise commercial lines everywhere.
             </h1>

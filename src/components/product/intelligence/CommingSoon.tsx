@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
-import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { SplitText } from "@/lib/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -131,10 +130,16 @@ const CommingSoon = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#121C49] text-white">
+    <section ref={sectionRef} className="relative overflow-hidden text-white">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, #100B3C 0%, #112456 18%, #154BC1 36%, #5f6ad8 54%, #9a7ef0 70%, #B87AFF 82%, #D4C4FF 94%, #DACAFF 100%)",
+        }}
+        aria-hidden
+      />
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative">
-        <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%]" />
-
         <div
           ref={contentRef}
           className="relative z-10 mx-auto flex min-h-[calc(100svh-2rem)] max-w-2xl flex-col items-center justify-center text-center will-change-transform"
@@ -158,10 +163,7 @@ const CommingSoon = () => {
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
           >
             <Button href="/" balanced surface="on-dark">
-              Request demo
-            </Button>
-            <Button href="/" balanced variant="secondary" surface="on-dark">
-              Book a call
+              Explore AI
             </Button>
           </div>
         </div>

@@ -37,7 +37,8 @@ export type MegaMenuColumn = {
 export type MegaMenuFeatured = {
   title: string;
   href: string;
-  image: string;
+  image?: string;
+  video?: string;
   imageAlt?: string;
   subtitle?: string;
 };
@@ -64,10 +65,10 @@ export type MegaMenuConfig = {
 export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
   Product: {
     featured: {
-      title: "Announcing AI AutoFill",
+      title: "Watch the demo — from intake to bind in minutes",
       href: "/",
-      image: "/images/mega-menu-promo.png",
-      imageAlt: "AI AutoFill product preview",
+      video: "/videos/demo.mp4",
+      imageAlt: "CoverForce platform demo",
     },
     cta: {
       label: "Explore Product",
@@ -131,10 +132,10 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
   },
   Solutions: {
     featured: {
-      title: "Compare Quotes Side by Side",
+      title: "Watch the demo — see CoverForce in action",
       href: "/solutions/startups",
-      image: "/images/mega-menu-promo.png",
-      imageAlt: "Quote comparison preview",
+      video: "/videos/demo.mp4",
+      imageAlt: "CoverForce platform demo",
     },
     cta: {
       label: "Explore Solutions",
@@ -209,10 +210,10 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
   },
   Company: {
     featured: {
-      title: "Announcing Business Pre-Fill",
+      title: "Watch the demo — explore the full platform",
       href: "/",
-      image: "/images/mega-menu-promo.png",
-      imageAlt: "Business Pre-Fill preview",
+      video: "/videos/demo.mp4",
+      imageAlt: "CoverForce platform demo",
     },
     cta: {
       label: "Explore Company",

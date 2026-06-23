@@ -22,7 +22,7 @@ import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const POINT_ACTIVE = "#0130BE";
+const POINT_ACTIVE = "#413CC0";
 const FIELD_VALID = "#6DAB4E";
 
 function ProcessPointText({ text }: { text: string }) {
@@ -601,7 +601,7 @@ const ProcessFlow = () => {
             const afterPointAnim = (animStart: number, text: string, rightEnd: number) =>
                 Math.max(animStart + pointAnimDur(text), rightEnd) + POINT_GAP;
 
-            const pointWaveColors = COLOR_THEMES.light;
+            const pointWaveColors = { ...COLOR_THEMES.light, active: POINT_ACTIVE };
             let progressPoint = 0;
 
             syncProgressHeights();
@@ -643,7 +643,7 @@ const ProcessFlow = () => {
                 if (icon) {
                     tl.to(icon, {
                         backgroundColor: POINT_ACTIVE,
-                        color: "#fff",
+                        color: "#ffffff",
                         borderColor: POINT_ACTIVE,
                         duration: CHAR_DUR * 1.2,
                         ease: "power2.out",
@@ -1047,7 +1047,7 @@ const ProcessFlow = () => {
                                 key={index}
                                 className={`step${index + 1} h-screen flex flex-col justify-center`}
                             >
-                                <p className="text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#4F63E8]">
+                                <p className="text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#413CC0]">
                                     {step.tag}
                                 </p>
                                 <h3 className="mt-4 max-w-lg text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b] md:text-3xl lg:max-w-md lg:text-[1.75rem] lg:leading-[1.25]">

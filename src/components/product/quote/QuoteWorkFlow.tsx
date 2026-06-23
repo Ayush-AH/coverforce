@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Container from "@/components/common/Container";
+import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 const WORKFLOW_STEPS = [
   {
@@ -88,14 +89,12 @@ function NavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.1em] transition-colors duration-300 md:text-xs ${
-        active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
-      }`}
+      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.1em] transition-colors duration-300 md:text-xs ${active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
+        }`}
     >
       <span
-        className={`size-1.5 shrink-0 rounded-full transition-colors duration-300 ${
-          active ? "bg-[#1A1A1A]" : "bg-transparent"
-        }`}
+        className={`size-1.5 shrink-0 rounded-full transition-colors duration-300 ${active ? "bg-[#1A1A1A]" : "bg-transparent"
+          }`}
         aria-hidden
       />
       <span>{label}</span>
@@ -103,11 +102,29 @@ function NavItem({
   );
 }
 
+const FORWARD_ACTIVATION = 0.4;
+const BACKWARD_ACTIVATION = 0.52;
+
 const QuoteWorkFlow = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+
   const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(0);
   const panelRefs = useRef<Array<HTMLElement | null>>([]);
 
+  useSectionHeaderReveal({
+    scopeRef: sectionRef,
+    headerRef,
+    headingRef,
+    descRef,
+  });
+
   const scrollToPanel = useCallback((index: number) => {
+    activeIndexRef.current = index;
+    setActiveIndex(index);
     panelRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
@@ -115,33 +132,84 @@ const QuoteWorkFlow = () => {
     const panels = panelRefs.current.filter(Boolean) as HTMLElement[];
     if (!panels.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    let ticking = false;
 
-        if (!visible.length) return;
+    const updateActiveIndex = () => {
+      const vh = window.innerHeight;
+      let index = activeIndexRef.current;
 
-        const index = Number(visible[0].target.getAttribute("data-index"));
-        if (!Number.isNaN(index)) setActiveIndex(index);
-      },
-      {
-        root: null,
-        rootMargin: "-35% 0px -35% 0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      },
-    );
+      while (index < panels.length - 1) {
+        const nextTop = panels[index + 1].getBoundingClientRect().top;
+        if (nextTop <= vh * FORWARD_ACTIVATION) index += 1;
+        else break;
+      }
 
-    panels.forEach((panel) => observer.observe(panel));
-    return () => observer.disconnect();
+      while (index > 0) {
+        const currentTop = panels[index].getBoundingClientRect().top;
+        if (currentTop > vh * BACKWARD_ACTIVATION) index -= 1;
+        else break;
+      }
+
+      if (index !== activeIndexRef.current) {
+        activeIndexRef.current = index;
+        setActiveIndex(index);
+      }
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(updateActiveIndex);
+    };
+
+    updateActiveIndex();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const lenis = window.lenis;
+    lenis?.on("scroll", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      lenis?.off("scroll", onScroll);
+    };
   }, []);
 
+  const isEvenStep = (activeIndex + 1) % 2 === 0;
+
   return (
-    <section className="bg-white text-[#0a143b]">
+    <section
+      ref={sectionRef}
+      className={`text-[#0a143b] transition-colors duration-500 ${isEvenStep ? "bg-[#FFFAF6]" : "bg-white"
+        }`}
+    >
       <Container borderColor="#53535340">
         <div className="py-16 md:py-20 lg:py-24">
-          <div className="grid gap-12 lg:grid-cols-[minmax(13rem,17rem)_minmax(0,1fr)] lg:gap-16 xl:gap-20">
+          <div
+            ref={headerRef}
+            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+          >
+            <div className="flex flex-col justify-end space-y-5">
+              <h2
+                ref={headingRef}
+                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              >
+                <span data-split>The full quote-to-bind <br /> stack</span>
+              </h2>
+            </div>
+
+            <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
+              <p
+                ref={descRef}
+                className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
+              >
+                Enterprise multi-carrier submission, bindable quotes, one-click bind
+                with AI embedded at every step.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-12 grid gap-12 md:mt-14 lg:mt-16 lg:grid-cols-[minmax(16rem,22rem)_minmax(0,1fr)] lg:gap-16 xl:gap-20">
             <aside className="lg:sticky lg:top-28 lg:self-start">
               <nav className="flex flex-row gap-6 overflow-x-auto pb-2 lg:flex-col lg:gap-0 lg:overflow-visible lg:pb-0">
                 {WORKFLOW_STEPS.map((step, index) => (

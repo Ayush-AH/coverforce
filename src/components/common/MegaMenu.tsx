@@ -4,18 +4,21 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
+import ButtonArrowIcon from "./ButtonArrowIcon";
 import type { MegaMenuColumn, MegaMenuConfig, MegaMenuLink } from "@/data/megaMenu";
 
 export const MEGA_MENU_CLIP_CLOSED = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
 export const MEGA_MENU_CLIP_OPEN = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
 export const CLIP_DURATION_MS = 550;
 const CLIP_EASE = "cubic-bezier(0.76, 0, 0.24, 1)";
+const CONTENT_SWAP_MS = 320;
 const CONTENT_BASE_DELAY = 100;
 const CONTENT_STAG = 45;
 
 type MegaMenuProps = {
   open: boolean;
   enterKey: number;
+  menuKey: string;
   config: MegaMenuConfig;
   onMouseEnter: () => void;
   onClipClosed?: () => void;
@@ -77,14 +80,17 @@ function MegaMenuLinkItem({
       <Link
         href={link.href}
         onClick={onLinkClick}
-        className="group flex items-center gap-2 py-3.5 font-heading text-[0.9375rem] font-regular leading-none text-[#0a143b] transition-colors duration-200 hover:text-[#0032C9]"
+        className="group flex w-full items-center justify-between gap-3 py-3.5 font-heading text-[0.9375rem] font-regular leading-none text-[#0a143b] transition-colors duration-200 hover:text-[#413CC0]"
       >
-        <span>{link.label}</span>
-        {link.badge ? (
-          <span className="rounded-full border border-[#D1D5DB] px-2 py-0.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#6B7280]">
-            {link.badge}
-          </span>
-        ) : null}
+        <span className="flex min-w-0 items-center gap-2">
+          <span>{link.label}</span>
+          {link.badge ? (
+            <span className="rounded-full border border-[#D1D5DB] px-2 py-0.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#6B7280]">
+              {link.badge}
+            </span>
+          ) : null}
+        </span>
+        <ButtonArrowIcon className="h-2 w-3 shrink-0 text-[#413CC0] opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
       </Link>
     </li>
   );
@@ -122,6 +128,7 @@ function MegaMenuColumnBlock({
 export default function MegaMenu({
   open,
   enterKey,
+  menuKey,
   config,
   onMouseEnter,
   onClipClosed,
@@ -129,30 +136,76 @@ export default function MegaMenu({
 }: MegaMenuProps) {
   const [clipShown, setClipShown] = useState(false);
   const [contentEnter, setContentEnter] = useState(false);
+  const [contentOpacity, setContentOpacity] = useState(0);
+  const [displayConfig, setDisplayConfig] = useState(config);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const prevMenuKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (open) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [open, displayConfig.featured.video]);
 
   useEffect(() => {
     if (open) {
       setClipShown(false);
-      setContentEnter(false);
 
       const clipFrame = requestAnimationFrame(() => {
         requestAnimationFrame(() => setClipShown(true));
       });
-      const contentTimer = window.setTimeout(() => setContentEnter(true), 100);
 
       return () => {
         cancelAnimationFrame(clipFrame);
-        window.clearTimeout(contentTimer);
       };
     }
 
+    prevMenuKeyRef.current = null;
     setContentEnter(false);
+    setContentOpacity(0);
     setClipShown(false);
     const timer = window.setTimeout(() => onClipClosed?.(), CLIP_DURATION_MS);
     return () => window.clearTimeout(timer);
   }, [open, onClipClosed]);
 
-  const featuredDelay = CONTENT_BASE_DELAY + CONTENT_STAG * config.columns.length;
+  useEffect(() => {
+    if (!open || !clipShown) return;
+
+    setContentEnter(false);
+    const enterTimer = window.setTimeout(() => setContentEnter(true), 100);
+    const fadeTimer = window.setTimeout(() => setContentOpacity(1), 100);
+
+    return () => {
+      window.clearTimeout(enterTimer);
+      window.clearTimeout(fadeTimer);
+    };
+  }, [open, clipShown, enterKey]);
+
+  useEffect(() => {
+    if (!open || !clipShown) return;
+
+    const previousMenuKey = prevMenuKeyRef.current;
+    prevMenuKeyRef.current = menuKey;
+
+    if (previousMenuKey === null || previousMenuKey === menuKey) {
+      return;
+    }
+
+    setContentOpacity(0);
+    const swapTimer = window.setTimeout(() => {
+      setDisplayConfig(config);
+      requestAnimationFrame(() => setContentOpacity(1));
+    }, CONTENT_SWAP_MS);
+
+    return () => window.clearTimeout(swapTimer);
+  }, [menuKey, config, open, clipShown]);
+
+  const featuredDelay = CONTENT_BASE_DELAY + CONTENT_STAG * displayConfig.columns.length;
   const footerDelay = featuredDelay + CONTENT_STAG;
 
   return (
@@ -166,13 +219,16 @@ export default function MegaMenu({
       }}
       onMouseEnter={onMouseEnter}
     >
-      <div className="relative mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10 lg:px-10">
-        <div className="flex flex-col gap-8 md:flex-row md:items-stretch md:gap-10 lg:gap-14">
-          <div className="min-w-0 flex-1">
+      <div className="relative mx-auto w-full max-w-7xl px-6 py-8  md:py-10 ">
+        <div
+          className="flex flex-col gap-8 transition-opacity duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none md:flex-row md:items-stretch md:gap-8 lg:gap-10"
+          style={{ opacity: contentOpacity }}
+        >
+          <div className="min-w-0 flex-1 md:max-w-[calc(100%-20rem)] lg:max-w-[calc(100%-23rem)] xl:max-w-[calc(100%-26rem)]">
             <div className="grid gap-8 sm:grid-cols-2 lg:gap-x-14">
-              {config.columns.map((column, index) => (
+              {displayConfig.columns.map((column, index) => (
                 <MegaMenuColumnBlock
-                  key={column.title}
+                  key={`${menuKey}-${column.title}`}
                   column={column}
                   enter={contentEnter}
                   enterKey={enterKey}
@@ -188,8 +244,8 @@ export default function MegaMenu({
               delay={footerDelay}
               className="mt-8 border-t border-[#E5E7EB] pt-6"
             >
-              <Button href={config.cta.href} balanced className="min-w-[14rem] px-9" onClick={onLinkClick}>
-                {config.cta.label}
+              <Button href={displayConfig.cta.href} balanced className="min-w-[14rem] px-9" onClick={onLinkClick}>
+                {displayConfig.cta.label}
               </Button>
             </Reveal>
           </div>
@@ -198,24 +254,39 @@ export default function MegaMenu({
             enter={contentEnter}
             enterKey={enterKey}
             delay={featuredDelay}
-            className="w-full shrink-0 md:w-[240px] lg:w-[260px] xl:w-[280px]"
+            className="w-full shrink-0 md:w-[20rem] lg:w-[23rem] xl:w-[26rem]"
           >
             <Link
-              href={config.featured.href}
+              href={displayConfig.featured.href}
               onClick={onLinkClick}
-              className="group flex flex-col overflow-hidden rounded-xl bg-white p-3 transition-colors duration-200 hover:bg-[#FAFAFA]"
+              className="group flex flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white p-3 transition-colors duration-200 hover:bg-[#FAFAFA]"
             >
-              <div className="overflow-hidden rounded-lg">
-                <Image
-                  src={config.featured.image}
-                  alt={config.featured.imageAlt ?? config.featured.title}
-                  width={280}
-                  height={260}
-                  className="h-auto w-full transition-transform duration-300 group-hover:scale-[1.02]"
-                />
+              <div className="overflow-hidden rounded-lg bg-[#0a143b]">
+                {displayConfig.featured.video ? (
+                  <video
+                    ref={videoRef}
+                    key={displayConfig.featured.video}
+                    src={displayConfig.featured.video}
+                    className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-label={displayConfig.featured.imageAlt ?? displayConfig.featured.title}
+                  />
+                ) : (
+                  <Image
+                    src={displayConfig.featured.image ?? "/images/mega-menu-promo.png"}
+                    alt={displayConfig.featured.imageAlt ?? displayConfig.featured.title}
+                    width={480}
+                    height={448}
+                    className="h-auto w-full transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                )}
               </div>
               <p className="mt-3 px-0.5 font-heading text-sm font-regular leading-snug text-[#0a143b] transition-colors duration-200 group-hover:text-[#0032C9]">
-                {config.featured.title}
+                {displayConfig.featured.title}
               </p>
             </Link>
           </Reveal>
