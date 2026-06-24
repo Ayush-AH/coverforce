@@ -290,7 +290,7 @@ button {
 @keyframes way-modal-text-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 16px, 0);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
@@ -343,8 +343,13 @@ button {
   backface-visibility: hidden;
 }
 
+.way-modal-reveal-slot {
+  overflow: hidden;
+}
+
 .way-modal-reveal {
   opacity: 0;
+  transform: translate3d(0, 12px, 0);
   will-change: transform, opacity;
 }
 
@@ -385,6 +390,30 @@ button {
   }
 
   .way-modal-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mega-menu-reveal-slot {
+  overflow: hidden;
+}
+
+.mega-menu-reveal {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mega-menu-enter .mega-menu-reveal {
+    animation: way-modal-text-in var(--way-modal-text-duration) var(--way-modal-ease) both;
+    animation-delay: var(--mega-menu-stagger, 0ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mega-menu-reveal {
     opacity: 1;
     transform: none;
   }

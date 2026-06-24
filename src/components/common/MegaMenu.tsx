@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
@@ -48,60 +48,35 @@ function handleMenuLinkClick(
 }
 
 function Reveal({
-  enter,
-  enterKey,
   resetKey,
+  enterKey,
   delay,
-  mode = "slide",
   as: Component = "div",
   className = "",
   children,
 }: {
-  enter: boolean;
-  enterKey: number;
   resetKey: string;
+  enterKey: number;
   delay: number;
-  mode?: "slide" | "fade";
   as?: "div" | "li";
   className?: string;
   children: ReactNode;
 }) {
-  const settledRef = useRef(false);
-
-  useEffect(() => {
-    settledRef.current = false;
-  }, [enterKey, resetKey]);
-
-  useEffect(() => {
-    if (!enter) return;
-    const timer = window.setTimeout(() => {
-      settledRef.current = true;
-    }, 480 + delay);
-    return () => window.clearTimeout(timer);
-  }, [enter, delay, enterKey]);
-
-  const visible = enter || settledRef.current;
-  const hiddenClass = mode === "slide" ? "translate-y-3 opacity-0" : "opacity-0";
-  const visibleClass = "translate-y-0 opacity-100";
-  const transition = enter
-    ? mode === "slide"
-      ? `opacity 480ms ${CLIP_EASE} ${delay}ms, transform 480ms ${CLIP_EASE} ${delay}ms`
-      : `opacity 320ms ease ${delay}ms`
-    : "none";
-
   return (
-    <Component
-      className={`${visible ? visibleClass : hiddenClass} ${className}`}
-      style={{ transition }}
-    >
-      {children}
+    <Component className={`mega-menu-reveal-slot ${className}`}>
+      <div
+        key={`${resetKey}-${enterKey}-${delay}`}
+        className="mega-menu-reveal"
+        style={{ "--mega-menu-stagger": `${delay}ms` } as CSSProperties}
+      >
+        {children}
+      </div>
     </Component>
   );
 }
 
 function MegaMenuLinkItem({
   link,
-  enter,
   enterKey,
   resetKey,
   delay,
@@ -109,7 +84,6 @@ function MegaMenuLinkItem({
   onNavigate,
 }: {
   link: MegaMenuLink;
-  enter: boolean;
   enterKey: number;
   resetKey: string;
   delay: number;
@@ -121,7 +95,6 @@ function MegaMenuLinkItem({
   return (
     <Reveal
       as="li"
-      enter={enter}
       enterKey={enterKey}
       resetKey={resetKey}
       delay={delay}
@@ -156,28 +129,24 @@ function MegaMenuLinkItem({
 
 function MegaMenuColumnBlock({
   column,
-  enter,
+  columnIndex,
   enterKey,
   resetKey,
   onClose,
   onNavigate,
 }: {
   column: MegaMenuColumn;
-  enter: boolean;
+  columnIndex: number;
   enterKey: number;
   resetKey: string;
   onClose?: () => void;
   onNavigate?: (href: string) => void;
 }) {
+  const columnBaseDelay = CONTENT_BASE_DELAY + columnIndex * CONTENT_STAG * 2;
+
   return (
     <div>
-      <Reveal
-        enter={enter}
-        enterKey={enterKey}
-        resetKey={resetKey}
-        delay={CONTENT_BASE_DELAY}
-        mode="fade"
-      >
+      <Reveal enterKey={enterKey} resetKey={resetKey} delay={columnBaseDelay}>
         <p className="mb-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#9CA3AF]">
           {column.title}
         </p>
@@ -187,10 +156,9 @@ function MegaMenuColumnBlock({
           <MegaMenuLinkItem
             key={link.label}
             link={link}
-            enter={enter}
             enterKey={enterKey}
             resetKey={resetKey}
-            delay={CONTENT_BASE_DELAY + CONTENT_STAG * index}
+            delay={columnBaseDelay + CONTENT_STAG * (index + 1)}
             onClose={onClose}
             onNavigate={onNavigate}
           />
@@ -254,12 +222,11 @@ export default function MegaMenu({
     if (!open || !clipShown) return;
 
     setContentEnter(false);
+    setContentOpacity(1);
     const enterTimer = window.setTimeout(() => setContentEnter(true), 100);
-    const fadeTimer = window.setTimeout(() => setContentOpacity(1), 100);
 
     return () => {
       window.clearTimeout(enterTimer);
-      window.clearTimeout(fadeTimer);
     };
   }, [open, clipShown, enterKey]);
 
@@ -291,11 +258,14 @@ export default function MegaMenu({
     return () => window.clearTimeout(swapTimer);
   }, [menuKey, config, open, clipShown]);
 
-  const maxColumnLinks = Math.max(
-    ...displayConfig.columns.map((column) => column.links.length),
-    0,
-  );
-  const featuredDelay = CONTENT_BASE_DELAY + CONTENT_STAG * maxColumnLinks;
+  const featuredDelay =
+    Math.max(
+      ...displayConfig.columns.map((column, columnIndex) => {
+        const columnBaseDelay = CONTENT_BASE_DELAY + columnIndex * CONTENT_STAG * 2;
+        return columnBaseDelay + CONTENT_STAG * column.links.length;
+      }),
+      CONTENT_BASE_DELAY,
+    ) + CONTENT_STAG;
   const footerDelay = featuredDelay + CONTENT_STAG;
 
   return (
@@ -314,7 +284,7 @@ export default function MegaMenu({
         style={{ minHeight: `${MEGA_MENU_LEFT_MIN_HEIGHT_REM + 4}rem` }}
       >
         <div
-          className="flex flex-col gap-8 transition-opacity duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none md:flex-row md:items-stretch md:gap-8 lg:gap-10"
+          className={`flex flex-col gap-8 transition-opacity duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none md:flex-row md:items-stretch md:gap-8 lg:gap-10 ${contentEnter ? "mega-menu-enter" : ""}`}
           style={{ opacity: contentOpacity }}
         >
           <div
@@ -325,11 +295,11 @@ export default function MegaMenu({
               className="grid gap-8 sm:grid-cols-2 lg:gap-x-14"
               style={{ minHeight: `${MEGA_MENU_COLUMNS_MIN_HEIGHT_REM}rem` }}
             >
-              {displayConfig.columns.map((column) => (
+              {displayConfig.columns.map((column, columnIndex) => (
                 <MegaMenuColumnBlock
                   key={`${displayMenuKey}-${column.title}`}
                   column={column}
-                  enter={contentEnter}
+                  columnIndex={columnIndex}
                   enterKey={enterKey}
                   resetKey={displayMenuKey}
                   onClose={onClose}
@@ -339,11 +309,9 @@ export default function MegaMenu({
             </div>
 
             <Reveal
-              enter={contentEnter}
               enterKey={enterKey}
               resetKey={displayMenuKey}
               delay={footerDelay}
-              mode="fade"
               className="mt-8 border-t border-[#E5E7EB] pt-6"
             >
               <Button
@@ -360,11 +328,9 @@ export default function MegaMenu({
           </div>
 
           <Reveal
-            enter={contentEnter}
             enterKey={enterKey}
             resetKey={displayMenuKey}
             delay={featuredDelay}
-            mode="fade"
             className="w-full shrink-0 md:w-[20rem] lg:w-[23rem] xl:w-[26rem]"
           >
             <Link
