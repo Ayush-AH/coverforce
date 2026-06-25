@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import HeroReveal from "@/components/common/HeroReveal";
 
 const Hero = () => {
   return (
@@ -26,7 +27,7 @@ const Hero = () => {
 
       <Container className="relative z-10">
         <div className="flex min-h-screen flex-col">
-          <div className="flex flex-1 flex-col items-center justify-center px-6 pt-24 text-center md:pt-28 lg:pt-32">
+          <HeroReveal className="flex flex-1 flex-col items-center justify-center px-6 pt-24 text-center md:pt-28 lg:pt-32">
             <p className="flex items-center justify-center gap-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-white md:text-xs">
               <span className="size-2 shrink-0 rounded-full bg-white" aria-hidden />
               Developers
@@ -53,7 +54,7 @@ const Hero = () => {
                 Read the docs
               </Button>
             </div>
-          </div>
+          </HeroReveal>
 
           <div className="relative z-10 mx-auto mt-14 w-full max-w-6xl px-4 pb-16 md:mt-20 md:pb-20 lg:mt-24 lg:max-w-7xl lg:pb-24">
             <Image

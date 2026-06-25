@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import gsap from "gsap";
 
 export type CopySlide = {
   type: "copy";
@@ -190,9 +191,43 @@ export function useHeroCarousel(slides: HeroSlide[]) {
   const intervalRef = useRef<number | null>(null);
   const phaseRef = useRef<TransitionPhase>("idle");
   const activeIndexRef = useRef(0);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   phaseRef.current = phase;
   activeIndexRef.current = activeIndex;
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const active = wrapper.querySelector<HTMLElement>(
+      ".submission-hero-content--active",
+    );
+    if (!active) return;
+
+    const items = Array.from(active.querySelectorAll<HTMLElement>("p, h1"));
+    if (!items.length) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(items, { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.set(items, { opacity: 0, y: 28 });
+    const tween = gsap.to(items, {
+      opacity: 1,
+      y: 0,
+      duration: 0.85,
+      ease: "power3.out",
+      stagger: 0.12,
+      delay: 0.45,
+    });
+
+    return () => {
+      tween.kill();
+      gsap.set(items, { clearProps: "opacity,transform" });
+    };
+  }, []);
 
   const startTransition = useCallback((targetIndex: number, slideDirection: SlideDirection) => {
     if (phaseRef.current !== "idle") return;
@@ -272,7 +307,7 @@ export function useHeroCarousel(slides: HeroSlide[]) {
     activeIndex,
     handleSelectSlide,
     track: (
-      <div className="submission-hero-wrapper translate-y-4 md:translate-y-6">
+      <div ref={wrapperRef} className="submission-hero-wrapper translate-y-4 md:translate-y-6">
         {slides.map((slide, index) => {
           const state = getSlideState(
             index,

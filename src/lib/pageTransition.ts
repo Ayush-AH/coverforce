@@ -1,8 +1,10 @@
-export const PAGE_TRANSITION_OUT_MS = 260;
-export const PAGE_TRANSITION_IN_MS = 420;
-export const PAGE_TRANSITION_MS = PAGE_TRANSITION_OUT_MS + PAGE_TRANSITION_IN_MS;
+export const PAGE_TRANSITION_OUT_MS = 520;
+export const PAGE_TRANSITION_IN_MS = 820;
+export const PAGE_TRANSITION_DELAY_MS = 120;
+/** Total time until the incoming page has fully settled. */
+export const PAGE_TRANSITION_MS = PAGE_TRANSITION_DELAY_MS + PAGE_TRANSITION_IN_MS;
 
-export const PAGE_TRANSITION_EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
+export const PAGE_TRANSITION_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export const PAGE_BG_LIGHT = "#ffffff";
 export const PAGE_BG_DARK = "#121C49";

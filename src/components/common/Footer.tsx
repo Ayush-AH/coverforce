@@ -11,9 +11,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+type FooterLinkData = {
+  label: string;
+  href: string;
+};
+
 type FooterColumnData = {
   title: string;
-  links: string[];
+  links: FooterLinkData[];
 };
 
 type LegalLink = {
@@ -24,23 +29,46 @@ type LegalLink = {
 const footerColumns: FooterColumnData[] = [
   {
     title: "Products",
-    links: ["Submission and intake", "Quotes and bind", "Intelligence"],
+    links: [
+      { label: "Submission and intake", href: "/product/submission-intake" },
+      { label: "Quotes and bind", href: "/product/quote-bind" },
+      { label: "Intelligence", href: "/product/intelligence" },
+    ],
   },
   {
     title: "Solutions",
-    links: ["Wholesalers", "Brokers", "Carriers", "Startups", "Developers"],
+    links: [
+      { label: "Wholesalers", href: "/solutions/wholesalers" },
+      { label: "Brokers", href: "/solutions/brokers" },
+      { label: "Carriers", href: "/solutions/carrier" },
+      { label: "Startups", href: "/solutions/startups" },
+      { label: "Developers", href: "/solutions/developers" },
+    ],
   },
   {
     title: "Company",
-    links: ["About us", "Blogs and insights", "Career", "Contact"],
+    links: [
+      { label: "About us", href: "/" },
+      { label: "Blogs and insights", href: "/" },
+      { label: "Career", href: "/" },
+      { label: "Contact", href: "/" },
+    ],
   },
   {
     title: "Tools",
-    links: ["ROI calculator", "Appetite checker", "2024 carrier API index"],
+    links: [
+      { label: "ROI calculator", href: "/calculation" },
+      { label: "Appetite checker", href: "/product/intelligence" },
+      { label: "2024 carrier API index", href: "/" },
+    ],
   },
 ];
 
-const standaloneLinks = ["Integration", "Developers", "Pricing"];
+const standaloneLinks: FooterLinkData[] = [
+  { label: "Integration", href: "/" },
+  { label: "Developers", href: "/developers" },
+  { label: "Pricing", href: "/pricing" },
+];
 
 const legalLinks: LegalLink[] = [
   { label: "Terms of use", href: "/" },
@@ -84,9 +112,9 @@ function FooterColumn({ title, links }: FooterColumnProps) {
         {title}
       </h3>
       <ul className="space-y-2.5">
-        {links.map((label) => (
+        {links.map(({ label, href }) => (
           <li key={label}>
-            <FooterLink href="/">{label}</FooterLink>
+            <FooterLink href={href}>{label}</FooterLink>
           </li>
         ))}
       </ul>
@@ -97,6 +125,15 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 const Footer = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    const lenis = (window as any).lenis;
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 1.2 });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useGSAP(
     () => {
@@ -182,11 +219,9 @@ const Footer = () => {
                 More
               </h3>
               <ul className="space-y-2.5">
-                {standaloneLinks.map((label) => (
+                {standaloneLinks.map(({ label, href }) => (
                   <li key={label}>
-                    <FooterLink href="/">
-                      {label}
-                    </FooterLink>
+                    <FooterLink href={href}>{label}</FooterLink>
                   </li>
                 ))}
               </ul>
@@ -205,12 +240,13 @@ const Footer = () => {
             {/* Left: copyright */}
             <p>CoverForce, Inc. All Rights Reserved, {new Date().getFullYear()}.</p>
             {/* Center: back to top */}
-            <Link
-              href="#"
+            <button
+              type="button"
+              onClick={scrollToTop}
               className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1.5 text-[#3F3F3F]/60 transition-colors hover:text-[#5B35E0] sm:inline-flex"
             >
               Back to Top ↑
-            </Link>
+            </button>
 
             {/* Right: legal links */}
             <ul className="flex flex-wrap gap-4 sm:gap-6">

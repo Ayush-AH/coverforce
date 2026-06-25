@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import HeroReveal from "@/components/common/HeroReveal";
 import SolutionHeroLabel from "@/components/solutions/SolutionHeroLabel";
 import ApiEndpointSummaryMock from "@/components/solutions/carrier/ApiEndpointSummaryMock";
 
@@ -9,7 +10,7 @@ const Hero = () => {
     <section className="relative h-screen bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
         <div className="grid h-screen grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="flex flex-col justify-center space-y-8">
+        <HeroReveal className="flex flex-col justify-center space-y-8">
             <SolutionHeroLabel>Carrier and MGAs</SolutionHeroLabel>
             <h1 className="max-w-xl text-3xl font-heading font-normal leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-[1.1]">
             Be present at the moment agents quote
@@ -23,7 +24,7 @@ const Hero = () => {
                 How Program Works
               </Button>
             </div>
-          </div>
+          </HeroReveal>
 
           <div className="relative z-10 flex items-center justify-center">
             <div className="w-full max-w-[380px] md:max-w-[420px]">

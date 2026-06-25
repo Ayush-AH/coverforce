@@ -21,9 +21,15 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     return restoreScrollRestoration;
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    scrollToTop();
+    const frame = window.requestAnimationFrame(() => scrollToTop());
     const timer = window.setTimeout(() => scrollToTop(), PAGE_TRANSITION_MS);
-    return () => window.clearTimeout(timer);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
   }, [pathname]);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import HeroReveal from "@/components/common/HeroReveal";
 import SolutionHeroLabel from "@/components/solutions/SolutionHeroLabel";
 import BrokerCodeControlsMock from "@/components/solutions/wholesalers/BrokerCodeControlsMock";
 import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
@@ -10,7 +11,7 @@ const Hero = () => {
     <section className="relative h-svh bg-white text-[#0a143b]">
       <Container borderColor="#53535380" className="relative z-10 flex h-full flex-col">
         <div className="grid h-full min-h-0 flex-1 grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="flex h-full flex-col justify-center space-y-8">
+          <HeroReveal className="flex h-full flex-col justify-center space-y-8">
             <SolutionHeroLabel>Wholesalers</SolutionHeroLabel>
             <h1 className="max-w-xl text-3xl font-heading font-normal leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-[1.1]">
             Scale your wholesale operation from one platform
@@ -24,7 +25,7 @@ const Hero = () => {
                 How Program Works
               </Button>
             </div>
-          </div>
+          </HeroReveal>
 
           <div className="relative z-10 flex h-full min-h-0 w-full items-center justify-center">
             <BrokerCodeControlsMock />

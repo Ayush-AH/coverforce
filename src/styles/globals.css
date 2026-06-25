@@ -35,30 +35,31 @@ button {
 
 @supports (view-transition-name: none) {
   :root {
-    --page-transition-out: 260ms;
-    --page-transition-in: 420ms;
+    --page-transition-out: 520ms;
+    --page-transition-in: 820ms;
+    --page-transition-delay: 120ms;
     --page-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
     --page-transition-enter-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --page-transition-bg: #121c49;
   }
 
+  /* Outgoing page simply fades out. */
   @keyframes site-page-out {
-    from {
+    0% {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
     }
-    to {
+    100% {
       opacity: 0;
-      transform: translate3d(0, -10px, 0);
     }
   }
 
+  /* Incoming page brings its content up with a gentle rise + fade. */
   @keyframes site-page-in {
-    from {
+    0% {
       opacity: 0;
-      transform: translate3d(0, 16px, 0);
+      transform: translate3d(0, 24px, 0);
     }
-    to {
+    100% {
       opacity: 1;
       transform: translate3d(0, 0, 0);
     }
@@ -87,20 +88,34 @@ button {
 
   ::view-transition-old(page-content) {
     z-index: 1;
+    transform-origin: center top;
     animation: site-page-out var(--page-transition-out) var(--page-transition-ease) both;
   }
 
   ::view-transition-new(page-content) {
     z-index: 2;
+    transform-origin: center top;
     background-color: var(--page-transition-bg);
     animation: site-page-in var(--page-transition-in) var(--page-transition-enter-ease)
-      var(--page-transition-out) both;
+      var(--page-transition-delay) both;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(page-content),
+    ::view-transition-old(page-content) {
+      animation: site-page-out 200ms ease both;
+    }
+
     ::view-transition-new(page-content) {
-      animation: none;
+      animation: site-page-fade 260ms ease 80ms both;
+    }
+
+    @keyframes site-page-fade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
   }
 }
