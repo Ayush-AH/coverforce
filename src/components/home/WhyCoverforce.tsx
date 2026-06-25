@@ -189,10 +189,15 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
           cursor: pointer;
           flex-shrink: 0;
           background: #E3E3E3;
-          transition: flex 0.6s cubic-bezier(0.77, 0, 0.18, 1);
+          /* Stripe-style: both hover-grow and click-expand animate off the same flex transition */
+          transition: flex 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .why-slide.is-active  { flex: 5 0 0; cursor: default; }
         .why-slide.is-inactive { flex: 1 0 0; }
+
+        /* Hover: grows a bit (Stripe-style "tease") without becoming active.
+           Doesn't fire on touch devices, which is fine — they get click-to-expand only. */
+        .why-slide.is-inactive:hover { flex: 1.8 0 0; }
 
         .why-slide img {
           position: absolute;
@@ -215,15 +220,25 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
           letter-spacing: -0.01em;
           opacity: 0;
           transform: translateY(6px);
-          transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s;
+          transition: opacity 0.35s ease, transform 0.35s ease;
           pointer-events: none;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
+
+        /* Faint label peek while hovering an inactive slide */
+        .why-slide.is-inactive:hover .why-slide-label {
+          opacity: 0.7;
+          transform: translateY(0);
+          transition-delay: 0.1s;
+        }
+
+        /* Full label reveal once the slide is actually active/clicked */
         .why-slide.is-active .why-slide-label {
           opacity: 1;
           transform: translateY(0);
+          transition-delay: 0.25s;
         }
       `}</style>
       <div ref={containerRef} className="relative z-10 overflow-hidden will-change-transform">
