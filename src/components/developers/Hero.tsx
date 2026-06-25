@@ -46,11 +46,10 @@ const Hero = () => {
               <Button
                 href="/"
                 balanced
-                className="border-transparent bg-gradient-to-r from-[#5B35E0] to-[#7C3AED] text-white transition-opacity hover:opacity-95"
               >
                 Request API access
               </Button>
-              <Button href="/" balanced variant="primary" surface="on-dark">
+              <Button href="/" balanced variant="secondary" surface="on-dark">
                 Read the docs
               </Button>
             </div>

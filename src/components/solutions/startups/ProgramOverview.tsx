@@ -82,7 +82,7 @@ const ProgramOverview = () => {
             {programItems.map((item) => (
               <article key={item.number} className="space-y-4">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-2xl font-heading font-medium leading-none text-[#0101BE] md:text-lg">
+                  <span className="text-2xl font-heading font-medium leading-none text-[#3933A1] md:text-lg">
                     {item.number}
                   </span>
                   <h3 className="text-lg font-sans font-medium leading-snug text-[#000000] md:text-base">

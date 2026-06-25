@@ -6,14 +6,12 @@ import OperatingSystem from '@/components/solutions/wholesalers/OperatingSystem'
 import Workflow from '@/components/solutions/brokers/workflow'
 import CarrierResults from '@/components/home/CarrierResults'
 import Hero from '@/components/solutions/wholesalers/Hero'
-import MarqueeLine from '@/components/solutions/wholesalers/MarqueeLine'
 import PageWrapper from '@/components/PageWrapper'
 const page = () => {
   return (
     <>
       <PageWrapper>
         <Hero />
-        <MarqueeLine />
         <Workflow />
         <OperatingSystem />
         <WhyCoverforce paddingTop={true} />

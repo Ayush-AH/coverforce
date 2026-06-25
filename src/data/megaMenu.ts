@@ -171,7 +171,7 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
           },
           {
             label: "Developers",
-            href: "/developers",
+            href: "/solutions/developers",
             description: "Build insurance products on Coverforce APIs.",
             icon: RiCodeSSlashLine,
           },

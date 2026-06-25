@@ -27,7 +27,7 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative z-10 flex h-full min-h-0 w-full items-center justify-center lg:justify-end">
+          <div className="relative z-10 flex h-full min-h-0 w-full items-center justify-center">
             <StartupRecentActivityCard />
           </div>
         </div>
