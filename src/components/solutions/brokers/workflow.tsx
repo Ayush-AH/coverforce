@@ -7,7 +7,6 @@ import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 // One arc = one step. Dots sit at the two base endpoints of the arc.
 // The icon sits centered above the arc's peak.
-const VISIBLE_STEPS = 3.5; // how many steps should be visible across the full container width
 const ICON_RATIO = 0.1;    // icon radius as a fraction of ARC_W, keeps icon size proportional
 const SIDE_PAD = 14;        // left/right breathing room so the first/last dot and icon aren't clipped flush against the edge
 const DOT_R = 5;
@@ -240,7 +239,8 @@ function WorkflowConnector({ steps, rawIndex }: { steps: WorkflowStep[]; rawInde
     return () => ro.disconnect();
   }, []);
 
-  const ARC_W = containerWidth > 0 ? containerWidth / VISIBLE_STEPS : 200;
+  // Fit every step within the container width — no horizontal scrolling.
+  const ARC_W = containerWidth > 0 ? (containerWidth - SIDE_PAD * 2) / steps.length : 200;
   const ARC_H = ARC_W / 2;
   const ICON_R = Math.max(18, ARC_W * ICON_RATIO);
   const TOP_PAD = ICON_R + 16;
@@ -251,15 +251,8 @@ function WorkflowConnector({ steps, rawIndex }: { steps: WorkflowStep[]; rawInde
   const activeIndex = Math.min(steps.length - 1, Math.floor(rawIndex));
   const stepProgress = clamp01(rawIndex - activeIndex);
 
-  // Keep the first three circles in place, then slide the strip left so
-  // later steps scroll into view. The shift is scaled so it lands exactly
-  // on maxShift (last circle flush against the right edge) at rawIndex ===
-  // steps.length, instead of overshooting past it.
-  const SHIFT_START = 2;
-  const maxShift = containerWidth > 0 ? Math.max(0, totalWidth - containerWidth) : 0;
-  const shiftRange = Math.max(0.0001, steps.length - SHIFT_START);
-  const shiftProgress = clamp01((rawIndex - SHIFT_START) / shiftRange);
-  const shift = shiftProgress * maxShift;
+  // All steps are visible at once, so the strip never slides left.
+  const shift = 0;
 
   const getArcFill = (i: number) => {
     if (i < activeIndex) return 1;
@@ -390,7 +383,7 @@ const Workflow = () => {
         {/* Tall scroll track. Its height determines how much scroll distance
             it takes to move through all steps while the content stays pinned. */}
         <div ref={trackRef} style={{ height: `${(steps.length + 1) * 100}vh` }} className="relative">
-          <div className="sticky top-0 h-screen py-16 md:py-20 lg:py-24 lg:pb-12 flex flex-col justify-between overflow-hidden">
+          <div className="sticky top-0 h-screen py-16 md:py-20 lg:py-32 lg:pb-12 flex flex-col justify-between overflow-hidden">
             <div
               ref={headerRef}
               className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"

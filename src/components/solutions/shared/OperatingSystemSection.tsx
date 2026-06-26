@@ -1,12 +1,17 @@
 "use client";
 
 import { useRef, type ComponentType, type ReactNode } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
 import OperatingAiMock from "@/components/solutions/brokers/OperatingAiMock";
 import OperatingVisibilityMock from "@/components/solutions/brokers/OperatingVisibilityMock";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export type OperatingRow = {
   id: string;
@@ -52,6 +57,50 @@ export default function OperatingSystemSection({
     descRef,
   });
 
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>(".operating-row");
+
+      cards.forEach((card) => {
+        gsap.set(card, { opacity: 0, y: 56 });
+
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 82%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
+      });
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+      };
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section ref={sectionRef} className="min-h-screen bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
@@ -89,7 +138,7 @@ export default function OperatingSystemSection({
               return (
                 <div
                   key={row.id}
-                  className="grid gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20"
+                  className="operating-row grid gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20"
                 >
                   <div className="flex flex-col justify-center">
                     <h3 className="max-w-lg text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#444444] md:text-3xl lg:max-w-md lg:text-[1.75rem] lg:leading-[1.25]">

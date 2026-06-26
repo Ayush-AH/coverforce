@@ -109,9 +109,13 @@ const Hero = () => {
     if (!spacer || !title) return;
 
     const spacerRect = spacer.getBoundingClientRect();
+    const titleRect = title.getBoundingClientRect();
+    // Align the title's TOP with the spacer's top — this matches where the
+    // title settles after clearProps (absolute top-0), so it doesn't shift
+    // down at the end of the rise. (Title is slightly taller than the spacer.)
     moveTargetRef.current = {
       x: spacerRect.left + spacerRect.width / 2 - window.innerWidth / 2,
-      y: spacerRect.top + spacerRect.height / 2 - window.innerHeight / 2,
+      y: spacerRect.top + titleRect.height / 2 - window.innerHeight / 2,
     };
 
     gsap.set(title, {
@@ -158,16 +162,16 @@ const Hero = () => {
     }
 
     if (gdpLineRef.current) {
-      gsap.set(gdpLineRef.current, { autoAlpha: 0, y: 8 });
+      gsap.set(gdpLineRef.current, { autoAlpha: 0 });
     }
     if (buttonsRef.current) {
-      gsap.set(buttonsRef.current, { autoAlpha: 0, y: 14 });
+      gsap.set(buttonsRef.current, { autoAlpha: 0 });
     }
     if (statsWrapRef.current) {
-      gsap.set(statsWrapRef.current, { autoAlpha: 0, y: 14 });
+      gsap.set(statsWrapRef.current, { autoAlpha: 0 });
     }
     if (networkRef.current) {
-      gsap.set(networkRef.current, { autoAlpha: 0, y: "12%" });
+      gsap.set(networkRef.current, { autoAlpha: 0 });
     }
     if (dataLinesRef.current) {
       gsap.set(dataLinesRef.current, { autoAlpha: 0 });
@@ -335,7 +339,7 @@ const Hero = () => {
     if (gdpLineRef.current) {
       tl.to(
         gdpLineRef.current,
-        { autoAlpha: 1, y: 0, duration: revealDur },
+        { autoAlpha: 1, duration: revealDur },
         0,
       );
     }
@@ -343,7 +347,7 @@ const Hero = () => {
     if (buttonsRef.current) {
       tl.to(
         buttonsRef.current,
-        { autoAlpha: 1, y: 0, duration: revealDur },
+        { autoAlpha: 1, duration: revealDur },
         0,
       );
     }
@@ -351,7 +355,7 @@ const Hero = () => {
     if (statsWrapRef.current) {
       tl.to(
         statsWrapRef.current,
-        { autoAlpha: 1, y: 0, duration: revealDur },
+        { autoAlpha: 1, duration: revealDur },
         0.05,
       );
     }
@@ -359,7 +363,7 @@ const Hero = () => {
     if (networkRef.current) {
       tl.to(
         networkRef.current,
-        { autoAlpha: 1, y: 0, duration: revealDur, ease: "power2.out" },
+        { autoAlpha: 1, duration: revealDur, ease: "power2.out" },
         0.08,
       );
     }
