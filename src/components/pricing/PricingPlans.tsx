@@ -1,6 +1,14 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RiCheckLine } from "@remixicon/react";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type PricingPlan = {
   id: string;
@@ -9,7 +17,6 @@ type PricingPlan = {
   description: string;
   features: string[];
   cta: { label: string; href: string };
-  showViewMore?: boolean;
   cardClassName: string;
 };
 
@@ -49,14 +56,13 @@ const PLANS: PricingPlan[] = [
       label: "Talk to sales",
       href: "/",
     },
-    showViewMore: true,
     cardClassName: "bg-[#5B35E0]",
   },
 ];
 
 function FeatureItem({ children }: { children: string }) {
   return (
-    <li className="flex items-start gap-3">
+    <li className="pricing-feature flex items-start gap-3">
       <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#7CD20D] text-[#0a143b]">
         <RiCheckLine className="size-3" aria-hidden />
       </span>
@@ -70,7 +76,7 @@ function FeatureItem({ children }: { children: string }) {
 function PricingCard({ plan }: { plan: PricingPlan }) {
   return (
     <article
-      className={`flex min-h-[40rem] flex-col rounded-xl p-8 text-white md:min-h-[46rem] md:p-12 lg:min-h-[50rem] lg:p-10 ${plan.cardClassName}`}
+      className={`pricing-card flex min-h-[40rem] flex-col rounded-xl p-8 text-white will-change-transform md:min-h-[46rem] md:p-12 lg:min-h-[50rem] lg:p-10 ${plan.cardClassName}`}
     >
       <div className="flex items-center gap-3">
         <h2 className="font-heading text-3xl font-medium tracking-tight md:text-4xl">
@@ -91,16 +97,6 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
         {plan.features.map((feature) => (
           <FeatureItem key={feature}>{feature}</FeatureItem>
         ))}
-        {plan.showViewMore ? (
-          <div className="w-full flex justify-center">
-            <button
-              type="button"
-              className="mt-6 w-fit font-heading text-sm font-regular text-white underline underline-offset-4 transition-opacity hover:opacity-80"
-            >
-              View more
-            </button>
-          </div>
-        ) : null}
       </ul>
 
 
@@ -119,8 +115,71 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 }
 
 const PricingPlans = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>(".pricing-card");
+
+      gsap.set(cards, { opacity: 0, y: 48 });
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.15,
+        delay: 0.45,
+      });
+
+      cards.forEach((card) => {
+        const points = card.querySelectorAll<HTMLElement>(".pricing-feature");
+        if (points.length) {
+          gsap.set(points, { opacity: 0, y: 24 });
+
+          gsap.to(points, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: card,
+              start: "top 70%",
+              toggleActions: "play none none none",
+              once: true,
+            },
+          });
+        }
+      });
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+      };
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section id="plans" className="bg-white text-[#0a143b]">
+    <section ref={sectionRef} id="plans" className="bg-white text-[#0a143b]">
       <Container borderColor="#53535333">
         <div className="grid items-stretch gap-6 py-12 md:grid-cols-2 md:gap-8 md:py-16 lg:py-20 px-26">
           {PLANS.map((plan) => (
