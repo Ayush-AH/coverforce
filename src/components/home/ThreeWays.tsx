@@ -291,7 +291,7 @@ const WayCard = memo(function WayCard({
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 p-5 md:p-8">
           <div className="flex items-start justify-between gap-4">
             <div className={taglinePosition === "left" ? "max-w-xs" : "max-w-[16rem]"}>
-              <EyebrowPill surface={pillSurface}>{label}</EyebrowPill>
+              <EyebrowPill surface={pillSurface} dotAttr={label}>{label}</EyebrowPill>
               <p
                 className={`text-3xl font-heading font-medium leading-[1.12] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}
               >
@@ -413,7 +413,7 @@ export default function ThreeWays() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-white">
+    <section ref={sectionRef} data-threeways className="relative overflow-hidden bg-white">
       <Container borderColor="#53535380">
         <div className="relative z-10 py-16 md:py-20 lg:py-24">
           <div ref={headerRef} className="flex items-start justify-between">

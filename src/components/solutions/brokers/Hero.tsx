@@ -1,13 +1,14 @@
-import Image from "next/image";
+'use client'
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
+import { GradFlow } from 'gradflow'
 
 const Hero = () => {
   return (
-    <section className="relative h-screen bg-white text-[#0a143b]">
+    <section className="relative h-screen overflow-hidden bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
         <div className="grid h-screen grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <HeroReveal className="flex h-full flex-col justify-center space-y-8">
@@ -31,14 +32,20 @@ const Hero = () => {
           </div>
         </div>
       </Container>
-      <Image
-        src="/images/solution/startup-bg.png"
-        alt="CoverForce startups program"
-        width={1200}
-        height={900}
-        className="absolute top-0 right-0 z-0 h-full w-[50vw] object-cover"
-        priority
-      />
+      <div className="absolute top-0 right-0 z-0 h-full w-[50vw]">
+        <GradFlow
+          config={{
+            color1: { r: 27, g: 37, b: 80 },
+            color2: { r: 185, g: 167, b: 230 },
+            color3: { r: 138, g: 99, b: 232 },
+            speed: 0.4,
+            scale: 1,
+            type: 'stripe',
+            noise: 0.08
+          }}
+        />
+        <div className="absolute transform-origin-bottom-right -rotate-35 -bottom-50 -right-45 z-0 h-40 w-full bg-white"></div>
+      </div>
     </section>
   );
 };

@@ -65,7 +65,7 @@ const footerColumns: FooterColumnData[] = [
 ];
 
 const standaloneLinks: FooterLinkData[] = [
-  { label: "Integration", href: "/" },
+  { label: "Integration", href: "/integration" },
   { label: "Developers", href: "/developers" },
   { label: "Pricing", href: "/pricing" },
 ];

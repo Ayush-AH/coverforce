@@ -2,13 +2,19 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const WORKFLOW_STEPS = [
   {
     id: "multi-carrier",
-    label: "ENTERPRISE MULTI-CARRIER SUBMISSION",
+    label: "Enterprise Multi-Carrier Submission",
     image: "/images/product/quote1.svg",
     width: 444,
     height: 469,
@@ -22,7 +28,7 @@ const WORKFLOW_STEPS = [
   },
   {
     id: "quote-comparison",
-    label: "BINDABLE QUOTE COMPARISON",
+    label: "Bindable Quote Comparison",
     image: "/images/product/quote2.svg",
     width: 442,
     height: 432,
@@ -36,7 +42,7 @@ const WORKFLOW_STEPS = [
   },
   {
     id: "bind-payment",
-    label: "ONE-CLICK BIND & PAYMENT",
+    label: "One-Click Bind & Payment",
     image: "/images/product/quote3.svg",
     width: 444,
     height: 469,
@@ -50,7 +56,7 @@ const WORKFLOW_STEPS = [
   },
   {
     id: "compliance",
-    label: "E&S COMPLIANCE BUILT IN",
+    label: "E&S Compliance Built In",
     image: "/images/product/quote4.svg",
     width: 467,
     height: 432,
@@ -63,7 +69,7 @@ const WORKFLOW_STEPS = [
   },
   {
     id: "ams-sync",
-    label: "AMS SYNC & RENEWALS",
+    label: "AMS Sync & Renewals",
     image: "/images/product/quote5.svg",
     width: 444,
     height: 469,
@@ -89,7 +95,7 @@ function NavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.1em] transition-colors duration-300 md:text-xs ${active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
+      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-[0.6875rem] font-medium leading-snug transition-colors duration-300 md:text-xs ${active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
         }`}
     >
       <span
@@ -114,6 +120,7 @@ const QuoteWorkFlow = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
   const panelRefs = useRef<Array<HTMLElement | null>>([]);
+  const headlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -121,6 +128,25 @@ const QuoteWorkFlow = () => {
     headingRef,
     descRef,
   });
+
+  useGSAP(
+    () => {
+      const cleanups = headlineRefs.current
+        .filter((el): el is HTMLParagraphElement => Boolean(el))
+        .map((headline) =>
+          animateSplitTextReveal(headline, {
+            trigger: headline,
+            theme: "light",
+            splitSelf: true,
+            start: "top 80%",
+            end: "top 45%",
+          }),
+        );
+
+      return () => cleanups.forEach((cleanup) => cleanup());
+    },
+    { scope: sectionRef },
+  );
 
   const scrollToPanel = useCallback((index: number) => {
     activeIndexRef.current = index;
@@ -233,7 +259,12 @@ const QuoteWorkFlow = () => {
                   data-index={index}
                   className="flex min-h-[70vh] flex-col justify-center gap-10 py-10 first:pt-0 last:pb-0 md:min-h-[80vh] md:gap-12 lg:min-h-screen lg:py-16"
                 >
-                  <p className="max-w-3xl indent-12 text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-[#1A1A1A] md:indent-16 md:text-3xl lg:indent-20 lg:text-[2rem] lg:leading-[1.3]">
+                  <p
+                    ref={(el) => {
+                      headlineRefs.current[index] = el;
+                    }}
+                    className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-[#1A1A1A] md:text-3xl lg:text-[2rem] lg:leading-[1.3]"
+                  >
                     {step.headline}
                   </p>
 

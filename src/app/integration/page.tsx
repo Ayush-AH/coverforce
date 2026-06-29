@@ -1,0 +1,17 @@
+import React from 'react'
+import Explore from '@/components/home/Explore'
+import PageWrapper from '@/components/PageWrapper'
+import Hero from '@/components/integration/Hero'
+import CardSection from '@/components/integration/CardSection'
+
+const IntegrationPage = () => {
+  return (
+    <PageWrapper>
+        <Hero/>
+        <CardSection/>
+        <Explore/>
+    </PageWrapper>
+  )
+}
+
+export default IntegrationPage

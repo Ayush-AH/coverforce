@@ -1,10 +1,11 @@
-import Image from "next/image";
+'use client'
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import StartupRecentActivityCard from "@/components/solutions/startups/StartupRecentActivityCard";
 import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
+import { GradFlow } from 'gradflow'
 
 const Hero = () => {
   return (
@@ -37,14 +38,20 @@ const Hero = () => {
           <MarqueeRow />
         </div>
       </Container>
-      <Image
-        src="/images/solution/startup-bg.png"
-        alt="CoverForce startups program"
-        width={1200}
-        height={900}
-        className="absolute top-0 right-0 z-0 h-full w-[50vw] object-cover"
-        priority
-      />
+      <div className="absolute top-0 right-0 z-0 h-full w-[50vw]">
+        <GradFlow
+          config={{
+            color1: { r: 21, g: 75, b: 193 },
+            color2: { r: 184, g: 122, b: 255 },
+            color3: { r: 218, g: 202, b: 255 },
+            speed: 0.4,
+            scale: 1,
+            type: 'stripe',
+            noise: 0.08
+          }}
+        />
+        <div className="absolute transform-origin-bottom-right -rotate-35 -bottom-50 -right-45 z-0 h-40 w-full bg-white"></div>
+      </div>
     </section>
   );
 };

@@ -23,6 +23,10 @@ type OpticalFiberProps = {
   originGlow?: boolean;
   /** Fade in the CSS halo — used by home intro on dark hero. */
   glowVisible?: boolean;
+  /** Bloom the fan open like a flower as the section scrolls into view. */
+  bloomOnScroll?: boolean;
+  /** Show a white radial gradient behind the fan that grows with the bloom. */
+  bloomGlow?: boolean;
 };
 
 function hexToRgb(hex: string) {
@@ -80,10 +84,13 @@ export default function OpticalFiber({
   color = "#ffffff",
   originGlow = false,
   glowVisible = true,
+  bloomOnScroll = false,
+  bloomGlow = false,
 }: OpticalFiberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logosLayerRef = useRef<HTMLDivElement>(null);
+  const whiteGlowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -182,6 +189,8 @@ export default function OpticalFiber({
       smoothOffX: number;
       smoothOffY: number;
       smoothOffZ: number;
+      closedX: number;
+      closedY: number;
     }[] = [];
 
     const fiberColor = hexToThreeColor(color);
@@ -211,6 +220,13 @@ export default function OpticalFiber({
       const opacity = THREE.MathUtils.lerp(0.55, 0.1, t);
       const phase = Math.random() * Math.PI * 2;
 
+      // Collapsed "bud" position: short and nearly vertical so the fan can
+      // bloom open like a flower as the bloom progress goes 0 → 1.
+      const closedAngle = angle * 0.16;
+      const closedLen = length * 0.08;
+      const closedX = Math.sin(closedAngle) * closedLen;
+      const closedY = ORIGIN.y + Math.cos(closedAngle) * closedLen * fanHeight;
+
       const geo = new THREE.BufferGeometry().setFromPoints([ORIGIN.clone(), end.clone()]);
       const mat = new THREE.LineBasicMaterial({
         color: fiberColor,
@@ -236,6 +252,8 @@ export default function OpticalFiber({
         smoothOffX: 0,
         smoothOffY: 0,
         smoothOffZ: 0,
+        closedX,
+        closedY,
       });
     }
 
@@ -339,6 +357,8 @@ export default function OpticalFiber({
     const clock = new THREE.Clock();
     let animId = 0;
     let visible = true;
+    // Bloom 0 = closed bud, 1 = fully open flower.
+    let bloom = bloomOnScroll && !reducedMotion ? 0 : 1;
 
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
@@ -485,6 +505,15 @@ export default function OpticalFiber({
       const delta = clock.getDelta();
       const t = clock.getElapsedTime();
 
+      if (bloomOnScroll && !reducedMotion) {
+        const rect = container.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        // 0 as the fan enters from the bottom, 1 once it has risen ~35% up.
+        const raw = (vh - rect.top) / (vh * 0.6);
+        const target = THREE.MathUtils.clamp(raw, 0, 1);
+        bloom += (target - bloom) * Math.min(1, delta * 6);
+      }
+
       raycaster.setFromCamera(mouse, camera);
       raycaster.ray.intersectPlane(hitPlane, mouseWorld);
       if (mouseActive) {
@@ -537,8 +566,13 @@ export default function OpticalFiber({
         fiber.smoothOffY += (targetOffY - fiber.smoothOffY) * offsetLerp;
         fiber.smoothOffZ += (targetOffZ - fiber.smoothOffZ) * offsetLerp;
 
-        const tipX = restEnd.x + fiber.smoothOffX;
-        const tipY = restEnd.y + fiber.smoothOffY;
+        // Lerp the fiber base between its closed (bud) and open (rest) state.
+        const baseX = fiber.closedX + (restEnd.x - fiber.closedX) * bloom;
+        const baseY = fiber.closedY + (restEnd.y - fiber.closedY) * bloom;
+        const effLen = restLen * (0.1 + 0.9 * bloom);
+
+        const tipX = baseX + fiber.smoothOffX;
+        const tipY = baseY + fiber.smoothOffY;
         const tipZ = restZ + fiber.smoothOffZ;
         const dirX = tipX - ORIGIN.x;
         const dirY = tipY - ORIGIN.y;
@@ -546,9 +580,9 @@ export default function OpticalFiber({
         const dirLen = Math.hypot(dirX, dirY, dirZ) || restLen;
 
         _end.set(
-          ORIGIN.x + (dirX / dirLen) * restLen,
-          ORIGIN.y + (dirY / dirLen) * restLen,
-          ORIGIN.z + (dirZ / dirLen) * restLen,
+          ORIGIN.x + (dirX / dirLen) * effLen,
+          ORIGIN.y + (dirY / dirLen) * effLen,
+          ORIGIN.z + (dirZ / dirLen) * effLen,
         );
 
         posAttr.setXYZ(0, ORIGIN.x, ORIGIN.y, ORIGIN.z);
@@ -636,6 +670,12 @@ export default function OpticalFiber({
         innerSprite.material.opacity = 0.85 + Math.sin(t * 2.1) * 0.15;
       }
 
+      if (bloomGlow && whiteGlowRef.current) {
+        const scale = 0.55 + bloom * 0.55;
+        whiteGlowRef.current.style.opacity = String(bloom * 0.85);
+        whiteGlowRef.current.style.transform = `translate(-50%, 35%) scale(${scale})`;
+      }
+
       renderer.render(scene, camera);
     };
 
@@ -652,10 +692,23 @@ export default function OpticalFiber({
       logoTravelers.length = 0;
       renderer.dispose();
     };
-  }, [contentScale, fanSpread, fanReach, fov, fanHeight, fanOffsetX, color, originGlow]);
+  }, [contentScale, fanSpread, fanReach, fov, fanHeight, fanOffsetX, color, originGlow, bloomOnScroll, bloomGlow]);
 
   return (
     <div ref={containerRef} className={`relative h-full w-full overflow-hidden ${className}`}>
+      {bloomGlow ? (
+        <div
+          ref={whiteGlowRef}
+          className="pointer-events-none absolute bottom-0 left-1/2 z-0 aspect-square w-[min(72%,560px)] rounded-full blur-[3.5rem] md:blur-[4.5rem]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 28%, rgba(255,255,255,0.16) 52%, rgba(255,255,255,0) 72%)",
+            opacity: 0,
+            transform: "translate(-50%, 35%) scale(0.55)",
+          }}
+          aria-hidden
+        />
+      ) : null}
       {originGlow ? (
         <div
           className={`pointer-events-none absolute bottom-0 left-1/2 z-0 aspect-square w-[min(50%,320px)] -translate-x-1/2 translate-y-[42%] rounded-full blur-[4.5rem] transition-opacity duration-700 ease-out md:w-[min(44%,380px)] md:blur-[5.5rem] ${

@@ -1,12 +1,14 @@
+'use client'
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import { GradFlow } from 'gradflow'
 
 const Hero = () => {
   return (
-    <section className="relative h-screen bg-white text-[#0a143b]">
+    <section className="relative h-screen overflow-hidden bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
         <div className="grid h-screen grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <HeroReveal className="flex h-full flex-col justify-center space-y-8">
@@ -38,14 +40,20 @@ const Hero = () => {
           </div>
         </div>
       </Container>
-      <Image
-        src="/images/solution/startup-bg.png"
-        alt="CoverForce startups program"
-        width={1200}
-        height={900}
-        className="absolute top-0 right-0 z-0 h-full w-[50vw] object-cover"
-        priority
-      />
+      <div className="absolute top-0 right-0 z-0 h-full w-[50vw]">
+        <GradFlow
+          config={{
+            color1: { r: 20, g: 28, b: 55 },
+            color2: { r: 129, g: 64, b: 255 },
+            color3: { r: 81, g: 0, b: 255 },
+            speed: 0.4,
+            scale: 1,
+            type: 'stripe',
+            noise: 0.08
+          }}
+        />
+        <div className="absolute transform-origin-bottom-right -rotate-35 -bottom-50 -right-45 z-0 h-40 w-full bg-white"></div>
+      </div>
     </section>
   );
 };

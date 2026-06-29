@@ -1036,7 +1036,7 @@ const ProcessFlow = () => {
     );
 
     return (
-        <section ref={sectionRef} className="h-screen overflow-hidden bg-white [contain:layout_paint]">
+        <section ref={sectionRef} data-processflow className="h-screen overflow-hidden bg-white [contain:layout_paint]">
             <Container borderColor="#53535380">
                 <div className="h-screen grid gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
 
@@ -1047,7 +1047,15 @@ const ProcessFlow = () => {
                                 key={index}
                                 className={`step${index + 1} h-screen flex flex-col justify-center`}
                             >
-                                <p className="text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#413CC0]">
+                                <p
+                                    data-step-tag={index}
+                                    className="relative text-sm font-mono font-medium uppercase tracking-[0.14em] text-[#413CC0]"
+                                >
+                                    <span
+                                        data-step-dot={index}
+                                        className="absolute -left-6 top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-transparent"
+                                        aria-hidden
+                                    />
                                     {step.tag}
                                 </p>
                                 <h3 className="mt-4 max-w-lg text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b] md:text-3xl lg:max-w-md lg:text-[1.75rem] lg:leading-[1.25]">

@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
@@ -5,10 +6,10 @@ import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import BrokerCodeControlsMock from "@/components/solutions/wholesalers/BrokerCodeControlsMock";
 import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
-
+import { GradFlow } from 'gradflow'
 const Hero = () => {
   return (
-    <section className="relative h-svh bg-white text-[#0a143b]">
+    <section className="relative h-svh bg-white text-[#0a143b] overflow-hidden">
       <Container borderColor="#53535380" className="relative z-10 flex h-full flex-col">
         <div className="grid h-full min-h-0 flex-1 grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <HeroReveal className="flex h-full flex-col justify-center space-y-8">
@@ -36,14 +37,21 @@ const Hero = () => {
           <MarqueeRow />
         </div>
       </Container>
-      <Image
-              src="/images/solution/wholesalers.svg"
-              alt="CoverForce startups program"
-              width={1200}
-              height={900}
-              className="pointer-events-none absolute -bottom-70 right-0 z-0 h-auto w-full object-contain"
-              priority
-            />
+      <div className="absolute top-0 right-0 z-0 h-full w-[50vw]">
+      <GradFlow
+      config={{
+        color1: { r: 0, g: 69, b: 255 },
+        color2: { r: 54, g: 182, b: 255 },
+        color3: { r: 211, g: 241, b: 255 },
+        speed: 0.4,
+        scale: 1,
+        type: 'stripe',
+        noise: 0.08
+      }}
+      />
+        <div className="absolute transform-origin-bottom-right -rotate-35 -bottom-50 -right-45 z-0 h-40 w-full bg-white"></div>
+      </div>
+      
     </section>
   );
 };

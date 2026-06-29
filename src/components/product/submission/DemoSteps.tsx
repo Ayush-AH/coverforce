@@ -2,12 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const DEMO_STEPS = [
   {
     id: "doc-reader",
-    label: "AI DOC READER",
+    label: "AI Doc Reader",
     image: "/images/product/demo1.svg",
     headline: (
       <>
@@ -19,7 +25,7 @@ const DEMO_STEPS = [
   },
   {
     id: "inbox",
-    label: "AI INBOX",
+    label: "AI Inbox",
     image: "/images/product/demo2.svg",
     headline: (
       <>
@@ -31,7 +37,7 @@ const DEMO_STEPS = [
   },
   {
     id: "uw-copilot",
-    label: "AI UW CO-PILOT",
+    label: "AI UW Co-Pilot",
     image: "/images/product/demo3.svg",
     headline: (
       <>
@@ -43,7 +49,7 @@ const DEMO_STEPS = [
   },
   {
     id: "codematch",
-    label: "AI CODEMATCH",
+    label: "AI CodeMatch",
     image: "/images/product/demo4.svg",
     headline: (
       <>
@@ -55,7 +61,7 @@ const DEMO_STEPS = [
   },
   {
     id: "smartform",
-    label: "AI SMARTFORM",
+    label: "AI SmartForm",
     image: "/images/product/demo5.svg",
     headline: (
       <>
@@ -67,7 +73,7 @@ const DEMO_STEPS = [
   },
   {
     id: "coi-generator",
-    label: "AI COI GENERATOR",
+    label: "AI COI Generator",
     image: "/images/product/demo5.svg",
     headline: (
       <>
@@ -92,7 +98,7 @@ function NavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-sm font-medium uppercase tracking-[0.12em] transition-colors duration-300 md:text-[0.8125rem] ${
+      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-sm font-medium transition-colors duration-300 md:text-[0.8125rem] ${
         active ? "text-white" : "text-white/35 hover:text-white/55"
       }`}
     >
@@ -109,7 +115,28 @@ function NavItem({
 
 const DemoSteps = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
   const panelRefs = useRef<Array<HTMLElement | null>>([]);
+  const headlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+
+  useGSAP(
+    () => {
+      const cleanups = headlineRefs.current
+        .filter((el): el is HTMLParagraphElement => Boolean(el))
+        .map((headline) =>
+          animateSplitTextReveal(headline, {
+            trigger: headline,
+            theme: "dark",
+            splitSelf: true,
+            start: "top 80%",
+            end: "top 45%",
+          }),
+        );
+
+      return () => cleanups.forEach((cleanup) => cleanup());
+    },
+    { scope: sectionRef },
+  );
 
   const scrollToPanel = useCallback((index: number) => {
     panelRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -142,7 +169,7 @@ const DemoSteps = () => {
   }, []);
 
   return (
-    <section className="bg-[#121C49] text-white">
+    <section ref={sectionRef} className="bg-[#121C49] text-white">
       <Container borderColor="#FFFFFF33">
         <div className="py-16 md:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[minmax(11rem,16rem)_minmax(0,1fr)] lg:gap-16 xl:gap-20">
@@ -169,7 +196,12 @@ const DemoSteps = () => {
                   data-index={index}
                   className="flex min-h-[70vh] flex-col justify-center gap-10 py-10 first:pt-0 last:pb-0 md:min-h-[80vh] md:gap-12 lg:min-h-screen lg:py-16"
                 >
-                  <p className="max-w-3xl indent-12 text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-white md:indent-16 md:text-3xl lg:indent-20 lg:text-[2rem] lg:leading-[1.3]">
+                  <p
+                    ref={(el) => {
+                      headlineRefs.current[index] = el;
+                    }}
+                    className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-white md:text-3xl lg:text-[2rem] lg:leading-[1.3]"
+                  >
                     {step.headline}
                   </p>
 

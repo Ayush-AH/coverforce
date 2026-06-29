@@ -5,6 +5,8 @@ type EyebrowPillProps = {
   /** Surface the pill sits on. "dark" = light pill on dark bg, "light" = dark pill on light bg. */
   surface?: "dark" | "light";
   className?: string;
+  /** When set, tags the inner dot with `data-card-dot` (used as a landing target). */
+  dotAttr?: string;
 };
 
 const SURFACE_STYLES = {
@@ -26,6 +28,7 @@ export default function EyebrowPill({
   children,
   surface = "dark",
   className = "",
+  dotAttr,
 }: EyebrowPillProps) {
   const styles = SURFACE_STYLES[surface];
 
@@ -34,7 +37,12 @@ export default function EyebrowPill({
       style={{ boxShadow: styles.boxShadow }}
       className={`mb-5 flex w-fit items-center justify-center gap-2.5 rounded-full px-3 py-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] md:text-[0.65rem] ${styles.wrapper} ${className}`}
     >
-      <span className={`size-1.5 shrink-0 rounded-full ${styles.dot}`} aria-hidden />
+      <span
+        className={`size-1.5 shrink-0 rounded-full ${dotAttr ? "bg-white" : styles.dot}`}
+        data-card-dot={dotAttr}
+        style={dotAttr ? { opacity: 0 } : undefined}
+        aria-hidden
+      />
       {children}
     </p>
   );

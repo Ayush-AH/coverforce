@@ -573,6 +573,7 @@ const Hero = () => {
           <div
             ref={networkRef}
             data-hero-reveal
+            data-hero-dots-origin
             className="relative z-10 h-full w-full motion-reduce:translate-y-0 motion-reduce:opacity-100"
             aria-label="Partner network"
           >
@@ -587,6 +588,8 @@ const Hero = () => {
               color={theme.fiberColor}
               originGlow={theme.fiberOriginGlow}
               glowVisible={theme.fiberOriginGlow ? fiberGlowVisible : false}
+              bloomOnScroll
+              bloomGlow
             />
           </div>
         </div>
