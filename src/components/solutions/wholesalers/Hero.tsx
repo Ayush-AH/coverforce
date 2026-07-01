@@ -2,6 +2,7 @@
 
 import BrokerCodeControlsMock from "@/components/solutions/wholesalers/BrokerCodeControlsMock";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
+import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const LIST_POINTS = [
   {
@@ -28,11 +29,7 @@ const Hero = () => (
     listPoints={LIST_POINTS}
     rightCard={<BrokerCodeControlsMock />}
     showMarquee
-    gradFlow={{
-      color1: { r: 0, g: 69, b: 255 },
-      color2: { r: 54, g: 182, b: 255 },
-      color3: { r: 211, g: 241, b: 255 },
-    }}
+    gradFlow={SOLUTION_GRAD_FLOW.wholesaler}
   />
 );
 

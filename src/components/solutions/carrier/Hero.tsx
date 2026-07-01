@@ -2,6 +2,7 @@
 
 import ApiEndpointSummaryMock from "@/components/solutions/carrier/ApiEndpointSummaryMock";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
+import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const LIST_POINTS = [
   {
@@ -31,11 +32,7 @@ const Hero = () => (
         <ApiEndpointSummaryMock />
       </div>
     }
-    gradFlow={{
-      color1: { r: 69, g: 65, b: 205 },
-      color2: { r: 53, g: 45, b: 147 },
-      color3: { r: 18, g: 28, b: 73 },
-    }}
+    gradFlow={SOLUTION_GRAD_FLOW.carrier}
   />
 );
 

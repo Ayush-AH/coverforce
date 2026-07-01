@@ -62,13 +62,15 @@ const PLANS: PricingPlan[] = [
 
 function FeatureItem({ children }: { children: string }) {
   return (
-    <li className="pricing-feature flex items-start gap-3">
-      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#7CD20D] text-[#0a143b]">
-        <RiCheckLine className="size-3" aria-hidden />
-      </span>
-      <span className="font-sans text-sm font-regular leading-relaxed text-white/95">
-        {children}
-      </span>
+    <li className="pricing-feature group">
+      <div className="flex items-start gap-3 transition-transform duration-300 ease-out group-hover:translate-x-2">
+        <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#7CD20D] text-[#0a143b]">
+          <RiCheckLine className="size-3" aria-hidden />
+        </span>
+        <span className="font-sans text-sm font-regular leading-relaxed text-white/95">
+          {children}
+        </span>
+      </div>
     </li>
   );
 }

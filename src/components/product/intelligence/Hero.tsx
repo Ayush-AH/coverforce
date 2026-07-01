@@ -14,8 +14,7 @@ const WavePlaneCanvas = dynamic(
   { ssr: false }
 );
 
-// Blue → ice palette
-const INTELLIGENCE_COLOURS = ["#0045FF", "#36B6FF", "#9EDDFF", "#D3F1FF"];
+const INTELLIGENCE_COLOURS = ["#0045FF", "#008EFF", "#6BCAFF", "#C3EBFF"];
 
 const SLIDES: HeroSlide[] = [
   {

@@ -14,6 +14,8 @@ const WavePlaneCanvas = dynamic(
   { ssr: false }
 );
 
+const SUBMISSION_COLOURS = ["#322696", "#7F44FF", "#A975FF", "#8E46FF"];
+
 const SLIDES: HeroSlide[] = [
   {
     type: "copy",
@@ -54,7 +56,7 @@ const Hero = () => {
         className="pointer-events-none absolute bottom-0 left-0 z-[1] h-[60%] w-full"
         aria-hidden
       >
-        <WavePlaneCanvas className="h-full w-full" />
+        <WavePlaneCanvas className="h-full w-full" colors={SUBMISSION_COLOURS} />
       </div>
 
       <Container className="relative z-10">

@@ -2,6 +2,7 @@
 
 import StartupRecentActivityCard from "@/components/solutions/startups/StartupRecentActivityCard";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
+import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const LIST_POINTS = [
   {
@@ -29,11 +30,7 @@ const Hero = () => (
     listPoints={LIST_POINTS}
     rightCard={<StartupRecentActivityCard />}
     showMarquee
-    gradFlow={{
-      color1: { r: 21, g: 75, b: 193 },
-      color2: { r: 184, g: 122, b: 255 },
-      color3: { r: 218, g: 202, b: 255 },
-    }}
+    gradFlow={SOLUTION_GRAD_FLOW.startup}
   />
 );
 

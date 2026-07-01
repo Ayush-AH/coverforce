@@ -2,6 +2,7 @@
 
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
+import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const LIST_POINTS = [
   {
@@ -27,11 +28,7 @@ const Hero = () => (
     listHeading="Commercial lines, standardized everywhere."
     listPoints={LIST_POINTS}
     rightCard={<OperatingPlatformMock variant="hero" />}
-    gradFlow={{
-      color1: { r: 27, g: 37, b: 80 },
-      color2: { r: 185, g: 167, b: 230 },
-      color3: { r: 138, g: 99, b: 232 },
-    }}
+    gradFlow={SOLUTION_GRAD_FLOW.broker}
   />
 );
 

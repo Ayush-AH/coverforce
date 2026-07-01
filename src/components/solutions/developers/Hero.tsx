@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
+import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const LIST_POINTS = [
   {
@@ -37,11 +38,7 @@ const Hero = () => (
         priority
       />
     }
-    gradFlow={{
-      color1: { r: 20, g: 28, b: 55 },
-      color2: { r: 129, g: 64, b: 255 },
-      color3: { r: 81, g: 0, b: 255 },
-    }}
+    gradFlow={SOLUTION_GRAD_FLOW.developer}
   />
 );
 

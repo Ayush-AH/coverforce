@@ -11,6 +11,7 @@ import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+import type { GradFlowColors } from "@/data/wayCardStyles";
 import { GradFlow } from "gradflow";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,12 +19,6 @@ gsap.registerPlugin(ScrollTrigger);
 export type SolutionListPoint = {
   readonly id: string;
   readonly text: string;
-};
-
-export type GradFlowColors = {
-  color1: { r: number; g: number; b: number };
-  color2: { r: number; g: number; b: number };
-  color3: { r: number; g: number; b: number };
 };
 
 type SolutionScrollHeroProps = {

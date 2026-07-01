@@ -144,7 +144,7 @@ const WAY_CARDS: WayCardConfig[] = [
     label: "Carriers",
     tagline: "Grow distribution efficiently",
     variant: "dark",
-    background: "accent",
+    background: "carrier",
     dotGrid: true,
     mockShiftDown: true,
     mock: <WholesalerMock liveStats />,
@@ -202,7 +202,7 @@ const WayCard = memo(function WayCard({
   const textClass =
     background === "developer" && !backgroundScene
       ? "text-[#0a143b]"
-      : background === "accent" || isDark
+      : background === "accent" || background === "carrier" || isDark
         ? "text-white"
         : "text-[#0a143b]";
   const pillSurface = textClass === "text-white" ? "dark" : "light";

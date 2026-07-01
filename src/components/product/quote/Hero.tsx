@@ -14,8 +14,7 @@ const WavePlaneCanvas = dynamic(
   { ssr: false }
 );
 
-// Warm red → peach palette
-const QUOTE_COLOURS = ["#F31A1A", "#F33838", "#F69D6D", "#FFB77D"];
+const QUOTE_COLOURS = ["#E25E2F", "#DE5943", "#FC976B", "#FDAB77"];
 
 const SLIDES: HeroSlide[] = [
   {
