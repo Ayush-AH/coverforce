@@ -201,13 +201,10 @@ const QuoteWorkFlow = () => {
     };
   }, []);
 
-  const isEvenStep = (activeIndex + 1) % 2 === 0;
-
   return (
     <section
       ref={sectionRef}
-      className={`text-[#0a143b] transition-colors duration-500 ${isEvenStep ? "bg-[#FFFAF6]" : "bg-white"
-        }`}
+      className="bg-white text-[#0a143b]"
     >
       <Container borderColor="#53535340">
         <div className="py-16 md:py-20 lg:py-24">

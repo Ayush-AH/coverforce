@@ -24,6 +24,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const POINT_ACTIVE = "#413CC0";
+const POINT_ARROW = "#151F4D";
 const FIELD_VALID = "#6DAB4E";
 
 function ProcessPointText({ text }: { text: string }) {
@@ -643,9 +644,9 @@ const ProcessFlow = () => {
 
                 if (icon) {
                     tl.to(icon, {
-                        backgroundColor: POINT_ACTIVE,
+                        backgroundColor: POINT_ARROW,
                         color: "#ffffff",
-                        borderColor: POINT_ACTIVE,
+                        borderColor: POINT_ARROW,
                         duration: CHAR_DUR * 1.2,
                         ease: "power2.out",
                     }, t);
@@ -1062,7 +1063,7 @@ const ProcessFlow = () => {
                                             key={feature.id}
                                             className={`point${idx + 1} flex gap-4 py-4 border-b border-black/10`}
                                         >
-                                            <span className="point-icon flex size-6 shrink-0 items-center justify-center rounded-full border border-[#CCCCCC] text-[#CCCCCC]">
+                                            <span className="point-icon flex size-6 shrink-0 items-center justify-center rounded-full border border-[#CCCCCC] text-background">
                                                 <RiArrowRightLine className="size-3" />
                                             </span>
                                             <ProcessPointText text={feature.text} />

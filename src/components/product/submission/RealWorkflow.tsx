@@ -1,9 +1,14 @@
 "use client";
 
 import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const WORKFLOW_STEPS = [
   {
@@ -11,88 +16,59 @@ const WORKFLOW_STEPS = [
     title: "Document Intake",
     before: "50 MIN",
     after: "8 sec",
-    hoverColor: "#B97DFF",
   },
   {
     step: "02",
     title: "Carrier data entry",
     before: "15 MIN",
     after: "3 mins",
-    hoverColor: "#122775",
   },
   {
     step: "03",
     title: "Review & Submit",
     before: "HOURS",
     after: "~3mins",
-    hoverColor: "#FDA574",
   },
   {
     step: "04",
     title: "Quoting",
     before: "45 MIN",
     after: "4 sec",
-    hoverColor: "#36B6FF",
   },
   {
     step: "05",
     title: "Bind and Deliver",
     before: "5 MIN",
     after: "1 min",
-    hoverColor: "#5F950C",
   },
 ] as const;
-
-const CARD_HOVER_EASE = "cubic-bezier(0.62, 0.16, 0.13, 1.01)";
-const CARD_HOVER_DURATION = "0.55s";
-const CARD_COLOR_TRANSITION = `color ${CARD_HOVER_DURATION} ${CARD_HOVER_EASE}`;
-const CARD_OVERLAY_TRANSITION = `opacity ${CARD_HOVER_DURATION} ${CARD_HOVER_EASE}`;
 
 function WorkflowStepCard({
   step,
   title,
   before,
   after,
-  hoverColor,
 }: (typeof WORKFLOW_STEPS)[number]) {
   return (
-    <div className="group relative flex min-h-[22rem] flex-col justify-between overflow-hidden border border-[#E9E9E9] bg-white p-5 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 motion-reduce:transition-none"
-        style={{
-          backgroundColor: hoverColor,
-          transition: CARD_OVERLAY_TRANSITION,
-        }}
-        aria-hidden
-      />
-
+    <div
+      data-workflow-card
+      className="group relative flex min-h-[22rem] flex-col justify-between overflow-hidden border border-[#E9E9E9] bg-white p-5 transition-colors duration-500 ease-[cubic-bezier(0.62,0.16,0.13,1.01)] transform-3d will-change-transform hover:bg-[#CCBEFF]/10 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]"
+    >
       <div className="relative z-10 flex flex-1 flex-col justify-between">
         <div className="flex items-start justify-between gap-4">
-          <span
-            className="font-heading text-3xl font-regular leading-none text-[#4F4F4F] group-hover:text-white md:text-6xl"
-            style={{ transition: CARD_COLOR_TRANSITION }}
-          >
+          <span className="font-heading text-3xl font-regular leading-none text-[#4F4F4F] md:text-6xl">
             {step}
           </span>
           <div className="text-right">
-            <p
-              className="font-mono text-[0.65rem] font-medium text-[#9A9A9A] line-through group-hover:text-white/70 md:text-sm"
-              style={{ transition: CARD_COLOR_TRANSITION }}
-            >
+            <p className="font-mono text-[0.65rem] font-medium text-[#9A9A9A] line-through md:text-sm">
               {before}
             </p>
-            <p
-              className="mt-0.5 font-heading text-sm font-medium text-[#2D3E9D] group-hover:text-white md:text-lg"
-              style={{ transition: CARD_COLOR_TRANSITION }}
-            >
+            <p className="mt-0.5 font-heading text-sm font-medium text-[#2D3E9D] md:text-lg">
               {after}
             </p>
           </div>
         </div>
-        <p
-          className="font-heading text-sm font-medium text-[#2D3E9D] group-hover:text-white md:text-lg"
-          style={{ transition: CARD_COLOR_TRANSITION }}
-        >
+        <p className="font-heading text-sm font-medium text-[#2D3E9D] md:text-lg">
           {title}
         </p>
       </div>
@@ -102,7 +78,10 @@ function WorkflowStepCard({
 
 function SavingsSummaryCard() {
   return (
-    <div className="relative flex min-h-[22rem] flex-col items-end justify-end bg-[#CCBEFF]/10 p-5 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]">
+    <div
+      data-workflow-card
+      className="relative flex min-h-[22rem] flex-col items-end justify-end bg-[#CCBEFF]/10 p-5 transform-3d will-change-transform md:min-h-[24rem] md:p-6 lg:min-h-[26rem]"
+    >
       <p className="font-heading text-3xl font-regular leading-none text-[#4F4F4F] md:text-6xl">
         107m
       </p>
@@ -118,6 +97,7 @@ const RealWorkflow = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -125,6 +105,30 @@ const RealWorkflow = () => {
     headingRef,
     descRef,
   });
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const cards = gsap.utils.toArray<HTMLElement>("[data-workflow-card]");
+      if (!cards.length) return;
+
+      gsap.set(cards, { rotateY: 90, opacity: 0, transformOrigin: "left center" });
+
+      ScrollTrigger.batch(cards, {
+        start: "top 85%",
+        onEnter: (batch) =>
+          gsap.to(batch, {
+            rotateY: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            stagger: 0.12,
+            overwrite: true,
+          }),
+      });
+    },
+    { scope: gridRef },
+  );
 
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
@@ -164,7 +168,11 @@ const RealWorkflow = () => {
             </div>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-14 lg:mt-16 lg:grid-cols-3">
+          <div
+            ref={gridRef}
+            className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-14 lg:mt-16 lg:grid-cols-3"
+            style={{ perspective: "1200px" }}
+          >
             {WORKFLOW_STEPS.map((item) => (
               <WorkflowStepCard key={item.step} {...item} />
             ))}

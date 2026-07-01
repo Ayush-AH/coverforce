@@ -90,8 +90,8 @@ const CarrierResults = () => {
   useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef, theme: "dark" });
 
   return (
-    <section ref={sectionRef} className="bg-[#121C49] text-white">
-      <Container borderColor="#FFFFFF33" className="border-t border-b border-[#FFFFFF1A]">
+    <section ref={sectionRef} className="bg-[#151f4d] text-white">
+      <Container borderColor="#FFFFFF33" borderBottom={true}>
         <div
           className="absolute left-0 -top-20 z-0 w-full lg:h-full opacity-75"
           aria-hidden

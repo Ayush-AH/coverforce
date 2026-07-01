@@ -56,7 +56,7 @@ const MARKET_FILTERS: { id: Market; label: string; colors: PillColors }[] = [
 ];
 
 const STATUS_COLORS: Record<string, PillColors> = {
-  Live: { bg: "#FCFFEA", text: "#74AD2B", border: "#EDF8AD" },
+  Live: { bg: "#EFF6E7", text: "#6DAB4E", border: "#EDF8AD" },
 };
 
 const BASE_CARRIERS: Carrier[] = [
@@ -189,10 +189,10 @@ const CARRIERS: Carrier[] = Array.from(
 const StatusBadge = ({ status }: { status: Carrier["status"] }) => {
   if (status === "Live") {
     return (
-      <span className="inline-flex items-center gap-2 rounded-full bg-[#EDFF7A] px-5 py-1 text-[0.6875rem] font-sans font-semibold text-[#4F8A2E]">
+      <span className="inline-flex items-center gap-2 rounded-full bg-[#EFF6E7] px-5 py-1 text-[0.6875rem] font-sans font-semibold text-[#4F8A2E]">
         <span className="relative flex size-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#74AD2B] opacity-75" />
-          <span className="relative inline-flex size-2 rounded-full bg-[#74AD2B]" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#6DAB4E] opacity-75" />
+          <span className="relative inline-flex size-2 rounded-full bg-[#6DAB4E]" />
         </span>
         Live
       </span>
@@ -219,10 +219,10 @@ const CarrierCard = ({ carrier }: { carrier: Carrier }) => (
           />
         </span>
         <div>
-          <p className="text-xs font-sans font-bold leading-tight text-[#111110]">
+          <p className="text-sm font-sans font-bold leading-tight text-[#111110]">
             {carrier.name}
           </p>
-          <p className="mt-0.5 font-sans font-regular text-sm text-[#9A9A96]">{carrier.updated}</p>
+          <p className="mt-0.5 font-sans font-regular tracking-wide text-xs text-[#9A9A96]/80">{carrier.updated}</p>
         </div>
       </div>
       <StatusBadge status={carrier.status} />
@@ -232,7 +232,7 @@ const CarrierCard = ({ carrier }: { carrier: Carrier }) => (
       {carrier.lobs.map((lob) => (
         <span
           key={lob}
-          className="rounded-full bg-[#EEF0F9] px-4 py-1 text-xs font-sans font-semibold text-[#2D3E9D]"
+          className="rounded-full bg-[#EEF0F9] px-4 py-1 text-xs font-sans font-bold text-[#2D3E9D]"
         >
           {lob}
         </span>
@@ -243,7 +243,7 @@ const CarrierCard = ({ carrier }: { carrier: Carrier }) => (
       {carrier.capabilities.map((cap) => (
         <span
           key={cap}
-          className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-[#0130BE]"
+          className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold tracking-wide text-[#0130BE]"
         >
           <RiCheckLine className="size-4 text-[#0130BE]" />
           {cap}
@@ -255,7 +255,7 @@ const CarrierCard = ({ carrier }: { carrier: Carrier }) => (
       {carrier.products.map((product, idx) => (
         <span
           key={`${product.name}-${idx}`}
-          className="w-fit truncate rounded-full bg-[#E3F2FF] px-4 py-1 text-xs font-sans font-bold text-[#185FA5]"
+          className="w-fit truncate rounded-full bg-[#F2F8FC] px-4 py-1 text-xs font-sans font-medium tracking-wide text-[#185FA5]/95"
         >
           {product.market} | {product.name}
         </span>

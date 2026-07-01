@@ -1,10 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type AppetiteStatus = "writing" | "selective" | "decline";
 
@@ -138,6 +143,7 @@ const Appetite = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -146,6 +152,71 @@ const Appetite = () => {
     descRef,
     theme: "dark",
   });
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const container = resultsRef.current;
+      if (!container) return;
+
+      const items = gsap.utils.toArray<HTMLElement>("[data-appetite-animate]");
+      if (!items.length) return;
+
+      const rows = items.filter((el) => el.tagName === "TR");
+      const others = items.filter((el) => el.tagName !== "TR");
+
+      const animateIn = () => {
+        gsap.killTweensOf(items);
+        gsap.set(rows, { opacity: 0, clearProps: "transform" });
+        gsap.set(others, { opacity: 0, y: 20 });
+        gsap.to(rows, {
+          opacity: 1,
+          duration: 0.55,
+          ease: "power3.out",
+          stagger: 0.07,
+          overwrite: true,
+        });
+        gsap.to(others, {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          ease: "power3.out",
+          stagger: 0.07,
+          overwrite: true,
+        });
+      };
+
+      const rect = container.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.88;
+
+      let st: ScrollTrigger | null = null;
+
+      if (inView) {
+        animateIn();
+      } else {
+        gsap.set(rows, { opacity: 0, clearProps: "transform" });
+        gsap.set(others, { opacity: 0, y: 20 });
+        st = ScrollTrigger.create({
+          trigger: container,
+          start: "top 88%",
+          once: true,
+          onEnter: animateIn,
+        });
+      }
+
+      const lenis = window.lenis;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis?.on("scroll", onLenisScroll);
+
+      return () => {
+        st?.kill();
+        lenis?.off("scroll", onLenisScroll);
+        gsap.killTweensOf(items);
+      };
+    },
+    { scope: resultsRef, dependencies: [selectedQuickTry] },
+  );
 
   return (
     <section ref={sectionRef} className="relative bg-[#121C49] text-white">
@@ -239,8 +310,14 @@ const Appetite = () => {
               </div>
             </form>
 
-            <div className="mt-8 border-t border-[#ECEEF2] pt-6 md:mt-10 md:pt-8">
-              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div
+              ref={resultsRef}
+              className="mt-8 overflow-hidden border-t border-[#ECEEF2] pt-6 md:mt-10 md:pt-8"
+            >
+              <div
+                data-appetite-animate
+                className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <p className="font-mono text-sm font-medium uppercase text-[#414141]">
                   Appetite results — {getQuickTryLabel(selectedQuickTry)}
                 </p>
@@ -251,10 +328,13 @@ const Appetite = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border border-[#E6E6E6] bg-white">
+              <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-[#E6E6E6] bg-white">
                 <table className="w-full min-w-[36rem] border-collapse">
                   <thead>
-                    <tr className="border-b border-[#E6E6E6] bg-[#FAF7FF]">
+                    <tr
+                      data-appetite-animate
+                      className="border-b border-[#E6E6E6] bg-[#FAF7FF]"
+                    >
                       <th className="px-4 py-3.5 text-left font-mono text-sm font-medium uppercase text-[#414141] md:px-5 md:py-4">
                         Carrier
                       </th>
@@ -272,6 +352,7 @@ const Appetite = () => {
                     {CARRIER_ROWS.map((carrier) => (
                       <tr
                         key={carrier.name}
+                        data-appetite-animate
                         className="border-b border-[#E6E6E6] last:border-b-0"
                       >
                         <td className="px-4 py-3.5 font-sans text-sm font-regular text-[#33259F] md:px-5 md:py-4">

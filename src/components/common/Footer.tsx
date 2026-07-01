@@ -79,7 +79,7 @@ const legalLinks: LegalLink[] = [
 function FooterBullet() {
   return (
     <span
-      className="absolute left-0 top-1/2 size-2 -translate-y-1/2 origin-left scale-0 rounded-full bg-[#5B35E0] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100"
+      className="absolute left-0 top-1/2 size-2 -translate-y-1/2 origin-left scale-0 rounded-full bg-[#151f4d] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100"
       aria-hidden
     />
   );
@@ -95,7 +95,7 @@ function FooterLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-heading text-xs font-medium leading-none  text-[#3F3F3F] transition-[padding-left,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:pl-3.5 hover:text-[#5B35E0] ${className}`}
+      className={`group relative inline-flex pl-0 font-heading text-xs font-medium leading-none  text-[#3F3F3F] transition-[padding-left,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:pl-3.5 hover:text-[#151f4d] ${className}`}
     >
       <FooterBullet />
       {children}
@@ -108,7 +108,7 @@ type FooterColumnProps = FooterColumnData;
 function FooterColumn({ title, links }: FooterColumnProps) {
   return (
     <div>
-      <h3 className="mb-3 font-heading text-xs font-medium  text-[#5B35E0]">
+      <h3 className="mb-3 font-heading text-xs font-medium  text-[#151f4d]">
         {title}
       </h3>
       <ul className="space-y-2.5">
@@ -215,7 +215,7 @@ const Footer = () => {
 
             {/* Standalone links column */}
             <div>
-              <h3 className="mb-3 font-heading text-xs font-medium text-[#5B35E0]">
+              <h3 className="mb-3 font-heading text-xs font-medium text-[#151f4d]">
                 More
               </h3>
               <ul className="space-y-2.5">
@@ -243,7 +243,7 @@ const Footer = () => {
             <button
               type="button"
               onClick={scrollToTop}
-              className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1.5 text-[#3F3F3F]/60 transition-colors hover:text-[#5B35E0] sm:inline-flex"
+              className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1.5 text-[#3F3F3F]/60 transition-colors hover:text-[#151f4d] sm:inline-flex"
             >
               Back to Top ↑
             </button>

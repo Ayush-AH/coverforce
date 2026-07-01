@@ -28,8 +28,8 @@ const CLIP_HIDDEN_BOTTOM = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
 const CLIP_FULL = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
 const CLIP_HIDDEN_TOP = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
 
-const INACTIVE_COLOR = "#3E3E3E";
-const ACTIVE_COLOR = "#3933A1";
+const INACTIVE_COLOR = "#E5E7EB";
+const ACTIVE_COLOR = "#151f4d";
 
 const Launch = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -153,7 +153,7 @@ const Launch = () => {
                       ref={(el) => {
                         progressRefs.current[index] = el;
                       }}
-                      className="h-1 w-full origin-left bg-[#3933A1]"
+                      className="h-1 w-full origin-left bg-[#151f4d]"
                       style={{ transform: "scaleX(0)" }}
                     />
                   </div>

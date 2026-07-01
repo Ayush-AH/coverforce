@@ -131,7 +131,7 @@ const Explore = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#121C49] text-white">
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative">
         <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%]" />
 

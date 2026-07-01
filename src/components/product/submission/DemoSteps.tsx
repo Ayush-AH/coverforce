@@ -169,7 +169,7 @@ const DemoSteps = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-[#121C49] text-white">
+    <section ref={sectionRef} className="bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33">
         <div className="py-16 md:py-20 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[minmax(11rem,16rem)_minmax(0,1fr)] lg:gap-16 xl:gap-20">

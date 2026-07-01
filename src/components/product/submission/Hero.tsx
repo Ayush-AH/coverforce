@@ -37,7 +37,7 @@ const Hero = () => {
   const { activeIndex, handleSelectSlide, track } = useHeroCarousel(SLIDES);
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#121C49] pb-24 text-white md:pb-32">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#151f4d] pb-24 text-white md:pb-32">
 
       {/* Radial gradient overlay – keeps text readable over the wave */}
       <div

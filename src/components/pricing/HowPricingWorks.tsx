@@ -166,12 +166,8 @@ const HowPricingWorks = () => {
   });
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#121C49] text-white">      <div
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">      <div
         className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 80% at 50% 40%, rgba(49, 78, 155, 0.5) 0%, rgba(18, 28, 73, 0.94) 55%, #121C49 100%)",
-        }}
         aria-hidden
       />
 

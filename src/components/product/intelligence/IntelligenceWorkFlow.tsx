@@ -190,14 +190,10 @@ const IntelligenceWorkFlow = () => {
     };
   }, []);
 
-  const isEvenStep = (activeIndex + 1) % 2 === 0;
-
   return (
     <section
       ref={sectionRef}
-      className={`text-[#0a143b] transition-colors duration-500 ${
-        isEvenStep ? "bg-[#F1FAFF]" : "bg-white"
-      }`}
+      className="bg-white text-[#0a143b]"
     >
       <Container borderColor="#53535340">
         <div className="py-16 md:py-20 lg:py-24">
@@ -206,10 +202,6 @@ const IntelligenceWorkFlow = () => {
             className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
           >
             <div className="flex flex-col justify-end space-y-5">
-              <p className="flex items-center gap-2 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280] md:text-xs">
-                <span className="size-1.5 shrink-0 rounded-full bg-[#6B7280]" aria-hidden />
-                The real workflow
-              </p>
               <h2
                 ref={headingRef}
                 className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"

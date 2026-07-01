@@ -47,7 +47,7 @@ function getHeaderTheme(pathname: string): HeaderTheme {
 
 const headerThemes = {
   dark: {
-    bar: "border-b border-[#FFFFFF1A] bg-[#121C49]",
+    bar: "border-b border-[#FFFFFF1A] bg-[#151f4d]",
     logo: "/Coverforce_logo_white.svg",
     linkActive: "text-white",
     linkIdle: "text-white/80 hover:text-white",

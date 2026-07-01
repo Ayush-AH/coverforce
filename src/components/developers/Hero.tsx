@@ -19,7 +19,7 @@ const DEVELOPER_COLOURS = ["#100B3C", "#154BC1", "#5100FF", "#5100FF69"];
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#121C49] text-white">
+    <section className="relative overflow-hidden bg-[#151f4d] text-white">
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{

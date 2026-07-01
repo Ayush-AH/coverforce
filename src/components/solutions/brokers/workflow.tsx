@@ -10,6 +10,7 @@ import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 const ICON_RATIO = 0.1;    // icon radius as a fraction of ARC_W, keeps icon size proportional
 const SIDE_PAD = 14;        // left/right breathing room so the first/last dot and icon aren't clipped flush against the edge
 const DOT_R = 5;
+const ENTER_DISTANCE = 18;  // px the icon + label travel down as they enter from the top
 
 // Colors
 const ACTIVE_COLOR = "#2B409E";
@@ -21,12 +22,12 @@ const INACTIVE_ICON = "#5b6472";
 const PARAGRAPH_GRAY = "#b9bfc9";
 
 // Phase boundaries within a single step's local progress (0..1).
-// 0 -> ARC_DRAW_END: the arc draws in
-// ARC_DRAW_END -> COLOR_END: icon + circle + label crossfade to active color
-// TEXT_START -> 1: paragraph letters fill from gray to blue
-const ARC_DRAW_END = 0.35;
-const COLOR_END = 0.55;
-const TEXT_START = 0.55;
+// 0 -> ENTER_END: icon + label drop down and fade/color in from above the
+//                  arc, landing fully colored by the time they're in place
+// 0 -> ARC_DRAW_END: the arc border draws in, and the paragraph text fills
+//                     in step with it (same window, both finish together)
+const ENTER_END = 0.3;
+const ARC_DRAW_END = 0.4;
 const PARAGRAPH_FADE_IN_END = 0.15;
 
 const ICONS = {
@@ -146,6 +147,7 @@ function ArcStep({
   ICON_R,
   arcFill,
   colorActv,
+  enterProgress,
 }: {
   step: WorkflowStep;
   x1: number;
@@ -156,6 +158,7 @@ function ArcStep({
   ICON_R: number;
   arcFill: number;
   colorActv: number;
+  enterProgress: number;
 }) {
   const pathRef = useRef<SVGPathElement>(null);
   const [length, setLength] = useState(0);
@@ -206,18 +209,29 @@ function ArcStep({
       <circle cx={x1} cy={ARC_H} r={DOT_R} fill={ACTIVE_COLOR} />
       <circle cx={x2} cy={ARC_H} r={DOT_R} fill={ACTIVE_COLOR} />
 
-      <circle
-        cx={cx}
-        cy={0}
-        r={ICON_R}
-        fill={circleFill}
-        stroke={circleStroke}
-        strokeOpacity={1 - colorActv}
-      />
-      <g transform={`translate(${cx - ICON_R * 0.46}, ${-ICON_R * 0.46})`} style={{ color: iconColor }}>
-        <svg width={ICON_R * 0.92} height={ICON_R * 0.92} viewBox="0 0 24 24">
-          {ICONS[step.icon]}
-        </svg>
+      {/* icon circle + icon: hidden above the arc until this step becomes
+          active, then drops down and fades in */}
+      <g
+        style={{
+          opacity: enterProgress,
+          transform: `translateY(${(1 - enterProgress) * -ENTER_DISTANCE}px)`,
+          transformOrigin: `${cx}px 0px`,
+          transition: "opacity 0.05s linear",
+        }}
+      >
+        <circle
+          cx={cx}
+          cy={0}
+          r={ICON_R}
+          fill={circleFill}
+          stroke={circleStroke}
+          strokeOpacity={1 - colorActv}
+        />
+        <g transform={`translate(${cx - ICON_R * 0.46}, ${-ICON_R * 0.46})`} style={{ color: iconColor }}>
+          <svg width={ICON_R * 0.92} height={ICON_R * 0.92} viewBox="0 0 24 24">
+            {ICONS[step.icon]}
+          </svg>
+        </g>
       </g>
     </g>
   );
@@ -262,24 +276,40 @@ function WorkflowConnector({ steps, rawIndex }: { steps: WorkflowStep[]; rawInde
   const getColorActv = (i: number) => {
     if (i < activeIndex) return 1;
     if (i > activeIndex) return 0;
-    return (stepProgress - ARC_DRAW_END) / (COLOR_END - ARC_DRAW_END);
+    // Fills in color across the same window as the drop-in entrance, so
+    // by the time the icon lands in place it's already fully colored.
+    return clamp01(stepProgress / ENTER_END);
+  };
+  // Icon + label are invisible (shifted up) until their step is reached,
+  // then they drop down and fade in over ENTER_END of local progress.
+  const getEnterProgress = (i: number) => {
+    if (i < activeIndex) return 1;
+    if (i > activeIndex) return 0;
+    return clamp01(stepProgress / ENTER_END);
   };
 
   return (
-    <div ref={wrapperRef} className="w-full overflow-hidden">
+    <div ref={wrapperRef} className="w-full">
       {/* Labels */}
       <div className="flex" style={{ width: totalWidth, transform: `translateX(-${shift}px)` }}>
         <div style={{ width: SIDE_PAD, flexShrink: 0 }} />
-        {steps.map((step, i) => (
-          <div key={step.label} className="flex justify-center" style={{ width: ARC_W }}>
-            <span
-              className="text-sm md:text-base font-semibold whitespace-nowrap"
-              style={{ color: lerpColor(INACTIVE_TEXT, ACTIVE_COLOR, getColorActv(i)) }}
-            >
-              {step.label}
-            </span>
-          </div>
-        ))}
+        {steps.map((step, i) => {
+          const enterProgress = getEnterProgress(i);
+          return (
+            <div key={step.label} className="flex justify-center" style={{ width: ARC_W }}>
+              <span
+                className="text-sm md:text-base font-semibold whitespace-nowrap"
+                style={{
+                  color: lerpColor(INACTIVE_TEXT, ACTIVE_COLOR, getColorActv(i)),
+                  opacity: enterProgress,
+                  transform: `translateY(${(1 - enterProgress) * -ENTER_DISTANCE}px)`,
+                }}
+              >
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       {/* Arcs */}
@@ -310,6 +340,7 @@ function WorkflowConnector({ steps, rawIndex }: { steps: WorkflowStep[]; rawInde
                 ICON_R={ICON_R}
                 arcFill={getArcFill(i)}
                 colorActv={getColorActv(i)}
+                enterProgress={getEnterProgress(i)}
               />
             );
           })}
@@ -374,7 +405,10 @@ const Workflow = () => {
   const activeIndex = Math.min(steps.length - 1, Math.floor(rawIndex));
   const stepProgress = clamp01(rawIndex - activeIndex);
   const paragraphOpacity = Math.min(1, stepProgress / PARAGRAPH_FADE_IN_END);
-  const textFill = clamp01((stepProgress - TEXT_START) / (1 - TEXT_START));
+  // Text fill now tracks the semicircle border draw (arcFill), not the
+  // icon color fill — so the paragraph fills in while the arc line itself
+  // is drawing, and finishes right as the border completes.
+  const textFill = clamp01(stepProgress / ARC_DRAW_END);
   const activeStep = steps[activeIndex];
 
   return (
@@ -383,7 +417,7 @@ const Workflow = () => {
         {/* Tall scroll track. Its height determines how much scroll distance
             it takes to move through all steps while the content stays pinned. */}
         <div ref={trackRef} style={{ height: `${(steps.length + 1) * 100}vh` }} className="relative">
-          <div className="sticky top-0 h-screen py-16 md:py-20 lg:py-32 lg:pb-12 flex flex-col justify-between overflow-hidden">
+          <div className="sticky top-0 h-screen py-16 md:py-20 lg:py-36 lg:pb-18 flex flex-col justify-between overflow-hidden">
             <div
               ref={headerRef}
               className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"

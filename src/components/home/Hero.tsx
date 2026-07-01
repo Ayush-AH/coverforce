@@ -41,7 +41,7 @@ const stats: StatItem[] = [
 ];
 
 const heroTheme = {
-  settledBg: "bg-[#121C49]",
+  settledBg: "bg-[#151f4d]",
   sectionText: "text-white",
   borderColor: "#FFFFFF33",
   gdpText: "text-white/85",
@@ -243,7 +243,7 @@ const Hero = () => {
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(section, { backgroundColor: "#121C49" });
+      gsap.set(section, { backgroundColor: "#151f4d" });
       gsap.set(title, {
         clearProps:
           "position,left,top,xPercent,yPercent,zIndex,margin,transform,opacity",
@@ -265,12 +265,12 @@ const Hero = () => {
           clearProps:
             "position,left,top,xPercent,yPercent,zIndex,margin,transform,opacity",
         });
-        gsap.set(section, { backgroundColor: "#121C49" });
+        gsap.set(section, { backgroundColor: "#151f4d" });
         setIntroSettled(true);
       },
     });
 
-    tl.to(section, { backgroundColor: "#121C49", duration: riseDur }, 0);
+    tl.to(section, { backgroundColor: "#151f4d", duration: riseDur }, 0);
     tl.to(title, { x, y, duration: riseDur }, 0);
     if (chars.length) {
       tl.to(chars, { color: "#ffffff", duration: riseDur, ease: "power2.inOut" }, 0);
