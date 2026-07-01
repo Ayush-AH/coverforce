@@ -205,64 +205,105 @@ const StatusBadge = ({ status }: { status: Carrier["status"] }) => {
   );
 };
 
-const CarrierCard = ({ carrier }: { carrier: Carrier }) => (
-  <div data-carrier-card className="rounded-3xl border border-[#ECECEC] bg-white p-6">
-    <div className="flex items-start justify-between gap-3">
-      <div className="flex items-center gap-3.5">
-        <span className="flex size-11 shrink-0 items-center justify-center">
-          <Image
-            src={LOGO_MAP[carrier.name] ?? "/images/integration/amtrust.svg"}
-            alt={carrier.name}
-            width={40}
-            height={40}
-            className="h-full w-full object-contain"
-          />
-        </span>
-        <div>
-          <p className="text-sm font-sans font-bold leading-tight text-[#111110]">
-            {carrier.name}
-          </p>
-          <p className="mt-0.5 font-sans font-regular tracking-wide text-xs text-[#9A9A96]/80">{carrier.updated}</p>
+const CarrierCard = ({ carrier }: { carrier: Carrier }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    const glow = glowRef.current;
+    if (!card || !glow) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const glowSize = Math.max(rect.width, rect.height) * 1.75;
+
+    glow.style.background = `radial-gradient(${glowSize}px circle at ${x}px ${y}px, rgba(1, 48, 190, 1) 0%, rgba(45, 62, 157, 0.65) 14%, rgba(45, 62, 157, 0.22) 32%, transparent 58%)`;
+    glow.style.opacity = "1";
+  };
+
+  const handleMouseLeave = () => {
+    if (glowRef.current) {
+      glowRef.current.style.opacity = "0";
+    }
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      data-carrier-card
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative overflow-hidden rounded-[20px] bg-[#ECECEC] p-[1.5px]"
+    >
+      <div
+        ref={glowRef}
+        className="pointer-events-none absolute inset-0  opacity-0 transition-opacity duration-300"
+        aria-hidden
+      />
+
+      <div className="relative h-full z-10 rounded-[19px] bg-white p-6">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3.5">
+            <span className="flex size-11 shrink-0 items-center justify-center">
+              <Image
+                src={LOGO_MAP[carrier.name] ?? "/images/integration/amtrust.svg"}
+                alt={carrier.name}
+                width={40}
+                height={40}
+                className="h-full w-full object-contain"
+              />
+            </span>
+            <div>
+              <p className="text-sm font-sans font-bold leading-tight text-[#111110]">
+                {carrier.name}
+              </p>
+              <p className="mt-0.5 font-sans font-regular tracking-wide text-xs text-[#9A9A96]/80">
+                {carrier.updated}
+              </p>
+            </div>
+          </div>
+          <StatusBadge status={carrier.status} />
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2.5">
+          {carrier.lobs.map((lob) => (
+            <span
+              key={lob}
+              className="rounded-full bg-[#EEF0F9] px-4 py-1 text-xs font-sans font-bold text-[#2D3E9D]"
+            >
+              {lob}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+          {carrier.capabilities.map((cap) => (
+            <span
+              key={cap}
+              className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold tracking-wide text-[#0130BE]"
+            >
+              <RiCheckLine className="size-4 text-[#0130BE]" />
+              {cap}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {carrier.products.map((product, idx) => (
+            <span
+              key={`${product.name}-${idx}`}
+              className="w-fit truncate rounded-full bg-[#F2F8FC] px-4 py-1 text-xs font-sans font-medium tracking-wide text-[#185FA5]/95"
+            >
+              {product.market} | {product.name}
+            </span>
+          ))}
         </div>
       </div>
-      <StatusBadge status={carrier.status} />
     </div>
-
-    <div className="mt-5 flex flex-wrap gap-2.5">
-      {carrier.lobs.map((lob) => (
-        <span
-          key={lob}
-          className="rounded-full bg-[#EEF0F9] px-4 py-1 text-xs font-sans font-bold text-[#2D3E9D]"
-        >
-          {lob}
-        </span>
-      ))}
-    </div>
-
-    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
-      {carrier.capabilities.map((cap) => (
-        <span
-          key={cap}
-          className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold tracking-wide text-[#0130BE]"
-        >
-          <RiCheckLine className="size-4 text-[#0130BE]" />
-          {cap}
-        </span>
-      ))}
-    </div>
-
-    <div className="mt-5 flex flex-wrap gap-2">
-      {carrier.products.map((product, idx) => (
-        <span
-          key={`${product.name}-${idx}`}
-          className="w-fit truncate rounded-full bg-[#F2F8FC] px-4 py-1 text-xs font-sans font-medium tracking-wide text-[#185FA5]/95"
-        >
-          {product.market} | {product.name}
-        </span>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 const FilterPill = ({
   label,
