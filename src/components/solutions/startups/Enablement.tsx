@@ -162,6 +162,26 @@ const NodeCard = ({
   </div>
 );
 
+const MobileNodeCard = ({
+  label,
+  icon: Icon,
+}: {
+  label: string;
+  icon: LucideIcon;
+}) => (
+  <div className="flex flex-col gap-2 rounded-lg border border-[#E5E7F0] bg-white p-3 shadow-[0_1px_4px_rgba(80,80,120,0.06)]">
+    <div className="flex items-center gap-2">
+      <div className="flex size-[18px] shrink-0 items-center justify-center rounded border border-[#E5E7F0]">
+        <Icon size={10} strokeWidth={2} color="#8B8BAD" />
+      </div>
+      <span className="font-mono text-[10px] font-medium tracking-[0.08em] text-[#3D3D5C] sm:text-[11px]">
+        {label}
+      </span>
+    </div>
+    <div className="h-[3px] w-[55%] rounded-sm bg-[#E8E8F4]" />
+  </div>
+);
+
 type LineSegment = {
   cx: number;
   cy: number;
@@ -354,12 +374,12 @@ const Enablement = () => {
         <div className="pt-16 md:pt-20 lg:pt-24 pb-8 md:pb-10 lg:pb-12">
           <div
             ref={headerRef}
-            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+            className="grid gap-6 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
           >
             <div className="flex flex-col justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-md text-2xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-3xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Interested in becoming a </span>
                 <span data-split style={{ color: "#3933A1" }}>
@@ -371,7 +391,7 @@ const Enablement = () => {
               </Button>
             </div>
 
-            <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
+            <div className="flex max-w-md flex-col items-start gap-6 text-left lg:ml-auto lg:items-end">
               <p
                 ref={descRef}
                 className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
@@ -383,10 +403,30 @@ const Enablement = () => {
             </div>
           </div>
 
-          {/* Diagram area */}
+          {/* Mobile diagram */}
+          <div className="mt-10 flex flex-col items-center gap-8 lg:hidden">
+            <div className="flex aspect-square w-28 items-center justify-center rounded-full border border-[#ECE7FF] bg-white sm:w-32">
+              <div className="flex aspect-square w-14 items-center justify-center rounded-full bg-[#ECE7FF] sm:w-16">
+                <Image
+                  src="/footer-logo.svg"
+                  alt="Coverforce"
+                  width={32}
+                  height={32}
+                />
+              </div>
+            </div>
+
+            <div className="grid w-full grid-cols-2 gap-3 sm:gap-4">
+              {NODES.map((node) => (
+                <MobileNodeCard key={node.id} label={node.label} icon={node.icon} />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop diagram — unchanged at lg+ */}
           <div
             ref={wrapRef}
-            className="relative mt-12 w-full md:mt-14 lg:mt-16 aspect-[16/12] max-h-[580px] min-h-[380px]"
+            className="relative mt-12 w-full max-lg:hidden md:mt-14 lg:mt-16 aspect-[16/12] max-h-[580px] min-h-[380px]"
           >
             <svg
               ref={svgRef}

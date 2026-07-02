@@ -46,9 +46,10 @@ type SolutionScrollHeroProps = {
   listTag?: string;
   listHeading?: string;
   listPoints?: readonly SolutionListPoint[];
-  rightCard: ReactNode;
+  rightCard?: ReactNode;
   gradFlow: GradFlowColors;
   showMarquee?: boolean;
+  showSecondSection?: boolean;
 };
 
 function PointText({ text }: { text: string }) {
@@ -79,6 +80,7 @@ export default function SolutionScrollHero({
   rightCard,
   gradFlow,
   showMarquee = false,
+  showSecondSection = true,
 }: SolutionScrollHeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
@@ -104,11 +106,14 @@ export default function SolutionScrollHero({
 
   useGSAP(
     () => {
+      if (!showSecondSection) return;
+
       const section = sectionRef.current;
       const heroContent = heroContentRef.current;
       const card = cardRef.current;
       const listHeader = listHeaderRef.current;
-      if (!section || !heroContent || !card || !listHeader) return;
+      if (!section || !heroContent || !listHeader) return;
+      if (!rightCard || !card) return;
 
       const getCenterY = (el: HTMLElement) => {
         const rect = el.getBoundingClientRect();
@@ -153,7 +158,7 @@ export default function SolutionScrollHero({
 
       return () => mm.revert();
     },
-    { scope: sectionRef, dependencies: [] },
+    { scope: sectionRef, dependencies: [rightCard, showSecondSection] },
   );
 
   return (
@@ -189,9 +194,10 @@ export default function SolutionScrollHero({
               ) : null}
             </div>
 
+            {showSecondSection ? (
             <div
               ref={listHeaderRef}
-              className="flex min-h-svh flex-col justify-between pt-24 pb-36"
+              className="flex flex-col justify-between pt-16 pb-16 lg:min-h-svh lg:pt-24 lg:pb-36"
             >
               {feature ? (
                 <>
@@ -253,6 +259,11 @@ export default function SolutionScrollHero({
                       </span>
                     </div>
                   </div>
+                  {rightCard ? (
+                    <div className="mt-8 w-full lg:hidden">
+                      {rightCard}
+                    </div>
+                  ) : null}
                 </>
               ) : (
                 <>
@@ -276,21 +287,39 @@ export default function SolutionScrollHero({
                       </li>
                     ))}
                   </ul>
+                  {rightCard ? (
+                    <div className="mt-8 w-full lg:hidden">
+                      {rightCard}
+                    </div>
+                  ) : null}
                 </>
               )}
             </div>
+            ) : null}
           </div>
 
-          <div className="relative z-30 hidden lg:block">
-            <div className="sticky top-0 flex h-svh items-center justify-center">
-              <div
-                ref={cardRef}
-                className="relative flex w-full items-center justify-center will-change-transform"
-              >
-                {rightCard}
+          {rightCard ? (
+            <div
+              className={`relative z-30 ${
+                showSecondSection ? "hidden lg:block" : "hidden lg:flex lg:h-svh lg:items-center lg:justify-center"
+              }`}
+            >
+              {showSecondSection ? (
+              <div className="sticky top-0 flex h-svh items-center justify-center">
+                <div
+                  ref={cardRef}
+                  className="relative flex w-full items-center justify-center will-change-transform"
+                >
+                  {rightCard}
+                </div>
               </div>
+              ) : (
+                <div className="relative flex w-full items-center justify-center">
+                  {rightCard}
+                </div>
+              )}
             </div>
-          </div>
+          ) : null}
 
           {showMarquee ? (
             <div className="pointer-events-none absolute inset-x-0 top-0 z-10 hidden h-svh flex-col justify-end pb-6 md:pb-8 lg:flex">
