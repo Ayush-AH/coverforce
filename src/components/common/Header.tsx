@@ -9,8 +9,14 @@ import AnimatedLinkText from "./AnimatedLinkText";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { RiArrowDownSLine } from "@remixicon/react";
-import { MEGA_MENUS } from "@/data/megaMenu";
+import {
+  RiArrowDownSLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiCloseLine,
+  RiMenuLine,
+} from "@remixicon/react";
+import { MEGA_MENUS, type MegaMenuLink } from "@/data/megaMenu";
 import { HOME_INTRO_NAV_MS, useHomeIntro } from "@/contexts/HomeIntroContext";
 import { pageAnimation, setPageTransitionBg } from "@/lib/pageTransition";
 import { useTransitionRouter } from "next-view-transitions";
@@ -157,6 +163,53 @@ function LoginLink({
   );
 }
 
+function MobileMenuLinkRow({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center justify-between border-b border-[#E8ECF0] px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none text-[#0a143b]"
+    >
+      <span>{label}</span>
+      <RiArrowRightLine className="size-5" aria-hidden />
+    </button>
+  );
+}
+
+function MobileMenuSubLink({
+  link,
+  onNavigate,
+}: {
+  link: MegaMenuLink;
+  onNavigate: (href: string) => void;
+}) {
+  const Icon = link.icon;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate(link.href)}
+      className="flex w-full items-center justify-between gap-4 py-4 text-left"
+    >
+      <span className="flex min-w-0 items-center gap-3">
+        <span className="flex size-6 shrink-0 items-center justify-center text-[#3556FF]">
+          <Icon className="size-5" aria-hidden />
+        </span>
+        <span className="min-w-0 font-heading text-[1.125rem] font-regular leading-tight text-[#0a143b]">
+          {link.label}
+        </span>
+      </span>
+      <RiArrowRightLine className="size-5 shrink-0 text-[#0a143b]" aria-hidden />
+    </button>
+  );
+}
+
 const Header = () => {
   const pathname = usePathname();
   const theme = getHeaderTheme(pathname);
@@ -169,6 +222,8 @@ const Header = () => {
   const [renderedMenu, setRenderedMenu] = useState<string | null>(null);
   const [clipOpen, setClipOpen] = useState(false);
   const [enterKey, setEnterKey] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeMenuRef = useRef<string | null>(null);
   const renderedMenuRef = useRef<string | null>(null);
@@ -282,6 +337,8 @@ const Header = () => {
   const handleNavigate = useCallback(
     (href: string) => {
       closeMenuImmediately();
+      setMobileMenuOpen(false);
+      setMobileActiveMenu(null);
       if (pathname === href) return;
 
       if (typeof document !== "undefined" && "startViewTransition" in document) {
@@ -297,6 +354,8 @@ const Header = () => {
 
   useEffect(() => {
     closeMenuImmediately();
+    setMobileMenuOpen(false);
+    setMobileActiveMenu(null);
   }, [pathname, closeMenuImmediately]);
 
   const renderedConfig = renderedMenu ? MEGA_MENUS[renderedMenu] : null;
@@ -310,6 +369,17 @@ const Header = () => {
       document.body.style.overflow = previous;
     };
   }, [menuVisible]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileMenuOpen]);
+
+  const activeMobileConfig = mobileActiveMenu ? MEGA_MENUS[mobileActiveMenu] : null;
 
   return (
     <nav className={`relative w-full ${theme === "light" ? "text-[#0a143b]" : "text-white"}`}>
@@ -328,7 +398,7 @@ const Header = () => {
           className={`overflow-hidden will-change-transform ${styles.bar}`}
         >
           <Container>
-            <div className="relative flex items-center justify-between py-4">
+            <div className="relative flex items-center justify-between py-6 md:py-4">
               <Link
                 href="/"
                 onClick={(e) => {
@@ -346,6 +416,15 @@ const Header = () => {
                   className="h-5 w-auto md:h-6"
                 />
               </Link>
+
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="relative z-10 flex size-10 items-center justify-center lg:hidden"
+                aria-label="Open menu"
+              >
+                <RiMenuLine className="size-6" aria-hidden />
+              </button>
 
               <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
                 <div className="relative flex h-full items-center">
@@ -407,6 +486,103 @@ const Header = () => {
           />
         ) : null}
       </div>
+
+      {mobileMenuOpen ? (
+        <div className="fixed inset-0 z-[120] bg-white text-[#0a143b] lg:hidden">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b border-[#E8ECF0] px-6 py-5">
+              <Link
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate("/");
+                }}
+                className="shrink-0"
+              >
+                <Image
+                  src="/Coverforce_logo_blue.svg"
+                  alt="CoverForce"
+                  width={180}
+                  height={34}
+                  className="h-5 w-auto"
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setMobileActiveMenu(null);
+                }}
+                className="flex size-10 items-center justify-center"
+                aria-label="Close menu"
+              >
+                <RiCloseLine className="size-6" aria-hidden />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              {activeMobileConfig ? (
+                <div className="px-6 pb-6 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setMobileActiveMenu(null)}
+                    className="mb-6 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#0a143b]"
+                  >
+                    <RiArrowLeftLine className="size-4" aria-hidden />
+                    <span>Back</span>
+                  </button>
+
+                  <div className="space-y-8">
+                    {activeMobileConfig.columns.map((column) => (
+                      <div key={column.title} className="border-t border-[#E8ECF0] pt-4 first:border-t-0 first:pt-0">
+                        <p className="mb-2 font-mono text-[0.75rem] font-medium uppercase tracking-[0.12em] text-[#7C8798]">
+                          {column.title}
+                        </p>
+                        <div className="divide-y divide-[#E8ECF0]">
+                          {column.links.map((link) => (
+                            <MobileMenuSubLink
+                              key={link.label}
+                              link={link}
+                              onNavigate={handleNavigate}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  {navItems.map(({ label, href, hasDropdown }) => (
+                    <MobileMenuLinkRow
+                      key={label}
+                      label={label}
+                      onClick={() => {
+                        if (hasDropdown && MEGA_MENUS[label]) {
+                          setMobileActiveMenu(label);
+                          return;
+                        }
+                        handleNavigate(href);
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-[#E8ECF0] px-6 py-5">
+              <div className="flex items-center gap-3">
+                <Button href="/" className="flex-1 justify-center">
+                  Request demo
+                </Button>
+                <Button href="/" variant="secondary" className="flex-1 justify-center">
+                  Login
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </nav>
   );
 };

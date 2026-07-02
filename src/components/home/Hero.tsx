@@ -420,7 +420,7 @@ const Hero = () => {
 
 
         {/* ── 100vh block: heading + button + network ── */}
-        <div className="relative z-10 flex h-screen flex-col justify-between pt-16 md:pt-20 lg:pt-20">
+        <div className="relative z-10 flex min-h-svh flex-col justify-between pt-12 md:h-screen md:pt-20 lg:pt-20">
           <div ref={dataLinesRef} data-hero-reveal className="absolute inset-0 z-0">
             <HeroDataLines />
           </div>
@@ -428,40 +428,44 @@ const Hero = () => {
           {/* Heading + CTA */}
           <div
             ref={headingRef}
-            className="relative z-10 flex flex-1 flex-col items-center justify-center text-center"
+            className="relative z-10 flex flex-1 flex-col items-center justify-center pt-10 text-center md:pt-0"
           >
             <div ref={titleSlotRef} className="relative z-30 mt-6 flex w-full justify-center">
               <div
                 ref={gdpLineRef}
                 data-hero-reveal
-                className="absolute left-1/2 -top-9 z-20 -translate-x-1/2"
+                className="absolute left-1/2 -top-16 z-20 -translate-x-1/2 md:-top-9"
               >
-                <div className={`inline-flex items-center gap-2 text-xs font-sans tracking-wide ${theme.gdpText}`}>
-                  <span className="whitespace-nowrap">Lifetime quoted premium to date:</span>
+                <div className={`flex max-w-[18rem] flex-col items-center gap-1 text-[0.625rem] font-sans tracking-wide sm:max-w-none sm:text-xs md:inline-flex md:flex-row md:gap-2 ${theme.gdpText}`}>
+                  <span className="text-center sm:whitespace-nowrap">Lifetime quoted premium to date:</span>
                   <GdpCounter/>
                 </div>
               </div>
               <div
                 ref={titleSpacerRef}
-                className="pointer-events-none invisible max-w-4xl px-6 text-3xl font-heading font-regular leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl"
+                className="pointer-events-none invisible max-w-4xl px-4 text-[2.2rem] font-heading font-regular leading-[1.05] tracking-tight sm:px-6 sm:text-5xl md:text-4xl lg:text-5xl xl:text-5xl"
                 aria-hidden
               >
                 {INTRO_TITLE_LINES.map((line, lineIndex) => (
-                  <React.Fragment key={lineIndex}>
-                    {lineIndex > 0 ? <br /> : null}
+                  <span
+                    key={lineIndex}
+                    className={`block whitespace-nowrap ${lineIndex > 0 ? "mt-1" : ""}`}
+                  >
                     {line.join(" ")}
-                  </React.Fragment>
+                  </span>
                 ))}
               </div>
               <h1
                 ref={titleLineRef}
                 data-loader-line
-                className={`absolute left-1/2 top-0 z-10 max-w-4xl -translate-x-1/2 px-6 text-3xl font-heading font-normal leading-[1.15] tracking-tight will-change-[transform,opacity] md:text-4xl lg:text-5xl xl:text-5xl ${introEnabled && introPhase === "loader-in" ? "opacity-0" : ""
+                className={`absolute left-1/2 top-0 z-10 max-w-4xl -translate-x-1/2 px-4 text-[2.2rem] font-heading font-normal leading-[1.05] tracking-tight will-change-[transform,opacity] sm:px-6 sm:text-5xl md:text-4xl lg:text-5xl xl:text-5xl ${introEnabled && introPhase === "loader-in" ? "opacity-0" : ""
                   } ${introTitleMuted ? theme.titleMuted : theme.title}`}
               >
                 {INTRO_TITLE_LINES.map((line, lineIndex) => (
-                  <React.Fragment key={lineIndex}>
-                    {lineIndex > 0 ? <br /> : null}
+                  <span
+                    key={lineIndex}
+                    className={`block whitespace-nowrap ${lineIndex > 0 ? "mt-1" : ""}`}
+                  >
                     {line.map((word, wordIndex) => (
                       <React.Fragment key={word}>
                         <span className="inline-block overflow-hidden align-bottom pb-0.5">
@@ -476,18 +480,18 @@ const Hero = () => {
                         ) : null}
                       </React.Fragment>
                     ))}
-                  </React.Fragment>
+                  </span>
                 ))}
               </h1>
             </div>
             <div
               ref={buttonsRef}
               data-hero-reveal
-              className={`mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center ${
+              className={`mt-8 flex w-full max-w-[18rem] flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-4 ${
                 introUiLocked ? "pointer-events-none" : ""
               }`}
             >
-              <Button href="/" balanced surface="on-dark">
+              <Button href="/" balanced surface="on-dark" className="w-full sm:w-auto">
                 Request Demo
               </Button>
               <Button
@@ -495,6 +499,7 @@ const Hero = () => {
                 balanced
                 variant="secondary"
                 surface="on-dark"
+                className="w-full sm:w-auto"
               >
                 Watch Demo
               </Button>
@@ -511,7 +516,7 @@ const Hero = () => {
             <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
             <ul
               ref={listRef}
-              className="relative grid grid-cols-2 gap-x-6 gap-y-10 md:flex md:py-10"
+              className="relative grid grid-cols-2 gap-x-4 gap-y-8 pb-6 pt-2 md:flex md:py-10"
               onMouseLeave={() => setActiveIndex(1)}
             >
               <div
@@ -551,13 +556,13 @@ const Hero = () => {
                   className="flex flex-col items-center gap-2 md:flex-1 md:px-8"
                 >
                   <p
-                    className={`text-2xl font-heading font-regular tracking-tight transition-colors md:text-3xl lg:text-4xl ${index === activeIndex ? theme.statValueActive : theme.statValueInactive
+                    className={`text-[1.35rem] font-heading font-regular tracking-tight transition-colors sm:text-2xl md:text-3xl lg:text-4xl ${index === activeIndex ? theme.statValueActive : theme.statValueInactive
                       }`}
                   >
                     {stat.value}
                   </p>
                   <p
-                    className={`text-xs font-sans font-regular text-center leading-relaxed transition-colors md:text-lg ${index === activeIndex ? theme.statLabelActive : theme.statLabelInactive
+                    className={`max-w-[10rem] text-[0.68rem] font-sans font-regular text-center leading-relaxed transition-colors sm:text-xs md:max-w-none md:text-lg ${index === activeIndex ? theme.statLabelActive : theme.statLabelInactive
                       }`}
                   >
                     {stat.label}
@@ -569,7 +574,7 @@ const Hero = () => {
 
         </div>
         {/* Network image — inside 100vh, pushed to bottom via justify-between */}
-        <div className="relative h-[min(420px,55vw)] w-full overflow-hidden md:h-[480px] lg:h-[500px] pt-10">
+        <div className="relative h-[260px] w-full overflow-hidden pt-4 sm:h-[320px] sm:pt-6 md:h-[480px] md:pt-10 lg:h-[500px]">
           <div
             ref={networkRef}
             data-hero-reveal
