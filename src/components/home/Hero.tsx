@@ -56,6 +56,27 @@ const heroTheme = {
   fiberOriginGlow: true,
 } as const;
 
+function syncHeroContainerBorder(
+  el: HTMLDivElement,
+  color: string,
+  opacity: number,
+) {
+  if (window.matchMedia("(min-width: 768px)").matches) {
+    Object.assign(el.style, getSideBorderStyle(color, opacity));
+    return;
+  }
+
+  el.style.borderLeft = "";
+  el.style.borderRight = "";
+  el.style.borderImage = "";
+}
+
+function clearHeroContainerBorder(el: HTMLDivElement) {
+  el.style.borderLeft = "";
+  el.style.borderRight = "";
+  el.style.borderImage = "";
+}
+
 const Hero = () => {
   const theme = heroTheme;
   const sectionRef = useRef<HTMLElement>(null);
@@ -290,6 +311,20 @@ const Hero = () => {
     }
   }, [theme.fiberOriginGlow, introEnabled, introPhase]);
 
+  useEffect(() => {
+    const sync = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      if (!window.matchMedia("(min-width: 768px)").matches) {
+        clearHeroContainerBorder(el);
+      }
+    };
+
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
+
   useLayoutEffect(() => {
     if (!introEnabled || introPhase !== "nav" || revealAnimatedRef.current) return;
     revealAnimatedRef.current = true;
@@ -298,6 +333,7 @@ const Hero = () => {
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setBorderOpacity(1);
+      if (containerRef.current) clearHeroContainerBorder(containerRef.current);
       if (gdpLineRef.current) gsap.set(gdpLineRef.current, { clearProps: "all" });
       if (buttonsRef.current) gsap.set(buttonsRef.current, { clearProps: "all" });
       if (statsWrapRef.current) gsap.set(statsWrapRef.current, { clearProps: "all" });
@@ -311,6 +347,9 @@ const Hero = () => {
       defaults: { ease: "power2.out" },
       onComplete: () => {
         setBorderOpacity(1);
+        if (containerRef.current) {
+          syncHeroContainerBorder(containerRef.current, theme.borderColor, 1);
+        }
         if (gdpLineRef.current) gsap.set(gdpLineRef.current, { clearProps: "all" });
         if (buttonsRef.current) gsap.set(buttonsRef.current, { clearProps: "all" });
         if (statsWrapRef.current) gsap.set(statsWrapRef.current, { clearProps: "all" });
@@ -330,7 +369,7 @@ const Hero = () => {
         onUpdate: () => {
           const el = containerRef.current;
           if (!el) return;
-          Object.assign(el.style, getSideBorderStyle(theme.borderColor, borderProxy.value));
+          syncHeroContainerBorder(el, theme.borderColor, borderProxy.value);
         },
       },
       0,
