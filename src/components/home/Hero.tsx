@@ -238,11 +238,6 @@ const Hero = () => {
     waveCleanupRef.current?.();
     waveCleanupRef.current = animateLoaderWordsWave(line, {
       theme: "light",
-      colors: {
-        idle: "#BCC5D6",
-        active: "#0032C9",
-        done: "#0a143b",
-      },
       duration: HOME_INTRO_LOADER_WAVE_MS / 1000 - 0.15,
       delay: 0.05,
       charsClass: "loader-wave-char",

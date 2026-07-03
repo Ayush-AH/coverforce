@@ -135,38 +135,7 @@ function HeaderNavLink({
   );
 }
 
-function LoginLink({
-  href,
-  onNavigate,
-  className,
-}: {
-  href: string;
-  onNavigate: (href: string) => void;
-  className: string;
-}) {
-  const [hovered, setHovered] = useState(false);
 
-  return (
-    <Link
-      href={href}
-      onClick={(e) => {
-        e.preventDefault();
-        onNavigate(href);
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className={className}
-    >
-      <AnimatedLinkText
-        hovered={hovered}
-        textClip="h-[0.9375rem]"
-        textLine="h-[0.9375rem] leading-none"
-      >
-        Login
-      </AnimatedLinkText>
-    </Link>
-  );
-}
 
 const CLIP_EASE = "cubic-bezier(0.76, 0, 0.24, 1)";
 const CLIP_CLOSE_EASE = "cubic-bezier(0.33, 1, 0.68, 1)";
@@ -583,12 +552,7 @@ const Header = () => {
                 </div>
               </div>
 
-              <div className="relative z-10 hidden items-center gap-6 lg:flex xl:gap-8">
-                <LoginLink
-                  href="/"
-                  onNavigate={handleNavigate}
-                  className={`group font-heading text-[0.9375rem] font-regular leading-none transition-colors ${styles.login}`}
-                />
+              <div className="relative z-10 hidden items-center lg:flex">
                 <Button href="/" surface={theme === "dark" ? "on-dark" : "default"}>
                   Request demo
                 </Button>

@@ -27,7 +27,7 @@ const BrokerMock = dynamic(() => import("./BrokerMock"), {
   loading: () => <MockPlaceholder />,
 });
 const DeveloperMock = dynamic(() => import("./DeveloperMock"), {
-  loading: () => <MockPlaceholder className="max-w-[420px]" />,
+  loading: () => <MockPlaceholder className="max-w-[min(100%,340px)] sm:max-w-[420px]" />,
 });
 const DeveloperTerminalBg = dynamic(() => import("./DeveloperTerminalBg"), {
   ssr: false,
@@ -46,10 +46,10 @@ const GlobeScene = dynamic(() => import("@/components/home/GlobeScene"), {
   loading: () => null,
 });
 
-function MockPlaceholder({ className = "max-w-[290px]" }: { className?: string }) {
+function MockPlaceholder({ className = "max-w-[250px] sm:max-w-[290px]" }: { className?: string }) {
   return (
     <div
-      className={`mx-auto h-[220px] w-full animate-pulse rounded-2xl bg-white/10 sm:h-[260px] ${className}`}
+      className={`mx-auto h-[240px] w-full animate-pulse rounded-2xl bg-white/10 sm:h-[280px] md:h-[260px] ${className}`}
       aria-hidden
     />
   );
@@ -71,7 +71,7 @@ function WayCardDotGrid({
 
 // Remove label, lightStrip from WayCardProps
 type WayCardProps = {
-  tagline: string;
+  tagline: ReactNode;
   taglinePosition?: "left" | "right";
   variant: "dark" | "light";
   children: ReactNode;
@@ -119,7 +119,14 @@ const WAY_CARDS: WayCardConfig[] = [
   },
   {
     label: "Developers",
-    tagline: "Build insurance products on Coverforce APIs",
+    tagline: (
+      <>
+        Build insurance products
+        <br className="md:hidden" />
+        <span className="hidden md:inline"> </span>
+        on Coverforce APIs
+      </>
+    ),
     taglinePosition: "left",
     variant: "dark",
     wide: true,
@@ -229,7 +236,7 @@ const WayCard = memo(function WayCard({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         aria-label={`Open details`}
-        className={`way-card-shell relative min-h-[22rem] cursor-pointer [content-visibility:auto] [contain-intrinsic-size:auto_530px] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
+        className={`way-card-shell relative cursor-pointer [content-visibility:auto] max-md:[contain-intrinsic-size:auto_580px] [contain-intrinsic-size:auto_530px] ${wide ? "max-md:min-h-[36rem] max-md:sm:min-h-[34rem]" : "max-md:min-h-[32rem] max-md:sm:min-h-[30rem]"} min-h-[22rem] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
       >
         <div
           className="way-card-body absolute inset-0 flex flex-col overflow-hidden p-4 sm:p-5 md:p-8"
@@ -278,30 +285,38 @@ const WayCard = memo(function WayCard({
           ) : null}
         </div>
         <div
-          className={`way-card-mock pointer-events-none absolute inset-0 z-10 p-4 transition-opacity duration-300 sm:p-5 md:p-6 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" ? "flex items-center justify-center" : ""} ${mockShiftDown ? "pt-18 sm:pt-24 md:pt-28 lg:pt-32" : ""}`}
+          className={`way-card-mock pointer-events-none absolute inset-0 z-10 max-md:p-3 max-md:sm:p-5 p-4 sm:p-5 md:p-6 transition-opacity duration-300 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" || mockShiftDown ? "max-md:flex max-md:items-start max-md:justify-center md:flex md:items-center md:justify-center" : ""} ${mockShiftDown ? "max-md:pt-[5.75rem] max-md:sm:pt-24 md:pt-28 lg:pt-32" : mockAlign === "bottom" ? "" : "max-md:pt-[5.75rem] max-md:sm:pt-24"}`}
         >
           <div
             className={
               mockAlign === "bottom"
-                ? "relative h-full w-full"
-                : "relative flex w-full items-center justify-center"
+                ? "relative flex h-full w-full min-w-0 flex-col justify-end max-md:overflow-visible md:overflow-hidden"
+                : mockShiftDown
+                  ? "relative mx-auto flex h-full w-full min-w-0 max-w-full max-md:justify-center md:items-center md:justify-center max-md:overflow-visible md:overflow-hidden"
+                  : "relative flex h-full w-full min-w-0 max-md:items-start max-md:justify-center md:items-center md:justify-center max-md:overflow-visible md:overflow-hidden"
             }
           >
             {inView ? children : <MockPlaceholder />}
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 p-4 sm:p-5 md:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className={taglinePosition === "left" ? "max-w-[13rem] sm:max-w-xs" : "max-w-[12rem] sm:max-w-[16rem]"}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 max-md:p-3 max-md:sm:p-5 p-4 sm:p-5 md:p-8">
+          <div className="flex items-start justify-between max-md:gap-3 gap-4">
+            <div
+              className={
+                taglinePosition === "left"
+                  ? "max-md:max-w-[12.5rem] max-w-[13rem] sm:max-w-xs"
+                  : "max-md:max-w-[12.5rem] max-w-[12rem] sm:max-w-[16rem]"
+              }
+            >
               <EyebrowPill surface={pillSurface} dotAttr={label}>{label}</EyebrowPill>
               <p
-                className={`text-[1.7rem] font-heading font-medium leading-[1.08] tracking-tight ${variant == "light" ? "text-[#424242]" : "text-white"} sm:text-3xl md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] text-left`}
+                className={`max-md:line-clamp-2 text-left font-heading font-medium tracking-tight max-md:text-lg max-md:leading-[1.12] max-md:sm:text-xl text-[1.7rem] leading-[1.08] sm:text-3xl md:text-4xl lg:text-[1.625rem] lg:leading-[1.12] ${variant == "light" ? "text-[#424242]" : "text-white"}`}
               >
                 {tagline}
               </p>
             </div>
             <span
-              className="way-card-expand-btn pointer-events-auto relative flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-sm sm:size-9"
+              className="way-card-expand-btn pointer-events-auto relative flex max-md:size-8 size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm"
               role="button"
               tabIndex={0}
               onClick={(e) => {
@@ -437,7 +452,7 @@ export default function ThreeWays() {
             </p>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-2 lg:mt-14">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2 md:gap-2 lg:mt-14">
             {WAY_CARDS.map(({ mock, modalPreview, ...card }) => (
               <WayCard
                 key={card.label}

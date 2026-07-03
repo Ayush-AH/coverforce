@@ -361,7 +361,7 @@ button {
 .way-card-expand-btn .way-card-expand-icon {
   overflow: visible;
   transition: color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  color: #0c00ba;
+  color: #151f4d;
 }
 
 .way-card-expand-btn .way-card-expand-icon path {
@@ -379,7 +379,7 @@ button {
 @media (prefers-reduced-motion: no-preference) {
   @media (hover: hover) {
     .way-card-shell:hover .way-card-expand-btn {
-      background-color: #0c00ba;
+      background-color: #151f4d;
     }
 
     .way-card-shell:hover .way-card-expand-btn .way-card-expand-icon {

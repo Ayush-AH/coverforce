@@ -99,7 +99,7 @@ function DevTabButton({
     <button
       type="button"
       onClick={() => onSelect(label)}
-      className={`flex items-center gap-1.5 rounded-full px-6 py-3 text-sm font-sans leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A483FE] ${
+      className={`flex items-center gap-1.5 rounded-full max-md:px-3 max-md:py-2 max-md:text-xs px-6 py-3 text-sm font-sans leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A483FE] ${
         active
           ? "bg-[#121C49] font-normal text-white"
           : "bg-[#F3F4F6] font-medium text-neutral-500 hover:bg-[#E8EAED] hover:text-[#374151]"
@@ -135,7 +135,7 @@ function AnimatedDevRows({ tab, listKey }: { tab: TabLabel; listKey: number }) {
         return (
           <div
             key={`${listKey}-${row.title}`}
-            className="flex items-center justify-between py-4"
+            className="flex items-center justify-between max-md:py-3 py-4"
             style={microRevealStyle(visible, {
               delay: index * MICRO_ROLL_STAGGER_MS,
               offsetY: "1.25rem",
@@ -146,7 +146,7 @@ function AnimatedDevRows({ tab, listKey }: { tab: TabLabel; listKey: number }) {
                 <RowIcon color="#494646" size={11} />
               </span>
               <div>
-                <p className="text-sm font-sans font-medium leading-relaxed text-[#595959]">
+                <p className="max-md:text-xs md:text-sm font-sans font-medium leading-relaxed text-[#595959]">
                   {row.title}
                 </p>
                 <p className="mt-0.5 text-[10px] font-sans font-normal leading-tight text-[#939393]">
@@ -197,8 +197,8 @@ export default function DeveloperMock() {
   }, []);
 
   return (
-    <div className="absolute -bottom-7 right-52 z-10 w-full max-w-[420px] rounded-t-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.13)]">
-      <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] px-5 py-6">
+    <div className="relative z-10 mx-auto w-full max-md:max-w-[min(100%,320px)] max-md:sm:max-w-[360px] rounded-t-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.13)] md:absolute md:-bottom-7 md:right-52 md:mx-0 md:max-w-[420px]">
+      <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] max-md:px-4 max-md:py-4 px-5 py-6">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF]">
           <RiCodeSSlashLine color="#494646" size={15} />
         </span>
@@ -212,8 +212,8 @@ export default function DeveloperMock() {
         </div>
       </div>
 
-      <div className="px-5">
-        <div className="flex items-center gap-2 py-6">
+      <div className="max-md:px-4 md:px-5">
+        <div className="flex max-md:flex-wrap max-md:gap-2 max-md:py-4 items-center gap-2 py-6">
           {TABS.map((tab) => (
             <DevTabButton
               key={tab.label}

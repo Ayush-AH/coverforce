@@ -639,7 +639,7 @@ const ProcessFlow = () => {
             const afterPointAnim = (animStart: number, text: string, rightEnd: number) =>
                 Math.max(animStart + pointAnimDur(text), rightEnd) + POINT_GAP;
 
-            const pointWaveColors = { ...COLOR_THEMES.light, active: POINT_ACTIVE };
+            const pointWaveColors = COLOR_THEMES.light;
             let progressPoint = 0;
 
             syncProgressHeights();

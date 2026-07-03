@@ -581,8 +581,8 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
   const coverageStatClassName = "inline text-[0.50rem] tracking-wide font-heading font-medium text-[#111827]";
 
   return (
-    <div className="relative -ml-32 w-full max-w-[290px]">
-      <div className="absolute top-0 -right-32 z-20 w-full">
+    <div className="relative w-full min-w-0 max-md:mx-auto md:-ml-32 md:max-w-[290px]">
+      <div className="relative z-20 w-full max-md:left-auto max-md:right-auto md:absolute md:top-0 md:-right-32">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
           <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] px-4 py-2.5">
             <span className="flex size-[23px] shrink-0 items-center justify-center border border-[#F3F4F6] rounded-full bg-[#F9FAFB]">
@@ -614,7 +614,7 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
         </div>
       </div>
 
-      <div className="mt-[72px] w-full">
+      <div className="relative z-10 w-full max-md:-mt-12 max-md:sm:-mt-14 md:mt-[72px]">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.18)]">
           <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
             <span className="flex size-[23px] shrink-0 items-center justify-center border border-[#F3F4F6] rounded-full bg-[#F9FAFB]">
