@@ -7,9 +7,9 @@
  *    container borders (3 left, 2 right) and peel into each card's EyebrowPill,
  *    turning white and handing off to the pill dot.
  *
- *  Phase 2 (ProcessFlow): the dots fall from the top of the viewport and each
+ *  Phase 2 (ProcessFlow, lg+ only): the dots fall from the top of the viewport and each
  *    settles into its step's EyebrowPill dot (kept transparent) as that step
- *    rises into view.
+ *    rises into view. Skipped below lg where ProcessFlow uses a stacked layout.
  *
  * All positions/targets are measured live every frame so the dots track the page
  * (including the pinned ProcessFlow timeline).
@@ -43,8 +43,12 @@ const DOTS: DotConfig[] = [
   { label: "Carriers", side: "right", rank: 1 },
 ];
 
-const rectOf = (sel: string) =>
-  document.querySelector<HTMLElement>(sel)?.getBoundingClientRect();
+const rectOf = (sel: string, root?: ParentNode | null) => {
+  const el = root
+    ? root.querySelector<HTMLElement>(sel)
+    : document.querySelector<HTMLElement>(sel);
+  return el?.getBoundingClientRect();
+};
 
 export default function HeroToCardsDots() {
   const layerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +58,6 @@ export default function HeroToCardsDots() {
   useEffect(() => {
     if (introEnabled && introPhase !== "done") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!window.matchMedia("(min-width: 768px)").matches) return;
 
     const layer = layerRef.current;
     if (!layer) return;
@@ -77,6 +80,7 @@ export default function HeroToCardsDots() {
       const pf = document.querySelector<HTMLElement>("[data-processflow]");
       const pfRect = pf?.getBoundingClientRect();
       const pfCont = (pf?.firstElementChild as HTMLElement | null)?.getBoundingClientRect();
+      const pfDesktopScroll = pf?.querySelector<HTMLElement>(".leftScroll");
       const inPF =
         !!pfRect && pfRect.top < vh * 0.85 && pfRect.bottom > vh * 0.15;
 
@@ -97,14 +101,21 @@ export default function HeroToCardsDots() {
         pfVis = Math.min(pfEnter, pfLeave);
       }
 
+      const isPfDesktop = window.matchMedia("(min-width: 1024px)").matches;
+
       dotRefs.current.forEach((dot, i) => {
         if (!dot) return;
         const cfg = DOTS[i];
 
         if (inPF && pfCont) {
+          if (!isPfDesktop) {
+            dot.style.opacity = "0";
+            return;
+          }
+
           // ── Phase 2: ProcessFlow — fall from the top onto each step's pill dot ──
-          const target = rectOf(`[data-card-dot="step-${i}"]`);
-          if (!target) {
+          const target = rectOf(`[data-card-dot="step-${i}"]`, pfDesktopScroll);
+          if (!target || (target.width === 0 && target.height === 0)) {
             dot.style.opacity = "0";
             return;
           }
@@ -193,6 +204,14 @@ export default function HeroToCardsDots() {
         );
         if (target) target.style.opacity = "";
       });
+      for (let i = 0; i < DOTS.length; i++) {
+        const pf = document.querySelector<HTMLElement>("[data-processflow]");
+        const pfDesktopScroll = pf?.querySelector<HTMLElement>(".leftScroll");
+        const stepTarget = pfDesktopScroll?.querySelector<HTMLElement>(
+          `[data-card-dot="step-${i}"]`,
+        );
+        if (stepTarget) stepTarget.style.opacity = "";
+      }
     };
   }, [introEnabled, introPhase]);
 

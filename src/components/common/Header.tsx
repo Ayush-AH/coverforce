@@ -56,6 +56,10 @@ function getHeaderTheme(pathname: string): HeaderTheme {
   return "dark";
 }
 
+function usesTransparentHeaderUntilScroll(pathname: string): boolean {
+  return pathname.startsWith("/about") || pathname.startsWith("/careers");
+}
+
 const headerThemes = {
   dark: {
     bar: "border-b border-[#FFFFFF1A] bg-[#151f4d]",
@@ -235,6 +239,7 @@ const Header = () => {
   const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
   const [renderedMobileSubMenu, setRenderedMobileSubMenu] = useState<string | null>(null);
   const [navBarHeight, setNavBarHeight] = useState(0);
+  const [headerPastHero, setHeaderPastHero] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeMenuRef = useRef<string | null>(null);
   const renderedMenuRef = useRef<string | null>(null);
@@ -298,6 +303,32 @@ const Header = () => {
       window.removeEventListener("resize", updateHeight);
     };
   }, []);
+
+  const transparentUntilScroll = usesTransparentHeaderUntilScroll(pathname);
+
+  useEffect(() => {
+    if (!transparentUntilScroll) {
+      setHeaderPastHero(false);
+      return;
+    }
+
+    const update = () => {
+      setHeaderPastHero(window.scrollY >= window.innerHeight);
+    };
+
+    update();
+
+    const lenis = window.lenis;
+    lenis?.on("scroll", update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    return () => {
+      lenis?.off("scroll", update);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [transparentUntilScroll]);
 
   const openMobileMenu = useCallback(() => {
     setMobileActiveMenu(null);
@@ -458,7 +489,11 @@ const Header = () => {
   }, [mobileMenuRendered]);
 
   const activeMobileConfig = renderedMobileSubMenu ? MEGA_MENUS[renderedMobileSubMenu] : null;
-  const mobileBarStyles = mobileMenuOpen ? headerThemes.light : styles;
+  const navBarClass = mobileMenuOpen
+    ? headerThemes.light.bar
+    : transparentUntilScroll && !headerPastHero
+      ? "border-b border-transparent bg-transparent"
+      : styles.bar;
 
   return (
     <nav className={`relative w-full ${theme === "light" ? "text-[#0a143b]" : "text-white"}`}>
@@ -474,7 +509,7 @@ const Header = () => {
       <div className="relative z-10" onMouseLeave={scheduleClose}>
         <div
           ref={navBarRef}
-          className={`relative z-20 overflow-hidden will-change-transform ${mobileBarStyles.bar}`}
+          className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color] duration-300 ${navBarClass}`}
         >
           <Container>
             <div className="relative flex items-center justify-between py-4">

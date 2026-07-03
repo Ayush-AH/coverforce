@@ -225,7 +225,7 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
         links: [
           {
             label: "Blog",
-            href: "/",
+            href: "/blog",
             description: "Product updates, guides, and industry perspective.",
             icon: RiArticleLine,
           },
@@ -248,19 +248,19 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
         links: [
           {
             label: "About CoverForce",
-            href: "/",
+            href: "/about",
             description: "Our mission to modernize insurance distribution.",
             icon: RiInformationLine,
           },
           {
             label: "Careers",
-            href: "/",
+            href: "/careers",
             description: "Join the team building the distribution platform.",
             icon: RiTeamLine,
           },
           {
             label: "Contact",
-            href: "/",
+            href: "/contact",
             description: "Talk with our team about demos and partnerships.",
             icon: RiMailLine,
           },
