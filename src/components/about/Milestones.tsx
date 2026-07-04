@@ -5,23 +5,105 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import Container from "@/components/common/Container";
+import EyebrowPill from "@/components/common/EyebrowPill";
+import {
+  containerPadding,
+  getBottomBorderStyle,
+} from "@/components/common/containerStyles";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const milestones = [
-  { src: "/images/about/milestone1.png", alt: "CoverForce milestone 1" },
-  { src: "/images/about/milestone2.png", alt: "CoverForce milestone 2" },
-  { src: "/images/about/milestone3.png", alt: "CoverForce milestone 3" },
-  { src: "/images/about/milestone4.png", alt: "CoverForce milestone 4" },
-] as const;
+const BORDER_COLOR = "#FFFFFF40";
+
+type Milestone = {
+  src: string;
+  alt: string;
+  number: string;
+  title: string;
+  description: string;
+};
+
+const milestones: Milestone[] = [
+  {
+    src: "/images/about/milestone1.png",
+    alt: "CoverForce milestone 1",
+    number: "01",
+    title: "Partnered with ISU Steadfast",
+    description:
+      "Collaborated with the second-largest U.S. agency network to build carrier integration infrastructure from the ground up.",
+  },
+  {
+    src: "/images/about/milestone2.png",
+    alt: "CoverForce milestone 2",
+    number: "02",
+    title: "Scaled carrier connectivity",
+    description:
+      "Expanded integrations across commercial lines, enabling agencies to quote and bind through a single unified workflow.",
+  },
+  {
+    src: "/images/about/milestone3.png",
+    alt: "CoverForce milestone 3",
+    number: "03",
+    title: "Launched API-first distribution",
+    description:
+      "Introduced a modern insurance API layer that connects platforms, agencies, and carriers in real time.",
+  },
+  {
+    src: "/images/about/milestone4.png",
+    alt: "CoverForce milestone 4",
+    number: "04",
+    title: "Accelerated national growth",
+    description:
+      "Continued building the infrastructure layer for commercial insurance distribution across new markets and partners.",
+  },
+];
 
 const CLIP_HIDDEN_BOTTOM = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
 const CLIP_FULL = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
 const CLIP_HIDDEN_TOP = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
 
+const IMAGE_TRAVEL = 18;
+
+const MILESTONE_OVERLAY_GRADIENT =
+  "linear-gradient(135deg, rgba(0, 0, 0, 0.54) 0%, rgba(0, 0, 0, 0.27) 100%)";
+
+const milestoneDisplayClassName =
+  "font-heading text-[3.5rem] font-semibold leading-none tracking-tight text-white md:text-[4.5rem] lg:text-[3.5rem]";
+
+function MilestoneContent({ milestone }: { milestone: Milestone }) {
+  return (
+    <div className="relative flex h-full flex-col">
+      <div
+        className="flex min-h-[42%] flex-col justify-end md:min-h-[45%]"
+        style={getBottomBorderStyle(BORDER_COLOR)}
+      >
+        <div className={`${containerPadding} pb-8 md:pb-10`}>
+          <p className={milestoneDisplayClassName}>{milestone.number}</p>
+        </div>
+      </div>
+
+      <div
+        className={`grid flex-1 content-start gap-6 pt-8 md:gap-8 md:pt-10 lg:grid-cols-[auto_minmax(0,40rem)] lg:items-start lg:justify-between lg:gap-10 lg:pt-12 ${containerPadding}`}
+      >
+        <EyebrowPill surface="dark" className="mb-0">
+          Milestones
+        </EyebrowPill>
+        <div className="w-full lg:max-w-[40rem] lg:justify-self-end">
+          <h2 className={milestoneDisplayClassName}>{milestone.title}</h2>
+          <p className="mt-4 max-w-xl font-sans text-sm font-semibold leading-[1.55] text-white md:text-xl md:leading-[1.6]">
+            {milestone.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Milestones = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const panelRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const imageWrapRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useGSAP(
     () => {
@@ -43,6 +125,14 @@ const Milestones = () => {
             });
           });
 
+          imageWrapRefs.current.forEach((el, index) => {
+            if (!el) return;
+            gsap.set(el, {
+              yPercent: index === 0 ? 0 : IMAGE_TRAVEL,
+              force3D: true,
+            });
+          });
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
@@ -57,16 +147,18 @@ const Milestones = () => {
           milestones.forEach((_, index) => {
             if (index === 0) return;
 
-            tl.to(
-              panelRefs.current[index - 1],
-              { clipPath: CLIP_HIDDEN_TOP, duration: 1, ease: "none" },
-              index,
-            );
-            tl.to(
-              panelRefs.current[index],
-              { clipPath: CLIP_FULL, duration: 1, ease: "none" },
-              index,
-            );
+            const pos = index - 1;
+
+            const prevPanel = panelRefs.current[index - 1];
+            const currPanel = panelRefs.current[index];
+            const prevImage = imageWrapRefs.current[index - 1];
+            const currImage = imageWrapRefs.current[index];
+
+            tl.to(prevPanel, { clipPath: CLIP_HIDDEN_TOP, duration: 1, ease: "none" }, pos);
+            tl.to(prevImage, { yPercent: -IMAGE_TRAVEL, duration: 1, ease: "none" }, pos);
+
+            tl.to(currPanel, { clipPath: CLIP_FULL, duration: 1, ease: "none" }, pos);
+            tl.to(currImage, { yPercent: 0, duration: 1, ease: "none" }, pos);
           });
         }, section);
 
@@ -94,38 +186,76 @@ const Milestones = () => {
             ref={(el) => {
               panelRefs.current[index] = el;
             }}
-            className="absolute bottom-0 left-0 h-full w-full"
+            className="absolute bottom-0 left-0 h-full w-full overflow-hidden"
             style={{
               clipPath: index === 0 ? CLIP_FULL : CLIP_HIDDEN_BOTTOM,
               zIndex: index + 1,
             }}
           >
-            <Image
-              src={milestone.src}
-              alt={milestone.alt}
-              fill
-              priority={index === 0}
-              className="object-cover object-center"
-              sizes="100vw"
-            />
+            <div
+              ref={(el) => {
+                imageWrapRefs.current[index] = el;
+              }}
+              className="absolute inset-0 will-change-transform"
+            >
+              <Image
+                src={milestone.src}
+                alt={milestone.alt}
+                fill
+                priority={index === 0}
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+              <div
+                className="absolute inset-0"
+                style={{ background: MILESTONE_OVERLAY_GRADIENT }}
+                aria-hidden
+              />
+            </div>
+
+            <div className="pointer-events-none absolute inset-0 z-10">
+              <Container borderColor={BORDER_COLOR} className="h-full px-0!">
+                <MilestoneContent milestone={milestone} />
+              </Container>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col gap-6 p-6 lg:hidden">
+      <div className="flex flex-col gap-10 p-6 lg:hidden">
         {milestones.map((milestone) => (
-          <div
+          <article
             key={`${milestone.src}-mobile`}
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-md"
+            className="relative overflow-hidden rounded-md"
           >
-            <Image
-              src={milestone.src}
-              alt={milestone.alt}
-              fill
-              className="object-cover object-center"
-              sizes="100vw"
-            />
-          </div>
+            <div className="relative aspect-[4/3] w-full">
+              <Image
+                src={milestone.src}
+                alt={milestone.alt}
+                fill
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+              <div
+                className="absolute inset-0"
+                style={{ background: MILESTONE_OVERLAY_GRADIENT }}
+                aria-hidden
+              />
+            </div>
+
+            <Container borderColor="#53535380" className="bg-[#151f4d] text-white !px-0">
+              <div className="py-8">
+                <p className={milestoneDisplayClassName}>{milestone.number}</p>
+                <EyebrowPill surface="dark" className="mb-0 mt-4">
+                  Milestones
+                </EyebrowPill>
+                <h2 className={`mt-6 ${milestoneDisplayClassName}`}>{milestone.title}</h2>
+                <p className="mt-3 font-sans text-sm leading-[1.55] text-white/85">
+                  {milestone.description}
+                </p>
+              </div>
+            </Container>
+          </article>
         ))}
       </div>
     </section>
