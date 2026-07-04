@@ -5,7 +5,10 @@ import { createPortal } from "react-dom";
 import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 
 import type { WayCardModalContent } from "@/data/wayCardModals";
-import { CARD_BACKGROUND_STYLES, type CardBackground } from "@/data/wayCardStyles";
+import {
+  CARD_BACKGROUND_STYLES,
+  type CardBackground,
+} from "@/data/wayCardStyles";
 import { WAY_MODAL_CLOSE_TOTAL_MS, prefersReducedMotion } from "@/lib/wayModalMotion";
 import Button from "@/components/common/Button";
 import EyebrowPill from "@/components/common/EyebrowPill";
@@ -147,6 +150,9 @@ export default function WayCardModal({
 
   if (!visible || !stored || typeof document === "undefined") return null;
 
+  const cardBackground = stored.background ?? "light";
+  const cardGradient = CARD_BACKGROUND_STYLES[cardBackground];
+
   const overlayAnim = isClosing ? "way-modal-overlay-exit" : "way-modal-overlay-enter";
   const panelAnim = isClosing ? "way-modal-panel-exit" : "way-modal-panel-enter";
 
@@ -192,7 +198,7 @@ export default function WayCardModal({
                       className="way-modal-reveal"
                       style={{ "--way-modal-stagger": "0ms" } as CSSProperties}
                     >
-                      <EyebrowPill surface="light" className="mb-0">
+                      <EyebrowPill surface="light" background={cardGradient} className="mb-0">
                         {stored.label}
                       </EyebrowPill>
                     </div>
@@ -210,7 +216,11 @@ export default function WayCardModal({
                       {stored.content.title}
                     </h2>
                     <div className="mt-6 h-10">
-                      <Button href={stored.content.primaryCta.href}>
+                      <Button
+                        href={stored.content.primaryCta.href}
+                        className="!border-transparent !text-white"
+                        style={{ background: cardGradient }}
+                      >
                         {stored.content.primaryCta.label}
                       </Button>
                     </div>
@@ -237,7 +247,10 @@ export default function WayCardModal({
                       className="way-modal-reveal flex items-start gap-2.5"
                       style={{ "--way-modal-stagger": `${180 + index * 55}ms` } as CSSProperties}
                     >
-                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-[#4F63E8]/20 bg-[#4F63E8]/8 text-[#4F63E8]">
+                      <span
+                        className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-white"
+                        style={{ background: cardGradient }}
+                      >
                         <RiCheckLine size={11} />
                       </span>
                       <span className="font-sans text-xs font-regular leading-[1.45] text-[#50617a] md:text-sm">

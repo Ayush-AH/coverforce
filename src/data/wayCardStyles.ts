@@ -105,3 +105,19 @@ export const CARD_BACKGROUND_STYLES: Record<CardBackground, string> = {
   startup: buildGradientStyle(SOLUTION_GRADIENT_DEFS.startup),
   carrier: buildGradientStyle(SOLUTION_GRADIENT_DEFS.carrier),
 };
+
+/** Primary accent sampled from each card gradient (pill dot, check ticks). */
+export const CARD_ACCENT_COLORS: Record<CardBackground, string> = {
+  accent: "#4541CD",
+  light: "#413CC0",
+  developer: `#${SOLUTION_GRADIENT_DEFS.developer[2]!.hex}`,
+  wholesaler: `#${SOLUTION_GRADIENT_DEFS.wholesaler[0]!.hex}`,
+  broker: `#${SOLUTION_GRADIENT_DEFS.broker[1]!.hex}`,
+  startup: `#${SOLUTION_GRADIENT_DEFS.startup[1]!.hex}`,
+  carrier: `#${SOLUTION_GRADIENT_DEFS.carrier[0]!.hex}`,
+};
+
+export function withAlpha(hex: string, alpha: number): string {
+  const { r, g, b } = hexToRgb(hex.replace("#", ""));
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}

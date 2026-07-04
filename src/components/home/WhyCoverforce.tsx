@@ -19,7 +19,8 @@ type WhySlide = {
   id: string;
   image: string;
   alt: string;
-  label: string;
+  title: string;
+  description: string;
 };
 
 const whySlides: WhySlide[] = [
@@ -28,32 +29,39 @@ const whySlides: WhySlide[] = [
     image:
       "https://images.unsplash.com/photo-1773227930443-730f0f1f2154?q=80&w=1332&auto=format&fit=crop",
     alt: "Abstract blue geometric pattern",
-    label: "Full Lifecycle, Not Just Quotes",
+    title: "Full Lifecycle, Not Just Quotes",
+    description:
+      "From intake and appetite through quote, bind, and servicing in one workflow.",
   },
   {
     id: "slide-2",
     image:
       "https://images.unsplash.com/photo-1777828634169-e3d9f138ee01?q=80&w=1332&auto=format&fit=crop",
     alt: "Layered blue abstract shapes",
-    label: "API-First Architecture",
+    title: "API-First Architecture",
+    description:
+      "Integrate distribution into your stack with modern, versioned insurance APIs.",
   },
   {
     id: "slide-3",
     image:
       "https://images.unsplash.com/photo-1658753570876-3cc72c842b44?q=80&w=1332&auto=format&fit=crop",
     alt: "White geometric cube landscape",
-    label: "Real-Time Data Sync",
+    title: "Real-Time Data Sync",
+    description:
+      "Keep submissions, quotes, and carrier responses aligned across every channel.",
   },
   {
     id: "slide-4",
     image:
       "https://images.unsplash.com/photo-1770885653473-ca48b4d69173?q=80&w=1332&auto=format&fit=crop",
     alt: "Flowing dark blue abstract waves",
-    label: "Carrier Integrations",
+    title: "Carrier Integrations",
+    description:
+      "Connect to carrier appetite, forms, and rating without rebuilding integrations.",
   },
 ];
 
-const SLIDE_TRANSITION_MS = 1100;
 // Small delay before a hover actually switches the active slide — absorbs
 // fast mouse passes across slide edges so it doesn't flicker between slides.
 const HOVER_SWITCH_DELAY_MS = 90;
@@ -66,46 +74,39 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const animatingRef = useRef(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const goTo = useCallback((index: number) => {
-    if (index === active || animatingRef.current) return;
-    animatingRef.current = true;
-    setActive(index);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      animatingRef.current = false;
-    }, SLIDE_TRANSITION_MS);
-  }, [active]);
+    setActive((current) => (current === index ? current : index));
+  }, []);
 
-  const prev = useCallback(
-    () => goTo((active - 1 + whySlides.length) % whySlides.length),
-    [active, goTo],
-  );
-  const next = useCallback(
-    () => goTo((active + 1) % whySlides.length),
-    [active, goTo],
-  );
+  const prev = useCallback(() => {
+    setActive((current) => (current - 1 + whySlides.length) % whySlides.length);
+  }, []);
+
+  const next = useCallback(() => {
+    setActive((current) => (current + 1) % whySlides.length);
+  }, []);
 
   // Debounced hover activation: wait a beat before switching so a mouse
   // just passing through on its way elsewhere doesn't trigger a swap.
-  const handleHoverStart = useCallback((index: number) => {
+  const handleSlideMouseEnter = useCallback((index: number) => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
       goTo(index);
     }, HOVER_SWITCH_DELAY_MS);
   }, [goTo]);
 
-  const handleHoverEnd = useCallback(() => {
+  const handleTrackMouseLeave = useCallback(() => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
   }, []);
 
-  useEffect(() => () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    },
+    [],
+  );
 
   useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef });
 
@@ -224,27 +225,34 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
           object-fit: cover;
         }
 
-        .why-slide-label {
+        .why-slide-copy {
           position: absolute;
-          bottom: 0; left: 0; right: 0;
-          padding: 32px 20px 18px;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 32px 20px 20px;
           background: linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 100%);
           color: #fff;
-          font-size: 15px;
-          font-weight: 600;
-          letter-spacing: -0.01em;
+          text-align: left;
           opacity: 0;
           transform: translateY(6px);
           transition:
             opacity 0.68s cubic-bezier(0.19, 1, 0.22, 1),
             transform 0.68s cubic-bezier(0.19, 1, 0.22, 1);
           pointer-events: none;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
 
-        .why-slide.is-active .why-slide-label {
+        .why-slide-title,
+        .why-slide-desc {
+          color: #fff;
+        }
+
+        .why-slide-desc {
+          margin-top: 1.25rem;
+          max-width: 28rem;
+        }
+
+        .why-slide.is-active .why-slide-copy {
           opacity: 1;
           transform: translateY(0);
           transition-delay: 0.42s;
@@ -260,16 +268,24 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
         @media (min-width: 640px) {
           .why-swiper-slide { height: 380px; }
         }
-        .why-swiper-slide-label {
+        .why-swiper-slide-copy {
           position: absolute;
-          bottom: 0; left: 0; right: 0;
-          padding: 32px 20px 18px;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 32px 20px 20px;
           background: linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 100%);
           color: #fff;
-          font-size: 15px;
-          font-weight: 600;
-          letter-spacing: -0.01em;
+          text-align: left;
           pointer-events: none;
+        }
+
+        @media (min-width: 1024px) {
+          .why-slide-copy { padding: 36px 24px 22px; }
+        }
+
+        .why-swiper-slide-desc {
+          margin-top: 1.25rem;
         }
       `}</style>
       <div ref={containerRef} className="relative z-10 overflow-hidden will-change-transform">
@@ -345,7 +361,14 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                         alt={slide.alt}
                         draggable={false}
                       />
-                      <div className="why-swiper-slide-label">{slide.label}</div>
+                      <div className="why-swiper-slide-copy">
+                        <p className="why-swiper-slide-title max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+                          {slide.title}
+                        </p>
+                        <p className="why-swiper-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">
+                          {slide.description}
+                        </p>
+                      </div>
                     </div>
                   </SwiperSlide>
                 ))}
@@ -354,13 +377,12 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
 
             {/* ── Desktop: expanding slider ── */}
             <div className="relative mt-12 hidden md:mt-14 lg:mt-16 lg:block">
-              <div className="why-slider-track">
+              <div className="why-slider-track" onMouseLeave={handleTrackMouseLeave}>
                 {whySlides.map((slide, i) => (
                   <div
                     key={slide.id}
                     className={`why-slide ${i === active ? "is-active" : "is-inactive"}`}
-                    onMouseEnter={() => handleHoverStart(i)}
-                    onMouseLeave={handleHoverEnd}
+                    onMouseEnter={() => handleSlideMouseEnter(i)}
                     onFocus={() => goTo(i)}
                     onClick={() => goTo(i)}
                     tabIndex={0}
@@ -374,7 +396,14 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                       alt={slide.alt}
                       draggable={false}
                     />
-                    <div className="why-slide-label">{slide.label}</div>
+                    <div className="why-slide-copy">
+                      <p className="why-slide-title max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+                        {slide.title}
+                      </p>
+                      <p className="why-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">
+                        {slide.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>

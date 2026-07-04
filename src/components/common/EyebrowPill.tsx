@@ -7,6 +7,10 @@ type EyebrowPillProps = {
   className?: string;
   /** When set, tags the inner dot with `data-card-dot` (used as a landing target). */
   dotAttr?: string;
+  /** Override the default dot color (e.g. card gradient accent). */
+  dotColor?: string;
+  /** Gradient or solid fill for the pill background. */
+  background?: string;
 };
 
 const SURFACE_STYLES = {
@@ -29,16 +33,23 @@ export default function EyebrowPill({
   surface = "dark",
   className = "",
   dotAttr,
+  dotColor,
+  background,
 }: EyebrowPillProps) {
   const styles = SURFACE_STYLES[surface];
+  const useGradient = Boolean(background);
 
   return (
     <p
-      style={{ boxShadow: styles.boxShadow }}
-      className={`mb-5 flex w-fit items-center justify-center gap-2.5 rounded-full px-3 py-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] md:text-[0.65rem] ${styles.wrapper} ${className}`}
+      style={{
+        boxShadow: styles.boxShadow,
+        ...(background ? { background } : {}),
+      }}
+      className={`mb-5 flex w-fit items-center justify-center gap-2.5 rounded-full px-3 py-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] md:text-[0.65rem] ${useGradient ? "text-white" : styles.wrapper} ${className}`}
     >
       <span
-        className={`size-1.5 shrink-0 rounded-full ${dotAttr ? "bg-white opacity-100 md:opacity-0" : styles.dot}`}
+        className={`size-1.5 shrink-0 rounded-full ${dotAttr ? "bg-white opacity-100 md:opacity-0" : useGradient ? "bg-white" : dotColor ? "" : styles.dot}`}
+        style={!dotAttr && !useGradient && dotColor ? { backgroundColor: dotColor } : undefined}
         data-card-dot={dotAttr}
         aria-hidden
       />

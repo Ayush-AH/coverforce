@@ -49,8 +49,8 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 const NETWORK_LOGOS = Array.from(
-  { length: 12 },
-  (_, i) => `/images/network/logo (${i + 1}).png`,
+  { length: 15 },
+  (_, i) => `/images/marquee/logo (${i + 1}).png`,
 );
 const MAX_TIP_LOGOS = 8;
 const LOGO_SIZE_MIN = 52;
@@ -474,7 +474,7 @@ export default function OpticalFiber({
       img.alt = "";
       img.draggable = false;
       img.className =
-        "pointer-events-none absolute select-none will-change-[left,top,opacity,transform]";
+        "pointer-events-none absolute select-none will-change-[left,top,opacity,transform] brightness-0 invert";
       img.style.width = `${size}px`;
       img.style.height = "auto";
       img.style.left = `${chosenPos.x}px`;

@@ -17,20 +17,20 @@ type Testimonial = {
   quote: string;
   name: string;
   role: string;
-  company: string;
   avatar: string;
+  logo?: string;
 };
 
 const testimonials: Testimonial[] = [
   {
     id: "1",
     quote:
-      "The platform simplifies complex commercial insurance workflows, with greater accuracy",
-    name: "Daniel Briggs",
-    role: "Sr. Director of Sales",
-    company: "Coalition",
+      "They provided excellent service, clear communication, and reliable support throughout the process. I highly recommend Cover Force to anyone looking for a trustworthy and customer-focused insurance partner.",
+    name: "David Miller",
+    role: "Marketing Director",
     avatar:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
   },
   {
     id: "2",
@@ -38,9 +38,9 @@ const testimonials: Testimonial[] = [
       "We cut submission time dramatically while improving carrier match rates across our book.",
     name: "Sarah Chen",
     role: "VP of Underwriting",
-    company: "Coalition",
     avatar:
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
   },
   {
     id: "3",
@@ -48,16 +48,16 @@ const testimonials: Testimonial[] = [
       "CoverForce gives our team one workflow from intake to bind — fewer errors, faster quotes.",
     name: "Marcus Webb",
     role: "Head of Distribution",
-    company: "Coalition",
     avatar:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
   },
 ];
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <article
-      className="relative flex min-h-[320px] flex-col overflow-hidden rounded-sm bg-white p-7 md:min-h-[420px] md:p-9 lg:min-h-[520px] lg:p-10"
+      className="relative flex min-h-[280px] flex-col overflow-hidden rounded-sm bg-white p-6 md:min-h-[360px] md:p-8 lg:min-h-[440px] lg:p-9"
     >
       <div className="pointer-events-none absolute -translate-y-1/6 left-1/2 z-0 h-[180%] w-[120%] -translate-x-1/2 md:-top-24 lg:-top-28">
         <Image
@@ -70,9 +70,9 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         />
       </div>
 
-      <div className="relative z-10 flex h-full flex-1 flex-col">
-        <div className="flex items-start gap-4 md:gap-5">
-          <div className="size-16 shrink-0 overflow-hidden rounded-full md:size-20">
+      <div className="relative z-10 grid h-full min-h-[inherit] flex-1 grid-rows-[auto_1fr_auto]">
+        <div className="flex items-center gap-4 md:gap-5">
+          <div className="size-16 shrink-0 overflow-hidden md:size-[4.5rem]">
             <Image
               src={testimonial.avatar}
               alt={testimonial.name}
@@ -81,19 +81,31 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
               className="size-full object-cover"
             />
           </div>
-          <div className="pt-1">
-            <p className="font-sans text-lg font-medium tracking-tight text-[#303030] md:text-xl">
+          <div className="min-w-0 pt-0.5">
+            <p className="font-mono text-[0.6875rem] font-medium uppercase text-[#303030] md:text-sm">
               {testimonial.name}
             </p>
-            <p className="mt-1 font-sans text-base font-regular tracking-tight text-[#303030]/90 md:text-lg">
-              {testimonial.company}
+            <p className="mt-1 font-mono text-[0.625rem] font-medium uppercase text-[#303030]/80 md:text-sm">
+              {testimonial.role}
             </p>
           </div>
         </div>
 
-        <blockquote className="mt-auto max-w-[16ch] text-[1.65rem] font-heading font-regular leading-[1.3] tracking-tight text-[#303030] md:max-w-[17ch] md:text-[2rem] lg:max-w-[18ch] lg:text-[2.35rem]">
-          &ldquo;{testimonial.quote}&rdquo;
+        <blockquote className="flex max-w-[32rem] items-center self-center text-xl font-sans font-medium leading-[1.45] tracking-tight text-[#303030] md:text-2xl lg:text-[1.75rem] lg:leading-[1.4]">
+          {testimonial.quote}&rdquo;
         </blockquote>
+
+        {testimonial.logo ? (
+          <div className="flex justify-end pt-6 md:pt-8">
+            <Image
+              src={testimonial.logo}
+              alt="Coalition"
+              width={80}
+              height={24}
+              className="h-5 w-auto max-w-[5rem] brightness-0 md:h-6 md:max-w-[5.5rem]"
+            />
+          </div>
+        ) : null}
       </div>
     </article>
   );
