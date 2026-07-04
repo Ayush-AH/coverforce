@@ -33,14 +33,14 @@ const cultureItems: CultureItem[] = [
   {
     src: "/images/careers/image2.png",
     alt: "Colleagues discussing work",
-    caption: "96% of employees report a strong sense of acceptance.",
+    caption: "Brings our global team together to connect, celebrate, and align around the future we’re building.",
     placement: "lg:col-span-7 lg:col-start-6 lg:row-span-6 lg:row-start-1",
     imageHeight: "large",
   },
   {
     src: "/images/careers/image3.png",
     alt: "Team outdoor adventure",
-    caption: "A culture that inspires pride and innovation.",
+    caption: "96% of employees report a strong sense of acceptance.",
     placement: "lg:col-span-6 lg:row-span-3 lg:row-start-7",
     imageHeight: "medium",
   },
@@ -48,7 +48,7 @@ const cultureItems: CultureItem[] = [
     src: "/images/careers/image4.png",
     alt: "Global team gathering outdoors",
     caption:
-      "Brings our global team together to connect, celebrate, and align around the future we're building.",
+      "94% of employees say they're proud to tell others where they work.",
     placement: "lg:col-span-6 lg:col-start-7 lg:row-span-3 lg:row-start-9",
     imageHeight: "medium",
   },
@@ -59,7 +59,7 @@ const bottomCulturePair = {
     src: "/images/careers/image5.png",
     alt: "Diverse team group photo",
     caption:
-      "94% of employees say they're proud to tell others where they work.",
+      "A culture that inspires pride and innovation.",
     placement: "",
     imageHeight: "large" as const,
   },
@@ -73,7 +73,7 @@ const bottomCulturePair = {
 };
 
 const captionClassName =
-  "max-w-md font-heading text-sm font-regular leading-[1.45] text-[#3F3F3F] md:text-[0.9375rem]";
+  "max-w-md font-heading text-2xl font-medium leading-[1.12] tracking-tight text-[#444444] md:text-3xl lg:text-[1.375rem] lg:leading-[1.12]";
 
 function CultureImage({
   item,
@@ -157,7 +157,7 @@ function CultureCard({
           }
         />
       </div>
-      <p className="max-w-md shrink-0 font-heading text-sm font-regular leading-[1.45] text-[#3F3F3F] md:text-[0.9375rem]">
+      <p className={`${captionClassName} shrink-0`}>
         {item.caption}
       </p>
     </article>
@@ -179,20 +179,20 @@ const OurCluture = () => {
 
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333">
+      <Container borderColor="#53535380">
         <div className="py-16 md:py-20 lg:py-24">
           <div
             ref={headerRef}
-            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+            className="grid gap-8 lg:grid-cols-2 lg:items-end lg:justify-between lg:gap-12"
           >
-            <div className="max-w-xl">
+            <div className="flex flex-col items-start justify-end space-y-5">
               <EyebrowPill surface="light" className="mb-0">
                 Our Culture
               </EyebrowPill>
 
               <h2
                 ref={headingRef}
-                className="mt-4 text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Driven by People,</span>
                 <br />
@@ -200,10 +200,10 @@ const OurCluture = () => {
               </h2>
             </div>
 
-            <div className="max-w-md lg:ml-auto">
+            <div className="max-w-md text-left lg:ml-auto">
               <p
                 ref={descRef}
-                className="font-sans font-regular text-sm leading-[1.4] text-[#3F3F3F] md:text-[1.125rem]"
+                className="font-sans font-regular text-sm leading-[1.4] text-[#797979] md:text-[1.125rem]"
               >
                 Our values shape our culture, decisions, and the impact we create
                 every day.

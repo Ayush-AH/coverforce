@@ -1,10 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import { containerPadding, getBottomBorderStyle } from "@/components/common/containerStyles";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type JobListing = {
   title: string;
@@ -78,43 +84,43 @@ const jobCategories: JobCategory[] = [
   },
 ];
 
+const BORDER_COLOR = "#53535380";
+
 const GRADIENT_TEXT =
   "bg-gradient-to-r from-[#0032C9] via-[#5B35E0] to-[#9B8AFB] bg-clip-text text-transparent";
 
-const GRADIENT_BG =
-  "bg-gradient-to-r from-[#0032C9] via-[#5B35E0] to-[#9B8AFB]";
+const TABLE_GRID =
+  "lg:grid lg:grid-cols-[minmax(0,1fr)_11rem_8rem_auto] lg:gap-x-6";
 
-const ROW_GRID =
-  "grid grid-cols-1 gap-4 border-b border-dashed border-[#CCCCCC] py-5 last:border-b-0 lg:grid-cols-[minmax(0,1fr)_11rem_8rem_5.5rem] lg:items-center lg:gap-6 lg:py-6";
+const ROW_BASE =
+  `grid grid-cols-1 gap-4 ${containerPadding} lg:col-span-full lg:grid-cols-subgrid lg:items-center lg:gap-x-6 lg:gap-y-0`;
 
-function ApplyButton({ href }: { href: string }) {
-  return (
-    <Link
-      href={href}
-      className={`inline-flex h-8 w-fit items-center justify-center rounded-full px-5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90 ${GRADIENT_BG}`}
-    >
-      Apply
-    </Link>
-  );
-}
+const COL_LOCATION =
+  "font-mono text-sm font-medium uppercase text-[#444444] lg:justify-self-start lg:text-left";
+
+const COL_TYPE = COL_LOCATION;
+
+const COL_HEADER =
+  `hidden font-heading text-base font-medium lg:block lg:justify-self-start lg:text-left ${GRADIENT_TEXT}`;
 
 function JobRow({ job }: { job: JobListing }) {
   return (
-    <article className={ROW_GRID}>
-      <h3 className="font-heading text-base font-medium leading-snug text-[#0a143b] md:text-[1.0625rem]">
+    <article
+      className={`positions-row ${ROW_BASE} py-5 lg:py-6`}
+      style={getBottomBorderStyle(BORDER_COLOR)}
+    >
+      <h3 className="max-w-sm font-heading text-base font-medium leading-snug text-[#444444] md:text-xl">
         {job.title}
       </h3>
 
-      <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#9AA8BC] lg:text-center">
-        {job.location}
-      </p>
+      <p className={COL_LOCATION}>{job.location}</p>
 
-      <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#9AA8BC] lg:text-center">
-        {job.type}
-      </p>
+      <p className={COL_TYPE}>{job.type}</p>
 
       <div className="lg:flex lg:justify-end">
-        <ApplyButton href={job.href} />
+        <Button href={job.href} size="sm">
+          Apply
+        </Button>
       </div>
     </article>
   );
@@ -122,25 +128,15 @@ function JobRow({ job }: { job: JobListing }) {
 
 function JobCategoryBlock({ category }: { category: JobCategory }) {
   return (
-    <div className="mt-14 first:mt-0 md:mt-16">
-      <div
-        className={`${ROW_GRID} border-t border-dashed border-[#CCCCCC] py-4 lg:py-5`}
-      >
+    <div className={`mt-14 first:mt-0 md:mt-16 ${TABLE_GRID}`}>
+      <div className={`positions-row ${ROW_BASE} py-4 lg:py-5`}>
         <p
-          className={`font-heading text-sm font-medium md:text-[0.9375rem] ${GRADIENT_TEXT}`}
+          className={`font-heading text-base font-medium md:text-[0.9375rem] ${GRADIENT_TEXT}`}
         >
           {category.name}
         </p>
-        <p
-          className={`hidden font-heading text-sm font-medium lg:block lg:text-center ${GRADIENT_TEXT}`}
-        >
-          Location
-        </p>
-        <p
-          className={`hidden font-heading text-sm font-medium lg:block lg:text-center ${GRADIENT_TEXT}`}
-        >
-          Type
-        </p>
+        <p className={COL_HEADER}>Location</p>
+        <p className={COL_HEADER}>Type</p>
         <span className="hidden lg:block" aria-hidden />
       </div>
 
@@ -155,6 +151,7 @@ const Positions = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const positionsListRef = useRef<HTMLDivElement>(null);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -162,25 +159,85 @@ const Positions = () => {
     headingRef,
   });
 
+  useGSAP(
+    () => {
+      const list = positionsListRef.current;
+      if (!list) return;
+
+      const rows = gsap.utils.toArray<HTMLElement>(".positions-row", list);
+      if (!rows.length) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        gsap.set(rows, { opacity: 1, y: 0, clearProps: "transform" });
+        return;
+      }
+
+      gsap.set(rows, { opacity: 0, y: 28 });
+
+      const tweens = rows.map((row) =>
+        gsap.to(row, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          clearProps: "transform",
+          scrollTrigger: {
+            trigger: row,
+            start: "top 88%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        }),
+      );
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+        tweens.forEach((tween) => {
+          tween.scrollTrigger?.kill();
+          tween.kill();
+        });
+      };
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333" borderBottom>
+    <section ref={sectionRef} className="bg-[FAFBFF] text-[#0a143b]">
+      <Container borderColor={BORDER_COLOR} className="!px-0">
         <div className="py-16 md:py-20 lg:py-24">
-          <div ref={headerRef} className="max-w-3xl">
+          <div
+            ref={headerRef}
+            className={`flex flex-col items-start justify-end space-y-5 ${containerPadding}`}
+          >
             <EyebrowPill surface="light" className="mb-0">
               Open Positions
             </EyebrowPill>
 
             <h2
               ref={headingRef}
-              className="mt-4 text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
-              <span data-split>Join Our</span>{" "}
-              <span className={GRADIENT_TEXT}>Growing Team</span>
+              <span data-split>Join Our Growing Team</span>
             </h2>
           </div>
 
-          <div className="mt-14 md:mt-16 lg:mt-20">
+          <div ref={positionsListRef} className="mt-14 md:mt-16 lg:mt-20">
             {jobCategories.map((category) => (
               <JobCategoryBlock key={category.name} category={category} />
             ))}

@@ -1,17 +1,12 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Container from "./Container";
 import Button from "./Button";
 import EyebrowPill from "./EyebrowPill";
 import Link from "next/link";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteConfig } from "@/config/site";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type FooterLinkData = {
   label: string;
@@ -192,9 +187,6 @@ function FooterColumn({ title, links }: FooterColumnProps) {
 }
 
 const Footer = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
   const scrollToTop = () => {
     const lenis = (window as any).lenis;
     if (lenis) {
@@ -204,67 +196,10 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  useGSAP(
-    () => {
-      const section = sectionRef.current;
-      const content = contentRef.current;
-
-      if (!section || !content) return;
-
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(content, { yPercent: 0, opacity: 1, clearProps: "transform" });
-        return;
-      }
-
-      const mm = gsap.matchMedia();
-
-      mm.add("(max-width: 767px)", () => {
-        gsap.set(content, { yPercent: 0, opacity: 1, clearProps: "transform" });
-      });
-
-      mm.add("(min-width: 768px)", () => {
-        gsap.set(content, {
-          yPercent: -20,
-          opacity: 0.95,
-          willChange: "transform, opacity",
-          force3D: true,
-        });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "top 60%",
-            scrub: 2,
-            invalidateOnRefresh: true,
-            fastScrollEnd: true,
-          },
-        });
-
-        tl.to(content, { yPercent: 0, opacity: 1, force3D: true });
-
-        const lenis = (window as any).lenis;
-        const onLenisScroll = ScrollTrigger.update;
-        lenis?.on("scroll", onLenisScroll);
-
-        return () => {
-          lenis?.off("scroll", onLenisScroll);
-          tl.kill();
-        };
-      });
-
-      return () => mm.revert();
-    },
-    { scope: sectionRef }
-  );
-
   return (
-    <footer
-      ref={sectionRef}
-      className="relative overflow-hidden bg-[#F9F8FF] text-[#0a143b]"
-    >
+    <footer className="relative overflow-hidden bg-[#F9F8FF] text-[#0a143b]">
       <Container borderColor="#53535380">
-        <div ref={contentRef} className="relative z-10 pt-12 will-change-transform max-md:will-change-auto md:pt-16 lg:pt-20">
+        <div className="relative z-10 pt-12 md:pt-16 lg:pt-20">
 
           {/* ── Top: CTA banner ── */}
           <div className="relative min-h-[22rem] overflow-hidden border-b border-neutral-200 md:min-h-[26rem] lg:min-h-[30rem]">

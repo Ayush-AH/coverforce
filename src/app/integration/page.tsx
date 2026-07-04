@@ -1,5 +1,4 @@
 import React from 'react'
-import Explore from '@/components/home/Explore'
 import PageWrapper from '@/components/PageWrapper'
 import Hero from '@/components/integration/Hero'
 import CardSection from '@/components/integration/CardSection'
@@ -11,7 +10,6 @@ const IntegrationPage = () => {
         <Hero/>
         <CardSection/>
         <Integration/>
-        <Explore/>
     </PageWrapper>
   )
 }

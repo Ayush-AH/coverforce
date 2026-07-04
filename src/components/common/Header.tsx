@@ -221,8 +221,7 @@ function MobileMenuSubLink({
 
 const Header = () => {
   const pathname = usePathname();
-  const theme = getHeaderTheme(pathname);
-  const styles = headerThemes[theme];
+  const baseTheme = getHeaderTheme(pathname);
   const { enabled: introEnabled, phase: introPhase } = useHomeIntro();
   const navBarRef = useRef<HTMLDivElement>(null);
   const navRevealedRef = useRef(false);
@@ -305,6 +304,11 @@ const Header = () => {
   }, []);
 
   const transparentUntilScroll = usesTransparentHeaderUntilScroll(pathname);
+  const theme =
+    pathname.startsWith("/careers") && transparentUntilScroll && headerPastHero
+      ? "light"
+      : baseTheme;
+  const styles = headerThemes[theme];
 
   useEffect(() => {
     if (!transparentUntilScroll) {

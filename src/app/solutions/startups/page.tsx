@@ -1,7 +1,6 @@
 import WhyCoverforce from '@/components/home/WhyCoverforce'
 import Review from '@/components/home/Review'
 import React from 'react'
-import Explore from '@/components/home/Explore'
 import CarrierResults from '@/components/home/CarrierResults'
 import WhosFor from '@/components/solutions/startups/WhosFor'
 import ProgramOverview from '@/components/solutions/startups/ProgramOverview'
@@ -21,7 +20,6 @@ const page = () => {
         <WhyCoverforce paddingTop={true} />
         <Review />
         <CarrierResults />
-        <Explore />
       </PageWrapper>
     </>
   )

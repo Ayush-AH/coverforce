@@ -8,7 +8,6 @@ import DataAdvantage from "@/components/home/DataAdvantage";
 import Review from "@/components/home/Review";
 import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import CarrierResults from "@/components/home/CarrierResults";
-import Explore from "@/components/home/Explore";
 import { createPageMetadata } from "@/lib/seo";
 import Marquee from "@/components/home/Marquee";
 import HeroToCardsDots from "@/components/home/HeroToCardsDots";
@@ -32,7 +31,6 @@ const HomePage = () => {
           </div>
           <Review />
           <CarrierResults />
-          <Explore />
         </HomeSectionsAfterIntro>
       </PageWrapper >
     </>

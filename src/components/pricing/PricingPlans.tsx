@@ -144,10 +144,10 @@ function PricingCard({
         transition:
           "background 0.85s cubic-bezier(0.22, 1, 0.36, 1), color 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
-      className={`pricing-card group/pricing flex flex-col rounded-xl p-5 will-change-transform transform-gpu sm:p-8 md:min-h-[46rem] md:p-12 lg:min-h-[50rem] lg:p-10 lg:will-change-transform ${
+      className={`pricing-card group/pricing flex flex-col rounded-xl p-5 will-change-transform transform-gpu sm:p-8 md:min-h-[42rem] md:p-12 lg:min-h-[46rem] lg:p-10 lg:will-change-transform ${
         isEnterprise
-          ? "min-h-[42rem] sm:min-h-[44rem]"
-          : "min-h-[38rem] sm:min-h-[40rem]"
+          ? "min-h-[38rem] sm:min-h-[40rem]"
+          : "min-h-[34rem] sm:min-h-[36rem]"
       } ${plan.accentClassName} text-white ${
         settled
           ? `lg:bg-[#F8F8F8] lg:text-[#1A1A1A] ${plan.hoverClassName} lg:hover:text-white`

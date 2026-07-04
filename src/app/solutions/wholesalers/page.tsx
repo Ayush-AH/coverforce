@@ -1,7 +1,6 @@
 import WhyCoverforce from '@/components/home/WhyCoverforce'
 import Review from '@/components/home/Review'
 import React from 'react'
-import Explore from '@/components/home/Explore'
 import OperatingSystem from '@/components/solutions/wholesalers/OperatingSystem'
 import Workflow from '@/components/solutions/brokers/workflow'
 import CarrierResults from '@/components/home/CarrierResults'
@@ -17,7 +16,6 @@ import PageWrapper from '@/components/PageWrapper'
         <WhyCoverforce paddingTop={true} />
         <Review />
         <CarrierResults />
-        <Explore />
       </PageWrapper>
     </>
   )
