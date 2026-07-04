@@ -39,12 +39,12 @@ const Investors = () => {
 
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333">
+      <Container borderColor="#53535380">
         <div className="flex flex-col items-center py-20 text-center md:py-24 lg:py-28">
-          <div ref={headerRef} className="max-w-3xl">
+          <div ref={headerRef} className="flex flex-col items-center text-center">
             <h2
               ref={headingRef}
-              className="text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
               <span data-split>Backed by Investors</span>
               <br />
@@ -58,14 +58,14 @@ const Investors = () => {
             {investors.map((investor) => (
               <div
                 key={investor.src}
-                className="flex h-14 items-center justify-center md:h-16 lg:h-20"
+                className="flex h-10 items-center justify-center md:h-11 lg:h-12"
               >
                 <Image
                   src={investor.src}
                   alt={investor.alt}
                   width={investor.width}
                   height={investor.height}
-                  className="h-full w-auto max-w-[11rem] object-contain object-center md:max-w-[13rem] lg:max-w-[15rem]"
+                  className="h-full w-auto max-w-[8rem] object-contain object-center md:max-w-[9rem] lg:max-w-[10rem]"
                 />
               </div>
             ))}

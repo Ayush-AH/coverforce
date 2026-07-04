@@ -71,9 +71,9 @@ const headerThemes = {
   light: {
     bar: "border-b border-[#E8ECF0] bg-white",
     logo: "/Coverforce_logo_blue.svg",
-    linkActive: "text-[#0a143b]",
-    linkIdle: "text-[#0a143b]/75 hover:text-[#0a143b]",
-    login: "text-[#0a143b]/90 hover:text-[#0a143b]",
+    linkActive: "text-[#3D3D3D]",
+    linkIdle: "text-[#3D3D3D] hover:text-[#151F4D]",
+    login: "text-[#3D3D3D] hover:text-[#151F4D]",
   },
 } satisfies Record<
   HeaderTheme,
@@ -183,7 +183,7 @@ function MobileMenuLinkRow({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between border-b border-[#E8ECF0] px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none text-[#0a143b]"
+      className="flex w-full items-center justify-between border-b border-[#E8ECF0] px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
     >
       <span>{label}</span>
       <RiArrowRightLine className="size-5" aria-hidden />
@@ -204,17 +204,17 @@ function MobileMenuSubLink({
     <button
       type="button"
       onClick={() => onNavigate(link.href)}
-      className="flex w-full items-center justify-between gap-4 py-4 text-left"
+      className="flex w-full items-center justify-between gap-4 py-4 text-left text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
     >
       <span className="flex min-w-0 items-center gap-3">
-        <span className="flex size-6 shrink-0 items-center justify-center text-[#3556FF]">
+        <span className="flex size-6 shrink-0 items-center justify-center text-current">
           <Icon className="size-5" aria-hidden />
         </span>
-        <span className="min-w-0 font-heading text-[1.125rem] font-regular leading-tight text-[#0a143b]">
+        <span className="min-w-0 font-heading text-[1.125rem] font-regular leading-tight text-current">
           {link.label}
         </span>
       </span>
-      <RiArrowRightLine className="size-5 shrink-0 text-[#0a143b]" aria-hidden />
+      <RiArrowRightLine className="size-5 shrink-0 text-current" aria-hidden />
     </button>
   );
 }
@@ -498,7 +498,7 @@ const Header = () => {
       : styles.bar;
 
   return (
-    <nav className={`relative w-full ${theme === "light" ? "text-[#0a143b]" : "text-white"}`}>
+    <nav className={`relative w-full ${theme === "light" ? "text-[#3D3D3D]" : "text-white"}`}>
       {menuVisible ? (
         <button
           type="button"
@@ -541,10 +541,10 @@ const Header = () => {
                 }}
                 className={`relative z-10 flex size-10 items-center justify-center lg:hidden ${
                   mobileMenuOpen
-                    ? "text-[#0a143b]"
+                    ? "text-[#3D3D3D]"
                     : theme === "dark"
                       ? "text-white"
-                      : "text-[#0a143b]"
+                      : "text-[#3D3D3D]"
                 }`}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileMenuOpen}
@@ -623,7 +623,7 @@ const Header = () => {
           />
 
           <div
-            className="fixed inset-x-0 z-[119] overflow-hidden border-t border-[#E8ECF0] bg-white text-[#0a143b] shadow-[0_24px_48px_-12px_rgba(10,20,59,0.1)] will-change-[clip-path] motion-reduce:transition-none lg:hidden"
+            className="fixed inset-x-0 z-[119] overflow-hidden border-t border-[#E8ECF0] bg-white text-[#3D3D3D] shadow-[0_24px_48px_-12px_rgba(10,20,59,0.1)] will-change-[clip-path] motion-reduce:transition-none lg:hidden"
             style={{
               top: navBarHeight,
               bottom: 0,
@@ -716,7 +716,7 @@ const Header = () => {
                         <button
                           type="button"
                           onClick={backToMobileMain}
-                          className="mb-6 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#0a143b]"
+                          className="mb-6 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
                         >
                           <RiArrowLeftLine className="size-4" aria-hidden />
                           <span>Back</span>
@@ -735,7 +735,7 @@ const Header = () => {
                               className="border-t border-[#E8ECF0] pt-4 first:border-t-0 first:pt-0"
                             >
                               <MobileMenuReveal enterKey={mobileEnterKey} delay={columnDelay}>
-                                <p className="mb-2 font-mono text-[0.75rem] font-medium uppercase tracking-[0.12em] text-[#7C8798]">
+                                <p className="mb-2 font-mono text-[0.75rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D]">
                                   {column.title}
                                 </p>
                               </MobileMenuReveal>

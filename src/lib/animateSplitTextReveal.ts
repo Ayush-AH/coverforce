@@ -12,7 +12,8 @@ const WAVE_SPREAD = 4.6;
 
 export type SplitTextColorTheme = "light" | "dark";
 
-export const SPLIT_TEXT_FILL_COLOR = "#151f4d";
+export const SPLIT_TEXT_WAVE_COLOR = "#151f4d";
+export const SPLIT_TEXT_FILL_COLOR = "#3D3D3D";
 
 export const COLOR_THEMES: Record<
     SplitTextColorTheme,
@@ -20,7 +21,7 @@ export const COLOR_THEMES: Record<
 > = {
     light: {
         idle: "#BCC5D6",
-        active: SPLIT_TEXT_FILL_COLOR,
+        active: SPLIT_TEXT_WAVE_COLOR,
         done: SPLIT_TEXT_FILL_COLOR,
     },
     dark: {

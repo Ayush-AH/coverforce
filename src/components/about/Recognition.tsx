@@ -140,16 +140,21 @@ const Recognition = () => {
     <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33" className="relative z-10">
         <div className="flex flex-col gap-10 py-16 md:gap-12 md:py-20 lg:gap-14 lg:py-24">
-          <div ref={headerRef} className="max-w-3xl">
+          <div
+            ref={headerRef}
+            className="flex max-w-xl flex-col items-start justify-end space-y-5"
+          >
             <EyebrowPill surface="dark" className="mb-0">
               Recognition
             </EyebrowPill>
 
             <h2
               ref={headingRef}
-              className="mt-4 max-w-2xl text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
-              Recognized Among the World&apos;s Leading Insurtech Innovators
+              <span data-split>
+                Recognized Among the World&apos;s Leading Insurtech Innovators
+              </span>
             </h2>
           </div>
 

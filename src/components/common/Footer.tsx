@@ -106,7 +106,7 @@ function LinkedinIcon({ className }: { className?: string }) {
 function FooterBullet({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`size-1.5 shrink-0 rounded-full bg-[#151f4d] ${className}`}
+      className={`size-1.5 shrink-0 rounded-full bg-[#3D3D3D] ${className}`}
       aria-hidden
     />
   );
@@ -115,14 +115,14 @@ function FooterBullet({ className = "" }: { className?: string }) {
 function FooterHoverBullet() {
   return (
     <span
-      className="absolute left-0 top-1/2 size-2 -translate-y-1/2 origin-left scale-0 rounded-full bg-[#151f4d] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100"
+      className="absolute left-0 top-1/2 size-2 -translate-y-1/2 origin-left scale-0 rounded-full bg-[#151F4D] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100"
       aria-hidden
     />
   );
 }
 
 const footerLinkHover =
-  "transition-[padding-left,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:pl-3.5 hover:text-[#151f4d]";
+  `transition-[padding-left,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:pl-3.5`;
 
 type FooterLinkProps = {
   href: string;
@@ -134,7 +134,7 @@ function FooterSubLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-heading text-xs font-medium leading-snug text-[#3F3F3F]/80 ${footerLinkHover} ${className}`}
+      className={`group relative inline-flex pl-0 font-heading text-sm font-medium leading-snug text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} ${className}`}
     >
       <FooterHoverBullet />
       {children}
@@ -146,9 +146,9 @@ function FooterTopLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#151f4d] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#0032C9] ${className}`}
+      className={`group inline-flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#3D3D3D] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#151F4D] ${className}`}
     >
-      <FooterBullet className="transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#0032C9]" />
+      <FooterBullet className="transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#151F4D]" />
       {children}
     </Link>
   );
@@ -158,7 +158,7 @@ function FooterLegalLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3F3F3F] ${footerLinkHover} ${className}`}
+      className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} ${className}`}
     >
       <FooterHoverBullet />
       {children}
@@ -171,7 +171,7 @@ type FooterColumnProps = FooterColumnData;
 function FooterColumn({ title, links }: FooterColumnProps) {
   return (
     <div>
-      <h3 className="mb-4 flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#151f4d]">
+      <h3 className="mb-4 flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#3D3D3D]">
         <FooterBullet />
         {title}
       </h3>
@@ -260,7 +260,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-[#151f4d] transition-colors hover:text-[#0032C9]"
+                  className="text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
                 >
                   <Icon className="size-4" />
                 </a>
@@ -281,13 +281,13 @@ const Footer = () => {
             <button
               type="button"
               onClick={scrollToTop}
-              className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3F3F3F] ${footerLinkHover} md:absolute md:left-1/2 md:-translate-x-1/2`}
+              className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} md:absolute md:left-1/2 md:-translate-x-1/2`}
             >
               <FooterHoverBullet />
               Back to Top
             </button>
 
-            <p className="text-center font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3F3F3F] md:text-right">
+            <p className="text-center font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] md:text-right">
               © {new Date().getFullYear()} — Copyright CoverForce
             </p>
           </div>

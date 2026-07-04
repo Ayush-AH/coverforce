@@ -1,15 +1,44 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 import Container from "@/components/common/Container";
+import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
 
 const paragraphClassName =
-  "text-2xl font-heading font-regular leading-[1.2] tracking-tight md:text-[1.75rem] md:leading-[1.18] lg:text-[2rem] lg:leading-[1.15]";
+  "text-3xl font-heading font-regular leading-[1.12] text-[#454545] md:text-4xl lg:text-[1.6rem] lg:leading-[1.12]";
 
 const Info = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const para1Ref = useRef<HTMLParagraphElement>(null);
+  const para2Ref = useRef<HTMLParagraphElement>(null);
+
+  useGSAP(
+    () => {
+      const paragraphs = [para1Ref.current, para2Ref.current].filter(
+        (el): el is HTMLParagraphElement => Boolean(el),
+      );
+
+      const cleanups = paragraphs.map((paragraph) =>
+        animateSplitTextReveal(paragraph, {
+          trigger: paragraph,
+          splitSelf: true,
+          start: "top 85%",
+          end: "top 50%",
+        }),
+      );
+
+      return () => cleanups.forEach((cleanup) => cleanup());
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333" borderBottom>
-        <div className="grid gap-10 py-20 md:gap-12 md:py-24 lg:grid-cols-3 lg:items-start lg:gap-14 xl:gap-16">
-          <div className="mx-auto w-full max-w-md overflow-hidden rounded-2xl lg:col-span-1 lg:mx-0 lg:max-w-none">
+    <section ref={sectionRef} className="bg-white text-[#0a143b]">
+      <Container borderColor="#53535380">
+        <div className="grid gap-10 py-20 md:gap-12 md:py-44 lg:grid-cols-3 lg:items-start lg:gap-14 xl:gap-16">
+          <div className="mx-auto w-full max-w-md overflow-hidden rounded-md lg:col-span-1 lg:mx-0 lg:max-w-none">
             <Image
               src="/images/about/info.png"
               alt="CoverForce team"
@@ -21,16 +50,12 @@ const Info = () => {
           </div>
 
           <div className="flex flex-col gap-8 lg:col-span-2 lg:gap-10 lg:pt-2">
-            <p className={paragraphClassName}>
-              <span className="text-[#0a143b]">
-                Today, CoverForce continues to invest in building the most reliable,
-              </span>{" "}
-              <span className="text-[#BCC5D6]">
-                developer-friendly infrastructure for commercial insurance.
-              </span>
+            <p ref={para1Ref} className={paragraphClassName}>
+              Today, CoverForce continues to invest in building the most reliable,
+              developer-friendly infrastructure for commercial insurance.
             </p>
 
-            <p className={`${paragraphClassName} text-[#BCC5D6]`}>
+            <p ref={para2Ref} className={paragraphClassName}>
               Our mission remains the same as it was at the start: to empower carriers,
               agencies, and platforms with technology that makes insurance distribution
               effortless, scalable, and built for the future.

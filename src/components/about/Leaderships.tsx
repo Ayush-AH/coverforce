@@ -2,9 +2,14 @@
 
 import Image from "next/image";
 import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const leaders = [
   {
@@ -55,6 +60,7 @@ const Leaderships = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const leadersGridRef = useRef<HTMLDivElement>(null);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -62,45 +68,124 @@ const Leaderships = () => {
     headingRef,
   });
 
+  useGSAP(
+    () => {
+      const grid = leadersGridRef.current;
+      if (!grid) return;
+
+      const members = gsap.utils.toArray<HTMLElement>(".leader-member", grid);
+      if (!members.length) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        gsap.set(members, { opacity: 1, y: 0, clearProps: "transform" });
+        return;
+      }
+
+      gsap.set(members, { opacity: 0, y: 28 });
+
+      const tweens = members.map((member) =>
+        gsap.to(member, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          clearProps: "transform",
+          scrollTrigger: {
+            trigger: member,
+            start: "top 88%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        }),
+      );
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+        tweens.forEach((tween) => {
+          tween.scrollTrigger?.kill();
+          tween.kill();
+        });
+      };
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333" borderBottom>
+      <style>{`
+        .leader-image-shell.way-card-shell {
+          --way-card-hover-scale: 1.03;
+          clip-path: inset(0);
+        }
+
+        .leader-image-shell .way-card-body {
+          transition: transform 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+      `}</style>
+      <Container borderColor="#53535380" borderBottom>
         <div className="py-20 md:py-24 lg:py-28">
-          <div ref={headerRef} className="max-w-xl">
+          <div
+            ref={headerRef}
+            className="flex max-w-xl flex-col items-start justify-end space-y-5"
+          >
             <EyebrowPill surface="light" className="mb-0">
               Leaderships
             </EyebrowPill>
 
             <h2
               ref={headingRef}
-              className="mt-4 text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
-              A blend of insurance and engineering expertise
+              <span data-split>A blend of insurance and</span>
+              <br />
+              <span data-split>engineering expertise</span>
             </h2>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8 xl:gap-12">
-            {leaders.map((leader) => (
-              <article key={leader.name}>
-                <div className="relative aspect-square w-full overflow-hidden bg-[#F5F7FA]">
-                  <Image
-                    src={leader.image}
-                    alt={leader.name}
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+          <div
+            ref={leadersGridRef}
+            className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8 xl:gap-12"
+          >
+            {leaders.map((leader, index) => (
+              <article key={index} className="leader-member">
+                <div className="leader-image-shell way-card-shell relative aspect-square w-full overflow-hidden bg-[#F5F7FA]">
+                  <div className="way-card-body absolute inset-0 overflow-hidden">
+                    <Image
+                      src={leader.image}
+                      alt={leader.name}
+                      fill
+                      className="object-cover object-center"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
                 </div>
 
-                <h3 className="mt-5 text-xl font-heading font-medium leading-tight tracking-tight text-[#0a143b] md:text-2xl">
+                <h3 className="mt-5 text-xl font-heading font-medium leading-tight tracking-tight text-[#000000] md:text-2xl">
                   {leader.name}
                 </h3>
 
-                <p className="mt-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#50617a] md:text-xs">
+                <p className="mt-1 font-mono text-[0.6875rem] font-medium uppercase text-[#3A3A3A] md:text-sm">
                   {leader.role}
                 </p>
 
-                <p className="mt-4 font-sans text-sm font-regular leading-[1.65] text-[#50617a] md:text-base md:leading-[1.7]">
+                <p className="mt-4 font-sans text-sm font-regular leading-[1.65] text-[#3A3A3A] md:text-base md:leading-[1.7]">
                   {leader.bio}
                 </p>
               </article>

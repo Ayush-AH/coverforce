@@ -13,6 +13,8 @@ type SectionHeaderRevealRefs = {
   headingRef: RefObject<HTMLElement | null>;
   descRef?: RefObject<HTMLElement | null>;
   theme?: SplitTextColorTheme;
+  revealStart?: string;
+  revealEnd?: string;
 };
 
 export function useSectionHeaderReveal({
@@ -21,6 +23,8 @@ export function useSectionHeaderReveal({
   headingRef,
   descRef,
   theme = "light",
+  revealStart = "top 88%",
+  revealEnd = "top 52%",
 }: SectionHeaderRevealRefs) {
   useGSAP(
     () => {
@@ -32,7 +36,14 @@ export function useSectionHeaderReveal({
       const cleanups: (() => void)[] = [];
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      cleanups.push(animateSplitTextReveal(heading, { trigger: header, theme }));
+      cleanups.push(
+        animateSplitTextReveal(heading, {
+          trigger: header,
+          theme,
+          start: revealStart,
+          end: revealEnd,
+        }),
+      );
 
       if (desc) {
         if (reducedMotion) {
@@ -62,6 +73,21 @@ export function useSectionHeaderReveal({
           });
         }
       }
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+      ScrollTrigger.refresh();
+
+      cleanups.push(() => lenis?.off("scroll", onLenisScroll));
 
       return () => cleanups.forEach((cleanup) => cleanup());
     },

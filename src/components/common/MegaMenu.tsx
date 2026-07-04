@@ -107,7 +107,7 @@ function MegaMenuLinkItem({
         onClick={(e) => handleMenuLinkClick(e, link.href, onClose, onNavigate)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="group flex w-full items-center justify-between gap-3 py-3.5 font-heading text-[0.9375rem] font-regular leading-none text-[#0a143b] transition-colors duration-200 hover:text-[#413CC0]"
+        className="group flex w-full items-center justify-between gap-3 py-3.5 font-heading text-[0.9375rem] font-regular leading-none text-[#3D3D3D] transition-colors duration-200 hover:text-[#151F4D]"
       >
         <span className="flex min-w-0 items-center gap-2">
           <AnimatedLinkText
@@ -118,12 +118,12 @@ function MegaMenuLinkItem({
             {link.label}
           </AnimatedLinkText>
           {link.badge ? (
-            <span className="rounded-full border border-[#D1D5DB] px-2 py-0.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#6B7280]">
+            <span className="rounded-full border border-[#D1D5DB] px-2 py-0.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#3D3D3D]">
               {link.badge}
             </span>
           ) : null}
         </span>
-        <ButtonArrowIcon className="h-2 w-3 shrink-0 text-[#413CC0] opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
+        <ButtonArrowIcon className="h-2 w-3 shrink-0 text-[#151F4D] opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
       </Link>
     </Reveal>
   );
@@ -149,7 +149,7 @@ function MegaMenuColumnBlock({
   return (
     <div>
       <Reveal enterKey={enterKey} resetKey={resetKey} delay={columnBaseDelay}>
-        <p className="mb-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#9CA3AF]">
+        <p className="mb-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#3D3D3D]">
           {column.title}
         </p>
       </Reveal>
@@ -354,7 +354,7 @@ export default function MegaMenu({
                   />
                 )}
               </div>
-              <p className="mt-3 px-0.5 font-heading text-sm font-regular leading-snug text-[#0a143b] transition-colors duration-200 group-hover:text-[#0032C9]">
+              <p className="mt-3 px-0.5 font-heading text-sm font-regular leading-snug text-[#3D3D3D] transition-colors duration-200 group-hover:text-[#151F4D]">
                 {displayConfig.featured.title}
               </p>
             </Link>
