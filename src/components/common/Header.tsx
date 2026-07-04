@@ -305,9 +305,7 @@ const Header = () => {
 
   const transparentUntilScroll = usesTransparentHeaderUntilScroll(pathname);
   const theme =
-    pathname.startsWith("/careers") && transparentUntilScroll && headerPastHero
-      ? "light"
-      : baseTheme;
+    transparentUntilScroll && headerPastHero ? "light" : baseTheme;
   const styles = headerThemes[theme];
 
   useEffect(() => {
