@@ -2,9 +2,14 @@
 
 import Image from "next/image";
 import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type CultureItem = {
   src: string;
@@ -13,6 +18,15 @@ type CultureItem = {
   placement: string;
   imageHeight?: "large" | "medium";
 };
+
+const CULTURE_PARALLAX_TRAVEL = [
+  { start: -52, end: 78 },
+  { start: 64, end: -72 },
+  { start: -36, end: 72 },
+  { start: 72, end: -88 },
+  { start: -46, end: 62 },
+  { start: 50, end: -56 },
+] as const;
 
 const IMAGE_HEIGHTS = {
   large:
@@ -41,7 +55,7 @@ const cultureItems: CultureItem[] = [
     src: "/images/careers/image3.png",
     alt: "Team outdoor adventure",
     caption: "96% of employees report a strong sense of acceptance.",
-    placement: "lg:col-span-6 lg:row-span-3 lg:row-start-7",
+    placement: "lg:col-span-6 lg:row-span-3 lg:row-start-7 lg:mt-10 xl:mt-12",
     imageHeight: "medium",
   },
   {
@@ -112,14 +126,14 @@ function BottomCulturePair({
 }) {
   return (
     <div className="grid grid-cols-1 gap-10 lg:col-span-12 lg:row-start-12 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-4 xl:gap-x-8">
-      <div className="flex flex-col gap-4 md:gap-5 lg:col-span-5 lg:gap-0">
+      <div className="culture-parallax-card flex flex-col gap-4 md:gap-5 lg:col-span-5 lg:gap-0">
         <div className="sm:min-h-[22rem] md:min-h-[26rem] lg:flex lg:min-h-[32rem] lg:items-end">
           <CultureImage item={left} className="w-full" />
         </div>
         <p className={`${captionClassName} lg:mt-4`}>{left.caption}</p>
       </div>
 
-      <div className="flex flex-col gap-4 md:gap-5 lg:col-span-4 lg:col-start-6 lg:gap-0">
+      <div className="culture-parallax-card flex flex-col gap-4 md:gap-5 lg:col-span-4 lg:col-start-6 lg:gap-0">
         <div className="sm:min-h-[22rem] md:min-h-[26rem] lg:flex lg:min-h-[32rem] lg:items-end">
           <CultureImage item={right} className="w-full" />
         </div>
@@ -136,36 +150,19 @@ function CultureCard({
   item: CultureItem;
   className?: string;
 }) {
-  const imageWrapClass = item.imageHeight
-    ? IMAGE_HEIGHTS[item.imageHeight]
-    : "relative min-h-[14rem] w-full flex-1 overflow-hidden rounded-xl lg:min-h-0";
-
   return (
     <article
-      className={`flex min-h-0 flex-col gap-4 md:gap-5 ${item.imageHeight ? "" : "h-full"} ${className}`}
+      className={`culture-parallax-card flex min-h-0 flex-col gap-4 md:gap-5 ${item.imageHeight ? "" : "h-full"} ${className}`}
     >
-      <div className={imageWrapClass}>
-        <Image
-          src={item.src}
-          alt={item.alt}
-          fill
-          className="object-cover"
-          sizes={
-            item.imageHeight
-              ? "(max-width: 1024px) 100vw, 42vw"
-              : "(max-width: 1024px) 100vw, 33vw"
-          }
-        />
-      </div>
-      <p className={`${captionClassName} shrink-0`}>
-        {item.caption}
-      </p>
+      <CultureImage item={item} />
+      <p className={`${captionClassName} shrink-0`}>{item.caption}</p>
     </article>
   );
 }
 
 const OurCluture = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
@@ -176,6 +173,60 @@ const OurCluture = () => {
     headingRef,
     descRef,
   });
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const grid = gridRef.current;
+      if (!section || !grid) return;
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reducedMotion) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>(
+        ".culture-parallax-card",
+        grid,
+      );
+      const cleanups: Array<() => void> = [];
+
+      cards.forEach((card, index) => {
+        const travel =
+          CULTURE_PARALLAX_TRAVEL[index] ?? CULTURE_PARALLAX_TRAVEL[0];
+
+        gsap.set(card, { y: travel.start, force3D: true });
+
+        const tween = gsap.to(card, {
+          y: travel.end,
+          ease: "none",
+          force3D: true,
+          overwrite: "auto",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        cleanups.push(() => {
+          tween.scrollTrigger?.kill();
+          tween.kill();
+        });
+      });
+
+      const lenis = window.lenis;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis?.on("scroll", onLenisScroll);
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+        cleanups.forEach((cleanup) => cleanup());
+      };
+    },
+    { scope: sectionRef },
+  );
 
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
@@ -211,7 +262,10 @@ const OurCluture = () => {
             </div>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-10 md:mt-16 md:gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-10 xl:gap-x-8">
+          <div
+            ref={gridRef}
+            className="mt-14 grid grid-cols-1 gap-10 md:mt-16 md:gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-10 xl:gap-x-8"
+          >
             {cultureItems.map((item) => (
               <CultureCard
                 key={item.src}
