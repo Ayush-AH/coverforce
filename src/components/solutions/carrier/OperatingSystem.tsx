@@ -47,8 +47,8 @@ export default function OperatingSystem() {
       ctaHref="/solutions/carrier"
       ctaLabel="Request a demo"
       statColor="#7CB518"
-      showHeader={false}
-      rows={operatingRows.slice(1)}
+      showHeader={true}
+      rows={operatingRows}
     />
   );
 }
