@@ -13,7 +13,7 @@ import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const BORDER_COLOR = "#53535333";
+const BORDER_COLOR = "#53535380";
 
 type Endpoint = {
     name: string;
