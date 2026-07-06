@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import Container from "@/components/common/Container";
@@ -37,19 +36,8 @@ const Info = () => {
   return (
     <section ref={sectionRef} className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
-        <div className="grid gap-10 py-20 md:gap-12 md:py-44 lg:grid-cols-3 lg:items-start lg:gap-14 xl:gap-16">
-          <div className="mx-auto w-full max-w-md overflow-hidden rounded-md lg:col-span-1 lg:mx-0 lg:max-w-none">
-            <Image
-              src="/images/about/info.png"
-              alt="CoverForce team"
-              width={640}
-              height={480}
-              className="h-auto w-full object-cover"
-              sizes="(max-width: 1024px) 90vw, 33vw"
-            />
-          </div>
-
-          <div className="flex flex-col gap-8 lg:col-span-2 lg:gap-10 lg:pt-2">
+        <div className="flex flex-col items-center py-20 md:py-24 lg:py-28">
+          <div className="w-full max-w-3xl space-y-6 text-left">
             <p ref={para1Ref} className={paragraphClassName}>
               Today, CoverForce continues to invest in building the most reliable,
               developer-friendly infrastructure for commercial insurance.

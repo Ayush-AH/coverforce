@@ -218,7 +218,7 @@ const Positions = () => {
   );
 
   return (
-    <section ref={sectionRef} className="bg-[FAFBFF] text-[#0a143b]">
+    <section id="positions" ref={sectionRef} className="bg-[FAFBFF] text-[#0a143b]">
       <Container borderColor={BORDER_COLOR} className="!px-0">
         <div className="py-16 md:py-20 lg:py-24">
           <div

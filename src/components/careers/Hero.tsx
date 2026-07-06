@@ -131,7 +131,7 @@ const Hero = () => {
             </h1>
 
             <div className="mt-10 md:mt-12">
-              <Button href="/contact" balanced surface="on-dark">
+              <Button href="/careers#positions" balanced surface="on-dark">
                 Explore open positions
               </Button>
             </div>

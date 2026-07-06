@@ -56,6 +56,14 @@ const leaders = [
   }
 ] as const;
 
+function chunkMembers<T>(items: T[], size: number): T[][] {
+  const rows: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    rows.push(items.slice(i, i + size));
+  }
+  return rows;
+}
+
 const Leaderships = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -85,20 +93,37 @@ const Leaderships = () => {
 
       gsap.set(members, { opacity: 0, y: 28 });
 
-      const tweens = members.map((member) =>
-        gsap.to(member, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power3.out",
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: member,
-            start: "top 88%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }),
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          isMobile: "(max-width: 639px)",
+          isTablet: "(min-width: 640px) and (max-width: 1023px)",
+          isDesktop: "(min-width: 1024px)",
+        },
+        (context) => {
+          const { isMobile, isTablet } = context.conditions ?? {};
+          const columns = isMobile ? 1 : isTablet ? 2 : 3;
+          const rows = chunkMembers(members, columns);
+
+          rows.forEach((rowMembers) => {
+            gsap.to(rowMembers, {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.12,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: rowMembers[0],
+                start: "top 88%",
+                toggleActions: "play none none none",
+                once: true,
+              },
+            });
+
+          });
+        },
       );
 
       const lenis = window.lenis;
@@ -117,10 +142,7 @@ const Leaderships = () => {
 
       return () => {
         lenis?.off("scroll", onLenisScroll);
-        tweens.forEach((tween) => {
-          tween.scrollTrigger?.kill();
-          tween.kill();
-        });
+        mm.revert();
       };
     },
     { scope: sectionRef },

@@ -45,9 +45,9 @@ const footerColumns: FooterColumnData[] = [
     title: "Company",
     links: [
       { label: "About Us", href: "/about" },
-      { label: "Blogs and Insights", href: "/" },
-      { label: "Career", href: "/" },
-      { label: "Contact", href: "/" },
+      { label: "Blogs and Insights", href: "/blog" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -55,7 +55,7 @@ const footerColumns: FooterColumnData[] = [
     links: [
       { label: "ROI Calculator", href: "/calculation" },
       { label: "Appetite Checker", href: "/product/intelligence#appetite" },
-      { label: "2026 Carrier API Index", href: "/" },
+      { label: "2026 Carrier API Index", href: "/integration#integration" },
     ],
   },
 ];
@@ -67,9 +67,9 @@ const standaloneLinks: FooterLinkData[] = [
 ];
 
 const legalLinks: LegalLink[] = [
-  { label: "Terms of Use", href: "/" },
-  { label: "Privacy", href: "/" },
-  { label: "Security", href: "/" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Security", href: "/security" },
 ];
 
 const socialLinks = [

@@ -50,7 +50,10 @@ function getHeaderTheme(pathname: string): HeaderTheme {
   if (
     pathname.startsWith("/solutions") ||
     pathname.startsWith("/pricing") ||
-    pathname.startsWith("/calculation")
+    pathname.startsWith("/calculation") ||
+    pathname.startsWith("/terms") ||
+    pathname.startsWith("/privacy") ||
+    pathname.startsWith("/security")
   ) {
     return "light";
   }
