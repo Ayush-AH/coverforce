@@ -4,11 +4,13 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import LenisScroll from "@/components/common/LenisScroll";
 import HomePageLoader from "@/components/home/HomePageLoader";
+import RequestDemoModal from "@/components/request-demo/RequestDemoModal";
 import {
   HomeIntroProvider,
   isPreNavIntroPhase,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
+import { RequestDemoProvider } from "@/contexts/RequestDemoContext";
 import { scrollToHashWhenReady, scrollToTop } from "@/lib/scrollToTop";
 import {
   getPageTransitionBg,
@@ -99,9 +101,12 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
 
   return (
     <LenisScroll>
-      <HomeIntroProvider enabled={isHome}>
-        <SiteLayoutInner>{children}</SiteLayoutInner>
-      </HomeIntroProvider>
+      <RequestDemoProvider>
+        <HomeIntroProvider enabled={isHome}>
+          <SiteLayoutInner>{children}</SiteLayoutInner>
+          <RequestDemoModal />
+        </HomeIntroProvider>
+      </RequestDemoProvider>
     </LenisScroll>
   );
 }

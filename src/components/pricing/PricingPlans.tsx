@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RiCheckLine } from "@remixicon/react";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import RequestDemoCta from "@/components/request-demo/RequestDemoCta";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -175,7 +176,8 @@ function PricingCard({
         ))}
       </ul>
 
-      <Button
+      <RequestDemoCta
+        label={plan.cta.label}
         href={plan.cta.href}
         variant="primary"
         surface="on-dark"
@@ -185,9 +187,7 @@ function PricingCard({
             ? "lg:bg-[#121C49] lg:text-white lg:group-hover/pricing:bg-white lg:group-hover/pricing:text-[#2E2E2E]"
             : ""
         }`}
-      >
-        {plan.cta.label}
-      </Button>
+      />
     </article>
   );
 }

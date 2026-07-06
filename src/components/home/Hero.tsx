@@ -3,6 +3,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import Container from "../common/Container";
 import { getSideBorderStyle } from "../common/containerStyles";
 import SectionRadialGlow from "../common/SectionRadialGlow";
@@ -525,9 +526,9 @@ const Hero = () => {
                 introUiLocked ? "pointer-events-none" : ""
               }`}
             >
-              <Button href="/" balanced surface="on-dark" className="w-full sm:w-auto">
+              <RequestDemoButton balanced surface="on-dark" className="w-full sm:w-auto">
                 Request Demo
-              </Button>
+              </RequestDemoButton>
               <Button
                 href="/"
                 balanced

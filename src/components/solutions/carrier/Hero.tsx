@@ -19,8 +19,8 @@ const Hero = () => (
     feature={{ ...heroFeature, statColor: "#7CB518" }}
     featureHeaderTitle={operatingSystemTitle}
     featureHeaderDescription={operatingSystemDescription}
-    featureHeaderCtaHref="/solutions/carrier"
     featureHeaderCtaLabel="Request a demo"
+    featureHeaderCtaVariant="request-demo"
     secondaryButtonHref="#workflow"
     secondaryButtonLabel="How Program Works"
     rightCard={HeroMock ? <HeroMock /> : null}

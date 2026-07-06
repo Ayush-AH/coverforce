@@ -5,7 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
-import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -159,9 +159,9 @@ const RealWorkflow = () => {
                 AI replaces manual insurance workflows with faster, accurate
                 submission processing.
               </p>
-              <Button href="/" variant="primary">
+              <RequestDemoButton variant="primary">
                 Request Demo
-              </Button>
+              </RequestDemoButton>
             </div>
 
             <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">

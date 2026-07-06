@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
 import OperatingAiMock from "@/components/solutions/brokers/OperatingAiMock";
@@ -27,6 +28,7 @@ export type OperatingSystemConfig = {
   sectionDescription: string;
   ctaHref?: string;
   ctaLabel?: string;
+  ctaVariant?: "link" | "request-demo";
   statColor?: string;
   showHeader?: boolean;
   rows: OperatingRow[];
@@ -43,6 +45,7 @@ export default function OperatingSystemSection({
   sectionDescription,
   ctaHref = "/contact",
   ctaLabel = "Start a quote",
+  ctaVariant = "link",
   statColor = "#33259F",
   showHeader = true,
   rows,
@@ -119,9 +122,11 @@ export default function OperatingSystemSection({
                 >
                   <span data-split>{sectionTitle}</span>
                 </h2>
-                <Button href={ctaHref}>
-                  {ctaLabel}
-                </Button>
+                {ctaVariant === "request-demo" ? (
+                  <RequestDemoButton>{ctaLabel}</RequestDemoButton>
+                ) : (
+                  <Button href={ctaHref}>{ctaLabel}</Button>
+                )}
               </div>
 
               <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">

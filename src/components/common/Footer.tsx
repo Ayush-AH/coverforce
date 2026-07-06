@@ -3,6 +3,7 @@
 import { type ReactNode } from "react";
 import Container from "./Container";
 import Button from "./Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -233,9 +234,9 @@ const Footer = () => {
                 </h2>
 
                 <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
-                  <Button href="/" balanced surface="on-dark">
+                  <RequestDemoButton balanced surface="on-dark">
                     Request demo
-                  </Button>
+                  </RequestDemoButton>
                   <Button href="/contact" balanced variant="secondary" surface="on-dark">
                     Book a call
                   </Button>

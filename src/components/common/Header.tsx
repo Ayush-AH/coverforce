@@ -4,6 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProp
 import gsap from "gsap";
 import Container from "./Container";
 import Button from "./Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import MegaMenu, {
   CLIP_CLOSE_MS,
   CLIP_DURATION_MS,
@@ -607,9 +608,9 @@ const Header = () => {
               </div>
 
               <div className="relative z-10 hidden items-center lg:flex">
-                <Button href="/" surface={theme === "dark" ? "on-dark" : "default"}>
+                <RequestDemoButton surface={theme === "dark" ? "on-dark" : "default"}>
                   Request demo
-                </Button>
+                </RequestDemoButton>
               </div>
             </div>
           </Container>
@@ -707,9 +708,9 @@ const Header = () => {
                   >
                     <div className="border-t border-[#E8ECF0] px-6 py-5">
                       <div className="flex items-center gap-3">
-                        <Button href="/" className="flex-1 justify-center">
+                        <RequestDemoButton className="flex-1 justify-center">
                           Request demo
-                        </Button>
+                        </RequestDemoButton>
                         <Button href="/" variant="secondary" className="flex-1 justify-center">
                           Login
                         </Button>

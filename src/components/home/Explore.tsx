@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import Container from "../common/Container";
 import SectionRadialGlow from "../common/SectionRadialGlow";
 import { SplitText } from "@/lib/SplitText";
@@ -158,9 +159,9 @@ const Explore = () => {
             ref={buttonsRef}
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
           >
-            <Button href="/" balanced surface="on-dark">
+            <RequestDemoButton balanced surface="on-dark">
               Request demo
-            </Button>
+            </RequestDemoButton>
             <Button href="/" balanced variant="secondary" surface="on-dark">
               Book a call
             </Button>

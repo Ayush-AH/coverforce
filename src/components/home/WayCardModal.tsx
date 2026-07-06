@@ -10,7 +10,8 @@ import {
   type CardBackground,
 } from "@/data/wayCardStyles";
 import { WAY_MODAL_CLOSE_TOTAL_MS, prefersReducedMotion } from "@/lib/wayModalMotion";
-import Button from "@/components/common/Button";
+import { lockPageScroll } from "@/lib/scrollLock";
+import RequestDemoCta from "@/components/request-demo/RequestDemoCta";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import dynamic from "next/dynamic";
 
@@ -134,8 +135,7 @@ export default function WayCardModal({
   useEffect(() => {
     if (!visible) return;
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlockScroll = lockPageScroll();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleClose();
@@ -143,7 +143,7 @@ export default function WayCardModal({
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockScroll();
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [visible, handleClose]);
@@ -215,14 +215,18 @@ export default function WayCardModal({
                     >
                       {stored.content.title}
                     </h2>
-                    <div className="mt-6 h-10">
-                      <Button
+                    <div className="mt-6 flex min-h-10 flex-wrap items-center gap-3">
+                      <RequestDemoCta
+                        label={stored.content.primaryCta.label}
                         href={stored.content.primaryCta.href}
                         className="!border-transparent !text-white"
                         style={{ background: cardGradient }}
-                      >
-                        {stored.content.primaryCta.label}
-                      </Button>
+                      />
+                      <RequestDemoCta
+                        label={stored.content.secondaryCta.label}
+                        href={stored.content.secondaryCta.href}
+                        variant="secondary"
+                      />
                     </div>
                   </div>
                 </div>

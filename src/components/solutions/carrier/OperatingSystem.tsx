@@ -44,8 +44,8 @@ export default function OperatingSystem() {
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
       sectionDescription={operatingSystemDescription}
-      ctaHref="/solutions/carrier"
       ctaLabel="Request a demo"
+      ctaVariant="request-demo"
       statColor="#7CB518"
       showHeader={true}
       rows={operatingRows}

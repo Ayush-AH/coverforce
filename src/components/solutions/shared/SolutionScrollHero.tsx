@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
 import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
@@ -43,6 +44,7 @@ type SolutionScrollHeroProps = {
   featureHeaderDescription?: string;
   featureHeaderCtaHref?: string;
   featureHeaderCtaLabel?: string;
+  featureHeaderCtaVariant?: "link" | "request-demo";
   listTag?: string;
   listHeading?: string;
   listPoints?: readonly SolutionListPoint[];
@@ -74,6 +76,7 @@ export default function SolutionScrollHero({
   featureHeaderDescription,
   featureHeaderCtaHref,
   featureHeaderCtaLabel,
+  featureHeaderCtaVariant = "link",
   listTag,
   listHeading,
   listPoints,
@@ -213,10 +216,15 @@ export default function SolutionScrollHero({
                         >
                           <span data-split>{featureHeaderTitle}</span>
                         </h2>
-                        {featureHeaderCtaHref && featureHeaderCtaLabel ? (
-                          <Button href={featureHeaderCtaHref}>
-                            {featureHeaderCtaLabel}
-                          </Button>
+                        {featureHeaderCtaLabel &&
+                        (featureHeaderCtaVariant === "request-demo" || featureHeaderCtaHref) ? (
+                          featureHeaderCtaVariant === "request-demo" ? (
+                            <RequestDemoButton>{featureHeaderCtaLabel}</RequestDemoButton>
+                          ) : (
+                            <Button href={featureHeaderCtaHref!}>
+                              {featureHeaderCtaLabel}
+                            </Button>
+                          )
                         ) : null}
                       </div>
                       {featureHeaderDescription ? (
