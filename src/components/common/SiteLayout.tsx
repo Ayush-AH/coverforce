@@ -5,12 +5,14 @@ import Footer from "@/components/common/Footer";
 import LenisScroll from "@/components/common/LenisScroll";
 import HomePageLoader from "@/components/home/HomePageLoader";
 import RequestDemoModal from "@/components/request-demo/RequestDemoModal";
+import VideoModal from "@/components/common/VideoModal";
 import {
   HomeIntroProvider,
   isPreNavIntroPhase,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
 import { RequestDemoProvider } from "@/contexts/RequestDemoContext";
+import { VideoModalProvider } from "@/contexts/VideoModalContext";
 import { scrollToHashWhenReady, scrollToTop } from "@/lib/scrollToTop";
 import {
   getPageTransitionBg,
@@ -101,12 +103,15 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
 
   return (
     <LenisScroll>
-      <RequestDemoProvider>
-        <HomeIntroProvider enabled={isHome}>
-          <SiteLayoutInner>{children}</SiteLayoutInner>
-          <RequestDemoModal />
-        </HomeIntroProvider>
-      </RequestDemoProvider>
+      <VideoModalProvider>
+        <RequestDemoProvider>
+          <HomeIntroProvider enabled={isHome}>
+            <SiteLayoutInner>{children}</SiteLayoutInner>
+            <RequestDemoModal />
+            <VideoModal />
+          </HomeIntroProvider>
+        </RequestDemoProvider>
+      </VideoModalProvider>
     </LenisScroll>
   );
 }

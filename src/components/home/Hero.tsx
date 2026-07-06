@@ -2,8 +2,8 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
-import Button from "@/components/common/Button";
 import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
+import WatchDemoButton from "@/components/common/WatchDemoButton";
 import Container from "../common/Container";
 import { getSideBorderStyle } from "../common/containerStyles";
 import SectionRadialGlow from "../common/SectionRadialGlow";
@@ -529,15 +529,9 @@ const Hero = () => {
               <RequestDemoButton balanced surface="on-dark" className="w-full sm:w-auto">
                 Request Demo
               </RequestDemoButton>
-              <Button
-                href="/"
-                balanced
-                variant="secondary"
-                surface="on-dark"
-                className="w-full sm:w-auto"
-              >
+              <WatchDemoButton balanced variant="secondary" surface="on-dark" className="w-full sm:w-auto">
                 Watch Demo
-              </Button>
+              </WatchDemoButton>
             </div>
           </div>
           {/* ── Stats — below the fold ── */}
