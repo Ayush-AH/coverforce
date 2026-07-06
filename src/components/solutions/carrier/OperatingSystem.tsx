@@ -1,9 +1,7 @@
 "use client";
 
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
-import AiExtractedDetailsMock from "@/components/solutions/carrier/AiExtractedDetailsMock";
-import ConnectedSourcesMock from "@/components/solutions/carrier/ConnectedSourcesMock";
-import RecentActivityMock from "@/components/solutions/carrier/RecentActivityMock";
+import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
 export const operatingRows = [
   {
@@ -13,7 +11,10 @@ export const operatingRows = [
       "One API connects your products to wholesalers, networks, and agencies nationwide — no separate partnerships required.",
     stat: "15K+",
     statLabelLines: ["Agencies", "Accessible"] as [string, string],
-    Mock: AiExtractedDetailsMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/carriers1.svg",
+      "One Integration, 15,000+ Agencies",
+    ),
   },
   {
     id: "ai-validated",
@@ -22,7 +23,10 @@ export const operatingRows = [
       "AI validates every submission for completeness, extracts documents, pre-answers questions, and maps industry codes to your classification system.",
     stat: "0%",
     statLabelLines: ["API Error", "Rate"] as [string, string],
-    Mock: RecentActivityMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/carriers2.svg",
+      "AI-Validated, Error-Free Submissions",
+    ),
   },
   {
     id: "connectivity",
@@ -31,7 +35,10 @@ export const operatingRows = [
       "CoverForce handles the integration heavy lifting, helping your team go from contract to production in 30 days with less than 10 hours of carrier engineering time.",
     stat: "1",
     statLabelLines: ["Unified API", "For Programs"] as [string, string],
-    Mock: ConnectedSourcesMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/carriers3.svg",
+      "Carrier Connectivity Without the Long Build",
+    ),
   },
 ];
 
@@ -46,8 +53,7 @@ export default function OperatingSystem() {
       sectionDescription={operatingSystemDescription}
       ctaLabel="Request a demo"
       ctaVariant="request-demo"
-      statColor="#7CB518"
-      showHeader={true}
+      showHeader={false}
       rows={operatingRows}
     />
   );

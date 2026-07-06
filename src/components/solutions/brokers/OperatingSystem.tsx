@@ -1,6 +1,7 @@
 "use client";
 
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
+import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
 export const operatingRows = [
   {
@@ -10,6 +11,10 @@ export const operatingRows = [
       "One workflow for every producer — 40+ carrier integrations, dynamic carrier questions, no portal logins, no rekeying, and no office-by-office workflow gaps.",
     stat: "40+",
     statLabelLines: ["Carriers,", "One Workflow"] as [string, string],
+    Mock: createSolutionStepMock(
+      "/images/solution/broker1.svg",
+      "One Platform for Every Carrier, Every Office",
+    ),
   },
   {
     id: "ai",
@@ -18,6 +23,10 @@ export const operatingRows = [
       "CoverForce gives every producer your best producers' carrier intelligence — with AI extraction, appetite matching, UW question assistance, and on-demand COI generation in one workflow.",
     stat: "95%",
     statLabelLines: ["Extraction", "Accuracy"] as [string, string],
+    Mock: createSolutionStepMock(
+      "/images/solution/broker2.svg",
+      "AI That Raises the Floor for Every Producer",
+    ),
   },
   {
     id: "visibility",
@@ -26,6 +35,10 @@ export const operatingRows = [
       "Real-time dashboards show submission volume, quote rates, bind rates, and premium by office, producer, carrier, and LOB — so you know what's moving, where deals stall, and which carriers perform.",
     stat: "100%",
     statLabelLines: ["Pipeline", "Visibility"] as [string, string],
+    Mock: createSolutionStepMock(
+      "/images/solution/broker3.svg",
+      "See Everything Across the Firm",
+    ),
   },
 ];
 

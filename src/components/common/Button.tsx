@@ -21,12 +21,16 @@ type BaseButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
 };
 
-type ButtonAsLinkProps = BaseButtonProps &
+export type ButtonStyleProps = Omit<BaseButtonProps, "children" | "onClick"> & {
+  style?: React.CSSProperties;
+};
+
+export type ButtonAsLinkProps = BaseButtonProps &
   Omit<ComponentProps<typeof Link>, "href" | "className" | "children" | "onClick"> & {
     href: string;
   };
 
-type ButtonAsButtonProps = BaseButtonProps &
+export type ButtonAsButtonProps = BaseButtonProps &
   Omit<ComponentProps<"button">, "className" | "children" | "onClick"> & {
     href?: never;
   };

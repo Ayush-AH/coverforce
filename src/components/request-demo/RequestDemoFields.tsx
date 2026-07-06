@@ -22,7 +22,7 @@ const errorClass = "mt-1.5 font-sans text-xs text-[#D14343]";
 type FieldProps = {
   label: string;
   required?: boolean;
-  error?: FieldError;
+  error?: FieldError | { message?: string };
   children: React.ReactNode;
 };
 
@@ -158,7 +158,7 @@ export function YesNoField({ register, name, label, error }: YesNoFieldProps) {
 
 type LobCheckboxFieldProps = {
   register: UseFormRegister<RequestDemoFormValues>;
-  error?: FieldError;
+  error?: FieldError | { message?: string };
   options: readonly string[];
 };
 

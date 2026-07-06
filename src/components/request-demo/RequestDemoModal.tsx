@@ -361,7 +361,7 @@ export default function RequestDemoModal() {
                         <LobCheckboxField
                           register={register}
                           options={LOB_OPTIONS}
-                          error={errors.lobs as { message?: string } | undefined}
+                          error={errors.lobs}
                         />
                         <TextInputField
                           register={register}

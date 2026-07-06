@@ -43,6 +43,24 @@ const navItems: NavItem[] = [
   { label: "Company", href: "/", hasDropdown: true },
 ];
 
+const NAV_PATH_PREFIXES: Record<string, string[]> = {
+  Product: ["/product"],
+  Solutions: ["/solutions"],
+  Developers: ["/developers"],
+  Integration: ["/integration"],
+  Pricing: ["/pricing", "/calculation"],
+  Company: ["/about", "/careers", "/contact", "/blog", "/terms", "/privacy", "/security"],
+};
+
+function isNavItemCurrentPage(label: string, pathname: string) {
+  const prefixes = NAV_PATH_PREFIXES[label];
+  if (!prefixes) return false;
+
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 const HOVER_CLOSE_DELAY = 120;
 
 type HeaderTheme = "dark" | "light";
@@ -95,7 +113,8 @@ function HeaderNavLink({
   label,
   href,
   hasDropdown,
-  isActive,
+  isMenuOpen,
+  isCurrentPage,
   linkActiveClass,
   linkIdleClass,
   onNavigate,
@@ -103,12 +122,14 @@ function HeaderNavLink({
   label: string;
   href: string;
   hasDropdown: boolean;
-  isActive: boolean;
+  isMenuOpen: boolean;
+  isCurrentPage: boolean;
   linkActiveClass: string;
   linkIdleClass: string;
   onNavigate: (href: string) => void;
 }) {
   const [hovered, setHovered] = useState(false);
+  const isHighlighted = isMenuOpen || isCurrentPage;
 
   return (
     <Link
@@ -120,22 +141,31 @@ function HeaderNavLink({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={`group flex items-center gap-1 font-heading text-[0.9375rem] font-regular leading-none transition-colors ${
-        isActive ? linkActiveClass : linkIdleClass
+        isHighlighted ? linkActiveClass : linkIdleClass
       }`}
-      aria-expanded={hasDropdown ? isActive : undefined}
+      aria-current={isCurrentPage ? "page" : undefined}
+      aria-expanded={hasDropdown ? isMenuOpen : undefined}
       aria-haspopup={hasDropdown ? "true" : undefined}
     >
-      <AnimatedLinkText
-        hovered={hovered}
-        textClip="h-[0.9375rem]"
-        textLine="h-[0.9375rem] leading-none"
+      <span
+        className={`relative inline-flex flex-col items-stretch ${
+          isCurrentPage
+            ? "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-full after:bg-current after:content-['']"
+            : ""
+        }`}
       >
-        {label}
-      </AnimatedLinkText>
+        <AnimatedLinkText
+          hovered={hovered}
+          textClip="h-[0.9375rem]"
+          textLine="h-[0.9375rem] leading-none"
+        >
+          {label}
+        </AnimatedLinkText>
+      </span>
       {hasDropdown ? (
         <RiArrowDownSLine
           className={`size-4 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-            isActive ? "rotate-180 opacity-100" : "opacity-80 group-hover:rotate-180"
+            isMenuOpen ? "rotate-180 opacity-100" : "opacity-80 group-hover:rotate-180"
           }`}
           aria-hidden
         />
@@ -180,15 +210,22 @@ function MobileMenuReveal({
 function MobileMenuLinkRow({
   label,
   onClick,
+  isCurrentPage,
 }: {
   label: string;
   onClick: () => void;
+  isCurrentPage?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between border-b border-[#E8ECF0] px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
+      aria-current={isCurrentPage ? "page" : undefined}
+      className={`flex w-full items-center justify-between border-b px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none transition-colors hover:text-[#151F4D] ${
+        isCurrentPage
+          ? "border-[#151F4D] text-[#151F4D] underline decoration-[#151F4D] decoration-2 underline-offset-[0.65rem]"
+          : "border-[#E8ECF0] text-[#3D3D3D]"
+      }`}
     >
       <span>{label}</span>
       <RiArrowRightLine className="size-5" aria-hidden />
@@ -578,7 +615,8 @@ const Header = () => {
                 <div className="relative flex h-full items-center">
                   <ul className="pointer-events-auto flex items-center gap-6 xl:gap-8">
                     {navItems.map(({ label, href, hasDropdown }) => {
-                      const isActive = activeMenu === label;
+                      const isMenuOpen = activeMenu === label;
+                      const isCurrentPage = isNavItemCurrentPage(label, pathname);
 
                       return (
                         <li
@@ -595,7 +633,8 @@ const Header = () => {
                             label={label}
                             href={href}
                             hasDropdown={hasDropdown}
-                            isActive={isActive}
+                            isMenuOpen={isMenuOpen}
+                            isCurrentPage={isCurrentPage}
                             linkActiveClass={styles.linkActive}
                             linkIdleClass={styles.linkIdle}
                             onNavigate={handleNavigate}
@@ -686,6 +725,7 @@ const Header = () => {
                         >
                           <MobileMenuLinkRow
                             label={label}
+                            isCurrentPage={isNavItemCurrentPage(label, pathname)}
                             onClick={() => {
                               if (hasDropdown && MEGA_MENUS[label]) {
                                 openMobileSubMenu(label);

@@ -16,7 +16,7 @@ const Hero = () => (
     eyebrow="Carrier and MGAs"
     title="Be present at the moment agents quote"
     description="Brokers are moving to multi-carrier platforms. CoverForce puts your products in the quoting flow, reaching 15,000+ agencies through one integration — live in 30 days."
-    feature={{ ...heroFeature, statColor: "#7CB518" }}
+    feature={heroFeature}
     featureHeaderTitle={operatingSystemTitle}
     featureHeaderDescription={operatingSystemDescription}
     featureHeaderCtaLabel="Request a demo"
