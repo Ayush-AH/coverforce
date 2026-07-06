@@ -1,10 +1,10 @@
 "use client";
 
-import type { ComponentProps, MouseEventHandler } from "react";
-import Button from "@/components/common/Button";
+import type { MouseEvent, MouseEventHandler } from "react";
+import Button, { type ButtonAsButtonProps } from "@/components/common/Button";
 import { useVideoModal } from "@/contexts/VideoModalContext";
 
-type WatchDemoButtonProps = Omit<ComponentProps<typeof Button>, "href" | "onClick"> & {
+type WatchDemoButtonProps = Omit<ButtonAsButtonProps, "onClick"> & {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   videoSrc?: string;
   videoTitle?: string;
@@ -22,7 +22,7 @@ const WatchDemoButton = ({
     <Button
       {...props}
       onClick={(event) => {
-        onClick?.(event);
+        onClick?.(event as MouseEvent<HTMLButtonElement>);
         if (!event.defaultPrevented) {
           open({
             src: videoSrc,
