@@ -108,24 +108,52 @@ const RealWorkflow = () => {
 
   useGSAP(
     () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const cards = gsap.utils.toArray<HTMLElement>("[data-workflow-card]");
+      const grid = gridRef.current;
+      if (!grid) return;
+
+      const cards = gsap.utils.toArray<HTMLElement>("[data-workflow-card]", grid);
       if (!cards.length) return;
 
-      gsap.set(cards, { rotateY: 90, opacity: 0, transformOrigin: "left center" });
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(cards, { rotateY: 0, opacity: 1 });
+        return;
+      }
 
-      ScrollTrigger.batch(cards, {
-        start: "top 85%",
-        onEnter: (batch) =>
-          gsap.to(batch, {
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { rotateY: 90, opacity: 0, transformOrigin: "left center" },
+          {
             rotateY: 0,
             opacity: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.12,
-            overwrite: true,
-          }),
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 92%",
+              end: "top 68%",
+              scrub: 0.5,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
       });
+
+      const lenis = window.lenis;
+      let scrollPending = false;
+      const onLenisScroll = () => {
+        if (scrollPending) return;
+        scrollPending = true;
+        requestAnimationFrame(() => {
+          ScrollTrigger.update();
+          scrollPending = false;
+        });
+      };
+      lenis?.on("scroll", onLenisScroll);
+      ScrollTrigger.refresh();
+
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+      };
     },
     { scope: gridRef },
   );
