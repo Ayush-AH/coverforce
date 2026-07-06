@@ -5,7 +5,6 @@ import Container from "./Container";
 import Button from "./Button";
 import Link from "next/link";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
 
 type FooterLinkData = {
   label: string;
@@ -72,24 +71,39 @@ const legalLinks: LegalLink[] = [
   { label: "Security", href: "/security" },
 ];
 
-const socialLinks = [
-  { label: "YouTube", href: "#", icon: YoutubeIcon },
-  { label: "X", href: siteConfig.socials.twitter || "#", icon: XIcon },
-  { label: "LinkedIn", href: siteConfig.socials.linkedin || "#", icon: LinkedinIcon },
+const footerContactLinks = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/coverforceinc",
+    icon: LinkedinIcon,
+    external: true,
+  },
+  {
+    label: "Email CoverForce",
+    href: "mailto:sales@coverforce.com?subject=Coverforce%20Website%20Inquiry",
+    icon: EmailIcon,
+    external: false,
+  },
+  {
+    label: "Call CoverForce",
+    href: "tel:+1(917)9056508",
+    icon: PhoneIcon,
+    external: false,
+  },
 ] as const;
 
-function YoutubeIcon({ className }: { className?: string }) {
+function EmailIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
-      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.6 15.5V8.5l6.3 3.5-6.3 3.5Z" />
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
     </svg>
   );
 }
 
-function XIcon({ className }: { className?: string }) {
+function PhoneIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
     </svg>
   );
 }
@@ -249,12 +263,13 @@ const Footer = () => {
             </div>
 
             <div className="mt-10 flex justify-end gap-5 md:mt-12">
-              {socialLinks.map(({ label, href, icon: Icon }) => (
+              {footerContactLinks.map(({ label, href, icon: Icon, external }) => (
                 <a
                   key={label}
                   href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...(external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   aria-label={label}
                   className="text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
                 >
@@ -284,7 +299,7 @@ const Footer = () => {
             </button>
 
             <p className="text-center font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] md:text-right">
-              © {new Date().getFullYear()} — Copyright CoverForce
+              CoverForce, Inc. All Rights Reserved, {new Date().getFullYear()}.
             </p>
           </div>
 

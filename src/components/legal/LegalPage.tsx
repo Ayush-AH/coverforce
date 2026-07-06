@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Container from "@/components/common/Container";
-import EyebrowPill from "@/components/common/EyebrowPill";
 
 export type LegalSection = {
   title: string;
@@ -26,7 +25,7 @@ export type LegalPageProps = {
 
 const headingClass = "text-[#3D3D3D]";
 const bodyClass =
-  "font-sans text-sm font-regular leading-[1.7] text-[#797979] md:text-base";
+  `font-sans text-sm font-regular leading-[1.7] md:text-base ${headingClass}`;
 const linkClass = "text-[#3D3D3D] underline underline-offset-2";
 
 const LegalPage = ({
@@ -44,9 +43,8 @@ const LegalPage = ({
   return (
     <section className="bg-white text-[#3D3D3D]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="mx-auto max-w-3xl py-20 md:py-24 lg:py-28">
+        <div className="mx-auto max-w-4xl py-20 md:py-24 lg:py-28">
           <div className="space-y-5">
-            <EyebrowPill surface="light">{eyebrow}</EyebrowPill>
             <h1
               className={`text-3xl font-heading font-normal leading-[1.12] tracking-tight md:text-4xl lg:text-[2.5rem] lg:leading-[1.1] ${headingClass}`}
             >
