@@ -623,13 +623,10 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
             <span className="text-xs font-heading font-medium leading-tight text-[#3C3B3B]">ACORD 25</span>
           </div>
 
-          <AnimatedAcordInfoSection
-            liveStats={liveStats}
-            coverageStatClassName={coverageStatClassName}
-          />
-
-          <div className="flex items-center justify-between px-4 pt-2.5 pb-1">
-            <p className="text-[0.60rem] font-heading font-medium text-[#3C3B3B]">Limits Summary</p>
+          <div className="flex items-center justify-between px-4 pt-3 pb-1">
+            <p className="text-[0.60rem] font-heading font-medium text-[#3C3B3B]">
+              Certificate of liability insurance
+            </p>
             <span className="text-[9px] font-sans text-[#4683E5]">View All</span>
           </div>
 
@@ -650,16 +647,10 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
               </span>
               <div>
                 <p className="text-[0.55rem] font-sans uppercase leading-tight tracking-wide text-[#4683E5]">
-                  Verified
-                </p>
-                <p className="truncate text-[0.60rem] font-heading font-normal leading-tight text-[#9CA3AF]">
-                  This certificate is valid.
+                  Auto-Verified
                 </p>
               </div>
             </div>
-            <span className="truncate text-[0.60rem] font-heading font-normal leading-tight text-[#9CA3AF]">
-              ACORD 25 Standard
-            </span>
           </div>
         </div>
       </div>
