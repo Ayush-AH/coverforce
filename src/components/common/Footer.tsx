@@ -135,6 +135,9 @@ function FooterHoverBullet() {
   );
 }
 
+const footerLinkColor = "text-[#797979]";
+const footerLinkHoverColor = "hover:text-[#3D3D3D]";
+
 const footerLinkHover =
   `transition-[padding-left,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:pl-3.5`;
 
@@ -148,7 +151,7 @@ function FooterSubLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-heading text-sm font-medium leading-snug text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} ${className}`}
+      className={`group relative inline-flex pl-0 font-heading text-sm font-medium leading-snug ${footerLinkColor} ${footerLinkHoverColor} ${footerLinkHover} ${className}`}
     >
       <FooterHoverBullet />
       {children}
@@ -156,13 +159,20 @@ function FooterSubLink({ href, children, className = "" }: FooterLinkProps) {
   );
 }
 
-function FooterTopLink({ href, children, className = "" }: FooterLinkProps) {
+function FooterTopLink({
+  href,
+  children,
+  className = "",
+  showBullet = true,
+}: FooterLinkProps & { showBullet?: boolean }) {
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#3D3D3D] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#151F4D] ${className}`}
+      className={`group inline-flex items-center font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] ${footerLinkColor} transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${footerLinkHoverColor} ${showBullet ? "gap-2" : ""} ${className}`}
     >
-      <FooterBullet className="transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#151F4D]" />
+      {showBullet ? (
+        <FooterBullet className="transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:bg-[#151F4D]" />
+      ) : null}
       {children}
     </Link>
   );
@@ -172,7 +182,7 @@ function FooterLegalLink({ href, children, className = "" }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} ${className}`}
+      className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] ${footerLinkColor} ${footerLinkHoverColor} ${footerLinkHover} ${className}`}
     >
       <FooterHoverBullet />
       {children}
@@ -186,7 +196,6 @@ function FooterColumn({ title, links }: FooterColumnProps) {
   return (
     <div>
       <h3 className="mb-4 flex items-center gap-2 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#3D3D3D]">
-        <FooterBullet />
         {title}
       </h3>
       <ul className="space-y-2.5">
@@ -256,7 +265,9 @@ const Footer = () => {
                 <ul className="space-y-4">
                   {standaloneLinks.map(({ label, href }) => (
                     <li key={label}>
-                      <FooterTopLink href={href}>{label}</FooterTopLink>
+                      <FooterTopLink href={href} showBullet={false}>
+                        {label}
+                      </FooterTopLink>
                     </li>
                   ))}
                 </ul>
@@ -272,7 +283,7 @@ const Footer = () => {
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
                   aria-label={label}
-                  className="text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
+                  className={`${footerLinkColor} transition-colors ${footerLinkHoverColor}`}
                 >
                   <Icon className="size-4" />
                 </a>
@@ -293,7 +304,7 @@ const Footer = () => {
             <button
               type="button"
               onClick={scrollToTop}
-              className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D] hover:text-[#151F4D] ${footerLinkHover} md:absolute md:left-1/2 md:-translate-x-1/2`}
+              className={`group relative inline-flex pl-0 font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] ${footerLinkColor} ${footerLinkHoverColor} ${footerLinkHover} md:absolute md:left-1/2 md:-translate-x-1/2`}
             >
               <FooterHoverBullet />
               Back to Top

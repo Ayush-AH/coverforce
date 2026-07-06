@@ -4,12 +4,19 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import dynamic from "next/dynamic";
 import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
 import { SplitText } from "@/lib/SplitText";
 
-gsap.registerPlugin(ScrollTrigger);
+const WavePlaneCanvas = dynamic(
+  () => import("@/components/product/Waveplane3d").then((m) => ({ default: m.WavePlaneCanvas })),
+  { ssr: false },
+);
 
+const INTELLIGENCE_COLOURS = ["#0045FF", "#008EFF", "#6BCAFF", "#C3EBFF"];
+
+gsap.registerPlugin(ScrollTrigger);
 const REVEAL_EASE = "power3.out";
 
 const CommingSoon = () => {
@@ -133,17 +140,25 @@ const CommingSoon = () => {
     <section
       id="coming-soon"
       ref={sectionRef}
-      className="relative overflow-hidden text-white"
+      className="relative overflow-hidden bg-[#151f4d] text-white"
     >
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-[1]"
         style={{
-          backgroundImage:
-            "linear-gradient(135deg, #100B3C 0%, #112456 18%, #154BC1 36%, #5f6ad8 54%, #9a7ef0 70%, #B87AFF 82%, #D4C4FF 94%, #DACAFF 100%)",
+          background:
+            "radial-gradient(ellipse 80% 70% at 50% 45%, rgba(49, 78, 155, 0.55) 0%, rgba(18, 28, 73, 0.92) 52%, #121C49 100%)",
         }}
         aria-hidden
       />
-      <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative">
+
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 z-[1] h-[60%] w-full"
+        aria-hidden
+      >
+        <WavePlaneCanvas className="h-full w-full" colors={INTELLIGENCE_COLOURS} />
+      </div>
+
+      <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative z-10">
         <div
           ref={contentRef}
           className="relative z-10 mx-auto flex min-h-[calc(100svh-2rem)] max-w-2xl flex-col items-center justify-center text-center will-change-transform"
