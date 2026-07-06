@@ -4,6 +4,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import HeroReveal from "@/components/common/HeroReveal";
 import ApiCodeReveal from "@/components/developers/ApiCodeReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
@@ -54,12 +55,9 @@ const Hero = () => {
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
-              <Button
-                href="/"
-                balanced
-              >
+              <RequestDemoButton balanced surface="on-dark">
                 Request API access
-              </Button>
+              </RequestDemoButton>
               <Button href="#endpoints" balanced variant="secondary" surface="on-dark">
                 Read the docs
               </Button>
