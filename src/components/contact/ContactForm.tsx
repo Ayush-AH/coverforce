@@ -375,7 +375,13 @@ const ContactForm = () => {
                       <div className="w-6 flex items-center justify-center">
                         {(() => {
                           const ActiveFlag = Flags[formData.countryCode as keyof typeof Flags];
-                          return ActiveFlag ? <ActiveFlag className="w-5 h-auto " /> : <span>{formData.countryCode}</span>;
+                          return ActiveFlag ? (
+                            <span className="flex w-5 items-center justify-center">
+                              <ActiveFlag title={formData.countryCode} />
+                            </span>
+                          ) : (
+                            <span>{formData.countryCode}</span>
+                          );
                         })()}
                       </div>
                       <span className={`text-[10px] transition-transform duration-200 ${activeDropdown === "phone" ? "rotate-180" : ""}`}>▼</span>
@@ -394,7 +400,13 @@ const ContactForm = () => {
                                 }}
                               >
                                 <div className="w-6 flex items-center justify-center">
-                                  {Flag ? <Flag className="w-5 h-auto" /> : <span>{c.countryCode}</span>}
+                                  {Flag ? (
+                                    <span className="flex w-5 items-center justify-center">
+                                      <Flag title={c.countryCode} />
+                                    </span>
+                                  ) : (
+                                    <span>{c.countryCode}</span>
+                                  )}
                                 </div>
                                 <span className="w-12 text-white/70">{c.code}</span>
                                 <span className="truncate flex-1" title={c.country}>{c.country}</span>
