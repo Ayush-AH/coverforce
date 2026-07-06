@@ -24,6 +24,7 @@ import {
 import { MEGA_MENUS, type MegaMenuLink } from "@/data/megaMenu";
 import { HOME_INTRO_NAV_MS, useHomeIntro } from "@/contexts/HomeIntroContext";
 import { pageAnimation, setPageTransitionBg } from "@/lib/pageTransition";
+import { scrollToHashWhenReady } from "@/lib/scrollToTop";
 import { useTransitionRouter } from "next-view-transitions";
 
 type NavItem = {
@@ -204,17 +205,19 @@ function MobileMenuSubLink({
     <button
       type="button"
       onClick={() => onNavigate(link.href)}
-      className="flex w-full items-center justify-between gap-4 py-4 text-left text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
+      className={`flex w-full justify-between gap-4 py-4 text-left text-[#3D3D3D] transition-colors hover:text-[#151F4D] ${
+        link.multiline ? "items-start" : "items-center"
+      }`}
     >
-      <span className="flex min-w-0 items-center gap-3">
+      <span className={`flex min-w-0 flex-1 gap-3 ${link.multiline ? "items-start" : "items-center"}`}>
         <span className="flex size-6 shrink-0 items-center justify-center text-current">
           <Icon className="size-5" aria-hidden />
         </span>
-        <span className="min-w-0 font-heading text-[1.125rem] font-regular leading-tight text-current">
+        <span className="min-w-0 font-heading text-[1.125rem] font-regular leading-snug text-current">
           {link.label}
         </span>
       </span>
-      <RiArrowRightLine className="size-5 shrink-0 text-current" aria-hidden />
+      <RiArrowRightLine className={`size-5 shrink-0 text-current ${link.multiline ? "mt-1" : ""}`} aria-hidden />
     </button>
   );
 }
@@ -451,10 +454,21 @@ const Header = () => {
     (href: string) => {
       closeMenuImmediately();
       closeMobileMenu();
-      if (pathname === href) return;
+
+      const hashIndex = href.indexOf("#");
+      const path = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+      const hash = hashIndex >= 0 ? href.slice(hashIndex) : "";
+
+      if (pathname === path && hash) {
+        window.history.pushState(null, "", href);
+        scrollToHashWhenReady(hash);
+        return;
+      }
+
+      if (pathname === href || (pathname === path && !hash)) return;
 
       if (typeof document !== "undefined" && "startViewTransition" in document) {
-        setPageTransitionBg(href);
+        setPageTransitionBg(path || href);
         router.push(href, { onTransitionReady: pageAnimation });
         return;
       }
@@ -735,7 +749,7 @@ const Header = () => {
                               className="border-t border-[#E8ECF0] pt-4 first:border-t-0 first:pt-0"
                             >
                               <MobileMenuReveal enterKey={mobileEnterKey} delay={columnDelay}>
-                                <p className="mb-2 font-mono text-[0.75rem] font-medium uppercase tracking-[0.12em] text-[#3D3D3D]">
+                                <p className="mb-2 max-w-[12rem] font-mono text-[0.75rem] font-medium uppercase leading-snug tracking-[0.12em] text-[#3D3D3D] whitespace-normal">
                                   {column.title}
                                 </p>
                               </MobileMenuReveal>

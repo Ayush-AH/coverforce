@@ -43,7 +43,7 @@ export default function OperatingSystem() {
         </>
       }
       sectionDescription={operatingSystemDescription}
-      ctaHref="/"
+      ctaHref="/contact"
       ctaLabel="Start a quote"
       showHeader={false}
       rows={operatingRows.slice(1)}

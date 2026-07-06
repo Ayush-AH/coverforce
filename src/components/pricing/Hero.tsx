@@ -27,7 +27,7 @@ const Hero = () => {
             <Button href="#plans" balanced>
               Explore plans
             </Button>
-            <Button href="#plans" balanced variant="secondary">
+            <Button href="/contact" balanced variant="secondary">
               Talk to sales
             </Button>
           </div>

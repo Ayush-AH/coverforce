@@ -3,7 +3,6 @@
 import { type ReactNode } from "react";
 import Container from "./Container";
 import Button from "./Button";
-import EyebrowPill from "./EyebrowPill";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
@@ -55,7 +54,7 @@ const footerColumns: FooterColumnData[] = [
     title: "Tools",
     links: [
       { label: "ROI Calculator", href: "/calculation" },
-      { label: "Appetite Checker", href: "/product/intelligence" },
+      { label: "Appetite Checker", href: "/product/intelligence#appetite" },
       { label: "2026 Carrier API Index", href: "/" },
     ],
   },
@@ -213,9 +212,6 @@ const Footer = () => {
 
             <div className="relative z-10 flex min-h-[inherit] items-center px-6 pt-16 pb-12 md:px-10 md:pt-20 md:pb-16 lg:px-12 lg:pt-24 lg:pb-20">
               <div className="max-w-xl text-left lg:max-w-2xl">
-                <EyebrowPill surface="dark" className="mb-0">
-                  Explore the platform
-                </EyebrowPill>
 
                 <h2 className="mt-5 text-2xl font-heading font-regular leading-[1.12] tracking-tight text-white md:mt-6 md:text-3xl lg:text-4xl lg:leading-[1.1]">
                   One submission is all it takes. Compare multiple carriers and bind
@@ -226,7 +222,7 @@ const Footer = () => {
                   <Button href="/" balanced surface="on-dark">
                     Request demo
                   </Button>
-                  <Button href="/" balanced variant="secondary" surface="on-dark">
+                  <Button href="/contact" balanced variant="secondary" surface="on-dark">
                     Book a call
                   </Button>
                 </div>

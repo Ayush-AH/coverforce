@@ -44,7 +44,7 @@ export default function OperatingSystem() {
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
       sectionDescription={operatingSystemDescription}
-      ctaHref="/solutions/developers"
+      ctaHref="/developers#endpoints"
       ctaLabel="View API docs"
       showHeader={false}
       rows={operatingRows.slice(1)}

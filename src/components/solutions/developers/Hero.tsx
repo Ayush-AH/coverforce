@@ -20,8 +20,10 @@ const Hero = () => (
     feature={heroFeature}
     featureHeaderTitle={operatingSystemTitle}
     featureHeaderDescription={operatingSystemDescription}
-    featureHeaderCtaHref="/solutions/developers"
+    featureHeaderCtaHref="/developers#endpoints"
     featureHeaderCtaLabel="View API docs"
+    secondaryButtonHref="#workflow"
+    secondaryButtonLabel="How Program Works"
     rightCard={HeroMock ? <HeroMock /> : null}
     gradFlow={SOLUTION_GRAD_FLOW.developer}
   />

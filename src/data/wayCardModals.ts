@@ -42,7 +42,7 @@ export const WAY_CARD_MODALS: Record<string, WayCardModalContent> = {
     description:
       "Embed quoting, binding, and policy workflows into your product with sandbox-ready APIs and developer-first documentation.",
     primaryCta: { label: "Explore developer APIs", href: "/solutions/developers" },
-    secondaryCta: { label: "View API docs", href: "/" },
+    secondaryCta: { label: "View API docs", href: "/developers#endpoints" },
     features: [
       "Sandbox and production environments",
       "API keys generated in minutes",

@@ -19,8 +19,10 @@ const Hero = () => (
     feature={heroFeature}
     featureHeaderTitle={operatingSystemTitle}
     featureHeaderDescription={operatingSystemDescription}
-    featureHeaderCtaHref="/"
+    featureHeaderCtaHref="/contact"
     featureHeaderCtaLabel="Start a quote"
+    secondaryButtonHref="#workflow"
+    secondaryButtonLabel="How Program Works"
     rightCard={<OperatingPlatformMock variant="hero" />}
     gradFlow={SOLUTION_GRAD_FLOW.broker}
   />

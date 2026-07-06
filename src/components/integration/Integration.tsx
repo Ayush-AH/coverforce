@@ -414,7 +414,11 @@ const Integration = () => {
 
   return (
     <>
-    <section ref={sectionRef} className="relative overflow-hidden text-[#0a143b]">
+    <section
+      id="integration"
+      ref={sectionRef}
+      className="relative overflow-hidden text-[#0a143b]"
+    >
       <Container borderColor="#53535333" borderBottom>
        <div className="pt-16 md:pt-24">
          {/* Header */}

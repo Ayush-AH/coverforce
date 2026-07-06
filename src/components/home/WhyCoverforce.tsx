@@ -310,7 +310,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                   Insurance distribution should work like infrastructure — just
                   like Stripe for payments or Plaid for identity.
                 </p>
-                <Button href="/">
+                <Button href="/contact">
                   Start a quote
                 </Button>
               </div>

@@ -27,6 +27,7 @@ export type MegaMenuLink = {
   description?: string;
   badge?: string;
   icon: RemixiconComponentType;
+  multiline?: boolean;
 };
 
 export type MegaMenuColumn = {
@@ -188,13 +189,13 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
           },
           {
             label: "Appetite Checker",
-            href: "/product/intelligence",
+            href: "/product/intelligence#appetite",
             description: "Match risks to carrier appetite before you submit.",
             icon: RiSearchEyeLine,
           },
           {
             label: "2026 Carrier API Index",
-            href: "/",
+            href: "/integration#integration",
             description: "Explore carrier API coverage and integration depth.",
             icon: RiCodeSSlashLine,
           },
@@ -221,29 +222,6 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
     },
     columns: [
       {
-        title: "BY TYPE",
-        links: [
-          {
-            label: "Blog",
-            href: "/blog",
-            description: "Product updates, guides, and industry perspective.",
-            icon: RiArticleLine,
-          },
-          {
-            label: "Customer stories",
-            href: "/",
-            description: "See how teams run distribution on CoverForce.",
-            icon: RiUserStarLine,
-          },
-          {
-            label: "News",
-            href: "/",
-            description: "Company announcements and press coverage.",
-            icon: RiNewspaperLine,
-          },
-        ],
-      },
-      {
         title: "COMPANY",
         links: [
           {
@@ -263,6 +241,31 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
             href: "/contact",
             description: "Talk with our team about demos and partnerships.",
             icon: RiMailLine,
+          },
+          {
+            label: "Blog",
+            href: "/blog",
+            description: "Product updates, guides, and industry perspective.",
+            icon: RiArticleLine,
+          },
+        ],
+      },
+      {
+        title: "Latest Blogs",
+        links: [
+          {
+            label: "CoverForce and the Future of Insurance Distribution",
+            href: "/blog/coverforce-and-the-future-of-insurance-distribution",
+            description: "How CoverForce is transforming insurance distribution.",
+            icon: RiUserStarLine,
+            multiline: true,
+          },
+          {
+            label: "How to Use CoverForce to Automate Your Insurance Distribution",
+            href: "/blog/how-to-use-coverforce-to-automate-your-insurance-distribution",
+            description: "How to use CoverForce to automate your insurance distribution.",
+            icon: RiNewspaperLine,
+            multiline: true,
           },
         ],
       },

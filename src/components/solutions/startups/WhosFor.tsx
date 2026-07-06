@@ -120,7 +120,7 @@ const WhosFor = () => {
                 </span>
                 <span data-split> about insurance.</span>
               </h2>
-              <Button href="/solutions/startups" surface="on-dark">
+              <Button href="/contact" surface="on-dark">
                 Apply to Start Up Program
               </Button>
             </div>

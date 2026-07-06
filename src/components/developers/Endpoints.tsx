@@ -116,7 +116,7 @@ const Endpoints = () => {
     );
 
     return (
-        <section ref={sectionRef} className="bg-white text-[#0a143b]">
+        <section id="endpoints" ref={sectionRef} className="bg-white text-[#0a143b]">
             <Container borderColor={BORDER_COLOR}>
                 <div ref={headerRef} className="py-16 md:py-20 lg:py-24">
                     <h2

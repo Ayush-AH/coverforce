@@ -9,7 +9,7 @@ const src = fs.readFileSync(
   "utf8",
 );
 
-const nycMarker = `<g className="contact-nyc-marker"><circle className="contact-nyc-pulse" cx="1074.42" cy="462.26" r="11.36" fill="white" /><rect className="contact-nyc-dot" x="1063.06" y="450.902" width="22.7196" height="22.7196" rx="11.3598" fill="white" fillOpacity="0.38" /></g>`;
+const nycMarker = `<rect className="contact-office-dot" x="1063.06" y="450.902" width="22.7196" height="22.7196" rx="11.3598" fill="white" fillOpacity="0.38" />`;
 
 let jsx = src
   .replace(/^<\?xml[^>]*>\s*/i, "")

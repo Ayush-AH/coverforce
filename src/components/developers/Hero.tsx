@@ -60,7 +60,7 @@ const Hero = () => {
               >
                 Request API access
               </Button>
-              <Button href="/" balanced variant="secondary" surface="on-dark">
+              <Button href="#endpoints" balanced variant="secondary" surface="on-dark">
                 Read the docs
               </Button>
             </div>

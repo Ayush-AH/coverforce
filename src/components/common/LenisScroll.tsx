@@ -1,6 +1,10 @@
 "use client";
 
-import { disableScrollRestoration, scrollToTop } from "@/lib/scrollToTop";
+import {
+  disableScrollRestoration,
+  scrollToHashWhenReady,
+  scrollToTop,
+} from "@/lib/scrollToTop";
 import { PAGE_TRANSITION_MS } from "@/lib/pageTransition";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
@@ -16,12 +20,29 @@ export default function LenisScroll({ children }: LenisScrollProps) {
 
   useLayoutEffect(() => {
     const restoreScrollRestoration = disableScrollRestoration();
-    scrollToTop();
+    if (!window.location.hash) {
+      scrollToTop();
+    }
 
     return restoreScrollRestoration;
   }, []);
 
   useLayoutEffect(() => {
+    let cancelHashScroll = () => {};
+
+    if (window.location.hash) {
+      cancelHashScroll = scrollToHashWhenReady(undefined, { immediate: true });
+      const timer = window.setTimeout(() => {
+        cancelHashScroll();
+        cancelHashScroll = scrollToHashWhenReady();
+      }, PAGE_TRANSITION_MS);
+
+      return () => {
+        window.clearTimeout(timer);
+        cancelHashScroll();
+      };
+    }
+
     scrollToTop();
     const frame = window.requestAnimationFrame(() => scrollToTop());
     const timer = window.setTimeout(() => scrollToTop(), PAGE_TRANSITION_MS);
@@ -44,7 +65,10 @@ export default function LenisScroll({ children }: LenisScrollProps) {
 
     lenis.current = instance;
     window.lenis = instance;
-    scrollToTop();
+
+    if (!window.location.hash) {
+      scrollToTop();
+    }
 
     let frame: number;
     const raf = (time: number) => {
@@ -58,19 +82,57 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     };
 
     const handlePageShow = () => {
+      if (window.location.hash) {
+        scrollToHashWhenReady();
+        return;
+      }
       scrollToTop();
     };
 
     const handleLoad = () => {
+      if (window.location.hash) {
+        scrollToHashWhenReady();
+        return;
+      }
       scrollToTop();
       window.requestAnimationFrame(() => scrollToTop());
+    };
+
+    const handleHashChange = () => {
+      scrollToHashWhenReady();
+    };
+
+    const handleAnchorClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest("a");
+      if (!anchor) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href || !href.includes("#")) return;
+
+      try {
+        const url = new URL(href, window.location.origin);
+        if (url.origin !== window.location.origin) return;
+        if (url.pathname !== window.location.pathname || !url.hash) return;
+
+        event.preventDefault();
+        window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+        scrollToHashWhenReady(url.hash);
+      } catch {
+        // Ignore malformed hrefs.
+      }
     };
 
     window.addEventListener("resize", handleResize);
     window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("load", handleLoad);
+    window.addEventListener("hashchange", handleHashChange);
+    document.addEventListener("click", handleAnchorClick, true);
 
     const settleFrames = window.requestAnimationFrame(() => {
+      if (window.location.hash) {
+        scrollToHashWhenReady(undefined, { immediate: true });
+        return;
+      }
       scrollToTop();
       window.requestAnimationFrame(() => scrollToTop());
     });
@@ -81,6 +143,8 @@ export default function LenisScroll({ children }: LenisScrollProps) {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("load", handleLoad);
+      window.removeEventListener("hashchange", handleHashChange);
+      document.removeEventListener("click", handleAnchorClick, true);
       instance.destroy();
       lenis.current = null;
       window.lenis = null;

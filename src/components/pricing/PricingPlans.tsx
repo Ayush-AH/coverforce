@@ -36,7 +36,7 @@ const PLANS: PricingPlan[] = [
     ],
     cta: {
       label: "Apply to our startup program",
-      href: "/solutions/startups",
+      href: "/contact",
     },
     accentClassName: "bg-[#154AED]",
     hoverClassName: "hover:bg-[#154AED]",
@@ -56,7 +56,7 @@ const PLANS: PricingPlan[] = [
     ],
     cta: {
       label: "Talk to sales",
-      href: "/",
+      href: "/contact",
     },
     accentClassName: "bg-[#5B35E0]",
     hoverClassName: "hover:bg-[#5B35E0]",

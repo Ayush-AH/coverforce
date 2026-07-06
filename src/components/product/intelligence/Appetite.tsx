@@ -219,7 +219,7 @@ const Appetite = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative bg-[#121C49] text-white">
+    <section id="appetite" ref={sectionRef} className="relative bg-[#121C49] text-white">
       <div
         className="pointer-events-none absolute inset-0"
         style={{

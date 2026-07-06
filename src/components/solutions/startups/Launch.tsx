@@ -120,7 +120,7 @@ const Launch = () => {
   };
 
   return (
-    <section ref={sectionRef} className="bg-white text-[#0a143b]">
+    <section id="launch" ref={sectionRef} className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
         <div ref={headerRef} className="space-y-3 py-10 lg:hidden">
           <h2

@@ -107,23 +107,29 @@ function MegaMenuLinkItem({
         onClick={(e) => handleMenuLinkClick(e, link.href, onClose, onNavigate)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="group flex w-full items-center justify-between gap-3 py-3.5 font-heading text-[0.9375rem] font-regular leading-none text-[#3D3D3D] transition-colors duration-200 hover:text-[#151F4D]"
+        className={`group flex w-full justify-between gap-3 py-3.5 font-heading text-[0.9375rem] font-regular text-[#3D3D3D] transition-colors duration-200 hover:text-[#151F4D] ${
+          link.multiline ? "items-start" : "items-center"
+        }`}
       >
-        <span className="flex min-w-0 items-center gap-2">
-          <AnimatedLinkText
-            hovered={hovered}
-            textClip="h-[0.9375rem]"
-            textLine="h-[0.9375rem] leading-none"
-          >
-            {link.label}
-          </AnimatedLinkText>
+        <span className={`flex min-w-0 flex-1 gap-2 ${link.multiline ? "items-start" : "items-center"}`}>
+          {link.multiline ? (
+            <span className="min-w-0 leading-snug">{link.label}</span>
+          ) : (
+            <AnimatedLinkText
+              hovered={hovered}
+              textClip="h-[0.9375rem]"
+              textLine="h-[0.9375rem] leading-none"
+            >
+              {link.label}
+            </AnimatedLinkText>
+          )}
           {link.badge ? (
             <span className="rounded-full border border-[#D1D5DB] px-2 py-0.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.08em] text-[#3D3D3D]">
               {link.badge}
             </span>
           ) : null}
         </span>
-        <ButtonArrowIcon className="h-2 w-3 shrink-0 text-[#151F4D] opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
+        <ButtonArrowIcon className={`h-2 w-3 shrink-0 text-[#151F4D] opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 ${link.multiline ? "mt-1" : ""}`} />
       </Link>
     </Reveal>
   );
@@ -149,7 +155,7 @@ function MegaMenuColumnBlock({
   return (
     <div>
       <Reveal enterKey={enterKey} resetKey={resetKey} delay={columnBaseDelay}>
-        <p className="mb-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#3D3D3D]">
+        <p className="mb-1 max-w-[9.5rem] font-mono text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.14em] text-[#3D3D3D] whitespace-normal">
           {column.title}
         </p>
       </Reveal>

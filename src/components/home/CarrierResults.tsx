@@ -340,7 +340,7 @@ const CarrierResults = () => {
                   appointed carriers, helping agents from production carrier
                   partnerships.
                 </p>
-                <Button href="/" surface="on-dark">
+                <Button href="/solutions/carriers" surface="on-dark">
                   Explore Carrier
                 </Button>
               </div>

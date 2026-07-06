@@ -140,7 +140,11 @@ const ExplorePlatform = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#121C49] text-white">
+    <section
+      id="explore-platform"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#121C49] text-white"
+    >
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative">
         <div
           ref={contentRef}
@@ -173,7 +177,7 @@ const ExplorePlatform = () => {
           </p>
 
           <div ref={ctaRef} className="mt-10">
-            <Button href="/" balanced surface="on-dark">
+            <Button href="/product/quote-bind" balanced surface="on-dark">
               Get full appetite data with coverforce
             </Button>
           </div>

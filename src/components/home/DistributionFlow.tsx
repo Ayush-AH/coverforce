@@ -38,7 +38,7 @@ const DistributionFlow = () => {
                 Upload emails and documents to instantly extract insurance-ready
                 data with AI.
               </p>
-              <Button href="/" className="mt-5 sm:mt-6">
+              <Button href="/contact" className="mt-5 sm:mt-6">
                 Start a Quote
               </Button>
             </div>

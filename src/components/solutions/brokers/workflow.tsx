@@ -412,7 +412,7 @@ const Workflow = () => {
   const activeStep = steps[activeIndex];
 
   return (
-    <section ref={sectionRef} className="bg-white text-[#0a143b]">
+    <section ref={sectionRef}  id="workflow" className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
         {/* Tall scroll track. Its height determines how much scroll distance
             it takes to move through all steps while the content stays pinned. */}
@@ -432,7 +432,7 @@ const Workflow = () => {
                   </span>
                   <span data-split>.</span>
                 </h2>
-                <Button href="/">
+                <Button href="/contact">
                   Start a quote
                 </Button>
               </div>

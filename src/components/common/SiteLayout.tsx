@@ -9,7 +9,7 @@ import {
   isPreNavIntroPhase,
   useHomeIntro,
 } from "@/contexts/HomeIntroContext";
-import { scrollToTop } from "@/lib/scrollToTop";
+import { scrollToHashWhenReady, scrollToTop } from "@/lib/scrollToTop";
 import {
   getPageTransitionBg,
   installPageTransitionBgSync,
@@ -87,7 +87,11 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
     const timeout = window.setTimeout(() => {
       ScrollTrigger.refresh();
       window.lenis?.resize();
-      scrollToTop();
+      if (window.location.hash) {
+        scrollToHashWhenReady();
+      } else {
+        scrollToTop();
+      }
     }, PAGE_TRANSITION_MS + 50);
 
     return () => window.clearTimeout(timeout);

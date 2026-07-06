@@ -381,12 +381,10 @@ const Enablement = () => {
                 ref={headingRef}
                 className="max-w-md text-2xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-3xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
-                <span data-split>Interested in becoming a </span>
-                <span data-split style={{ color: "#3933A1" }}>
-                  program partner?
+                <span data-split>Interested in becoming a program partner?
                 </span>
               </h2>
-              <Button href="/" variant="outline">
+              <Button href="/contact">
                 Book a Call
               </Button>
             </div>

@@ -40,7 +40,7 @@ const DataAdvantage = () => {
                 140,000+ proprietary carrier interactions. Every transaction
                 makes the platform smarter.
               </p>
-              <Button href="/" surface="on-dark">
+              <Button href="/product/intelligence#coming-soon" surface="on-dark">
                 Explore AI
               </Button>
             </div>

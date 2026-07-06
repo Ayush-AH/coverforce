@@ -130,7 +130,11 @@ const CommingSoon = () => {
   );
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden text-white">
+    <section
+      id="coming-soon"
+      ref={sectionRef}
+      className="relative overflow-hidden text-white"
+    >
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -162,7 +166,7 @@ const CommingSoon = () => {
             ref={buttonsRef}
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
           >
-            <Button href="/" balanced surface="on-dark">
+            <Button href="#coming-soon" balanced surface="on-dark">
               Explore AI
             </Button>
           </div>

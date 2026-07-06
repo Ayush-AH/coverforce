@@ -41,7 +41,7 @@ const DEFAULT_MOCKS: Record<string, ComponentType> = {
 export default function OperatingSystemSection({
   sectionTitle,
   sectionDescription,
-  ctaHref = "/",
+  ctaHref = "/contact",
   ctaLabel = "Start a quote",
   statColor = "#33259F",
   showHeader = true,

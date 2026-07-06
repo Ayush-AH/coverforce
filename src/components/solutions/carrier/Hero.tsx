@@ -21,6 +21,8 @@ const Hero = () => (
     featureHeaderDescription={operatingSystemDescription}
     featureHeaderCtaHref="/solutions/carrier"
     featureHeaderCtaLabel="Request a demo"
+    secondaryButtonHref="#workflow"
+    secondaryButtonLabel="How Program Works"
     rightCard={HeroMock ? <HeroMock /> : null}
     gradFlow={SOLUTION_GRAD_FLOW.carrier}
   />
