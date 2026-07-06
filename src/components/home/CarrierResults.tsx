@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import Container from "@/components/common/Container";
+import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 type CarrierResult = {
@@ -90,8 +91,9 @@ const CarrierResults = () => {
   useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef, theme: "dark" });
 
   return (
-    <section ref={sectionRef} className="bg-[#151f4d] text-white">
-      <Container borderColor="#FFFFFF33" borderBottom={true}>
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">
+      <Container borderColor="#FFFFFF33" borderBottom={true} className="relative">
+        <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%]" />
         <div
           className="absolute left-0 -top-20 z-0 hidden w-full opacity-75 lg:block lg:h-full"
           aria-hidden

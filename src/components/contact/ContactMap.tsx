@@ -11,7 +11,7 @@ const ContactMap = () => {
     >
       <ContactMapSvg
         className="h-full w-full"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMin meet"
         role="img"
         aria-label="Global office map with New York highlighted"
       />
