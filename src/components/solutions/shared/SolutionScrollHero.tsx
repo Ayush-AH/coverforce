@@ -20,8 +20,8 @@ gsap.registerPlugin(ScrollTrigger);
 export type SolutionHeroFeature = {
   readonly heading: string;
   readonly description: string;
-  readonly stat: string;
-  readonly statLabelLines: readonly [string, string];
+  readonly stat?: string;
+  readonly statLabelLines?: readonly [string, string];
   readonly statColor?: string;
 };
 
@@ -250,22 +250,24 @@ export default function SolutionScrollHero({
                     <p className="mt-8 max-w-sm font-heading text-sm font-regular leading-relaxed text-[#444444] md:mt-6 md:text-sm">
                       {feature.description}
                     </p>
-                    <div className="mt-10 flex items-center gap-4 md:mt-8 md:gap-5">
-                      <span
-                        className="text-2xl font-heading font-regular leading-[1.2] tracking-tight md:text-3xl lg:text-[1.75rem] lg:leading-[1.25]"
-                        style={{ color: feature.statColor ?? "#33259F" }}
-                      >
-                        {feature.stat}
-                      </span>
-                      <span
-                        className="font-heading text-sm font-medium leading-[1.2] md:text-xs"
-                        style={{ color: feature.statColor ?? "#33259F" }}
-                      >
-                        {feature.statLabelLines[0]}
-                        <br />
-                        {feature.statLabelLines[1]}
-                      </span>
-                    </div>
+                    {feature.stat && feature.statLabelLines ? (
+                      <div className="mt-10 flex items-center gap-4 md:mt-8 md:gap-5">
+                        <span
+                          className="text-2xl font-heading font-regular leading-[1.2] tracking-tight md:text-3xl lg:text-[1.75rem] lg:leading-[1.25]"
+                          style={{ color: feature.statColor ?? "#33259F" }}
+                        >
+                          {feature.stat}
+                        </span>
+                        <span
+                          className="font-heading text-sm font-medium leading-[1.2] md:text-xs"
+                          style={{ color: feature.statColor ?? "#33259F" }}
+                        >
+                          {feature.statLabelLines[0]}
+                          <br />
+                          {feature.statLabelLines[1]}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                   {rightCard ? (
                     <div className="mt-8 w-full lg:hidden">

@@ -18,8 +18,8 @@ export type OperatingRow = {
   id: string;
   heading: string;
   description: string;
-  stat: string;
-  statLabelLines: [string, string];
+  stat?: string;
+  statLabelLines?: [string, string];
   Mock?: ComponentType;
 };
 
@@ -31,6 +31,7 @@ export type OperatingSystemConfig = {
   ctaVariant?: "link" | "request-demo";
   statColor?: string;
   showHeader?: boolean;
+  showStats?: boolean;
   rows: OperatingRow[];
 };
 
@@ -48,6 +49,7 @@ export default function OperatingSystemSection({
   ctaVariant = "link",
   statColor = "#33259F",
   showHeader = true,
+  showStats = true,
   rows,
 }: OperatingSystemConfig) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -145,7 +147,7 @@ export default function OperatingSystemSection({
             </div>
           )}
 
-          <div className="space-y-36">
+          <div className="space-y-28 md:space-y-36 lg:space-y-44">
             {rows.map((row) => {
               const Mock = row.Mock ?? DEFAULT_MOCKS[row.id];
 
@@ -161,22 +163,24 @@ export default function OperatingSystemSection({
                     <p className="mt-8 max-w-sm font-heading text-sm font-regular leading-relaxed text-[#444444] md:mt-6 md:text-sm">
                       {row.description}
                     </p>
-                    <div className="mt-10 flex items-center gap-4 md:mt-8 md:gap-5">
-                      <span
-                        className="text-2xl font-heading font-regular leading-[1.2] tracking-tight md:text-3xl lg:text-[1.75rem] lg:leading-[1.25]"
-                        style={{ color: statColor }}
-                      >
-                        {row.stat}
-                      </span>
-                      <span
-                        className="font-heading text-sm font-medium leading-[1.2] md:text-xs"
-                        style={{ color: statColor }}
-                      >
-                        {row.statLabelLines[0]}
-                        <br />
-                        {row.statLabelLines[1]}
-                      </span>
-                    </div>
+                    {showStats && row.stat && row.statLabelLines ? (
+                      <div className="mt-10 flex items-center gap-4 md:mt-8 md:gap-5">
+                        <span
+                          className="text-2xl font-heading font-regular leading-[1.2] tracking-tight md:text-3xl lg:text-[1.75rem] lg:leading-[1.25]"
+                          style={{ color: statColor }}
+                        >
+                          {row.stat}
+                        </span>
+                        <span
+                          className="font-heading text-sm font-medium leading-[1.2] md:text-xs"
+                          style={{ color: statColor }}
+                        >
+                          {row.statLabelLines[0]}
+                          <br />
+                          {row.statLabelLines[1]}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="flex items-center justify-center">

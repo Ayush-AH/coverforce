@@ -1,6 +1,5 @@
 "use client";
 
-import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
 import {
   operatingRows,
@@ -10,6 +9,7 @@ import {
 import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
 const heroFeature = operatingRows[0];
+const HeroMock = heroFeature.Mock;
 
 const Hero = () => (
   <SolutionScrollHero
@@ -23,7 +23,7 @@ const Hero = () => (
     featureHeaderCtaLabel="Start a quote"
     secondaryButtonHref="#workflow"
     secondaryButtonLabel="How Program Works"
-    rightCard={<OperatingPlatformMock variant="hero" />}
+    rightCard={HeroMock ? <HeroMock /> : null}
     gradFlow={SOLUTION_GRAD_FLOW.broker}
   />
 );

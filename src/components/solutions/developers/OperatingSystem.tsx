@@ -1,37 +1,38 @@
 "use client";
 
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
-import EmbeddedInsuranceMock from "@/components/solutions/developers/EmbeddedInsuranceMock";
-import ComplianceInfrastructureMock from "@/components/solutions/developers/ComplianceInfrastructureMock";
-import AiApiRequestsMock from "@/components/solutions/developers/AiApiRequestsMock";
+import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
 export const operatingRows = [
   {
-    id: "embedded",
-    heading: "Embedded Insurance",
+    id: "infrastructure",
+    heading: "Developer-first infrastructure for quote-to-bind workflows",
     description:
-      "Add commercial insurance quoting inside any vertical SaaS product — HR, fleet, property, or POS. Users stay in your product, powered by one REST API, sandbox access, and Slack support.",
-    stat: "95%+",
-    statLabelLines: ["Extraction", "Accuracy"] as [string, string],
-    Mock: EmbeddedInsuranceMock,
+      "Build faster with open APIs, MCP support, sandbox access, and direct engineering support — everything needed to go from integration to production in 30 days.",
+    Mock: createSolutionStepMock(
+      "/images/developers/dev1.svg",
+      "Developer-first infrastructure for quote-to-bind workflows",
+    ),
   },
   {
-    id: "ai-apis",
-    heading: "AI-Powered Insurance APIs",
+    id: "ai-workflows",
+    heading: "AI-native insurance workflows",
     description:
-      "Access CoverForce's AI suite by API — document extraction, appetite matching, NAICS classification, underwriting support, and COI generation. Build smart insurance workflows without training your own models.",
-    stat: "200+",
-    statLabelLines: ["Broker Codes", "Managed"] as [string, string],
-    Mock: AiApiRequestsMock,
+      "Connect AI agents and LLM-powered apps to CoverForce's quote-to-bind lifecycle through MCP, without building custom workflow logic from scratch.",
+    Mock: createSolutionStepMock(
+      "/images/developers/dev2.svg",
+      "AI-native insurance workflows",
+    ),
   },
   {
-    id: "compliance",
-    heading: "Compliance & Infrastructure",
+    id: "docs",
+    heading: "Docs your team can start with immediately",
     description:
-      "SOC 2 Type II certified and built to scale. CoverForce manages carrier compliance, surplus lines, and regulatory requirements, so your team can focus on product instead of paperwork.",
-    stat: "1",
-    statLabelLines: ["Unified API", "For Programs"] as [string, string],
-    Mock: ComplianceInfrastructureMock,
+      "Access OpenAPI specs, endpoint references, code samples, and integration guides with sandbox access available on signup.",
+    Mock: createSolutionStepMock(
+      "/images/developers/dev3.svg",
+      "Docs your team can start with immediately",
+    ),
   },
 ];
 
@@ -39,15 +40,22 @@ export const operatingSystemTitle = "Precision engineering for professional work
 export const operatingSystemDescription =
   "See how custom integrations compare to CoverForce — from API-first intake through bind, on infrastructure built for developers shipping commercial insurance products.";
 
-export default function OperatingSystem() {
+export default function OperatingSystem({
+  showHeader = true,
+  hideFirstRow = true,
+}: {
+  showHeader?: boolean;
+  hideFirstRow?: boolean;
+}) {
   return (
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
       sectionDescription={operatingSystemDescription}
       ctaHref="/developers#endpoints"
       ctaLabel="View API docs"
-      showHeader={false}
-      rows={operatingRows.slice(1)}
+      showHeader={showHeader}
+      showStats={false}
+      rows={hideFirstRow ? operatingRows.slice(1) : operatingRows}
     />
   );
 }

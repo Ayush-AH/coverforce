@@ -1,14 +1,7 @@
 "use client";
 
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
-import ProductDigitizationMock from "@/components/solutions/wholesalers/ProductDigitizationMock";
-import AiAppetiteEngineMock from "@/components/solutions/wholesalers/AiAppetiteEngineMock";
-import AiDocumentReaderMock from "@/components/solutions/wholesalers/AiDocumentReaderMock";
-import BrokerCodeControlsMock from "@/components/solutions/wholesalers/BrokerCodeControlsMock";
-
-function BrokerCodeControlsSectionMock() {
-  return <BrokerCodeControlsMock showDelegationCard />;
-}
+import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
 export const operatingRows = [
   {
@@ -18,7 +11,10 @@ export const operatingRows = [
       "AI turns emails, ACORDs, loss runs, and proposals into structured applications with 95%+ accuracy, then generates COIs from bound policy data eliminating manual rekeying.",
     stat: "95%+",
     statLabelLines: ["Extraction", "Accuracy"] as [string, string],
-    Mock: AiDocumentReaderMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/wholesaler1.svg",
+      "AI Inbox and Document Reader",
+    ),
   },
   {
     id: "appetite",
@@ -27,7 +23,10 @@ export const operatingRows = [
       "Every submission is checked against live carrier appetite before underwriting, so your team avoids no-quote markets and gives agents faster answers.",
     stat: "40+",
     statLabelLines: ["Carriers In", "One Submission"] as [string, string],
-    Mock: AiAppetiteEngineMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/wholesaler2.svg",
+      "AI Appetite Engine and Smart Routing",
+    ),
   },
   {
     id: "broker-codes",
@@ -36,7 +35,10 @@ export const operatingRows = [
       "Manage broker codes, agency access, and producer permissions from one dashboard with full control and a clear audit trail.",
     stat: "200+",
     statLabelLines: ["Broker Codes", "Managed"] as [string, string],
-    Mock: BrokerCodeControlsSectionMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/wholesaler3.svg",
+      "Broker Code Delegation and Network Controls",
+    ),
   },
   {
     id: "digitization",
@@ -45,7 +47,10 @@ export const operatingRows = [
       "Put your proprietary programs on API rails without rip-and-replace. CoverForce wraps existing systems into unified endpoints, giving retailers permitted access, cross-quoting, more at-bats, and full visibility before E&S escalation.",
     stat: "1",
     statLabelLines: ["Unified API", "For Programs"] as [string, string],
-    Mock: ProductDigitizationMock,
+    Mock: createSolutionStepMock(
+      "/images/solution/wholesaler4.svg",
+      "Product Digitization",
+    ),
   },
 ];
 

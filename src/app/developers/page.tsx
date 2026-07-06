@@ -5,7 +5,7 @@ import Review from '@/components/home/Review'
 import WhyCoverforce from '@/components/home/WhyCoverforce'
 import PageWrapper from '@/components/PageWrapper'
 import Endpoints from '@/components/developers/Endpoints'
-import OperatingSystem from '@/components/solutions/carrier/OperatingSystem'
+import OperatingSystem from '@/components/solutions/developers/OperatingSystem'
 
 const DevelopersPage = () => {
     return (
@@ -13,7 +13,7 @@ const DevelopersPage = () => {
             <PageWrapper>
                 <Hero />
                 <Endpoints />
-                <OperatingSystem/>
+                <OperatingSystem hideFirstRow={false} />
                 <WhyCoverforce paddingTop={true} />
                 <Review />
                 <CarrierResults />
