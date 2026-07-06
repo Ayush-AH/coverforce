@@ -104,20 +104,14 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
         title: "PLATFORM",
         links: [
           {
-            label: "ACORD Automation",
-            href: "/product/submission-intake",
-            description: "Extract and pre-fill ACORD data with high accuracy.",
-            icon: RiFileTextLine,
-          },
-          {
             label: "Carrier Submission",
-            href: "/product/quote-bind",
+            href: "/solutions/carrier",
             description: "Submit to appointed carriers from a single application.",
             icon: RiSendPlaneLine,
           },
           {
             label: "Document Center",
-            href: "/product/submission-intake",
+            href: "/developers#endpoints",
             description: "Store policies, certificates, and endorsements in one place.",
             icon: RiFolderLine,
           },
