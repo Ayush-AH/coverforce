@@ -219,7 +219,7 @@ export default function WayCardModal({
                       <RequestDemoCta
                         label={stored.content.primaryCta.label}
                         href={stored.content.primaryCta.href}
-                        className="!border-transparent !text-white"
+                        className="!border-0 !text-white"
                         style={{ background: cardGradient }}
                       />
                       <RequestDemoCta
