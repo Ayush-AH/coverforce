@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import Container from "../common/Container";
 import EyebrowPill from "../common/EyebrowPill";
 import { processSteps } from "@/data/processSteps";
@@ -49,6 +49,370 @@ function ProcessPointText({ text }: { text: string }) {
 }
 const FIELD_IDLE_BORDER = "#D1D5DB";
 const FIELD_IDLE_TOGGLE = "#E5E7EB";
+const POINTS_PER_STEP = 3;
+
+function clamp01(v: number) {
+    return Math.min(1, Math.max(0, v));
+}
+
+function getMobileNavOffset() {
+    if (typeof window === "undefined") return 56;
+    const header = document.querySelector(".site-view-header");
+    return header?.getBoundingClientRect().height ?? 56;
+}
+
+const MOBILE_F2_FIELDS = [
+    { loader: ".f2-loader-np", check: ".f2-check-np", icon: ".f2-icon-np" },
+    { loader: ".f2-loader-fein", check: ".f2-check-fein", icon: ".f2-icon-fein", input: ".f2-inp-fein" },
+    { loader: ".f2-loader-ent", check: ".f2-check-ent", icon: ".f2-icon-ent", input: ".f2-inp-ent" },
+    { loader: ".f2-loader-yr", check: ".f2-check-yr", icon: ".f2-icon-yr", input: ".f2-inp-yr" },
+] as const;
+
+function mobileSeg(rawIndex: number, start: number, end: number) {
+    return clamp01((rawIndex - start) / (end - start));
+}
+
+function initMobilePanelState(panelRoot: HTMLElement) {
+    gsap.set(panelRoot.querySelectorAll('[class*="panel-step"]'), { opacity: 0, y: 0 });
+    gsap.set(panelRoot.querySelector(".panel-step1"), {
+        opacity: 1,
+        clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+    });
+    gsap.set(panelRoot.querySelector(".skeleton1"), {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        opacity: 1,
+    });
+    gsap.set(panelRoot.querySelector(".card1"), { opacity: 0, width: "100%", height: "auto", borderRadius: "1rem", clearProps: "padding,backgroundColor,borderColor" });
+    gsap.set(panelRoot.querySelector(".card1-content"), { opacity: 1 });
+    gsap.set(panelRoot.querySelector(".card1-morph-shell"), { opacity: 0 });
+    gsap.set(panelRoot.querySelector(".graph1"), { opacity: 0, y: 12, x: -4 });
+    gsap.set(panelRoot.querySelector(".scanner1"), { opacity: 0, top: "100%" });
+
+    gsap.set(panelRoot.querySelector(".ai-btn"), { opacity: 0, scale: 1, width: "3.5rem" });
+    gsap.set(panelRoot.querySelector(".ai-btn-gradient"), { opacity: 0 });
+    gsap.set(panelRoot.querySelector(".ai-btn-text"), { width: 0 });
+    gsap.set(panelRoot.querySelector(".ai-btn-label"), { opacity: 0 });
+    gsap.set(panelRoot.querySelector(".ai-btn-inner"), { backgroundColor: "#fff", gap: 0, paddingLeft: 0, paddingRight: 0 });
+    gsap.set(panelRoot.querySelector(".cursor2"), { opacity: 0, x: 48, y: 36, scale: 1 });
+    gsap.set(panelRoot.querySelector(".form-wrap2"), { opacity: 0 });
+    gsap.set(panelRoot.querySelector(".form-card2-content"), { opacity: 1, visibility: "visible", display: "block" });
+    gsap.set(panelRoot.querySelector(".form-card2-naics"), { opacity: 0 });
+    gsap.set(panelRoot.querySelector(".skeleton2"), { opacity: 1 });
+    gsap.set(panelRoot.querySelector(".f2-toggle-no"), { backgroundColor: FIELD_IDLE_TOGGLE, color: "#111827" });
+    MOBILE_F2_FIELDS.forEach((field) => {
+        gsap.set(panelRoot.querySelector(field.loader), { opacity: 0 });
+        gsap.set(panelRoot.querySelector(field.check), { opacity: 0, scale: 0.85, backgroundColor: "#fff", borderColor: FIELD_IDLE_BORDER });
+        gsap.set(panelRoot.querySelector(field.icon), { opacity: 0, color: "#fff" });
+        if ("input" in field) gsap.set(panelRoot.querySelector(field.input), { borderColor: FIELD_IDLE_BORDER });
+    });
+
+    gsap.set(panelRoot.querySelector(".logos-grid3"), { height: 0, paddingBottom: 0 });
+    panelRoot.querySelectorAll<HTMLElement>(".logo3").forEach((logo) => {
+        gsap.set(logo, { opacity: 0, scale: 0.94, y: 10 });
+    });
+
+    gsap.set(panelRoot.querySelector(".cursor4"), { opacity: 0, x: 40, y: -20, scale: 1 });
+    gsap.set(panelRoot.querySelector(".bind-btn"), { scale: 1 });
+    gsap.set(panelRoot.querySelectorAll(".row4-1, .row4-3"), { height: "31%", opacity: 1 });
+    gsap.set(panelRoot.querySelector(".row4-2"), { height: "31%", opacity: 1 });
+    gsap.set(panelRoot.querySelectorAll(".row4-1-card, .row4-3-card, .row4-2-card"), { x: 0, y: 0, opacity: 1 });
+    gsap.set(panelRoot.querySelector(".row4-2-track"), { x: 0 });
+    gsap.set(panelRoot.querySelector(".card4-center"), { scale: 1, y: 0 });
+    gsap.set(panelRoot.querySelector(".card4-quote"), { opacity: 1 });
+    gsap.set(panelRoot.querySelector(".card4-success"), { opacity: 0 });
+}
+
+function applyMobilePanelState(root: HTMLElement, rawIndex: number) {
+    const panelRoot = root.querySelector<HTMLElement>(".mobile-process-panel") ?? root;
+    const pointT = clamp01(rawIndex - Math.floor(rawIndex));
+
+    const panel1 = panelRoot.querySelector<HTMLElement>(".panel-step1");
+    const panel2 = panelRoot.querySelector<HTMLElement>(".panel-step2");
+    const panel4 = panelRoot.querySelector<HTMLElement>(".panel-step4");
+    const skeleton1 = panelRoot.querySelector<HTMLElement>(".skeleton1");
+    const card1 = panelRoot.querySelector<HTMLElement>(".card1");
+    const graph1 = panelRoot.querySelector<HTMLElement>(".graph1");
+    const scanner1 = panelRoot.querySelector<HTMLElement>(".scanner1");
+    const aiBtn = panelRoot.querySelector<HTMLElement>(".ai-btn");
+    const cursor2 = panelRoot.querySelector<HTMLElement>(".cursor2");
+    const formWrap2 = panelRoot.querySelector<HTMLElement>(".form-wrap2");
+    const formContent = panelRoot.querySelector<HTMLElement>(".form-card2-content");
+    const formNaics = panelRoot.querySelector<HTMLElement>(".form-card2-naics");
+    const skeleton2 = panelRoot.querySelector<HTMLElement>(".skeleton2");
+    const logosGrid = panelRoot.querySelector<HTMLElement>(".logos-grid3");
+    const logos = panelRoot.querySelectorAll<HTMLElement>(".logo3");
+    const cursor4 = panelRoot.querySelector<HTMLElement>(".cursor4");
+    const bindBtn = panelRoot.querySelector<HTMLElement>(".bind-btn");
+
+    const revealT = mobileSeg(rawIndex, 0, 0.35);
+    if (panel1) {
+        const clipBottom = gsap.utils.interpolate(100, 0, revealT);
+        gsap.set(panel1, {
+            opacity: rawIndex < 3.4 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 3, 3.4)),
+            clipPath: `polygon(0% 0%, 100% 0%, 100% ${clipBottom}%, 0% ${clipBottom}%)`,
+            y: 0,
+        });
+    }
+
+    if (rawIndex < 3) {
+        const cardReveal = rawIndex < 1 ? 0 : rawIndex < 2 ? pointT : 1;
+        const graphReveal = rawIndex < 2 ? 0 : rawIndex < 2.65 ? mobileSeg(rawIndex, 2, 2.65) : 1;
+
+        if (skeleton1) {
+            gsap.set(skeleton1, {
+                opacity: rawIndex < 2.1 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 2, 2.15)),
+                clipPath: `polygon(0% 0%, 100% 0%, 100% ${Math.max(0, 100 - cardReveal * 100)}%, 0% ${Math.max(0, 100 - cardReveal * 100)}%)`,
+            });
+        }
+        if (card1) {
+            gsap.set(card1, {
+                opacity: rawIndex >= 1 ? Math.max(cardReveal, rawIndex >= 2 ? 1 : 0) : 0,
+                width: "100%",
+                height: "auto",
+                borderRadius: "1rem",
+                clearProps: "padding,backgroundColor,borderColor,zIndex,marginLeft,marginRight,transformOrigin",
+            });
+        }
+        if (graph1) {
+            gsap.set(graph1, {
+                opacity: graphReveal,
+                y: gsap.utils.interpolate(12, 0, graphReveal),
+                x: gsap.utils.interpolate(-4, 0, graphReveal),
+            });
+        }
+
+        if (scanner1) {
+            let scanTop = 100;
+            let scanOpacity = 0;
+            if (rawIndex >= 2) {
+                const scanT = rawIndex < 3 ? pointT : 1;
+                scanOpacity = scanT < 0.95 ? 1 : Math.max(0, 1 - mobileSeg(scanT, 0.95, 1));
+                if (scanT < 0.12) scanTop = gsap.utils.interpolate(100, 10, scanT / 0.12);
+                else if (scanT < 0.5) scanTop = gsap.utils.interpolate(10, 100, (scanT - 0.12) / 0.38);
+                else if (scanT < 0.72) scanTop = gsap.utils.interpolate(100, 10, (scanT - 0.5) / 0.22);
+                else scanTop = gsap.utils.interpolate(10, 100, (scanT - 0.72) / 0.23);
+            }
+            gsap.set(scanner1, { opacity: scanOpacity, top: `${scanTop}%` });
+        }
+
+        if (panel2) gsap.set(panel2, { opacity: 0 });
+        if (panel4) gsap.set(panel4, { opacity: 0, y: 18 });
+        return;
+    }
+
+    const morphT = mobileSeg(rawIndex, 3, 3.35);
+    const aiExpandT = mobileSeg(rawIndex, 3.35, 4);
+    const cursorT = mobileSeg(rawIndex, 3.7, 4);
+    const formT = mobileSeg(rawIndex, 4, 5);
+    const validT = rawIndex < 6 ? (rawIndex >= 5 ? pointT : 0) : 1;
+    const naicsT = mobileSeg(rawIndex, 5.85, 6.35);
+    const logosT = rawIndex < 8 ? (rawIndex >= 7 ? pointT : 0) : 1;
+    const panel4InT = mobileSeg(rawIndex, 8.7, 9.2);
+    const bindCursorT = mobileSeg(rawIndex, 10, 11);
+    const bindClickT = mobileSeg(rawIndex, 11, 12);
+    const successMorphT = mobileSeg(rawIndex, 12, 12.6);
+
+    if (panel1) {
+        gsap.set(panel1, { opacity: Math.max(0, 1 - morphT), y: 0 });
+    }
+    if (panel2) {
+        gsap.set(panel2, {
+            opacity: rawIndex < 8.8 ? Math.max(morphT, rawIndex >= 3 ? 1 : 0) : Math.max(0, 1 - mobileSeg(rawIndex, 8.8, 9.2)),
+            y: rawIndex >= 8.8 ? gsap.utils.interpolate(0, -14, mobileSeg(rawIndex, 8.8, 9.2)) : 0,
+        });
+    }
+    if (panel4) {
+        const panel4Opacity = rawIndex < 8.7 ? 0 : rawIndex < 9.2 ? panel4InT : 1;
+        gsap.set(panel4, {
+            opacity: panel4Opacity,
+            y: rawIndex < 9.2 ? gsap.utils.interpolate(18, 0, panel4InT) : 0,
+        });
+    }
+
+    if (graph1) gsap.set(graph1, { opacity: Math.max(0, 1 - morphT * 2), y: morphT * 8 });
+    if (skeleton1) gsap.set(skeleton1, { opacity: Math.max(0, 1 - morphT * 1.5) });
+
+    if (card1) {
+        const morphing = rawIndex < 3.35;
+        gsap.set(card1, {
+            opacity: morphing ? Math.max(0, 1 - morphT * 1.2) : 0,
+            width: morphing ? `${gsap.utils.interpolate(100, 14, morphT)}%` : "3.5rem",
+            height: morphing ? `${gsap.utils.interpolate(100, 14, morphT)}%` : "3.5rem",
+            borderRadius: morphing ? `${gsap.utils.interpolate(16, 9999, morphT)}px` : "9999px",
+            padding: morphing && morphT > 0.4 ? "1px" : undefined,
+            backgroundColor: morphT > 0.5 ? "#ffffff" : undefined,
+            borderColor: morphT > 0.5 ? "#CED2D2" : undefined,
+            zIndex: morphT > 0.2 ? 10 : 0,
+            marginLeft: morphT > 0.2 ? "auto" : undefined,
+            marginRight: morphT > 0.2 ? "auto" : undefined,
+            transformOrigin: "50% 50%",
+        });
+        gsap.set(panelRoot.querySelector(".card1-content"), { opacity: Math.max(0, 1 - mobileSeg(rawIndex, 3, 3.25)) });
+        gsap.set(panelRoot.querySelector(".card1-morph-shell"), { opacity: morphT > 0.45 ? morphT : 0 });
+    }
+
+    if (aiBtn) {
+        const showAi = rawIndex >= 3.3;
+        gsap.set(aiBtn, {
+            opacity: showAi ? (rawIndex < 4.05 ? Math.max(morphT, aiExpandT > 0 ? 1 : 0) : Math.max(0, 1 - mobileSeg(rawIndex, 4, 4.08))) : 0,
+            scale: cursorT > 0.82 && cursorT < 0.9 ? 0.93 : 1,
+            width: showAi ? `${gsap.utils.interpolate(56, 176, aiExpandT)}px` : "3.5rem",
+            y: rawIndex >= 4 && rawIndex < 4.1 ? -8 * mobileSeg(rawIndex, 4, 4.1) : 0,
+        });
+        gsap.set(panelRoot.querySelector(".ai-btn-inner"), {
+            backgroundColor: aiExpandT > 0.5 ? "#E1E9FF" : "#ffffff",
+            gap: aiExpandT > 0 ? `${aiExpandT * 0.5}rem` : 0,
+            paddingLeft: aiExpandT > 0 ? `${aiExpandT * 1.25}rem` : 0,
+            paddingRight: aiExpandT > 0 ? `${aiExpandT * 1.25}rem` : 0,
+            paddingTop: aiExpandT > 0 ? `${aiExpandT}rem` : 0,
+            paddingBottom: aiExpandT > 0 ? `${aiExpandT}rem` : 0,
+        });
+        gsap.set(panelRoot.querySelector(".ai-btn-gradient"), { opacity: aiExpandT });
+        gsap.set(panelRoot.querySelector(".ai-btn-text"), { width: aiExpandT > 0 ? `${aiExpandT * 4.85}rem` : 0 });
+        gsap.set(panelRoot.querySelector(".ai-btn-label"), { opacity: mobileSeg(aiExpandT, 0.35, 0.85) });
+        gsap.set(panelRoot.querySelector(".ai-btn-icon"), { color: aiExpandT > 0 ? POINT_ACTIVE : "#CED2D2" });
+    }
+
+    if (cursor2) {
+        const showCursor = rawIndex >= 3.7 && rawIndex < 4.08;
+        gsap.set(cursor2, {
+            opacity: showCursor ? 1 : 0,
+            x: showCursor ? gsap.utils.interpolate(48, 0, cursorT) : 48,
+            y: showCursor ? gsap.utils.interpolate(36, 0, cursorT) : 36,
+            scale: cursorT > 0.82 && cursorT < 0.9 ? 0.85 : 1,
+        });
+    }
+
+    if (formWrap2) {
+        gsap.set(formWrap2, { opacity: rawIndex >= 4 ? Math.min(1, formT + 0.15) : 0 });
+    }
+    if (skeleton2) {
+        gsap.set(skeleton2, { opacity: rawIndex < 4.55 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 4.45, 4.65)) });
+    }
+    if (formContent) {
+        gsap.set(formContent, {
+            opacity: rawIndex < 6 ? Math.max(0, 1 - naicsT) : 0,
+            visibility: naicsT > 0.95 ? "hidden" : "visible",
+            display: naicsT > 0.95 ? "none" : "block",
+        });
+    }
+    if (formNaics) {
+        gsap.set(formNaics, { opacity: naicsT });
+    }
+
+    const toggleNo = panelRoot.querySelector<HTMLElement>(".f2-toggle-no");
+    if (toggleNo) {
+        const toggleOn = validT > 0.05;
+        gsap.set(toggleNo, {
+            backgroundColor: toggleOn ? FIELD_VALID : FIELD_IDLE_TOGGLE,
+            color: toggleOn ? "#fff" : "#111827",
+        });
+    }
+    MOBILE_F2_FIELDS.forEach((field, i) => {
+        const loaderIn = mobileSeg(validT, 0.08 + i * 0.1, 0.22 + i * 0.1);
+        const loaderOut = mobileSeg(validT, 0.42 + i * 0.06, 0.52 + i * 0.06);
+        const checkIn = mobileSeg(validT, 0.52 + i * 0.1, 0.72 + i * 0.1);
+        const loader = panelRoot.querySelector<HTMLElement>(field.loader);
+        const check = panelRoot.querySelector<HTMLElement>(field.check);
+        const icon = panelRoot.querySelector<HTMLElement>(field.icon);
+        if (loader) gsap.set(loader, { opacity: loaderIn > 0 && loaderOut < 1 ? 1 : 0 });
+        if (check) {
+            gsap.set(check, {
+                opacity: checkIn,
+                scale: gsap.utils.interpolate(0.85, 1, checkIn),
+                backgroundColor: checkIn > 0 ? FIELD_VALID : "#fff",
+                borderColor: checkIn > 0 ? FIELD_VALID : FIELD_IDLE_BORDER,
+            });
+        }
+        if (icon) gsap.set(icon, { opacity: mobileSeg(checkIn, 0.25, 0.75) });
+        if ("input" in field) {
+            const input = panelRoot.querySelector<HTMLElement>(field.input);
+            if (input) gsap.set(input, { borderColor: checkIn > 0 ? FIELD_VALID : FIELD_IDLE_BORDER });
+        }
+    });
+
+    if (logosGrid) {
+        const gridH = `${gsap.utils.interpolate(0, 200, logosT)}px`;
+        gsap.set(logosGrid, { height: gridH, paddingBottom: logosT > 0 ? 20 : 0 });
+    }
+    logos.forEach((logo, i) => {
+        const logoT = mobileSeg(logosT, 0.15 + i * 0.08, 0.55 + i * 0.08);
+        gsap.set(logo, {
+            opacity: logoT,
+            scale: gsap.utils.interpolate(0.94, 1, logoT),
+            y: gsap.utils.interpolate(10, 0, logoT),
+        });
+    });
+
+    const rowsOut = bindClickT;
+    const rowShift = `${gsap.utils.interpolate(0, 130, rowsOut)}%`;
+    gsap.set(panelRoot.querySelector(".row4-1-left"), { x: `-${rowShift}`, y: rowsOut > 0 ? -8 * rowsOut : 0, opacity: 1 - rowsOut });
+    gsap.set(panelRoot.querySelector(".row4-1-right"), { x: rowShift, y: rowsOut > 0 ? -8 * rowsOut : 0, opacity: 1 - rowsOut });
+    gsap.set(panelRoot.querySelector(".row4-3-left"), { x: `-${rowShift}`, y: rowsOut > 0 ? 8 * rowsOut : 0, opacity: 1 - rowsOut });
+    gsap.set(panelRoot.querySelector(".row4-3-right"), { x: rowShift, y: rowsOut > 0 ? 8 * rowsOut : 0, opacity: 1 - rowsOut });
+    gsap.set(panelRoot.querySelector(".row4-2-left"), { x: `-${rowShift}`, opacity: 1 - mobileSeg(bindClickT, 0.35, 0.85) });
+    gsap.set(panelRoot.querySelector(".row4-2-right"), { x: rowShift, opacity: 1 - mobileSeg(bindClickT, 0.35, 0.85) });
+
+    if (cursor4) {
+        const showBindCursor = rawIndex >= 10 && rawIndex < 11.9;
+        gsap.set(cursor4, {
+            opacity: showBindCursor ? (rawIndex >= 11.7 ? Math.max(0, 1 - mobileSeg(rawIndex, 11.7, 11.9)) : 1) : 0,
+            x: showBindCursor ? gsap.utils.interpolate(40, 0, bindCursorT) : 40,
+            y: showBindCursor ? gsap.utils.interpolate(-20, 0, bindCursorT) : -20,
+            scale: bindClickT > 0.15 && bindClickT < 0.35 ? 0.84 : 1,
+        });
+    }
+    if (bindBtn) {
+        const bindScale = bindCursorT > 0.55 ? gsap.utils.interpolate(1, 1.1, mobileSeg(bindCursorT, 0.55, 0.85)) : 1;
+        gsap.set(bindBtn, {
+            scale: bindClickT > 0.15 && bindClickT < 0.35 ? 0.91 : bindScale,
+        });
+    }
+
+    const successT = mobileSeg(rawIndex, 12, 13);
+    gsap.set(panelRoot.querySelectorAll(".row4-1, .row4-3"), {
+        height: rawIndex >= 12 ? `${gsap.utils.interpolate(31, 0, successMorphT)}%` : "31%",
+        opacity: rawIndex >= 12 ? Math.max(0, 1 - successMorphT) : 1,
+    });
+    gsap.set(panelRoot.querySelector(".row4-2"), {
+        height: rawIndex >= 12 ? `${gsap.utils.interpolate(31, 56, successMorphT)}%` : "31%",
+    });
+    gsap.set(panelRoot.querySelector(".card4-center"), {
+        scale: rawIndex >= 12 ? gsap.utils.interpolate(1, 1.02, successMorphT) : 1,
+        y: 0,
+    });
+    gsap.set(panelRoot.querySelector(".card4-quote"), { opacity: Math.max(0, 1 - successT) });
+    gsap.set(panelRoot.querySelector(".card4-success"), { opacity: successT });
+}
+
+function MobileProcessPoint({ text, fill }: { text: string; fill: number }) {
+    const rowRef = useRef<HTMLLIElement>(null);
+
+    useLayoutEffect(() => {
+        const chars = rowRef.current?.querySelectorAll<HTMLSpanElement>(".point-char");
+        if (!chars?.length) return;
+        applyWaveToChars(Array.from(chars), clamp01(fill), COLOR_THEMES.light);
+    }, [fill, text]);
+
+    const iconActive = fill > 0.02;
+
+    return (
+        <li ref={rowRef} className="flex gap-3 border-b border-black/10 py-3 last:border-b-0">
+            <span
+                className={`point-icon flex size-6 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
+                    fill >= 0.98
+                        ? "border-[#151F4D] bg-[#151F4D] text-white"
+                        : iconActive
+                          ? "border-[#151F4D] bg-[#151F4D] text-white"
+                          : "border-[#CCCCCC] text-[#CCCCCC]"
+                }`}
+            >
+                <RiArrowRightLine className="size-3" />
+            </span>
+            <ProcessPointText text={text} />
+        </li>
+    );
+}
 
 // ─── Step panel components ────────────────────────────────────────────────────
 
@@ -444,9 +808,21 @@ function PanelStep5() {
     );
 }
 
-function StaticPanel({ step }: { step: number }) {
+function StaticPanel({ step, stacked = false }: { step?: number; stacked?: boolean }) {
     const panelClass =
         "absolute inset-0! flex items-center justify-center opacity-100! pointer-events-none!";
+
+    if (stacked) {
+        return (
+            <div className="mobile-process-panel relative mx-auto aspect-square w-full max-w-sm overflow-visible rounded-2xl">
+                <PanelStep1 />
+                <PanelStep2 />
+                <PanelStep3 />
+                <PanelStep4 />
+                <PanelStep5 />
+            </div>
+        );
+    }
 
     return (
         <div className="relative aspect-square w-full max-w-sm overflow-visible">
@@ -475,6 +851,121 @@ function StaticPanel({ step }: { step: number }) {
                     <PanelStep5 />
                 </div>
             ) : null}
+        </div>
+    );
+}
+
+function MobileProcessFlow() {
+    const trackRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+    const [rawIndex, setRawIndex] = useState(0);
+
+    const totalPoints = processSteps.length * POINTS_PER_STEP;
+
+    useEffect(() => {
+        let ticking = false;
+
+        const compute = () => {
+            ticking = false;
+            const el = trackRef.current;
+            if (!el) return;
+
+            const rect = el.getBoundingClientRect();
+            const navOffset = getMobileNavOffset();
+            const viewportH = window.innerHeight - navOffset;
+            const scrollable = rect.height - viewportH;
+            if (scrollable <= 0) {
+                setRawIndex(0);
+                return;
+            }
+
+            const scrolled = Math.min(scrollable, Math.max(0, -(rect.top - navOffset)));
+            const progress = scrolled / scrollable;
+            const nextRaw = progress * totalPoints;
+            setRawIndex(nextRaw);
+
+            if (panelRef.current) {
+                applyMobilePanelState(panelRef.current, nextRaw);
+            }
+        };
+
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(compute);
+            }
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        const lenis = window.lenis;
+        lenis?.on("scroll", onScroll);
+        compute();
+
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onScroll);
+            lenis?.off("scroll", onScroll);
+        };
+    }, [totalPoints]);
+
+    const stepIndex = Math.min(processSteps.length - 1, Math.floor(rawIndex / POINTS_PER_STEP));
+    const pointInStep = Math.min(POINTS_PER_STEP - 1, Math.floor(rawIndex) % POINTS_PER_STEP);
+    const pointLocalProgress = clamp01(rawIndex - Math.floor(rawIndex));
+    const activeStep = processSteps[stepIndex];
+
+    useLayoutEffect(() => {
+        const panel = panelRef.current?.querySelector<HTMLElement>(".mobile-process-panel");
+        if (!panel) return;
+        initMobilePanelState(panel);
+        applyMobilePanelState(panelRef.current!, rawIndex);
+    }, []);
+
+    useEffect(() => {
+        if (!panelRef.current) return;
+        applyMobilePanelState(panelRef.current, rawIndex);
+    }, [rawIndex]);
+
+    const getPointFill = (pointIdx: number) => {
+        if (pointIdx < pointInStep) return 1;
+        if (pointIdx > pointInStep) return 0;
+        return pointLocalProgress;
+    };
+
+    return (
+        <div
+            ref={trackRef}
+            className="relative lg:hidden"
+            style={{ height: `${(totalPoints + 1) * 100}vh` }}
+        >
+            <div className="sticky top-14 flex min-h-[calc(100svh-3.5rem)] flex-col py-8">
+                {/* Top: steps (like desktop left column) */}
+                <div className="relative flex shrink-0 flex-col pl-1">
+                    <div data-step-tag={stepIndex} className="w-fit">
+                        <EyebrowPill surface="light" dotAttr={`step-${stepIndex}`}>
+                            {activeStep.tag}
+                        </EyebrowPill>
+                    </div>
+                    <h3 className="mt-3 max-w-lg text-xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b]">
+                        {activeStep.heading}
+                    </h3>
+
+                    <ul className="mt-5 space-y-0">
+                        {activeStep.points.map((point, idx) => (
+                            <MobileProcessPoint
+                                key={point.id}
+                                text={point.text}
+                                fill={getPointFill(idx)}
+                            />
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Bottom: panel (like desktop right column) */}
+                <div ref={panelRef} className="mt-6 flex w-full shrink-0 flex-col justify-end px-1 pb-2">
+                    <StaticPanel stacked />
+                </div>
+            </div>
         </div>
     );
 }
@@ -1076,40 +1567,7 @@ const ProcessFlow = () => {
     return (
         <section ref={sectionRef} data-processflow className="bg-white [contain:layout_paint] lg:h-screen lg:overflow-hidden">
             <Container borderColor="#53535380">
-                <div className="space-y-16 py-16 lg:hidden">
-                    {processSteps.map((step, index) => (
-                        <div key={step.tag} className="space-y-8">
-                            <div className="flex flex-col">
-                                <div data-step-tag={index} className="w-fit">
-                                    <EyebrowPill surface="light" dotAttr={`step-${index}`}>
-                                        {step.tag}
-                                    </EyebrowPill>
-                                </div>
-                                <h3 className="mt-4 max-w-lg text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b]">
-                                    {step.heading}
-                                </h3>
-                                <ul className="mt-6 space-y-3">
-                                    {step.points.map((feature, idx) => (
-                                        <li
-                                            key={feature.id}
-                                            className="flex gap-4 border-b border-black/10 py-4"
-                                        >
-                                            <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#151F4D] bg-[#151F4D] text-white">
-                                                <RiArrowRightLine className="size-3" />
-                                            </span>
-                                            <p className="max-w-sm text-sm leading-relaxed font-heading font-regular text-[#444444]">
-                                                {feature.text}
-                                            </p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="flex justify-center pt-2">
-                                <StaticPanel step={index + 1} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <MobileProcessFlow />
 
                 <div className="hidden h-screen gap-12 lg:grid lg:grid-cols-2 lg:gap-16 xl:gap-20">
 

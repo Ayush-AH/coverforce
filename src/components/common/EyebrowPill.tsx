@@ -48,7 +48,7 @@ export default function EyebrowPill({
       className={`mb-5 flex w-fit items-center justify-center gap-2.5 rounded-full px-3 py-1 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] md:text-[0.65rem] ${useGradient ? "text-white" : styles.wrapper} ${className}`}
     >
       <span
-        className={`size-1.5 shrink-0 rounded-full ${dotAttr ? "bg-white opacity-100 md:opacity-0" : useGradient ? "bg-white" : dotColor ? "" : styles.dot}`}
+        className={`size-1.5 shrink-0 rounded-full ${dotAttr ? `${useGradient ? "bg-white" : styles.dot} opacity-100 lg:opacity-0` : useGradient ? "bg-white" : dotColor ? "" : styles.dot}`}
         style={!dotAttr && !useGradient && dotColor ? { backgroundColor: dotColor } : undefined}
         data-card-dot={dotAttr}
         aria-hidden

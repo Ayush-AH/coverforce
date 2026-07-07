@@ -58,6 +58,7 @@ export default function HeroToCardsDots() {
   useEffect(() => {
     if (introEnabled && introPhase !== "done") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
 
     const layer = layerRef.current;
     if (!layer) return;
@@ -216,7 +217,7 @@ export default function HeroToCardsDots() {
   }, [introEnabled, introPhase]);
 
   return (
-    <div ref={layerRef} className="pointer-events-none fixed inset-0 z-[60]" aria-hidden>
+    <div ref={layerRef} className="pointer-events-none fixed inset-0 z-[60] hidden lg:block" aria-hidden>
       {DOTS.map((cfg, i) => (
         <div
           key={cfg.label}
