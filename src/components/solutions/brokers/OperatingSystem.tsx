@@ -16,6 +16,7 @@ export const operatingRows = [
       "One workflow for every producer — 40+ carrier integrations, dynamic carrier questions, no portal logins, no rekeying, and no office-by-office workflow gaps.",
     stat: "40+",
     statLabelLines: ["Carriers,", "One Workflow"] as [string, string],
+    Mock: brokersHeroCardMock,
     transferTargetId: "brokers-step-1-card",
   },
   {

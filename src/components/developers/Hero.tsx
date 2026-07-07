@@ -68,7 +68,18 @@ const Hero = () => {
             className="relative z-10 mx-auto mt-14 w-full max-w-6xl px-4 pb-16 md:mt-20 md:pb-20 lg:mt-24 lg:max-w-7xl lg:pb-24"
             delay={0.75}
           >
-            <div className="relative mx-auto h-[min(24rem,58vw)] w-full md:h-[32rem] lg:h-[38rem]">
+            <div className="relative mx-auto w-full md:hidden">
+              <Image
+                src="/images/developers/mobile-display.svg"
+                alt="CoverForce mobile developer preview"
+                width={1200}
+                height={1600}
+                className="h-auto w-full object-contain"
+                priority
+              />
+            </div>
+
+            <div className="relative mx-auto hidden h-[32rem] w-full md:block lg:h-[38rem]">
               <Image
                 src="/images/developers/display.svg"
                 alt="CoverForce API request example showing POST /v1/quote"

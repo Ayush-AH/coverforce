@@ -113,6 +113,17 @@ function getQuickTryLabel(tag: string) {
 
 const LINE_COLUMNS = ["WC", "GL", "BOP", "CYBER", "UMBR."] as const;
 
+const MOBILE_LINE_ITEMS: Array<{
+  key: keyof Pick<CarrierRow, "wc" | "gl" | "bop" | "cyber" | "umbr">;
+  label: (typeof LINE_COLUMNS)[number];
+}> = [
+  { key: "wc", label: "WC" },
+  { key: "gl", label: "GL" },
+  { key: "bop", label: "BOP" },
+  { key: "cyber", label: "CYBER" },
+  { key: "umbr", label: "UMBR." },
+] as const;
+
 function StatusDot({ status }: { status: AppetiteStatus }) {
   return (
     <span
@@ -134,6 +145,30 @@ function LegendItem({
       <span className={`size-2.5 rounded-full ${STATUS_DOT[status]}`} aria-hidden />
       {label}
     </span>
+  );
+}
+
+function StatusPill({
+  label,
+  status,
+}: {
+  label: string;
+  status: AppetiteStatus;
+}) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-md bg-[#F7F7FB] px-3 py-2">
+      <span className="font-mono text-[0.6875rem] font-medium uppercase text-[#414141]">
+        {label}
+      </span>
+      <span className={`size-2 rounded-full ${STATUS_DOT[status]}`} aria-hidden />
+      <span className="font-heading text-[0.6875rem] text-[#6B7280]">
+        {status === "writing"
+          ? "Writing"
+          : status === "selective"
+            ? "Selective"
+            : "Decline"}
+      </span>
+    </div>
   );
 }
 
@@ -221,7 +256,7 @@ const Appetite = () => {
   return (
     <section id="appetite" ref={sectionRef} className="relative bg-[#121C49] text-white">
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
             "radial-gradient(ellipse 95% 85% at 50% 58%, rgba(49, 78, 155, 0.55) 0%, rgba(18, 28, 73, 0.92) 52%, #121C49 100%)",
@@ -255,130 +290,177 @@ const Appetite = () => {
           </div>
 
           <div className="relative mx-auto mt-12 max-w-5xl overflow-visible md:mt-14 lg:mt-16">
-            <SectionRadialGlow className="absolute left-1/2 top-[58%] z-0 w-[145%] max-w-[76rem] -translate-x-1/2 -translate-y-[42%] blur-[4.5rem] opacity-90" />
+            <SectionRadialGlow className="absolute left-1/2 top-[58%] z-0 hidden w-[145%] max-w-[76rem] -translate-x-1/2 -translate-y-[42%] blur-[4.5rem] opacity-90 md:block" />
 
             <div className="relative z-10 rounded-2xl bg-white p-5 text-[#0a143b] shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:p-8 lg:p-10">
-            <form
-              className="space-y-6"
-              onSubmit={(event) => event.preventDefault()}
-            >
-              <div>
-                <label
-                  htmlFor="naics-search"
-                  className="mb-2 block font-mono text-sm font-medium uppercase text-[#2A297C]"
-                >
-                  Enter NAICS code or business type
-                </label>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <input
-                    id="naics-search"
-                    type="text"
-                    placeholder="722511 or Restaurant"
-                    className="box-border min-h-10 h-10 max-h-10 min-w-0 flex-1 rounded-lg border border-[#E4E7EC] bg-white px-4 font-heading text-sm leading-none text-[#1A1A1A] outline-none transition-colors placeholder:text-[#9AA8BC] focus:border-[#5B35E0] focus:ring-1 focus:ring-[#5B35E0]/20"
-                  />
-                  <Button type="submit" variant="primary" className="shrink-0">
-                    Check Appetite
-                  </Button>
-                </div>
-              </div>
-
-              <div>
-                <p className="mb-3 font-mono text-sm font-medium uppercase text-[#2A297C]">
-                  Quick try
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {QUICK_TRY_TAGS.map((tag) => {
-                    const isSelected = selectedQuickTry === tag;
-
-                    return (
-                    <button
-                      key={tag}
-                      type="button"
-                      aria-pressed={isSelected}
-                      onClick={() => setSelectedQuickTry(tag)}
-                      className={`rounded-full border px-5 py-2 font-heading text-[0.6875rem] transition-colors md:text-xs ${
-                        isSelected
-                          ? "border-[#5B35E0]/30 bg-[#5B35E0]/8 text-[#3834A4]"
-                          : "border-[#E4E7EC] bg-[#FAFBFC] text-[#6B7280] hover:border-[#C8CDD6]"
-                      }`}
+              <form className="space-y-6" onSubmit={(event) => event.preventDefault()}>
+                <div>
+                  <label
+                    htmlFor="naics-search"
+                    className="mb-2 block font-mono text-sm font-medium uppercase text-[#2A297C]"
+                  >
+                    Enter NAICS code or business type
+                  </label>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <input
+                      id="naics-search"
+                      type="text"
+                      placeholder="722511 or Restaurant"
+                      className="box-border min-h-10 h-10 max-h-10 min-w-0 flex-1 rounded-lg border border-[#E4E7EC] bg-white px-4 font-heading text-sm leading-none text-[#1A1A1A] outline-none transition-colors placeholder:text-[#9AA8BC] focus:border-[#5B35E0] focus:ring-1 focus:ring-[#5B35E0]/20"
+                    />
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className="flex w-full shrink-0 justify-center text-center sm:w-auto"
                     >
-                      {tag}
-                    </button>
-                    );
-                  })}
+                      Check Appetite
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </form>
 
-            <div
-              ref={resultsRef}
-              className="mt-8 overflow-hidden border-t border-[#ECEEF2] pt-6 md:mt-10 md:pt-8"
-            >
-              <div
-                data-appetite-animate
-                className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <p className="font-mono text-sm font-medium uppercase text-[#414141]">
-                  Appetite results — {getQuickTryLabel(selectedQuickTry)}
-                </p>
-                <div className="flex flex-wrap items-center gap-10">
-                  <LegendItem status="writing" label="Writing" />
-                  <LegendItem status="selective" label="Selective" />
-                  <LegendItem status="decline" label="Decline" />
-                </div>
-              </div>
+                <div>
+                  <p className="mb-3 font-mono text-sm font-medium uppercase text-[#2A297C]">
+                    Quick try
+                  </p>
+                  <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 md:hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="flex w-max gap-2 px-1">
+                      {QUICK_TRY_TAGS.map((tag) => {
+                        const isSelected = selectedQuickTry === tag;
 
-              <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-[#E6E6E6] bg-white">
-                <table className="w-full min-w-[36rem] border-collapse">
-                  <thead>
-                    <tr
-                      data-appetite-animate
-                      className="border-b border-[#E6E6E6] bg-[#FAF7FF]"
-                    >
-                      <th className="px-4 py-3.5 text-left font-mono text-sm font-medium uppercase text-[#414141] md:px-5 md:py-4">
-                        Carrier
-                      </th>
-                      {LINE_COLUMNS.map((column) => (
-                        <th
-                          key={column}
-                          className="px-3 py-3.5 text-center font-mono text-sm font-medium uppercase text-[#414141] md:px-4 md:py-4"
+                        return (
+                          <button
+                            key={tag}
+                            type="button"
+                            aria-pressed={isSelected}
+                            onClick={() => setSelectedQuickTry(tag)}
+                            className={`shrink-0 rounded-full border px-5 py-2 font-heading text-[0.6875rem] transition-colors md:text-xs ${
+                              isSelected
+                                ? "border-[#5B35E0]/30 bg-[#5B35E0]/8 text-[#3834A4]"
+                                : "border-[#E4E7EC] bg-[#FAFBFC] text-[#6B7280] hover:border-[#C8CDD6]"
+                            }`}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="hidden flex-wrap gap-2 md:flex">
+                    {QUICK_TRY_TAGS.map((tag) => {
+                      const isSelected = selectedQuickTry === tag;
+
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => setSelectedQuickTry(tag)}
+                          className={`rounded-full border px-5 py-2 font-heading text-[0.6875rem] transition-colors md:text-xs ${
+                            isSelected
+                              ? "border-[#5B35E0]/30 bg-[#5B35E0]/8 text-[#3834A4]"
+                              : "border-[#E4E7EC] bg-[#FAFBFC] text-[#6B7280] hover:border-[#C8CDD6]"
+                          }`}
                         >
-                          {column}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white">
-                    {CARRIER_ROWS.map((carrier) => (
+                          {tag}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </form>
+
+              <div
+                ref={resultsRef}
+                className="mt-8 overflow-hidden border-t border-[#ECEEF2] pt-6 md:mt-10 md:pt-8"
+              >
+                <div
+                  data-appetite-animate
+                  className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <p className="font-mono text-sm font-medium uppercase text-[#414141]">
+                    Appetite results — {getQuickTryLabel(selectedQuickTry)}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-10">
+                    <LegendItem status="writing" label="Writing" />
+                    <LegendItem status="selective" label="Selective" />
+                    <LegendItem status="decline" label="Decline" />
+                  </div>
+                </div>
+
+                <div className="space-y-3 md:hidden">
+                  {CARRIER_ROWS.map((carrier) => (
+                    <article
+                      key={`${carrier.name}-mobile`}
+                      data-appetite-animate
+                      className="rounded-xl border border-[#E6E6E6] bg-white p-4 shadow-[0_4px_18px_rgba(17,24,39,0.04)]"
+                    >
+                      <h3 className="font-heading text-xl font-medium leading-tight text-[#4D47C3]">
+                        {carrier.name}
+                      </h3>
+                      <div className="mt-4 flex flex-wrap gap-2.5">
+                        {MOBILE_LINE_ITEMS.map(({ key, label }) => (
+                          <StatusPill
+                            key={`${carrier.name}-${label}`}
+                            label={label}
+                            status={carrier[key]}
+                          />
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="hidden overflow-x-auto overflow-y-hidden rounded-xl border border-[#E6E6E6] bg-white md:block">
+                  <table className="w-full min-w-[36rem] border-collapse">
+                    <thead>
                       <tr
-                        key={carrier.name}
                         data-appetite-animate
-                        className="border-b border-[#E6E6E6] last:border-b-0"
+                        className="border-b border-[#E6E6E6] bg-[#FAF7FF]"
                       >
-                        <td className="px-4 py-3.5 font-sans text-sm font-regular text-[#33259F] md:px-5 md:py-4">
-                          {carrier.name}
-                        </td>
-                        <td className="px-3 py-3.5 md:px-4 md:py-4">
-                          <StatusDot status={carrier.wc} />
-                        </td>
-                        <td className="px-3 py-3.5 md:px-4 md:py-4">
-                          <StatusDot status={carrier.gl} />
-                        </td>
-                        <td className="px-3 py-3.5 md:px-4 md:py-4">
-                          <StatusDot status={carrier.bop} />
-                        </td>
-                        <td className="px-3 py-3.5 md:px-4 md:py-4">
-                          <StatusDot status={carrier.cyber} />
-                        </td>
-                        <td className="px-3 py-3.5 md:px-4 md:py-4">
-                          <StatusDot status={carrier.umbr} />
-                        </td>
+                        <th className="px-4 py-3.5 text-left font-mono text-sm font-medium uppercase text-[#414141] md:px-5 md:py-4">
+                          Carrier
+                        </th>
+                        {LINE_COLUMNS.map((column) => (
+                          <th
+                            key={column}
+                            className="px-3 py-3.5 text-center font-mono text-sm font-medium uppercase text-[#414141] md:px-4 md:py-4"
+                          >
+                            {column}
+                          </th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white">
+                      {CARRIER_ROWS.map((carrier) => (
+                        <tr
+                          key={carrier.name}
+                          data-appetite-animate
+                          className="border-b border-[#E6E6E6] last:border-b-0"
+                        >
+                          <td className="px-4 py-3.5 font-sans text-sm font-regular text-[#33259F] md:px-5 md:py-4">
+                            {carrier.name}
+                          </td>
+                          <td className="px-3 py-3.5 md:px-4 md:py-4">
+                            <StatusDot status={carrier.wc} />
+                          </td>
+                          <td className="px-3 py-3.5 md:px-4 md:py-4">
+                            <StatusDot status={carrier.gl} />
+                          </td>
+                          <td className="px-3 py-3.5 md:px-4 md:py-4">
+                            <StatusDot status={carrier.bop} />
+                          </td>
+                          <td className="px-3 py-3.5 md:px-4 md:py-4">
+                            <StatusDot status={carrier.cyber} />
+                          </td>
+                          <td className="px-3 py-3.5 md:px-4 md:py-4">
+                            <StatusDot status={carrier.umbr} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>

@@ -24,17 +24,18 @@ const Hero = () => {
       const section = sectionRef.current;
       if (!container || !overlay || !section) return;
 
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reducedMotion) return;
-
-      const getShift = () => container.offsetHeight;
-
       gsap.set(container, {
         y: 0,
         force3D: true,
         backfaceVisibility: "hidden",
       });
       gsap.set(overlay, { opacity: 0, pointerEvents: "none" });
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      if (reducedMotion || isMobile) return;
+
+      const getShift = () => container.offsetHeight;
 
       const scrollEnd = "bottom -180%";
       const scrollConfig = {
@@ -99,7 +100,7 @@ const Hero = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-30 h-svh min-h-svh overflow-hidden text-white"
+      className="relative z-30 h-dvh min-h-dvh overflow-hidden text-white md:h-svh md:min-h-svh"
     >
       <div
         ref={containerRef}
@@ -117,7 +118,7 @@ const Hero = () => {
 
         <Container
           borderColor="#FFFFFF33"
-          className="relative flex h-svh min-h-svh items-center justify-center"
+          className="relative flex h-dvh min-h-dvh items-center justify-center md:h-svh md:min-h-svh"
         >
           <HeroReveal className="flex max-w-4xl flex-col items-center text-center">
             <EyebrowPill surface="dark" className="mx-auto mb-0">

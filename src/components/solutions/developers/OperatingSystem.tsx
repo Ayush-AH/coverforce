@@ -14,6 +14,7 @@ export const operatingRows = [
     heading: "Developer-first infrastructure for quote-to-bind workflows",
     description:
       "Build faster with open APIs, MCP support, sandbox access, and direct engineering support — everything needed to go from integration to production in 30 days.",
+    Mock: developersHeroCardMock,
     transferTargetId: "developers-step-1-card",
   },
   {
@@ -44,9 +45,17 @@ export const operatingSystemDescription =
 
 export default function OperatingSystem({
   showHeader = true,
+  enableHeroTransfer = false,
 }: {
   showHeader?: boolean;
+  enableHeroTransfer?: boolean;
 }) {
+  const rows = enableHeroTransfer
+    ? operatingRows
+    : operatingRows.map((row, index) =>
+        index === 0 ? { ...row, transferTargetId: undefined } : row,
+      );
+
   return (
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
@@ -56,7 +65,7 @@ export default function OperatingSystem({
       paddingTop={true}
       showHeader={showHeader}
       showStats={false}
-      rows={operatingRows}
+      rows={rows}
     />
   );
 }

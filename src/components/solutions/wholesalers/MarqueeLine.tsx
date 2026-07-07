@@ -30,7 +30,7 @@ export function MarqueeRow({ reverse = false, offset = false }: MarqueeRowProps)
               alt=""
               width={120}
               height={40}
-              className="h-5 w-auto max-h-5 object-contain opacity-90 grayscale contrast-200 brightness-0 md:h-6 md:max-h-6 lg:h-7 lg:max-h-7"
+              className="h-8 w-auto max-h-8 object-contain opacity-90 grayscale contrast-200 brightness-0 md:h-6 md:max-h-6 lg:h-7 lg:max-h-7"
               draggable={false}
             />
           </div>

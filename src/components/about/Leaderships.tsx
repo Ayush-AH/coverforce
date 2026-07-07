@@ -102,8 +102,8 @@ const Leaderships = () => {
           isDesktop: "(min-width: 1024px)",
         },
         (context) => {
-          const { isMobile, isTablet } = context.conditions ?? {};
-          const columns = isMobile ? 1 : isTablet ? 2 : 3;
+          const { isDesktop } = context.conditions ?? {};
+          const columns = isDesktop ? 3 : 2;
           const rows = chunkMembers(members, columns);
 
           rows.forEach((rowMembers) => {
@@ -183,7 +183,7 @@ const Leaderships = () => {
 
           <div
             ref={leadersGridRef}
-            className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8 xl:gap-12"
+            className="mt-12 grid grid-cols-2 gap-6 lg:mt-16 lg:grid-cols-3 lg:gap-8 xl:gap-12"
           >
             {leaders.map((leader, index) => (
               <article key={index} className="leader-member">

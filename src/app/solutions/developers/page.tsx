@@ -12,7 +12,7 @@ const page = () => {
     <>
       <PageWrapper>
         <Hero />
-        <OperatingSystem />
+        <OperatingSystem enableHeroTransfer={true} />
         <Workflow />
         <WhyCoverforce paddingTop={true} />
         <Review />

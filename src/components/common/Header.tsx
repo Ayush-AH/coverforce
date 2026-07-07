@@ -19,9 +19,8 @@ import {
   RiArrowDownSLine,
   RiArrowLeftLine,
   RiArrowRightLine,
-  RiCloseLine,
-  RiMenuLine,
 } from "@remixicon/react";
+import Hamburger from "hamburger-react";
 import { MEGA_MENUS, type MegaMenuLink } from "@/data/megaMenu";
 import { HOME_INTRO_NAV_MS, useHomeIntro } from "@/contexts/HomeIntroContext";
 import { pageAnimation, setPageTransitionBg } from "@/lib/pageTransition";
@@ -223,7 +222,7 @@ function MobileMenuLinkRow({
       aria-current={isCurrentPage ? "page" : undefined}
       className={`flex w-full items-center justify-between border-b px-6 py-5 text-left font-heading text-[1.125rem] font-regular leading-none transition-colors hover:text-[#151F4D] ${
         isCurrentPage
-          ? "border-[#151F4D] text-[#151F4D] underline decoration-[#151F4D] decoration-2 underline-offset-[0.65rem]"
+          ? "border-[#E8ECF0] text-[#151F4D]"
           : "border-[#E8ECF0] text-[#3D3D3D]"
       }`}
     >
@@ -551,6 +550,8 @@ const Header = () => {
     : transparentUntilScroll && !headerPastHero
       ? "border-b border-transparent bg-transparent"
       : styles.bar;
+  const showMobileMenuButtonBackdrop =
+    !mobileMenuOpen && transparentUntilScroll && !headerPastHero;
 
   return (
     <nav className={`relative w-full ${theme === "light" ? "text-[#3D3D3D]" : "text-white"}`}>
@@ -588,28 +589,32 @@ const Header = () => {
                 />
               </Link>
 
-              <button
-                type="button"
-                onClick={() => {
-                  if (mobileMenuOpen) closeMobileMenu();
-                  else openMobileMenu();
-                }}
-                className={`relative z-10 flex size-10 items-center justify-center lg:hidden ${
-                  mobileMenuOpen
-                    ? "text-[#3D3D3D]"
-                    : theme === "dark"
-                      ? "text-white"
-                      : "text-[#3D3D3D]"
+              <div
+                className={`relative z-10 lg:hidden ${
+                  showMobileMenuButtonBackdrop
+                    ? "rounded-full bg-black/25 ring-1 ring-white/20 backdrop-blur-sm"
+                    : ""
                 }`}
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileMenuOpen}
               >
-                {mobileMenuOpen ? (
-                  <RiCloseLine className="size-6" aria-hidden />
-                ) : (
-                  <RiMenuLine className="size-6" aria-hidden />
-                )}
-              </button>
+                <Hamburger
+                  toggled={mobileMenuOpen}
+                  duration={0.8}
+                  size={20}
+                  color={
+                    mobileMenuOpen
+                      ? "#3D3D3D"
+                      : theme === "dark"
+                        ? "#ffffff"
+                        : "#3D3D3D"
+                  }
+                  label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                  onToggle={(toggled) => {
+                    if (toggled) openMobileMenu();
+                    else closeMobileMenu();
+                  }}
+                />
+              </div>
 
               <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
                 <div className="relative flex h-full items-center">

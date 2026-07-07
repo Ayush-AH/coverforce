@@ -93,7 +93,7 @@ const TABLE_GRID =
   "lg:grid lg:grid-cols-[minmax(0,1fr)_11rem_8rem_auto] lg:gap-x-6";
 
 const ROW_BASE =
-  `grid grid-cols-1 gap-4 ${containerPadding} lg:col-span-full lg:grid-cols-subgrid lg:items-center lg:gap-x-6 lg:gap-y-0`;
+  `grid grid-cols-2 gap-x-4 gap-y-4 ${containerPadding} lg:col-span-full lg:grid-cols-subgrid lg:items-center lg:gap-x-6 lg:gap-y-0`;
 
 const COL_LOCATION =
   "font-mono text-sm font-medium uppercase text-[#444444] lg:justify-self-start lg:text-left";
@@ -109,7 +109,7 @@ function JobRow({ job }: { job: JobListing }) {
       className={`positions-row ${ROW_BASE} py-5 lg:py-6`}
       style={getBottomBorderStyle(BORDER_COLOR)}
     >
-      <h3 className="max-w-sm font-heading text-base font-medium leading-snug text-[#444444] md:text-xl">
+      <h3 className="col-span-2 max-w-sm font-heading text-base font-semibold leading-snug text-[#444444] md:text-xl md:font-medium">
         {job.title}
       </h3>
 
@@ -117,7 +117,7 @@ function JobRow({ job }: { job: JobListing }) {
 
       <p className={COL_TYPE}>{job.type}</p>
 
-      <div className="lg:flex lg:justify-end">
+      <div className="col-span-2 flex justify-start pt-1 lg:col-span-1 lg:justify-end lg:pt-0">
         <Button href={job.href} size="sm">
           Apply
         </Button>

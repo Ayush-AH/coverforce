@@ -73,7 +73,7 @@ const VALUE_CARDS: ValueCard[] = [
   },
 ];
 
-const CARD_HEIGHT = "min-h-[28rem] md:min-h-[29rem]";
+const CARD_HEIGHT = "min-h-[22rem] md:min-h-[29rem]";
 
 function ValueCardItem({ card }: { card: ValueCard }) {
   const [hovered, setHovered] = useState(false);

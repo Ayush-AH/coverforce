@@ -16,6 +16,7 @@ export const operatingRows = [
       "AI turns emails, ACORDs, loss runs, and proposals into structured applications with 95%+ accuracy, then generates COIs from bound policy data eliminating manual rekeying.",
     stat: "95%+",
     statLabelLines: ["Extraction", "Accuracy"] as [string, string],
+    Mock: wholesalersHeroCardMock,
     transferTargetId: "wholesalers-step-1-card",
   },
   {

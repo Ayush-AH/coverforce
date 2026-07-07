@@ -16,6 +16,7 @@ export const operatingRows = [
       "One API connects your products to wholesalers, networks, and agencies nationwide — no separate partnerships required.",
     stat: "15K+",
     statLabelLines: ["Agencies", "Accessible"] as [string, string],
+    Mock: carrierHeroCardMock,
     transferTargetId: "carrier-step-1-card",
   },
   {

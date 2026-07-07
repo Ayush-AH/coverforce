@@ -89,7 +89,7 @@ function MilestoneContent({ milestone }: { milestone: Milestone }) {
         <EyebrowPill surface="dark" className="mb-0">
           Milestones
         </EyebrowPill>
-        <div className="w-full lg:max-w-[40rem] lg:justify-self-end">
+        <div className="w-full lg:max-w-160 lg:justify-self-end">
           <h2 className={milestoneDisplayClassName}>{milestone.title}</h2>
           <p className="mt-4 max-w-xl font-sans text-sm font-semibold leading-[1.55] text-white md:text-xl md:leading-[1.6]">
             {milestone.description}
@@ -114,72 +114,66 @@ const Milestones = () => {
       if (reducedMotion) return;
 
       const count = milestones.length;
-      const mm = gsap.matchMedia();
-
-      mm.add("(min-width: 1024px)", () => {
-        const ctx = gsap.context(() => {
-          panelRefs.current.forEach((el, index) => {
-            if (!el) return;
-            gsap.set(el, {
-              clipPath: index === 0 ? CLIP_FULL : CLIP_HIDDEN_BOTTOM,
-            });
+      const ctx = gsap.context(() => {
+        panelRefs.current.forEach((el, index) => {
+          if (!el) return;
+          gsap.set(el, {
+            clipPath: index === 0 ? CLIP_FULL : CLIP_HIDDEN_BOTTOM,
           });
+        });
 
-          imageWrapRefs.current.forEach((el, index) => {
-            if (!el) return;
-            gsap.set(el, {
-              yPercent: index === 0 ? 0 : IMAGE_TRAVEL,
-              force3D: true,
-            });
+        imageWrapRefs.current.forEach((el, index) => {
+          if (!el) return;
+          gsap.set(el, {
+            yPercent: index === 0 ? 0 : IMAGE_TRAVEL,
+            force3D: true,
           });
+        });
 
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () => `+=${window.innerHeight * count}`,
-              scrub: 1,
-              pin: true,
-              anticipatePin: 1,
-            },
-          });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${window.innerHeight * count}`,
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+          },
+        });
 
-          milestones.forEach((_, index) => {
-            if (index === 0) return;
+        milestones.forEach((_, index) => {
+          if (index === 0) return;
 
-            const pos = index - 1;
+          const pos = index - 1;
 
-            const prevPanel = panelRefs.current[index - 1];
-            const currPanel = panelRefs.current[index];
-            const prevImage = imageWrapRefs.current[index - 1];
-            const currImage = imageWrapRefs.current[index];
+          const prevPanel = panelRefs.current[index - 1];
+          const currPanel = panelRefs.current[index];
+          const prevImage = imageWrapRefs.current[index - 1];
+          const currImage = imageWrapRefs.current[index];
 
-            tl.to(prevPanel, { clipPath: CLIP_HIDDEN_TOP, duration: 1, ease: "none" }, pos);
-            tl.to(prevImage, { yPercent: -IMAGE_TRAVEL, duration: 1, ease: "none" }, pos);
+          tl.to(prevPanel, { clipPath: CLIP_HIDDEN_TOP, duration: 1, ease: "none" }, pos);
+          tl.to(prevImage, { yPercent: -IMAGE_TRAVEL, duration: 1, ease: "none" }, pos);
 
-            tl.to(currPanel, { clipPath: CLIP_FULL, duration: 1, ease: "none" }, pos);
-            tl.to(currImage, { yPercent: 0, duration: 1, ease: "none" }, pos);
-          });
-        }, section);
+          tl.to(currPanel, { clipPath: CLIP_FULL, duration: 1, ease: "none" }, pos);
+          tl.to(currImage, { yPercent: 0, duration: 1, ease: "none" }, pos);
+        });
+      }, section);
 
-        const lenis = window.lenis;
-        const onLenisScroll = () => ScrollTrigger.update();
-        lenis?.on("scroll", onLenisScroll);
+      const lenis = window.lenis;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis?.on("scroll", onLenisScroll);
 
-        return () => {
-          lenis?.off("scroll", onLenisScroll);
-          ctx.revert();
-        };
-      });
-
-      return () => mm.revert();
+      return () => {
+        lenis?.off("scroll", onLenisScroll);
+        ctx.revert();
+      };
     },
     { scope: sectionRef },
   );
 
   return (
     <section ref={sectionRef} className="relative w-full">
-      <div className="relative hidden h-svh min-h-svh w-full overflow-hidden lg:block">
+      <div className="relative h-dvh min-h-dvh w-full overflow-hidden lg:h-svh lg:min-h-svh">
         {milestones.map((milestone, index) => (
           <div
             key={milestone.src}
@@ -219,43 +213,6 @@ const Milestones = () => {
               </Container>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-10 p-6 lg:hidden">
-        {milestones.map((milestone) => (
-          <article
-            key={`${milestone.src}-mobile`}
-            className="relative overflow-hidden rounded-md"
-          >
-            <div className="relative aspect-[4/3] w-full">
-              <Image
-                src={milestone.src}
-                alt={milestone.alt}
-                fill
-                className="object-cover object-center"
-                sizes="100vw"
-              />
-              <div
-                className="absolute inset-0"
-                style={{ background: MILESTONE_OVERLAY_GRADIENT }}
-                aria-hidden
-              />
-            </div>
-
-            <Container borderColor="#53535380" className="bg-[#151f4d] text-white !px-0">
-              <div className="py-8">
-                <p className={milestoneDisplayClassName}>{milestone.number}</p>
-                <EyebrowPill surface="dark" className="mb-0 mt-4">
-                  Milestones
-                </EyebrowPill>
-                <h2 className={`mt-6 ${milestoneDisplayClassName}`}>{milestone.title}</h2>
-                <p className="mt-3 font-sans text-sm leading-[1.55] text-white/85">
-                  {milestone.description}
-                </p>
-              </div>
-            </Container>
-          </article>
         ))}
       </div>
     </section>

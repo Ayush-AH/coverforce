@@ -11,7 +11,7 @@ import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CARD_HEIGHT = "min-h-[22rem] md:min-h-[28rem] lg:min-h-[30rem]";
+const CARD_HEIGHT = "min-h-[28rem] md:min-h-[28rem] lg:min-h-[30rem]";
 
 type RecognitionCard =
   | { id: string; type: "image"; src: string; alt: string }

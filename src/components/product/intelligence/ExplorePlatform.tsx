@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { SplitText } from "@/lib/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -143,9 +144,10 @@ const ExplorePlatform = () => {
     <section
       id="explore-platform"
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#121C49] text-white"
+      className="relative  bg-[#121C49] text-white"
     >
       <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative">
+        <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 md:top-[12%]" />
         <div
           ref={contentRef}
           className="relative z-10 mx-auto flex min-h-[calc(100svh-2rem)] max-w-3xl flex-col items-center justify-center px-4 text-center will-change-transform"
@@ -162,9 +164,7 @@ const ExplorePlatform = () => {
             ref={headingRef}
             className="mt-5 text-3xl font-heading font-regular leading-[1.12] tracking-tight md:text-5xl lg:text-[3.25rem] lg:leading-[1.1]"
           >
-            <span data-split>Powered by 140K+ CoverForce</span>
-            <br />
-            <span data-split>carrier interactions.</span>
+            <span data-split>Powered by 140K+ CoverForce carrier interactions.</span>
           </h2>
 
           <p

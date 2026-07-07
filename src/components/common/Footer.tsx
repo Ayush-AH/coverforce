@@ -230,11 +230,15 @@ const Footer = () => {
               src="/images/footer.avif"
               alt=""
               fill
-              className="object-cover object-center"
+              className="object-cover object-top md:object-center"
               sizes="100vw"
             />
+            <div
+              className="absolute inset-0 bg-linear-to-t from-black/75 via-black/40 to-black/10 md:from-black/60 md:via-black/25 md:to-transparent"
+              aria-hidden
+            />
 
-            <div className="relative z-10 flex min-h-[inherit] items-center px-6 pt-16 pb-12 md:px-10 md:pt-20 md:pb-16 lg:px-12 lg:pt-24 lg:pb-20">
+            <div className="relative z-10 flex min-h-[inherit] items-start px-6 pt-10 pb-12 md:items-center md:px-10 md:pt-20 md:pb-16 lg:px-12 lg:pt-24 lg:pb-20">
               <div className="max-w-xl text-left lg:max-w-2xl">
 
                 <h2 className="mt-5 text-2xl font-heading font-regular leading-[1.12] tracking-tight text-white md:mt-6 md:text-3xl lg:text-4xl lg:leading-[1.1]">

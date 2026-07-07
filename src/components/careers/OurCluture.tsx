@@ -181,7 +181,8 @@ const OurCluture = () => {
       if (!section || !grid) return;
 
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reducedMotion) return;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      if (reducedMotion || isMobile) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(
         ".culture-parallax-card",

@@ -194,7 +194,15 @@ export default function OperatingSystemSection({
                         aria-hidden
                       />
                     ) : null}
-                    {Mock ? <Mock /> : null}
+                    {Mock ? (
+                      row.transferTargetId ? (
+                        <div className="w-full lg:hidden">
+                          <Mock />
+                        </div>
+                      ) : (
+                        <Mock />
+                      )
+                    ) : null}
                   </div>
                 </div>
               );
