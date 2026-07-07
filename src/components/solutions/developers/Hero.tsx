@@ -1,15 +1,10 @@
 "use client";
 
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
-import {
-  operatingRows,
-  operatingSystemDescription,
-  operatingSystemTitle,
-} from "@/components/solutions/developers/OperatingSystem";
+import { developersHeroCardMock } from "@/components/solutions/developers/OperatingSystem";
 import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
-const heroFeature = operatingRows[0];
-const HeroMock = heroFeature.Mock;
+const HeroMock = developersHeroCardMock;
 
 const Hero = () => (
   <SolutionScrollHero
@@ -17,14 +12,11 @@ const Hero = () => (
     title="Embed commercial insurance into any product"
     titleClassName="max-w-xl text-3xl font-heading font-normal tracking-normal text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-none"
     description="One API for 40+ carriers, AI-powered quoting, binding, and policy management so you can add commercial insurance without becoming an insurance company."
-    feature={heroFeature}
-    featureHeaderTitle={operatingSystemTitle}
-    featureHeaderDescription={operatingSystemDescription}
-    featureHeaderCtaHref="/developers#endpoints"
-    featureHeaderCtaLabel="View API docs"
     secondaryButtonHref="#workflow"
     secondaryButtonLabel="How Program Works"
     rightCard={HeroMock ? <HeroMock /> : null}
+    rightCardTransferTargetId="developers-step-1-card"
+    showSecondSection={false}
     gradFlow={SOLUTION_GRAD_FLOW.developer}
   />
 );

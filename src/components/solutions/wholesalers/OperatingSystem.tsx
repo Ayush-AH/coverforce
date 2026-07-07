@@ -3,6 +3,11 @@
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
 import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
+export const wholesalersHeroCardMock = createSolutionStepMock(
+  "/images/solution/wholesaler1.svg",
+  "AI Inbox and Document Reader",
+);
+
 export const operatingRows = [
   {
     id: "inbox",
@@ -11,10 +16,7 @@ export const operatingRows = [
       "AI turns emails, ACORDs, loss runs, and proposals into structured applications with 95%+ accuracy, then generates COIs from bound policy data eliminating manual rekeying.",
     stat: "95%+",
     statLabelLines: ["Extraction", "Accuracy"] as [string, string],
-    Mock: createSolutionStepMock(
-      "/images/solution/wholesaler1.svg",
-      "AI Inbox and Document Reader",
-    ),
+    transferTargetId: "wholesalers-step-1-card",
   },
   {
     id: "appetite",
@@ -65,8 +67,9 @@ export default function OperatingSystem() {
       sectionDescription={operatingSystemDescription}
       ctaHref="/solutions/wholesalers"
       ctaLabel="Talk to sales"
-      showHeader={false}
-      rows={operatingRows.slice(1)}
+      paddingTop={true}
+      showHeader={true}
+      rows={operatingRows}
     />
   );
 }

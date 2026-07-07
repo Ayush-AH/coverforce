@@ -102,12 +102,14 @@ function WorkflowStepPanel({
   index,
   panelRef,
   headlineRef,
+  imageRef,
   className,
 }: {
   step: (typeof WORKFLOW_STEPS)[number];
   index: number;
   panelRef: (el: HTMLElement | null) => void;
   headlineRef: (el: HTMLParagraphElement | null) => void;
+  imageRef: (el: HTMLDivElement | null) => void;
   className: string;
 }) {
   return (
@@ -119,7 +121,10 @@ function WorkflowStepPanel({
         {step.headline}
       </p>
 
-      <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]">
+      <div
+        ref={imageRef}
+        className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]"
+      >
         <Image
           src={step.image}
           alt={`${step.label} preview`}
@@ -148,6 +153,8 @@ const IntelligenceWorkFlow = () => {
   const mobilePanelRefs = useRef<Array<HTMLElement | null>>([]);
   const headlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
   const mobileHeadlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+  const imageRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const mobileImageRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -162,6 +169,9 @@ const IntelligenceWorkFlow = () => {
       const headlines = (isLg ? headlineRefs : mobileHeadlineRefs).current.filter(
         (el): el is HTMLParagraphElement => Boolean(el),
       );
+      const images = (isLg ? imageRefs : mobileImageRefs).current.filter(
+        (el): el is HTMLDivElement => Boolean(el),
+      );
 
       const cleanups = headlines.map((headline) =>
         animateSplitTextReveal(headline, {
@@ -172,6 +182,24 @@ const IntelligenceWorkFlow = () => {
           end: "top 45%",
         }),
       );
+
+      images.forEach((image) => {
+        gsap.fromTo(
+          image,
+          { y: 56, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: image,
+              start: "top 68%",
+              once: true,
+            },
+          },
+        );
+      });
 
       return () => cleanups.forEach((cleanup) => cleanup());
     },
@@ -336,6 +364,9 @@ const IntelligenceWorkFlow = () => {
                     headlineRef={(el) => {
                       mobileHeadlineRefs.current[index] = el;
                     }}
+                    imageRef={(el) => {
+                      mobileImageRefs.current[index] = el;
+                    }}
                     className="mt-5 flex flex-col gap-6"
                   />
                 </div>
@@ -368,6 +399,9 @@ const IntelligenceWorkFlow = () => {
                     }}
                     headlineRef={(el) => {
                       headlineRefs.current[index] = el;
+                    }}
+                    imageRef={(el) => {
+                      imageRefs.current[index] = el;
                     }}
                     className="flex min-h-screen flex-col justify-center gap-10 py-16 first:pt-0 last:pb-0 md:gap-12"
                   />

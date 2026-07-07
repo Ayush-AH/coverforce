@@ -64,7 +64,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           src="/images/secondcardbg.svg"
           alt=""
           fill
-          className="h-full w-full object-cover object-bottom"
+          className="h-full w-full object-cover object-bottom opacity-60"
           sizes="100vw"
           aria-hidden
         />
