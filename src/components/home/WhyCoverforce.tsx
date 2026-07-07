@@ -116,11 +116,6 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
     const section = sectionRef.current;
     if (!container || !overlay || !section) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
-
-    const getShift = () => container.offsetHeight;
-
     gsap.set(container, {
       y: 0,
       scale: 1,
@@ -129,6 +124,12 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
       backfaceVisibility: "hidden",
     });
     gsap.set(overlay, { opacity: 0, pointerEvents: "none" });
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isSmallDevice = window.matchMedia("(max-width: 1023px)").matches;
+    if (reducedMotion || isSmallDevice) return;
+
+    const getShift = () => container.offsetHeight;
 
     const scrollEnd = "bottom -180%";
     const scrollConfig = {
@@ -288,7 +289,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
           margin-top: 1.25rem;
         }
       `}</style>
-      <div ref={containerRef} className="relative z-10 overflow-hidden will-change-transform">
+      <div ref={containerRef} className="relative z-10 overflow-hidden lg:will-change-transform">
         <Container borderColor="#53535380">
           <div className={`pb-16 md:pb-20 lg:pb-24 ${paddingTop ? "pt-24" : ""}`}>
             {/* ── Header (unchanged) ── */}
