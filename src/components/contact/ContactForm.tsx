@@ -1,6 +1,6 @@
 "use client";
-
-import { useRef, useState } from "react";
+import { getCalApi } from "@calcom/embed-react";
+import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -41,6 +41,13 @@ const ContactForm = () => {
     splitsRef.current.forEach((split) => split.revert());
     splitsRef.current = [];
   };
+
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ "namespace": "15min" });
+      cal("ui", { "cssVarsPerTheme": { "light": { "cal-brand": "#1e2a5e" }, "dark": { "cal-brand": "#ffffff" } }, "hideEventTypeDetails": false, "layout": "month_view" });
+    })();
+  }, [])
 
   useGSAP(
     () => {
@@ -86,7 +93,7 @@ const ContactForm = () => {
       }
 
       gsap.set(content, { opacity: 1, y: step === 0 ? 48 : 0 });
-      
+
       if (buttonsContainer && step === 0) gsap.set(buttonsContainer, { opacity: 0, y: 18 });
       if (animateBtns.length) gsap.set(animateBtns, { opacity: 0, y: 30 });
       if (animateFields.length) gsap.set(animateFields, { opacity: 0, y: 30 });
@@ -195,7 +202,7 @@ const ContactForm = () => {
 
   const jobTitles = ["Product Manager", "Software Engineer", "CEO", "CTO", "Designer", "Other"];
   const dummyCompanies = ["Acme Technologies", "Stark Industries", "Wayne Enterprises", "Globex Corporation"];
-  
+
   const countryCodes = getCountries().map(country => ({
     code: `+${getCountryCallingCode(country)}`,
     countryCode: country,
@@ -230,303 +237,306 @@ const ContactForm = () => {
         }
       `}</style>
       <section ref={sectionRef} className="relative bg-[#151f4d] text-white  flex items-center">
-      <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative min-h-[calc(100svh-2rem)] flex items-center w-full">
-        <div ref={contentRef} className="mx-auto w-full max-w-3xl flex flex-col items-center justify-center text-center">
-          
-          {step > 0 && step < 5 && (
-            <div className="text-sm font-medium tracking-widest text-white/60 mb-8 uppercase">
-              0{step} / <span className="opacity-30"> 04</span>
-            </div>
-          )}
+        <Container borderColor="#FFFFFF33" borderOpacity={borderOpacity} className="relative min-h-[calc(100svh-2rem)] flex items-center w-full">
+          <div ref={contentRef} className="mx-auto w-full max-w-3xl flex flex-col items-center justify-center text-center">
 
-          {step === 0 && (
-            <div className="w-full flex flex-col items-center">
-              <h2
-                data-heading
-                className="mt-5 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal"
-              >
-                <span data-split>
-                  Hey there! How can we assist <br /> you on this afternoon <br /> in Chicago, USA ?
-                </span>
-              </h2>
+            {step > 0 && step < 5 && (
+              <div className="text-sm font-medium tracking-widest text-white/60 mb-8 uppercase">
+                0{step} / <span className="opacity-30"> 04</span>
+              </div>
+            )}
 
-              <div
-                data-buttons-container
-                className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
-              >
-                <Button onClick={() => setStep(1)} balanced surface="on-dark">
-                  Get Started Today
-                </Button>
-              </div>
-            </div>
-          )}
+            {step === 0 && (
+              <div className="w-full flex flex-col items-center">
+                <h2
+                  data-heading
+                  className="mt-5 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal"
+                >
+                  <span data-split>
+                    Hey there! How can we assist <br /> you on this afternoon <br /> in Chicago, USA ?
+                  </span>
+                </h2>
 
-          {step === 1 && (
-            <div className="w-full flex flex-col items-center">
-              <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                <span data-split>Type of Business</span>
-              </h2>
-              <div className="flex flex-wrap justify-center gap-4 w-full">
-                {businessTypes.map(type => (
-                  <button
-                    key={type}
-                    data-animate-btn
-                    onClick={() => toggleBusinessType(type)}
-                    className={`px-8 py-3 rounded-[5px] transition-colors border ${formData.businessType.includes(type) ? 'bg-white text-[#2E2E2E] border-transparent' : 'bg-transparent text-white border-white/40 hover:bg-white/[0.08]'}`}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-16" data-animate-btn>
-                <Button surface="on-dark" onClick={nextStep} balanced>
-                  NEXT
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="w-full flex flex-col items-center">
-              <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                <span data-split>Please describe in a few sentences <br /> what problems CoverForce would <br /> solve for  your company *</span>
-              </h2>
-              <div className="w-full" data-animate-field>
-                <input
-                  type="text"
-                  value={formData.problems}
-                  onChange={e => updateData("problems", e.target.value)}
-                  className="w-full bg-transparent border-b border-white/40 pb-3 text-center text-lg text-white outline-none focus:border-white transition-colors"
-                />
-              </div>
-              <div className="mt-16 w-full  flex items-center justify-between" data-animate-field>
-                <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
-                  GO BACK
-                </Button>
-                <Button surface="on-dark" onClick={nextStep} balanced>
-                  NEXT
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="w-full flex flex-col items-center">
-              <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                <span data-split>How big is your existing <br /> commercial book of business <br /> ($ of Gross Written Premium)?*</span>
-              </h2>
-              <div className="flex flex-wrap justify-center gap-4 w-full">
-                {bookSizes.map((size, i) => (
-                  <button
-                    key={i}
-                    data-animate-btn
-                    onClick={() => updateData("bookSize", size)}
-                    className={`px-8 py-3 rounded-[5px] transition-colors border min-w-[140px] ${formData.bookSize === size ? 'bg-white text-[#2E2E2E] border-transparent' : 'bg-transparent text-white border-white/40 hover:bg-white/[0.08]'}`}
-                  >
-                    {size.trim()}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-16 w-full flex items-center justify-between" data-animate-btn>
-                <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
-                  GO BACK
-                </Button>
-                <Button surface="on-dark" onClick={nextStep} balanced>
-                  NEXT
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="w-full flex flex-col items-center">
-              <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                <span data-split>Almost there! Tell us about <br /> you and your company.</span>
-              </h2>
-              
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-left mt-4">
-                <div className="flex flex-col gap-2" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">FULL NAME *</label>
-                  <input
-                    type="text"
-                    placeholder="Arjun"
-                    value={formData.firstName}
-                    onChange={e => updateData("firstName", e.target.value)}
-                    className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
-                  />
+                <div
+                  data-buttons-container
+                  className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center"
+                >
+                  <Button onClick={() => setStep(1)} balanced surface="on-dark">
+                    Get Started Today
+                  </Button>
                 </div>
-                <div className="flex flex-col gap-2" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">FULL NAME *</label>
-                  <input
-                    type="text"
-                    placeholder="Sharma"
-                    value={formData.lastName}
-                    onChange={e => updateData("lastName", e.target.value)}
-                    className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
-                  />
-                </div>
-                <div className="flex flex-col gap-2" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">PHONE NUMBER</label>
-                  <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors relative">
-                    <div 
-                      className="mr-2 text-sm opacity-100 flex gap-x-2 items-center cursor-pointer select-none"
-                      onClick={() => setActiveDropdown(activeDropdown === "phone" ? null : "phone")}
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="w-full flex flex-col items-center">
+                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                  <span data-split>Type of Business</span>
+                </h2>
+                <div className="flex flex-wrap justify-center gap-4 w-full">
+                  {businessTypes.map(type => (
+                    <button
+                      key={type}
+                      data-animate-btn
+                      onClick={() => toggleBusinessType(type)}
+                      className={`px-8 py-3 rounded-[5px] transition-colors border ${formData.businessType.includes(type) ? 'bg-white text-[#2E2E2E] border-transparent' : 'bg-transparent text-white border-white/40 hover:bg-white/[0.08]'}`}
                     >
-                      <div className="w-6 flex items-center justify-center">
-                        {(() => {
-                          const ActiveFlag = Flags[formData.countryCode as keyof typeof Flags];
-                          return ActiveFlag ? (
-                            <span className="flex w-5 items-center justify-center">
-                              <ActiveFlag title={formData.countryCode} />
-                            </span>
-                          ) : (
-                            <span>{formData.countryCode}</span>
-                          );
-                        })()}
-                      </div>
-                      <span className={`text-[10px] transition-transform duration-200 ${activeDropdown === "phone" ? "rotate-180" : ""}`}>▼</span>
-                      {activeDropdown === "phone" && (
-                        <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
-                          {countryCodes.map(c => {
-                            const Flag = Flags[c.countryCode as keyof typeof Flags];
-                            return (
-                              <div 
-                                key={`${c.country}-${c.code}`}
-                                className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm flex items-center gap-2 transition-colors"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFormData(prev => ({ ...prev, phoneCode: c.code, countryCode: c.countryCode }));
-                                  setActiveDropdown(null);
-                                }}
-                              >
-                                <div className="w-6 flex items-center justify-center">
-                                  {Flag ? (
-                                    <span className="flex w-5 items-center justify-center">
-                                      <Flag title={c.countryCode} />
-                                    </span>
-                                  ) : (
-                                    <span>{c.countryCode}</span>
-                                  )}
-                                </div>
-                                <span className="w-12 text-white/70">{c.code}</span>
-                                <span className="truncate flex-1" title={c.country}>{c.country}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-white/60 mr-2 text-sm select-none">{formData.phoneCode}</span>
-                    <input
-                      type="text"
-                      placeholder="98765 43210"
-                      value={formData.phone}
-                      onChange={e => updateData("phone", e.target.value)}
-                      className="w-full bg-transparent text-white outline-none"
-                    />
-                  </div>
+                      {type}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex flex-col gap-2" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">EMAIL ADDRESS *</label>
+                <div className="mt-16" data-animate-btn>
+                  <Button surface="on-dark" onClick={nextStep} balanced>
+                    NEXT
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="w-full flex flex-col items-center">
+                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                  <span data-split>Please describe in a few sentences <br /> what problems CoverForce would <br /> solve for  your company *</span>
+                </h2>
+                <div className="w-full" data-animate-field>
                   <input
-                    type="email"
-                    placeholder="arjun@company.com"
-                    value={formData.email}
-                    onChange={e => updateData("email", e.target.value)}
-                    className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
+                    type="text"
+                    value={formData.problems}
+                    onChange={e => updateData("problems", e.target.value)}
+                    className="w-full bg-transparent border-b border-white/40 pb-3 text-center text-lg text-white outline-none focus:border-white transition-colors"
                   />
                 </div>
-                <div className="flex flex-col gap-2 relative" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">JOB TITLE *</label>
-                  <div 
-                    className="relative cursor-pointer"
-                    onClick={() => setActiveDropdown(activeDropdown === "jobTitle" ? null : "jobTitle")}
-                  >
-                    <input
-                      type="text"
-                      readOnly
-                      placeholder="Select Job Title"
-                      value={formData.jobTitle}
-                      className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none cursor-pointer focus:border-white transition-colors pr-6"
-                    />
-                    <span className={`absolute right-0 bottom-3 text-[10px] opacity-70 transition-transform duration-200 ${activeDropdown === "jobTitle" ? "rotate-180" : ""}`}>▼</span>
-                  </div>
-                  {activeDropdown === "jobTitle" && (
-                    <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
-                      {jobTitles.map(title => (
-                        <div 
-                          key={title} 
-                          className="px-4 py-2 hover:bg-white/10 cursor-pointer text-sm transition-colors"
-                          onClick={(e) => { e.stopPropagation(); updateData("jobTitle", title); setActiveDropdown(null); }}
-                        >
-                          {title}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 relative" data-animate-field>
-                  <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">COMPANY NAME *</label>
-                  <div 
-                    className="relative cursor-pointer"
-                    onClick={() => setActiveDropdown(activeDropdown === "companyName" ? null : "companyName")}
-                  >
-                    <input
-                      type="text"
-                      readOnly
-                      placeholder="Select Company"
-                      value={formData.companyName}
-                      className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none cursor-pointer focus:border-white transition-colors pr-6"
-                    />
-                    <span className={`absolute right-0 bottom-3 text-[10px] opacity-70 transition-transform duration-200 ${activeDropdown === "companyName" ? "rotate-180" : ""}`}>▼</span>
-                  </div>
-                  {activeDropdown === "companyName" && (
-                    <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
-                      {dummyCompanies.map(company => (
-                        <div 
-                          key={company} 
-                          className="px-4 py-2 hover:bg-white/10 cursor-pointer text-sm transition-colors"
-                          onClick={(e) => { e.stopPropagation(); updateData("companyName", company); setActiveDropdown(null); }}
-                        >
-                          {company}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                <div className="mt-16 w-full  flex items-center justify-between" data-animate-field>
+                  <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
+                    GO BACK
+                  </Button>
+                  <Button surface="on-dark" onClick={nextStep} balanced>
+                    NEXT
+                  </Button>
                 </div>
               </div>
+            )}
 
-              <div className="mt-16 flex items-center justify-between w-full" data-animate-field>
-                <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
-                  GO BACK
-                </Button>
-                <Button surface="on-dark" onClick={handleSubmit} balanced>
-                  SUBMIT
-                </Button>
+            {step === 3 && (
+              <div className="w-full flex flex-col items-center">
+                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                  <span data-split>How big is your existing <br /> commercial book of business <br /> ($ of Gross Written Premium)?*</span>
+                </h2>
+                <div className="flex flex-wrap justify-center gap-4 w-full">
+                  {bookSizes.map((size, i) => (
+                    <button
+                      key={i}
+                      data-animate-btn
+                      onClick={() => updateData("bookSize", size)}
+                      className={`px-8 py-3 rounded-[5px] transition-colors border min-w-[140px] ${formData.bookSize === size ? 'bg-white text-[#2E2E2E] border-transparent' : 'bg-transparent text-white border-white/40 hover:bg-white/[0.08]'}`}
+                    >
+                      {size.trim()}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-16 w-full flex items-center justify-between" data-animate-btn>
+                  <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
+                    GO BACK
+                  </Button>
+                  <Button surface="on-dark" onClick={nextStep} balanced>
+                    NEXT
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {step === 5 && (
-            <div className="w-full flex flex-col items-center">
-              <h2 data-heading className="mb-6 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                <span data-split>Thank you! Your request</span> <br/> 
-                <span data-split>has been submitted.</span>
-              </h2>
-              <p className="mb-12 mt-4 text-base md:text-lg text-white/90" data-animate-field>
-                Want to move faster? Schedule a call with our<br/>
-                team at a time that works for you.
-              </p>
-              <div data-animate-field>
-                <Button surface="on-dark" onClick={() => setStep(0)} balanced>
-                  SCHEDULE A CALL
-                </Button>
+            {step === 4 && (
+              <div className="w-full flex flex-col items-center">
+                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                  <span data-split>Almost there! Tell us about <br /> you and your company.</span>
+                </h2>
+
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-left mt-4">
+                  <div className="flex flex-col gap-2" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">FULL NAME *</label>
+                    <input
+                      type="text"
+                      placeholder="Arjun"
+                      value={formData.firstName}
+                      onChange={e => updateData("firstName", e.target.value)}
+                      className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">FULL NAME *</label>
+                    <input
+                      type="text"
+                      placeholder="Sharma"
+                      value={formData.lastName}
+                      onChange={e => updateData("lastName", e.target.value)}
+                      className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">PHONE NUMBER</label>
+                    <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors relative">
+                      <div
+                        className="mr-2 text-sm opacity-100 flex gap-x-2 items-center cursor-pointer select-none"
+                        onClick={() => setActiveDropdown(activeDropdown === "phone" ? null : "phone")}
+                      >
+                        <div className="w-6 flex items-center justify-center">
+                          {(() => {
+                            const ActiveFlag = Flags[formData.countryCode as keyof typeof Flags];
+                            return ActiveFlag ? (
+                              <span className="flex w-5 items-center justify-center">
+                                <ActiveFlag title={formData.countryCode} />
+                              </span>
+                            ) : (
+                              <span>{formData.countryCode}</span>
+                            );
+                          })()}
+                        </div>
+                        <span className={`text-[10px] transition-transform duration-200 ${activeDropdown === "phone" ? "rotate-180" : ""}`}>▼</span>
+                        {activeDropdown === "phone" && (
+                          <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
+                            {countryCodes.map(c => {
+                              const Flag = Flags[c.countryCode as keyof typeof Flags];
+                              return (
+                                <div
+                                  key={`${c.country}-${c.code}`}
+                                  className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm flex items-center gap-2 transition-colors"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFormData(prev => ({ ...prev, phoneCode: c.code, countryCode: c.countryCode }));
+                                    setActiveDropdown(null);
+                                  }}
+                                >
+                                  <div className="w-6 flex items-center justify-center">
+                                    {Flag ? (
+                                      <span className="flex w-5 items-center justify-center">
+                                        <Flag title={c.countryCode} />
+                                      </span>
+                                    ) : (
+                                      <span>{c.countryCode}</span>
+                                    )}
+                                  </div>
+                                  <span className="w-12 text-white/70">{c.code}</span>
+                                  <span className="truncate flex-1" title={c.country}>{c.country}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-white/60 mr-2 text-sm select-none">{formData.phoneCode}</span>
+                      <input
+                        type="text"
+                        placeholder="98765 43210"
+                        value={formData.phone}
+                        onChange={e => updateData("phone", e.target.value)}
+                        className="w-full bg-transparent text-white outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">EMAIL ADDRESS *</label>
+                    <input
+                      type="email"
+                      placeholder="arjun@company.com"
+                      value={formData.email}
+                      onChange={e => updateData("email", e.target.value)}
+                      className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none focus:border-white transition-colors"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 relative" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">JOB TITLE *</label>
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={() => setActiveDropdown(activeDropdown === "jobTitle" ? null : "jobTitle")}
+                    >
+                      <input
+                        type="text"
+                        readOnly
+                        placeholder="Select Job Title"
+                        value={formData.jobTitle}
+                        className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none cursor-pointer focus:border-white transition-colors pr-6"
+                      />
+                      <span className={`absolute right-0 bottom-3 text-[10px] opacity-70 transition-transform duration-200 ${activeDropdown === "jobTitle" ? "rotate-180" : ""}`}>▼</span>
+                    </div>
+                    {activeDropdown === "jobTitle" && (
+                      <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
+                        {jobTitles.map(title => (
+                          <div
+                            key={title}
+                            className="px-4 py-2 hover:bg-white/10 cursor-pointer text-sm transition-colors"
+                            onClick={(e) => { e.stopPropagation(); updateData("jobTitle", title); setActiveDropdown(null); }}
+                          >
+                            {title}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2 relative" data-animate-field>
+                    <label className="text-[11px] uppercase tracking-widest text-white/70 font-medium">COMPANY NAME *</label>
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={() => setActiveDropdown(activeDropdown === "companyName" ? null : "companyName")}
+                    >
+                      <input
+                        type="text"
+                        readOnly
+                        placeholder="Select Company"
+                        value={formData.companyName}
+                        className="w-full bg-transparent border-b border-white/40 pb-2 text-white outline-none cursor-pointer focus:border-white transition-colors pr-6"
+                      />
+                      <span className={`absolute right-0 bottom-3 text-[10px] opacity-70 transition-transform duration-200 ${activeDropdown === "companyName" ? "rotate-180" : ""}`}>▼</span>
+                    </div>
+                    {activeDropdown === "companyName" && (
+                      <div data-lenis-prevent className="absolute top-full left-0 mt-1 w-full bg-[#1e2a5e] border border-white/20 rounded-md shadow-xl z-20 max-h-48 overflow-y-auto custom-scrollbar">
+                        {dummyCompanies.map(company => (
+                          <div
+                            key={company}
+                            className="px-4 py-2 hover:bg-white/10 cursor-pointer text-sm transition-colors"
+                            onClick={(e) => { e.stopPropagation(); updateData("companyName", company); setActiveDropdown(null); }}
+                          >
+                            {company}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-16 flex items-center justify-between w-full" data-animate-field>
+                  <Button surface="on-dark" variant="outline" onClick={prevStep} balanced>
+                    GO BACK
+                  </Button>
+                  <Button surface="on-dark" onClick={handleSubmit} balanced>
+                    SUBMIT
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-        </div>
-      </Container>
+            {step === 5 && (
+              <div className="w-full flex flex-col items-center">
+                <h2 data-heading className="mb-6 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                  <span data-split>Thank you! Your request</span> <br />
+                  <span data-split>has been submitted.</span>
+                </h2>
+                <p className="mb-12 mt-4 text-base md:text-lg text-white/90" data-animate-field>
+                  Want to move faster? Schedule a call with our<br />
+                  team at a time that works for you.
+                </p>
+                <div data-animate-field data-cal-namespace="15min"
+                  data-cal-link="sunny-cal/15min"
+
+                  data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"auto"}'>
+                  <Button surface="on-dark" balanced>
+                    SCHEDULE A CALL
+                  </Button>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </Container>
       </section>
     </>
   );
