@@ -1,20 +1,20 @@
 "use client";
 
-import ContactMapSvg from "@/components/contact/ContactMapSvg";
-import styles from "@/components/contact/ContactMap.module.css";
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import MapPoints from './MapPoints';
 
 const ContactMap = () => {
   return (
-    <div
-      className={`${styles.map} pointer-events-none absolute inset-x-0 top-0 z-10 h-full w-full`}
-      aria-hidden
-    >
-      <ContactMapSvg
-        className="h-full w-full"
-        preserveAspectRatio="xMidYMin meet"
-        role="img"
-        aria-label="Global office map with New York highlighted"
-      />
+    <div className="w-full h-screen sticky top-0 overflow-hidden z-10">
+      <Canvas
+        camera={{ position: [0, 0, 500], fov: 50 }}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <Suspense fallback={null}>
+          <MapPoints />
+        </Suspense>
+      </Canvas>
     </div>
   );
 };
