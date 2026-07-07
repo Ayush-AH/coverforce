@@ -82,7 +82,7 @@ function initMobilePanelState(panelRoot: HTMLElement) {
         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         opacity: 1,
     });
-    gsap.set(panelRoot.querySelector(".card1"), { opacity: 0, width: "100%", height: "auto", borderRadius: "1rem", clearProps: "padding,backgroundColor,borderColor" });
+    gsap.set(panelRoot.querySelector(".card1"), { opacity: 0, width: "100%", height: "auto", borderRadius: "1rem", scale: 1 });
     gsap.set(panelRoot.querySelector(".card1-content"), { opacity: 1 });
     gsap.set(panelRoot.querySelector(".card1-morph-shell"), { opacity: 0 });
     gsap.set(panelRoot.querySelector(".graph1"), { opacity: 0, y: 12, x: -4 });
@@ -124,197 +124,175 @@ function initMobilePanelState(panelRoot: HTMLElement) {
 
 function applyMobilePanelState(root: HTMLElement, rawIndex: number) {
     const panelRoot = root.querySelector<HTMLElement>(".mobile-process-panel") ?? root;
+    const stepIndex = Math.min(processSteps.length - 1, Math.floor(rawIndex / POINTS_PER_STEP));
+    const pointInStep = Math.floor(rawIndex) % POINTS_PER_STEP;
     const pointT = clamp01(rawIndex - Math.floor(rawIndex));
 
-    const panel1 = panelRoot.querySelector<HTMLElement>(".panel-step1");
-    const panel2 = panelRoot.querySelector<HTMLElement>(".panel-step2");
-    const panel4 = panelRoot.querySelector<HTMLElement>(".panel-step4");
-    const skeleton1 = panelRoot.querySelector<HTMLElement>(".skeleton1");
-    const card1 = panelRoot.querySelector<HTMLElement>(".card1");
-    const graph1 = panelRoot.querySelector<HTMLElement>(".graph1");
-    const scanner1 = panelRoot.querySelector<HTMLElement>(".scanner1");
-    const aiBtn = panelRoot.querySelector<HTMLElement>(".ai-btn");
-    const cursor2 = panelRoot.querySelector<HTMLElement>(".cursor2");
-    const formWrap2 = panelRoot.querySelector<HTMLElement>(".form-wrap2");
-    const formContent = panelRoot.querySelector<HTMLElement>(".form-card2-content");
-    const formNaics = panelRoot.querySelector<HTMLElement>(".form-card2-naics");
-    const skeleton2 = panelRoot.querySelector<HTMLElement>(".skeleton2");
-    const logosGrid = panelRoot.querySelector<HTMLElement>(".logos-grid3");
-    const logos = panelRoot.querySelectorAll<HTMLElement>(".logo3");
-    const cursor4 = panelRoot.querySelector<HTMLElement>(".cursor4");
-    const bindBtn = panelRoot.querySelector<HTMLElement>(".bind-btn");
+    const q = (sel: string) => panelRoot.querySelector<HTMLElement>(sel);
 
-    const revealT = mobileSeg(rawIndex, 0, 0.35);
-    if (panel1) {
-        const clipBottom = gsap.utils.interpolate(100, 0, revealT);
-        gsap.set(panel1, {
-            opacity: rawIndex < 3.4 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 3, 3.4)),
-            clipPath: `polygon(0% 0%, 100% 0%, 100% ${clipBottom}%, 0% ${clipBottom}%)`,
+    const showPanel1 = rawIndex < 3.15;
+    const showPanel2 = rawIndex >= 2.85 && rawIndex < 8.85;
+    const showPanel4 = rawIndex >= 8.5;
+
+    const panelReveal = mobileSeg(rawIndex, 0, 0.3);
+    if (q(".panel-step1")) {
+        gsap.set(q(".panel-step1")!, {
+            opacity: showPanel1 ? 1 : 0,
+            clipPath: `polygon(0% 0%, 100% 0%, 100% ${gsap.utils.interpolate(100, 0, panelReveal)}%, 0% ${gsap.utils.interpolate(100, 0, panelReveal)}%)`,
             y: 0,
         });
     }
-
-    if (rawIndex < 3) {
-        const cardReveal = rawIndex < 1 ? 0 : rawIndex < 2 ? pointT : 1;
-        const graphReveal = rawIndex < 2 ? 0 : rawIndex < 2.65 ? mobileSeg(rawIndex, 2, 2.65) : 1;
-
-        if (skeleton1) {
-            gsap.set(skeleton1, {
-                opacity: rawIndex < 2.1 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 2, 2.15)),
-                clipPath: `polygon(0% 0%, 100% 0%, 100% ${Math.max(0, 100 - cardReveal * 100)}%, 0% ${Math.max(0, 100 - cardReveal * 100)}%)`,
-            });
-        }
-        if (card1) {
-            gsap.set(card1, {
-                opacity: rawIndex >= 1 ? Math.max(cardReveal, rawIndex >= 2 ? 1 : 0) : 0,
-                width: "100%",
-                height: "auto",
-                borderRadius: "1rem",
-                clearProps: "padding,backgroundColor,borderColor,zIndex,marginLeft,marginRight,transformOrigin",
-            });
-        }
-        if (graph1) {
-            gsap.set(graph1, {
-                opacity: graphReveal,
-                y: gsap.utils.interpolate(12, 0, graphReveal),
-                x: gsap.utils.interpolate(-4, 0, graphReveal),
-            });
-        }
-
-        if (scanner1) {
-            let scanTop = 100;
-            let scanOpacity = 0;
-            if (rawIndex >= 2) {
-                const scanT = rawIndex < 3 ? pointT : 1;
-                scanOpacity = scanT < 0.95 ? 1 : Math.max(0, 1 - mobileSeg(scanT, 0.95, 1));
-                if (scanT < 0.12) scanTop = gsap.utils.interpolate(100, 10, scanT / 0.12);
-                else if (scanT < 0.5) scanTop = gsap.utils.interpolate(10, 100, (scanT - 0.12) / 0.38);
-                else if (scanT < 0.72) scanTop = gsap.utils.interpolate(100, 10, (scanT - 0.5) / 0.22);
-                else scanTop = gsap.utils.interpolate(10, 100, (scanT - 0.72) / 0.23);
-            }
-            gsap.set(scanner1, { opacity: scanOpacity, top: `${scanTop}%` });
-        }
-
-        if (panel2) gsap.set(panel2, { opacity: 0 });
-        if (panel4) gsap.set(panel4, { opacity: 0, y: 18 });
-        return;
-    }
-
-    const morphT = mobileSeg(rawIndex, 3, 3.35);
-    const aiExpandT = mobileSeg(rawIndex, 3.35, 4);
-    const cursorT = mobileSeg(rawIndex, 3.7, 4);
-    const formT = mobileSeg(rawIndex, 4, 5);
-    const validT = rawIndex < 6 ? (rawIndex >= 5 ? pointT : 0) : 1;
-    const naicsT = mobileSeg(rawIndex, 5.85, 6.35);
-    const logosT = rawIndex < 8 ? (rawIndex >= 7 ? pointT : 0) : 1;
-    const panel4InT = mobileSeg(rawIndex, 8.7, 9.2);
-    const bindCursorT = mobileSeg(rawIndex, 10, 11);
-    const bindClickT = mobileSeg(rawIndex, 11, 12);
-    const successMorphT = mobileSeg(rawIndex, 12, 12.6);
-
-    if (panel1) {
-        gsap.set(panel1, { opacity: Math.max(0, 1 - morphT), y: 0 });
-    }
-    if (panel2) {
-        gsap.set(panel2, {
-            opacity: rawIndex < 8.8 ? Math.max(morphT, rawIndex >= 3 ? 1 : 0) : Math.max(0, 1 - mobileSeg(rawIndex, 8.8, 9.2)),
-            y: rawIndex >= 8.8 ? gsap.utils.interpolate(0, -14, mobileSeg(rawIndex, 8.8, 9.2)) : 0,
+    if (q(".panel-step2")) {
+        gsap.set(q(".panel-step2")!, {
+            opacity: showPanel2 ? 1 : 0,
+            y: rawIndex >= 8.5 && rawIndex < 8.95 ? gsap.utils.interpolate(0, -14, mobileSeg(rawIndex, 8.5, 8.95)) : 0,
         });
     }
-    if (panel4) {
-        const panel4Opacity = rawIndex < 8.7 ? 0 : rawIndex < 9.2 ? panel4InT : 1;
-        gsap.set(panel4, {
-            opacity: panel4Opacity,
-            y: rawIndex < 9.2 ? gsap.utils.interpolate(18, 0, panel4InT) : 0,
+    if (q(".panel-step4")) {
+        gsap.set(q(".panel-step4")!, {
+            opacity: showPanel4 ? 1 : 0,
+            y: rawIndex < 9.1 && rawIndex >= 8.5 ? gsap.utils.interpolate(18, 0, mobileSeg(rawIndex, 8.5, 9.1)) : 0,
         });
     }
 
-    if (graph1) gsap.set(graph1, { opacity: Math.max(0, 1 - morphT * 2), y: morphT * 8 });
-    if (skeleton1) gsap.set(skeleton1, { opacity: Math.max(0, 1 - morphT * 1.5) });
+    // ── Step 1: intake ──────────────────────────────────────────────────────
+    const cardReveal = stepIndex === 0 && pointInStep === 1 ? pointT : stepIndex > 0 || (stepIndex === 0 && pointInStep > 1) ? 1 : 0;
+    const graphReveal =
+        stepIndex === 0 && pointInStep === 2
+            ? mobileSeg(pointT, 0, 0.4)
+            : stepIndex > 0 || (stepIndex === 0 && pointInStep > 2)
+              ? 1
+              : 0;
 
-    if (card1) {
-        const morphing = rawIndex < 3.35;
-        gsap.set(card1, {
-            opacity: morphing ? Math.max(0, 1 - morphT * 1.2) : 0,
-            width: morphing ? `${gsap.utils.interpolate(100, 14, morphT)}%` : "3.5rem",
-            height: morphing ? `${gsap.utils.interpolate(100, 14, morphT)}%` : "3.5rem",
-            borderRadius: morphing ? `${gsap.utils.interpolate(16, 9999, morphT)}px` : "9999px",
-            padding: morphing && morphT > 0.4 ? "1px" : undefined,
-            backgroundColor: morphT > 0.5 ? "#ffffff" : undefined,
-            borderColor: morphT > 0.5 ? "#CED2D2" : undefined,
-            zIndex: morphT > 0.2 ? 10 : 0,
-            marginLeft: morphT > 0.2 ? "auto" : undefined,
-            marginRight: morphT > 0.2 ? "auto" : undefined,
+    if (q(".skeleton1")) {
+        const hideSkeleton = stepIndex > 0 || (stepIndex === 0 && pointInStep === 2 && pointT > 0.15);
+        gsap.set(q(".skeleton1")!, {
+            opacity: hideSkeleton ? 0 : 1,
+            clipPath: `polygon(0% 0%, 100% 0%, 100% ${Math.max(0, 100 - cardReveal * 100)}%, 0% ${Math.max(0, 100 - cardReveal * 100)}%)`,
+        });
+    }
+    if (q(".card1")) {
+        const morphing = stepIndex === 1 && pointInStep === 0;
+        const morphT = morphing ? mobileSeg(pointT, 0, 0.5) : 0;
+        gsap.set(q(".card1")!, {
+            opacity:
+                stepIndex === 0
+                    ? cardReveal > 0
+                        ? Math.max(0.9, cardReveal)
+                        : 0
+                    : morphing
+                      ? Math.max(0, 1 - morphT * 1.4)
+                      : 0,
+            width: "100%",
+            height: "auto",
+            borderRadius: "1rem",
+            scale: morphing ? gsap.utils.interpolate(1, 0.2, morphT) : 1,
             transformOrigin: "50% 50%",
         });
-        gsap.set(panelRoot.querySelector(".card1-content"), { opacity: Math.max(0, 1 - mobileSeg(rawIndex, 3, 3.25)) });
-        gsap.set(panelRoot.querySelector(".card1-morph-shell"), { opacity: morphT > 0.45 ? morphT : 0 });
+        gsap.set(q(".card1-content")!, { opacity: stepIndex === 0 ? 1 : morphing ? Math.max(0, 1 - morphT * 2) : 0 });
+        gsap.set(q(".card1-morph-shell")!, { opacity: morphing ? morphT : 0 });
+    }
+    if (q(".graph1")) {
+        gsap.set(q(".graph1")!, {
+            opacity: stepIndex === 0 ? graphReveal : 0,
+            y: gsap.utils.interpolate(12, 0, graphReveal),
+            x: gsap.utils.interpolate(-4, 0, graphReveal),
+        });
+    }
+    if (q(".scanner1")) {
+        let scanTop = 100;
+        let scanOpacity = 0;
+        if (stepIndex === 0 && pointInStep === 2) {
+            scanOpacity = pointT < 0.92 ? 1 : Math.max(0, 1 - mobileSeg(pointT, 0.92, 1));
+            if (pointT < 0.12) scanTop = gsap.utils.interpolate(100, 10, pointT / 0.12);
+            else if (pointT < 0.5) scanTop = gsap.utils.interpolate(10, 100, (pointT - 0.12) / 0.38);
+            else if (pointT < 0.72) scanTop = gsap.utils.interpolate(100, 10, (pointT - 0.5) / 0.22);
+            else scanTop = gsap.utils.interpolate(10, 100, (pointT - 0.72) / 0.28);
+        }
+        gsap.set(q(".scanner1")!, { opacity: scanOpacity, top: `${scanTop}%` });
     }
 
-    if (aiBtn) {
-        const showAi = rawIndex >= 3.3;
-        gsap.set(aiBtn, {
-            opacity: showAi ? (rawIndex < 4.05 ? Math.max(morphT, aiExpandT > 0 ? 1 : 0) : Math.max(0, 1 - mobileSeg(rawIndex, 4, 4.08))) : 0,
-            scale: cursorT > 0.82 && cursorT < 0.9 ? 0.93 : 1,
+    // ── Step 2: AI + form ───────────────────────────────────────────────────
+    const aiMorphT = stepIndex === 1 && pointInStep === 0 ? mobileSeg(pointT, 0.2, 0.55) : stepIndex > 1 || (stepIndex === 1 && pointInStep > 0) ? 1 : 0;
+    const aiExpandT = stepIndex === 1 && pointInStep === 0 ? mobileSeg(pointT, 0.45, 0.9) : stepIndex > 1 || (stepIndex === 1 && pointInStep > 0) ? 1 : 0;
+    const cursorT = stepIndex === 1 && pointInStep === 0 ? mobileSeg(pointT, 0.72, 1) : 0;
+    const formT = stepIndex === 1 && pointInStep === 1 ? pointT : stepIndex > 1 || (stepIndex === 1 && pointInStep > 1) ? 1 : 0;
+    const validT = stepIndex === 1 && pointInStep === 2 ? pointT : stepIndex > 1 ? 1 : 0;
+
+    if (q(".ai-btn")) {
+        const showAi = rawIndex >= 3.1 && rawIndex < 4.05;
+        gsap.set(q(".ai-btn")!, {
+            opacity: showAi ? Math.max(aiMorphT, aiExpandT > 0 ? 0.95 : 0) : 0,
+            scale: cursorT > 0.82 && cursorT < 0.92 ? 0.93 : 1,
             width: showAi ? `${gsap.utils.interpolate(56, 176, aiExpandT)}px` : "3.5rem",
-            y: rawIndex >= 4 && rawIndex < 4.1 ? -8 * mobileSeg(rawIndex, 4, 4.1) : 0,
+            y: stepIndex === 1 && pointInStep === 1 && pointT < 0.12 ? -8 * mobileSeg(pointT, 0, 0.12) : 0,
         });
-        gsap.set(panelRoot.querySelector(".ai-btn-inner"), {
-            backgroundColor: aiExpandT > 0.5 ? "#E1E9FF" : "#ffffff",
+        gsap.set(q(".ai-btn-inner")!, {
+            backgroundColor: aiExpandT > 0.45 ? "#E1E9FF" : "#ffffff",
             gap: aiExpandT > 0 ? `${aiExpandT * 0.5}rem` : 0,
             paddingLeft: aiExpandT > 0 ? `${aiExpandT * 1.25}rem` : 0,
             paddingRight: aiExpandT > 0 ? `${aiExpandT * 1.25}rem` : 0,
             paddingTop: aiExpandT > 0 ? `${aiExpandT}rem` : 0,
             paddingBottom: aiExpandT > 0 ? `${aiExpandT}rem` : 0,
         });
-        gsap.set(panelRoot.querySelector(".ai-btn-gradient"), { opacity: aiExpandT });
-        gsap.set(panelRoot.querySelector(".ai-btn-text"), { width: aiExpandT > 0 ? `${aiExpandT * 4.85}rem` : 0 });
-        gsap.set(panelRoot.querySelector(".ai-btn-label"), { opacity: mobileSeg(aiExpandT, 0.35, 0.85) });
-        gsap.set(panelRoot.querySelector(".ai-btn-icon"), { color: aiExpandT > 0 ? POINT_ACTIVE : "#CED2D2" });
+        gsap.set(q(".ai-btn-gradient")!, { opacity: aiExpandT });
+        gsap.set(q(".ai-btn-text")!, { width: aiExpandT > 0 ? `${aiExpandT * 4.85}rem` : 0 });
+        gsap.set(q(".ai-btn-label")!, { opacity: mobileSeg(aiExpandT, 0.35, 0.85) });
+        gsap.set(q(".ai-btn-icon")!, { color: aiExpandT > 0 ? POINT_ACTIVE : "#CED2D2" });
     }
-
-    if (cursor2) {
-        const showCursor = rawIndex >= 3.7 && rawIndex < 4.08;
-        gsap.set(cursor2, {
+    if (q(".cursor2")) {
+        const showCursor = stepIndex === 1 && pointInStep === 0 && pointT >= 0.7;
+        gsap.set(q(".cursor2")!, {
             opacity: showCursor ? 1 : 0,
             x: showCursor ? gsap.utils.interpolate(48, 0, cursorT) : 48,
             y: showCursor ? gsap.utils.interpolate(36, 0, cursorT) : 36,
-            scale: cursorT > 0.82 && cursorT < 0.9 ? 0.85 : 1,
+            scale: cursorT > 0.82 && cursorT < 0.92 ? 0.85 : 1,
+        });
+    }
+    if (q(".form-wrap2")) {
+        gsap.set(q(".form-wrap2")!, { opacity: stepIndex >= 1 && (stepIndex > 1 || pointInStep >= 1) ? Math.min(1, formT + 0.1) : 0 });
+    }
+    if (q(".skeleton2")) {
+        gsap.set(q(".skeleton2")!, {
+            opacity: stepIndex === 1 && pointInStep === 1 ? Math.max(0, 1 - mobileSeg(formT, 0.35, 0.75)) : stepIndex > 1 || (stepIndex === 1 && pointInStep > 1) ? 0 : 1,
         });
     }
 
-    if (formWrap2) {
-        gsap.set(formWrap2, { opacity: rawIndex >= 4 ? Math.min(1, formT + 0.15) : 0 });
-    }
-    if (skeleton2) {
-        gsap.set(skeleton2, { opacity: rawIndex < 4.55 ? 1 : Math.max(0, 1 - mobileSeg(rawIndex, 4.45, 4.65)) });
-    }
-    if (formContent) {
-        gsap.set(formContent, {
-            opacity: rawIndex < 6 ? Math.max(0, 1 - naicsT) : 0,
+    // ── Step 3: NAICS + logos ───────────────────────────────────────────────
+    const naicsT =
+        stepIndex === 2 && pointInStep === 0
+            ? pointT
+            : stepIndex > 2 || (stepIndex === 2 && pointInStep > 0)
+              ? 1
+              : 0;
+    const logosT = stepIndex === 2 && pointInStep === 1 ? pointT : stepIndex > 2 || (stepIndex === 2 && pointInStep > 1) ? 1 : 0;
+
+    if (q(".form-card2-content")) {
+        gsap.set(q(".form-card2-content")!, {
+            opacity: stepIndex < 2 ? 1 : Math.max(0, 1 - naicsT),
             visibility: naicsT > 0.95 ? "hidden" : "visible",
             display: naicsT > 0.95 ? "none" : "block",
         });
     }
-    if (formNaics) {
-        gsap.set(formNaics, { opacity: naicsT });
+    if (q(".form-card2-naics")) {
+        gsap.set(q(".form-card2-naics")!, { opacity: stepIndex >= 2 ? naicsT : 0 });
     }
 
-    const toggleNo = panelRoot.querySelector<HTMLElement>(".f2-toggle-no");
+    const toggleNo = q(".f2-toggle-no");
     if (toggleNo) {
-        const toggleOn = validT > 0.05;
+        const toggleOn = validT > 0.08;
         gsap.set(toggleNo, {
             backgroundColor: toggleOn ? FIELD_VALID : FIELD_IDLE_TOGGLE,
             color: toggleOn ? "#fff" : "#111827",
         });
     }
     MOBILE_F2_FIELDS.forEach((field, i) => {
-        const loaderIn = mobileSeg(validT, 0.08 + i * 0.1, 0.22 + i * 0.1);
-        const loaderOut = mobileSeg(validT, 0.42 + i * 0.06, 0.52 + i * 0.06);
-        const checkIn = mobileSeg(validT, 0.52 + i * 0.1, 0.72 + i * 0.1);
-        const loader = panelRoot.querySelector<HTMLElement>(field.loader);
-        const check = panelRoot.querySelector<HTMLElement>(field.check);
-        const icon = panelRoot.querySelector<HTMLElement>(field.icon);
+        const loaderIn = mobileSeg(validT, 0.1 + i * 0.1, 0.24 + i * 0.1);
+        const loaderOut = mobileSeg(validT, 0.44 + i * 0.06, 0.54 + i * 0.06);
+        const checkIn = mobileSeg(validT, 0.54 + i * 0.1, 0.74 + i * 0.1);
+        const loader = q(field.loader);
+        const check = q(field.check);
+        const icon = q(field.icon);
         if (loader) gsap.set(loader, { opacity: loaderIn > 0 && loaderOut < 1 ? 1 : 0 });
         if (check) {
             gsap.set(check, {
@@ -326,17 +304,17 @@ function applyMobilePanelState(root: HTMLElement, rawIndex: number) {
         }
         if (icon) gsap.set(icon, { opacity: mobileSeg(checkIn, 0.25, 0.75) });
         if ("input" in field) {
-            const input = panelRoot.querySelector<HTMLElement>(field.input);
+            const input = q(field.input);
             if (input) gsap.set(input, { borderColor: checkIn > 0 ? FIELD_VALID : FIELD_IDLE_BORDER });
         }
     });
 
-    if (logosGrid) {
+    if (q(".logos-grid3")) {
         const gridH = `${gsap.utils.interpolate(0, 200, logosT)}px`;
-        gsap.set(logosGrid, { height: gridH, paddingBottom: logosT > 0 ? 20 : 0 });
+        gsap.set(q(".logos-grid3")!, { height: gridH, paddingBottom: logosT > 0 ? 20 : 0 });
     }
-    logos.forEach((logo, i) => {
-        const logoT = mobileSeg(logosT, 0.15 + i * 0.08, 0.55 + i * 0.08);
+    panelRoot.querySelectorAll<HTMLElement>(".logo3").forEach((logo, i) => {
+        const logoT = mobileSeg(logosT, 0.12 + i * 0.08, 0.52 + i * 0.08);
         gsap.set(logo, {
             opacity: logoT,
             scale: gsap.utils.interpolate(0.94, 1, logoT),
@@ -344,45 +322,43 @@ function applyMobilePanelState(root: HTMLElement, rawIndex: number) {
         });
     });
 
-    const rowsOut = bindClickT;
-    const rowShift = `${gsap.utils.interpolate(0, 130, rowsOut)}%`;
-    gsap.set(panelRoot.querySelector(".row4-1-left"), { x: `-${rowShift}`, y: rowsOut > 0 ? -8 * rowsOut : 0, opacity: 1 - rowsOut });
-    gsap.set(panelRoot.querySelector(".row4-1-right"), { x: rowShift, y: rowsOut > 0 ? -8 * rowsOut : 0, opacity: 1 - rowsOut });
-    gsap.set(panelRoot.querySelector(".row4-3-left"), { x: `-${rowShift}`, y: rowsOut > 0 ? 8 * rowsOut : 0, opacity: 1 - rowsOut });
-    gsap.set(panelRoot.querySelector(".row4-3-right"), { x: rowShift, y: rowsOut > 0 ? 8 * rowsOut : 0, opacity: 1 - rowsOut });
-    gsap.set(panelRoot.querySelector(".row4-2-left"), { x: `-${rowShift}`, opacity: 1 - mobileSeg(bindClickT, 0.35, 0.85) });
-    gsap.set(panelRoot.querySelector(".row4-2-right"), { x: rowShift, opacity: 1 - mobileSeg(bindClickT, 0.35, 0.85) });
+    // ── Step 4 & 5: premium card (mobile — no side rows) ────────────────────
+    const bindCursorT = stepIndex === 3 && pointInStep === 1 ? pointT : 0;
+    const bindClickT = stepIndex === 3 && pointInStep === 2 ? pointT : 0;
+    const successT =
+        stepIndex === 4
+            ? pointInStep === 0
+                ? pointT
+                : 1
+            : stepIndex === 3 && pointInStep === 2
+              ? mobileSeg(pointT, 0.55, 1)
+              : 0;
 
-    if (cursor4) {
-        const showBindCursor = rawIndex >= 10 && rawIndex < 11.9;
-        gsap.set(cursor4, {
-            opacity: showBindCursor ? (rawIndex >= 11.7 ? Math.max(0, 1 - mobileSeg(rawIndex, 11.7, 11.9)) : 1) : 0,
+    if (q(".cursor4")) {
+        const showBindCursor = stepIndex === 3 && pointInStep === 1;
+        gsap.set(q(".cursor4")!, {
+            opacity: showBindCursor ? (pointT > 0.88 ? Math.max(0, 1 - mobileSeg(pointT, 0.88, 1)) : 1) : 0,
             x: showBindCursor ? gsap.utils.interpolate(40, 0, bindCursorT) : 40,
             y: showBindCursor ? gsap.utils.interpolate(-20, 0, bindCursorT) : -20,
             scale: bindClickT > 0.15 && bindClickT < 0.35 ? 0.84 : 1,
         });
     }
-    if (bindBtn) {
-        const bindScale = bindCursorT > 0.55 ? gsap.utils.interpolate(1, 1.1, mobileSeg(bindCursorT, 0.55, 0.85)) : 1;
-        gsap.set(bindBtn, {
+    if (q(".bind-btn")) {
+        const bindScale = bindCursorT > 0.5 ? gsap.utils.interpolate(1, 1.1, mobileSeg(bindCursorT, 0.5, 0.85)) : 1;
+        gsap.set(q(".bind-btn")!, {
             scale: bindClickT > 0.15 && bindClickT < 0.35 ? 0.91 : bindScale,
         });
     }
-
-    const successT = mobileSeg(rawIndex, 12, 13);
-    gsap.set(panelRoot.querySelectorAll(".row4-1, .row4-3"), {
-        height: rawIndex >= 12 ? `${gsap.utils.interpolate(31, 0, successMorphT)}%` : "31%",
-        opacity: rawIndex >= 12 ? Math.max(0, 1 - successMorphT) : 1,
-    });
-    gsap.set(panelRoot.querySelector(".row4-2"), {
-        height: rawIndex >= 12 ? `${gsap.utils.interpolate(31, 56, successMorphT)}%` : "31%",
-    });
-    gsap.set(panelRoot.querySelector(".card4-center"), {
-        scale: rawIndex >= 12 ? gsap.utils.interpolate(1, 1.02, successMorphT) : 1,
-        y: 0,
-    });
-    gsap.set(panelRoot.querySelector(".card4-quote"), { opacity: Math.max(0, 1 - successT) });
-    gsap.set(panelRoot.querySelector(".card4-success"), { opacity: successT });
+    if (q(".card4-center")) {
+        gsap.set(q(".card4-center")!, {
+            scale: successT > 0 ? gsap.utils.interpolate(1, 1.04, successT) : 1,
+            y: 0,
+        });
+    }
+    const quoteEl = q(".card4-quote");
+    const successEl = q(".card4-success");
+    if (quoteEl) gsap.set(quoteEl, { opacity: Math.max(0, 1 - successT) });
+    if (successEl) gsap.set(successEl, { opacity: successT });
 }
 
 function MobileProcessPoint({ text, fill }: { text: string; fill: number }) {
@@ -507,7 +483,7 @@ function PanelStep1() {
                 </div>
 
                 {/* Mini graph card */}
-                <div className="graph1 absolute opacity-0 left-full bottom-[105%] rounded-2xl border border-[#CED2D2] p-[3px] z-10 w-[12rem] aspect-video">
+                <div className="graph1 absolute opacity-0 left-full bottom-[105%] rounded-2xl border border-[#CED2D2] p-[3px] z-10 w-[12rem] aspect-video max-lg:left-1/2 max-lg:bottom-full max-lg:mb-2 max-lg:w-[9rem] max-lg:-translate-x-1/2">
                     <div className="w-full h-full rounded-xl border border-[#CED2D2]" />
                     <div className="absolute inset-0 z-10 py-3 p-4 flex flex-col justify-between">
                         <div>
@@ -684,16 +660,16 @@ function PanelStep3() {
 
 function PanelStep4() {
     return (
-        <div className="panel-step4 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none p-7">
-            <div className="relative overflow-hidden flex h-full w-full flex-col justify-between">
+        <div className="panel-step4 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none p-7 max-lg:p-2">
+            <div className="relative overflow-hidden flex h-full w-full flex-col justify-between max-lg:justify-center">
                 <div
-                    className="cursor4 pointer-events-none absolute z-50 flex h-11 w-11 items-center justify-center opacity-0"
+                    className="cursor4 pointer-events-none absolute z-50 flex h-11 w-11 items-center justify-center opacity-0 max-lg:right-[18%] max-lg:top-[74%] max-lg:h-9 max-lg:w-9"
                     style={{ right: "25%", top: "60%", transform: "translateY(0%)" }}
                 >
                     <Image src="/images/process/cursor.svg" alt="" width={100} height={100} className="h-full w-full object-cover" />
                 </div>
 
-                <div className="row4-1 w-full h-[31%] overflow-hidden flex items-center justify-between">
+                <div className="row4-1 w-full h-[31%] overflow-hidden flex items-center justify-between max-lg:hidden">
                     {["-ml-2", "-mr-2"].map(cls => (
                         <div
                             key={cls}
@@ -706,34 +682,34 @@ function PanelStep4() {
                     ))}
                 </div>
 
-                <div className="row4-2 relative w-full h-[31%] flex items-center justify-center">
-                    <div className="row4-2-track absolute left-[-28%] w-full h-full flex items-center justify-between">
-                        <div className="row4-2-card row4-2-left w-1/2 shrink-0 h-full border border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                <div className="row4-2 relative w-full h-[31%] flex items-center justify-center max-lg:h-full max-lg:min-h-[240px]">
+                    <div className="row4-2-track absolute left-[-28%] w-full h-full flex items-center justify-between max-lg:static max-lg:left-0 max-lg:justify-center">
+                        <div className="row4-2-card row4-2-left w-1/2 shrink-0 h-full border border-[#CCCCCC] bg-white rounded-2xl p-[3px] max-lg:hidden">
                             <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
                                 <div className="w-full h-12 border-b border-[#CCCCCC]" />
                             </div>
                         </div>
 
-                        <div className="card4-center relative w-1/2 h-full shrink-0 overflow-hidden border mx-4 border-[#CCCCCC] bg-white rounded-2xl">
+                        <div className="card4-center relative w-1/2 h-full shrink-0 overflow-hidden border mx-4 border-[#CCCCCC] bg-white rounded-2xl max-lg:w-full max-lg:h-full max-lg:max-h-[300px] max-lg:mx-0">
                             <div className="card4-quote absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl">
-                                <div className="w-full h-12 px-3 bg-[#EEF1F3]/25 flex items-center justify-between">
-                                    <Image src="/images/process/logo1.svg" alt="AmTrust" width={100} height={100} className="size-10 object-contain" />
+                                <div className="w-full h-12 px-3 bg-[#EEF1F3]/25 flex items-center justify-between max-lg:h-14 max-lg:px-4">
+                                    <Image src="/images/process/logo1.svg" alt="AmTrust" width={100} height={100} className="size-10 object-contain max-lg:size-12" />
                                     <div className="flex items-center gap-2">
-                                        <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-xs bg-[#D7F2F9] py-px px-2">A++</span>
-                                        <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-xs bg-[#D7F2F9] py-px px-2">10/10</span>
+                                        <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-xs bg-[#D7F2F9] py-px px-2 max-lg:text-[0.6rem] max-lg:px-2.5 max-lg:py-0.5">A++</span>
+                                        <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-xs bg-[#D7F2F9] py-px px-2 max-lg:text-[0.6rem] max-lg:px-2.5 max-lg:py-0.5">10/10</span>
                                     </div>
                                 </div>
-                                <div className="w-full flex items-end justify-between px-3 pb-3">
+                                <div className="w-full flex items-end justify-between px-3 pb-3 max-lg:px-4 max-lg:pb-4">
                                     <div className="flex flex-col gap-1">
-                                        <span className="font-heading text-xs uppercase font-medium text-[#9C9AA2]">Premium</span>
-                                        <span className="font-mono text-sm tracking-wide text-[#6DAB4E]">$900.00</span>
+                                        <span className="font-heading text-xs uppercase font-medium text-[#9C9AA2] max-lg:text-sm">Premium</span>
+                                        <span className="font-mono text-sm tracking-wide text-[#6DAB4E] max-lg:text-lg">$900.00</span>
                                     </div>
-                                    <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-full bg-[#D7F2F9] py-1 px-4">Instantly Bindable</span>
+                                    <span className="font-heading text-[0.50rem] font-medium text-[#177F9B] flex items-center rounded-full bg-[#D7F2F9] py-1 px-4 max-lg:text-xs max-lg:px-5 max-lg:py-1.5">Instantly Bindable</span>
                                 </div>
-                                <div className="w-full flex items-end justify-between px-3 pb-3">
-                                    <span className="font-heading text-[0.55rem] font-medium tracking-wide text-[#3A48BE]">Gain 2% Enhanced Commissions</span>
+                                <div className="w-full flex items-end justify-between px-3 pb-3 max-lg:px-4 max-lg:pb-4">
+                                    <span className="font-heading text-[0.55rem] font-medium tracking-wide text-[#3A48BE] max-lg:text-xs">Gain 2% Enhanced Commissions</span>
                                     <div className="relative shrink-0">
-                                        <div className="bind-btn flex items-center justify-center gap-1 rounded-full bg-[#0032C9] px-3 py-1 font-heading text-[0.60rem] font-medium text-white">
+                                        <div className="bind-btn flex items-center justify-center gap-1 rounded-full bg-[#0032C9] px-3 py-1 font-heading text-[0.60rem] font-medium text-white max-lg:px-4 max-lg:py-1.5 max-lg:text-xs">
                                             Bind <RiArrowRightLine size={12} />
                                         </div>
                                     </div>
@@ -759,7 +735,7 @@ function PanelStep4() {
                             </div>
                         </div>
 
-                        <div className="row4-2-card row4-2-right w-1/2 shrink-0 h-full border border-[#CCCCCC] bg-white rounded-2xl p-[3px]">
+                        <div className="row4-2-card row4-2-right w-1/2 shrink-0 h-full border border-[#CCCCCC] bg-white rounded-2xl p-[3px] max-lg:hidden">
                             <div className="w-full h-full rounded-xl border border-[#CCCCCC]">
                                 <div className="w-full h-12 border-b border-[#CCCCCC]" />
                             </div>
@@ -767,7 +743,7 @@ function PanelStep4() {
                     </div>
                 </div>
 
-                <div className="row4-3 w-full h-[31%] overflow-hidden flex items-center justify-between">
+                <div className="row4-3 w-full h-[31%] overflow-hidden flex items-center justify-between max-lg:hidden">
                     {["-ml-2", "-mr-2"].map(cls => (
                         <div
                             key={cls}
