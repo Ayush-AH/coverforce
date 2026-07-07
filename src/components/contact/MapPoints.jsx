@@ -73,9 +73,14 @@ const IconMail = () => (
 
 export default function MapPoints() {
   const materialRef = useRef();
-  const { viewport } = useThree();
+  const { viewport, size } = useThree();
   const [isHovering, setIsHovering] = useState(false);
   const hoveringRef = useRef(false);
+
+  const groupPosition = useMemo(() => {
+    if (size.width < 1024) return [-95, 4, 0];
+    return [0, 0, 0];
+  }, [size.width]);
 
   const { positions, alphas, nyCoords } = useMemo(() => {
     const dotCount = mapDotsData.length / 2;
@@ -126,7 +131,7 @@ export default function MapPoints() {
   }, []);
 
   return (
-    <group>
+    <group position={groupPosition}>
       <points>
         <bufferGeometry>
           <bufferAttribute
