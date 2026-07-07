@@ -59,7 +59,40 @@ type WorkflowStep = {
   text: string;
 };
 
-const steps: WorkflowStep[] = [
+const manualSteps: WorkflowStep[] = [
+  {
+    label: "Email Intake",
+    icon: "mail",
+    text: "Submissions arrive as unstructured emails, PDFs, and attachments — producers spend hours sorting and forwarding before underwriting can even begin.",
+  },
+  {
+    label: "Manual Review",
+    icon: "doc",
+    text: "Underwriters comb through every submission by hand, checking for missing data, inconsistent formatting, and compliance gaps before a quote can even begin.",
+  },
+  {
+    label: "Re-enter Data",
+    icon: "refresh",
+    text: "Producers retype the same applicant details into multiple carrier portals, copying values from PDFs and emails one field at a time.",
+  },
+  {
+    label: "Wait for Quotes",
+    icon: "clock",
+    text: "Submissions sit in carrier queues for days while underwriters work through backlogs, leaving producers chasing status updates instead of clients.",
+  },
+  {
+    label: "Manual Compare",
+    icon: "scale",
+    text: "Spreadsheets get built by hand to line up coverage limits, exclusions, and premiums across carriers before a recommendation can be made.",
+  },
+  {
+    label: "Slow Bind",
+    icon: "check",
+    text: "Policies are bound across carrier portals, email chains, and internal systems — with documents scattered and no single source of truth.",
+  },
+];
+
+const coverforceSteps: WorkflowStep[] = [
   {
     label: "Smart Intake",
     icon: "mail",
@@ -91,6 +124,78 @@ const steps: WorkflowStep[] = [
     text: "Once a quote is approved, policies are bound and issued instantly, with documents delivered straight to the producer and client in one connected flow.",
   },
 ];
+
+type WorkflowMode = "manual" | "coverforce";
+
+function WorkflowModeToggle({
+  mode,
+  onChange,
+}: {
+  mode: WorkflowMode;
+  onChange: (mode: WorkflowMode) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const manualBtnRef = useRef<HTMLButtonElement>(null);
+  const coverforceBtnRef = useRef<HTMLButtonElement>(null);
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const activeBtn = mode === "manual" ? manualBtnRef.current : coverforceBtnRef.current;
+    if (!container || !activeBtn) return;
+
+    const updatePill = () => {
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+      setPillStyle({
+        left: btnRect.left - containerRect.left,
+        width: btnRect.width,
+      });
+    };
+
+    updatePill();
+
+    const ro = new ResizeObserver(updatePill);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [mode]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative inline-flex overflow-hidden rounded-full bg-[#151f4d] p-[2px]"
+    >
+      {/* Sliding white capsule, positioned behind the buttons */}
+      {pillStyle && (
+        <div
+          className="absolute top-[2px] bottom-[2px] rounded-full bg-white transition-[left,width] duration-300 ease-out"
+          style={{ left: pillStyle.left, width: pillStyle.width }}
+        />
+      )}
+
+      <button
+        ref={manualBtnRef}
+        type="button"
+        onClick={() => onChange("manual")}
+        className={`relative z-10 px-3 py-1.5 font-mono text-[9px] font-medium rounded-full uppercase transition-colors duration-300 md:px-4 md:py-2 md:text-xs ${
+          mode === "manual" ? "text-[#151f4d]" : "text-white"
+        }`}
+      >
+        Manual Workflow
+      </button>
+      <button
+        ref={coverforceBtnRef}
+        type="button"
+        onClick={() => onChange("coverforce")}
+        className={`relative z-10 px-3 py-1.5 font-mono text-[9px] font-medium rounded-full uppercase transition-colors duration-300 md:px-4 md:py-2 md:text-xs ${
+          mode === "coverforce" ? "text-[#151f4d]" : "text-white"
+        }`}
+      >
+        With CoverForce
+      </button>
+    </div>
+  );
+}
 
 // --- helpers -----------------------------------------------------------
 
@@ -357,14 +462,16 @@ const Workflow = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
+  const [workflowMode, setWorkflowMode] = useState<WorkflowMode>("coverforce");
   const [rawIndex, setRawIndex] = useState(0);
+  const skipModeScrollReset = useRef(true);
+
+  const steps = workflowMode === "manual" ? manualSteps : coverforceSteps;
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
     headerRef,
     headingRef,
-    descRef,
   });
 
   useEffect(() => {
@@ -400,7 +507,20 @@ const Workflow = () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [steps.length]);
+
+  useEffect(() => {
+    if (skipModeScrollReset.current) {
+      skipModeScrollReset.current = false;
+      return;
+    }
+
+    const track = trackRef.current;
+    if (!track) return;
+    const top = track.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top, behavior: "smooth" });
+    setRawIndex(0);
+  }, [workflowMode]);
 
   const activeIndex = Math.min(steps.length - 1, Math.floor(rawIndex));
   const stepProgress = clamp01(rawIndex - activeIndex);
@@ -420,7 +540,7 @@ const Workflow = () => {
           <div className="sticky top-0 h-screen py-16 md:py-20 lg:py-36 lg:pb-18 flex flex-col justify-between overflow-hidden">
             <div
               ref={headerRef}
-              className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+              className="grid gap-8 lg:grid-cols-2 lg:items-end lg:justify-between lg:gap-12"
             >
               <div className="flex flex-col justify-end space-y-5">
                 <h2
@@ -437,24 +557,18 @@ const Workflow = () => {
                 </Button>
               </div>
 
-              <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
-                <p
-                  ref={descRef}
-                  className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
-                >
-                  See how manual workflows compare to CoverForce — from smart intake
-                  through bind, in one connected platform built for every producer.
-                </p>
+              <div className="flex flex-col items-start lg:items-end">
+                <WorkflowModeToggle mode={workflowMode} onChange={setWorkflowMode} />
               </div>
             </div>
 
             <div className="w-full">
-              <WorkflowConnector steps={steps} rawIndex={rawIndex} />
+              <WorkflowConnector key={workflowMode} steps={steps} rawIndex={rawIndex} />
             </div>
 
             <div className="flex min-h-44 items-end md:min-h-52 lg:min-h-28">
               <p
-                key={activeIndex}
+                key={`${workflowMode}-${activeIndex}`}
                 className="max-w-2xl text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-2xl lg:leading-[1.12]"
                 style={{ opacity: paragraphOpacity, transition: "opacity 0.3s ease" }}
               >
