@@ -49,6 +49,7 @@ type SolutionScrollHeroProps = {
   listHeading?: string;
   listPoints?: readonly SolutionListPoint[];
   rightCard?: ReactNode;
+  rightCardTransferTargetId?: string;
   gradFlow: GradFlowColors;
   showMarquee?: boolean;
   showSecondSection?: boolean;
@@ -81,6 +82,7 @@ export default function SolutionScrollHero({
   listHeading,
   listPoints,
   rightCard,
+  rightCardTransferTargetId,
   gradFlow,
   showMarquee = false,
   showSecondSection = true,
@@ -109,14 +111,86 @@ export default function SolutionScrollHero({
 
   useGSAP(
     () => {
+      const card = cardRef.current;
+      if (!rightCard || !card) return;
+
+      if (!showSecondSection && rightCardTransferTargetId) {
+        const target = document.querySelector<HTMLElement>(
+          `[data-transfer-target="${rightCardTransferTargetId}"]`,
+        );
+
+        if (!target) return;
+
+        const mm = gsap.matchMedia();
+
+        mm.add("(min-width: 1024px)", () => {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            gsap.set(card, { clearProps: "transform" });
+            return;
+          }
+
+          let sourceRect = card.getBoundingClientRect();
+          let targetRect = target.getBoundingClientRect();
+
+          const measure = () => {
+            gsap.set(card, { x: 0, y: 0, scale: 1, transformOrigin: "top left" });
+            sourceRect = card.getBoundingClientRect();
+            targetRect = target.getBoundingClientRect();
+          };
+
+          const updateCardPosition = (progress: number) => {
+            const x = gsap.utils.interpolate(0, targetRect.left - sourceRect.left, progress);
+            const y = gsap.utils.interpolate(0, targetRect.top - sourceRect.top - 80, progress);
+            const scale = gsap.utils.interpolate(1, targetRect.width / sourceRect.width, progress);
+
+            gsap.set(card, { x, y, scale, transformOrigin: "top left" });
+          };
+
+          const trigger = ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: "top top",
+            endTrigger: target,
+            end: "top center",
+            scrub: 0.5,
+            invalidateOnRefresh: true,
+            onRefreshInit: measure,
+            onRefresh: measure,
+            onUpdate: (self) => updateCardPosition(self.progress),
+          });
+
+          measure();
+          updateCardPosition(0);
+
+          const lenis = window.lenis;
+          let scrollPending = false;
+          const onLenisScroll = () => {
+            if (scrollPending) return;
+            scrollPending = true;
+            requestAnimationFrame(() => {
+              ScrollTrigger.update();
+              scrollPending = false;
+            });
+          };
+
+          lenis?.on("scroll", onLenisScroll);
+          ScrollTrigger.refresh();
+
+          return () => {
+            trigger.kill();
+            lenis?.off("scroll", onLenisScroll);
+            gsap.set(card, { clearProps: "transform" });
+          };
+        });
+
+        return () => mm.revert();
+      }
+
       if (!showSecondSection) return;
 
       const section = sectionRef.current;
       const heroContent = heroContentRef.current;
-      const card = cardRef.current;
       const listHeader = listHeaderRef.current;
       if (!section || !heroContent || !listHeader) return;
-      if (!rightCard || !card) return;
 
       const getCenterY = (el: HTMLElement) => {
         const rect = el.getBoundingClientRect();
@@ -161,11 +235,14 @@ export default function SolutionScrollHero({
 
       return () => mm.revert();
     },
-    { scope: sectionRef, dependencies: [rightCard, showSecondSection] },
+    {
+      scope: sectionRef,
+      dependencies: [rightCard, rightCardTransferTargetId, showSecondSection],
+    },
   );
 
   return (
-    <section ref={sectionRef} className="relative bg-white text-[#0a143b]">
+    <section ref={sectionRef} className="relative z-20 bg-white text-[#0a143b]">
       <Container borderColor="#53535380" className="relative z-10">
         <div className="relative grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col">
@@ -318,13 +395,16 @@ export default function SolutionScrollHero({
               <div className="sticky top-0 flex h-svh items-center justify-center">
                 <div
                   ref={cardRef}
-                  className="relative flex w-full items-center justify-center will-change-transform"
+                  className="relative z-40 flex w-full items-center justify-center will-change-transform"
                 >
                   {rightCard}
                 </div>
               </div>
               ) : (
-                <div className="relative flex w-full items-center justify-center">
+                <div
+                  ref={cardRef}
+                  className="relative flex w-full items-center justify-center will-change-transform"
+                >
                   {rightCard}
                 </div>
               )}

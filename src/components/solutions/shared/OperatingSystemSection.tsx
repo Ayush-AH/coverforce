@@ -21,6 +21,7 @@ export type OperatingRow = {
   stat?: string;
   statLabelLines?: [string, string];
   Mock?: ComponentType;
+  transferTargetId?: string;
 };
 
 export type OperatingSystemConfig = {
@@ -32,6 +33,7 @@ export type OperatingSystemConfig = {
   statColor?: string;
   showHeader?: boolean;
   showStats?: boolean;
+  paddingTop?: boolean;
   rows: OperatingRow[];
 };
 
@@ -50,6 +52,7 @@ export default function OperatingSystemSection({
   statColor = "#33259F",
   showHeader = true,
   showStats = true,
+  paddingTop = false,
   rows,
 }: OperatingSystemConfig) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -68,19 +71,19 @@ export default function OperatingSystemSection({
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const cards = gsap.utils.toArray<HTMLElement>(".operating-row");
+      const mocks = gsap.utils.toArray<HTMLElement>(".operating-row-mock");
 
-      cards.forEach((card) => {
-        gsap.set(card, { opacity: 0, y: 56 });
+      mocks.forEach((mock) => {
+        gsap.set(mock, { opacity: 0, y: 56 });
 
-        gsap.to(card, {
+        gsap.to(mock, {
           opacity: 1,
           y: 0,
           duration: 0.9,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: card,
-            start: "top 82%",
+            trigger: mock,
+            start: "top 68%",
             toggleActions: "play none none none",
             once: true,
           },
@@ -109,9 +112,9 @@ export default function OperatingSystemSection({
   );
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-white text-[#0a143b]">
+    <section ref={sectionRef} className="relative z-10 min-h-screen bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom={true}>
-        <div className="pt-0 pb-16 md:pb-20 lg:pb-24">
+        <div className={paddingTop ? "pt-16 pb-16 md:pt-20 md:pb-20 lg:pt-24 lg:pb-24" : "pt-0 pb-16 md:pb-20 lg:pb-24"}>
           {showHeader ? (
             <div
               ref={headerRef}
@@ -131,7 +134,7 @@ export default function OperatingSystemSection({
                 )}
               </div>
 
-              <div className="flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
+              <div className="relative z-10 flex max-w-md flex-col items-end gap-6 text-left lg:ml-auto">
                 <p
                   ref={descRef}
                   className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
@@ -149,7 +152,7 @@ export default function OperatingSystemSection({
 
           <div className="space-y-28 md:space-y-36 lg:space-y-44">
             {rows.map((row) => {
-              const Mock = row.Mock ?? DEFAULT_MOCKS[row.id];
+              const Mock = row.transferTargetId ? row.Mock : row.Mock ?? DEFAULT_MOCKS[row.id];
 
               return (
                 <div
@@ -183,7 +186,14 @@ export default function OperatingSystemSection({
                     ) : null}
                   </div>
 
-                  <div className="flex items-center justify-center">
+                  <div className="operating-row-mock flex items-center justify-center">
+                    {row.transferTargetId ? (
+                      <div
+                        data-transfer-target={row.transferTargetId}
+                        className="hidden w-full max-w-[680px] min-h-[300px] lg:block lg:max-w-[720px] lg:min-h-[360px]"
+                        aria-hidden
+                      />
+                    ) : null}
                     {Mock ? <Mock /> : null}
                   </div>
                 </div>

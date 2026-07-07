@@ -118,12 +118,14 @@ function DemoStepPanel({
   index,
   panelRef,
   headlineRef,
+  imageRef,
   className,
 }: {
   step: (typeof DEMO_STEPS)[number];
   index: number;
   panelRef: (el: HTMLElement | null) => void;
   headlineRef: (el: HTMLParagraphElement | null) => void;
+  imageRef: (el: HTMLDivElement | null) => void;
   className: string;
 }) {
   return (
@@ -135,7 +137,10 @@ function DemoStepPanel({
         {step.headline}
       </p>
 
-      <div className="relative w-full overflow-hidden rounded-xl border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+      <div
+        ref={imageRef}
+        className="relative w-full overflow-hidden rounded-xl border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.28)]"
+      >
         <Image
           src={step.image}
           alt={`${step.label} preview`}
@@ -156,12 +161,17 @@ const DemoSteps = () => {
   const mobilePanelRefs = useRef<Array<HTMLElement | null>>([]);
   const headlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
   const mobileHeadlineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+  const imageRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const mobileImageRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useGSAP(
     () => {
       const isLg = window.matchMedia("(min-width: 1024px)").matches;
       const headlines = (isLg ? headlineRefs : mobileHeadlineRefs).current.filter(
         (el): el is HTMLParagraphElement => Boolean(el),
+      );
+      const images = (isLg ? imageRefs : mobileImageRefs).current.filter(
+        (el): el is HTMLDivElement => Boolean(el),
       );
 
       const cleanups = headlines.map((headline) =>
@@ -173,6 +183,24 @@ const DemoSteps = () => {
           end: "top 45%",
         }),
       );
+
+      images.forEach((image) => {
+        gsap.fromTo(
+          image,
+          { y: 56, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: image,
+              start: "top 68%",
+              once: true,
+            },
+          },
+        );
+      });
 
       return () => cleanups.forEach((cleanup) => cleanup());
     },
@@ -255,6 +283,9 @@ const DemoSteps = () => {
                   headlineRef={(el) => {
                     mobileHeadlineRefs.current[index] = el;
                   }}
+                  imageRef={(el) => {
+                    mobileImageRefs.current[index] = el;
+                  }}
                   className="mt-5 flex flex-col gap-6"
                 />
               </div>
@@ -287,6 +318,9 @@ const DemoSteps = () => {
                   }}
                   headlineRef={(el) => {
                     headlineRefs.current[index] = el;
+                  }}
+                  imageRef={(el) => {
+                    imageRefs.current[index] = el;
                   }}
                   className="flex min-h-screen flex-col justify-center gap-10 py-16 first:pt-0 last:pb-0 md:gap-12"
                 />

@@ -52,7 +52,7 @@ function WorkflowStepCard({
   return (
     <div
       data-workflow-card
-      className="group relative flex min-h-[13rem] flex-col justify-between overflow-hidden border border-[#E9E9E9] bg-white p-4 transition-colors duration-500 ease-[cubic-bezier(0.62,0.16,0.13,1.01)] transform-3d will-change-transform hover:bg-[#CCBEFF]/10 md:min-h-[24rem] md:p-6 lg:min-h-[26rem]"
+      className="group relative flex min-h-[11rem] flex-col justify-between overflow-hidden border border-[#E9E9E9] bg-white p-4 transition-colors duration-500 ease-[cubic-bezier(0.62,0.16,0.13,1.01)] transform-3d will-change-transform hover:bg-[#CCBEFF]/10 md:min-h-[20rem] md:p-6 lg:min-h-[22rem]"
     >
       <div className="relative z-10 flex flex-1 flex-col justify-between">
         <div className="flex items-start justify-between gap-4">
@@ -80,7 +80,7 @@ function SavingsSummaryCard() {
   return (
     <div
       data-workflow-card
-      className="relative flex min-h-[13rem] flex-col items-end justify-end bg-[#CCBEFF]/10 p-4 transform-3d will-change-transform md:min-h-[24rem] md:p-6 lg:min-h-[26rem]"
+      className="relative flex min-h-[11rem] flex-col items-end justify-end bg-[#CCBEFF]/10 p-4 transform-3d will-change-transform md:min-h-[20rem] md:p-6 lg:min-h-[22rem]"
     >
       <p className="font-heading text-2xl font-regular leading-none text-[#4F4F4F] md:text-6xl">
         107m

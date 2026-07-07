@@ -65,7 +65,7 @@ const DataAdvantage = () => {
                   src="/images/secondcardbg.svg"
                   alt=""
                   fill
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-full object-cover object-center opacity-60"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   aria-hidden
                 />

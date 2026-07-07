@@ -3,6 +3,11 @@
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
 import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
+export const carrierHeroCardMock = createSolutionStepMock(
+  "/images/solution/carriers1.svg",
+  "One Integration, 15,000+ Agencies",
+);
+
 export const operatingRows = [
   {
     id: "integration",
@@ -11,10 +16,7 @@ export const operatingRows = [
       "One API connects your products to wholesalers, networks, and agencies nationwide — no separate partnerships required.",
     stat: "15K+",
     statLabelLines: ["Agencies", "Accessible"] as [string, string],
-    Mock: createSolutionStepMock(
-      "/images/solution/carriers1.svg",
-      "One Integration, 15,000+ Agencies",
-    ),
+    transferTargetId: "carrier-step-1-card",
   },
   {
     id: "ai-validated",
@@ -53,7 +55,8 @@ export default function OperatingSystem() {
       sectionDescription={operatingSystemDescription}
       ctaLabel="Request a demo"
       ctaVariant="request-demo"
-      showHeader={false}
+      paddingTop={true}
+      showHeader={true}
       rows={operatingRows}
     />
   );

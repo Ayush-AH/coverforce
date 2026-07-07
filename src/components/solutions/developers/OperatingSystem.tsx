@@ -3,16 +3,18 @@
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
 import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
+export const developersHeroCardMock = createSolutionStepMock(
+  "/images/developers/dev1.svg",
+  "Developer-first infrastructure for quote-to-bind workflows",
+);
+
 export const operatingRows = [
   {
     id: "infrastructure",
     heading: "Developer-first infrastructure for quote-to-bind workflows",
     description:
       "Build faster with open APIs, MCP support, sandbox access, and direct engineering support — everything needed to go from integration to production in 30 days.",
-    Mock: createSolutionStepMock(
-      "/images/developers/dev1.svg",
-      "Developer-first infrastructure for quote-to-bind workflows",
-    ),
+    transferTargetId: "developers-step-1-card",
   },
   {
     id: "ai-workflows",
@@ -42,10 +44,8 @@ export const operatingSystemDescription =
 
 export default function OperatingSystem({
   showHeader = true,
-  hideFirstRow = true,
 }: {
   showHeader?: boolean;
-  hideFirstRow?: boolean;
 }) {
   return (
     <OperatingSystemSection
@@ -53,9 +53,10 @@ export default function OperatingSystem({
       sectionDescription={operatingSystemDescription}
       ctaHref="/developers#endpoints"
       ctaLabel="View API docs"
+      paddingTop={true}
       showHeader={showHeader}
       showStats={false}
-      rows={hideFirstRow ? operatingRows.slice(1) : operatingRows}
+      rows={operatingRows}
     />
   );
 }

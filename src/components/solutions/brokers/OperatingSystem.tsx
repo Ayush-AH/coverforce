@@ -3,6 +3,11 @@
 import OperatingSystemSection from "@/components/solutions/shared/OperatingSystemSection";
 import { createSolutionStepMock } from "@/components/solutions/shared/SolutionStepIllustration";
 
+export const brokersHeroCardMock = createSolutionStepMock(
+  "/images/solution/broker1.svg",
+  "One Platform for Every Carrier, Every Office",
+);
+
 export const operatingRows = [
   {
     id: "platform",
@@ -11,10 +16,7 @@ export const operatingRows = [
       "One workflow for every producer — 40+ carrier integrations, dynamic carrier questions, no portal logins, no rekeying, and no office-by-office workflow gaps.",
     stat: "40+",
     statLabelLines: ["Carriers,", "One Workflow"] as [string, string],
-    Mock: createSolutionStepMock(
-      "/images/solution/broker1.svg",
-      "One Platform for Every Carrier, Every Office",
-    ),
+    transferTargetId: "brokers-step-1-card",
   },
   {
     id: "ai",
@@ -58,8 +60,9 @@ export default function OperatingSystem() {
       sectionDescription={operatingSystemDescription}
       ctaHref="/contact"
       ctaLabel="Start a quote"
-      showHeader={false}
-      rows={operatingRows.slice(1)}
+      paddingTop={true}
+      showHeader={true}
+      rows={operatingRows}
     />
   );
 }
