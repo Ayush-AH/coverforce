@@ -15,6 +15,8 @@ import WayCardModal from "./WayCardModal";
 import { WayCardHoverProvider } from "./WayCardHoverContext";
 import { WAY_CARD_MODALS } from "@/data/wayCardModals";
 import { CARD_BACKGROUND_STYLES, type CardBackground } from "@/data/wayCardStyles";
+import StartupRecentActivityCard from "@/components/solutions/startups/StartupRecentActivityCard";
+import AiAppetiteEngineMock from "@/components/solutions/wholesalers/AiAppetiteEngineMock";
 
 const WholesalerMock = dynamic(() => import("./WholesalerMock"), {
   loading: () => <MockPlaceholder />,
@@ -139,23 +141,31 @@ const WAY_CARDS: WayCardConfig[] = [
   },
   {
     label: "Startups",
-    tagline: "One workflow for every producer",
+    tagline: (
+      <>
+        The faster way to build
+        <br className="md:hidden" />
+        <span className="hidden md:inline"> </span>
+        a modern brokerage
+      </>
+    ),
     variant: "dark",
     background: "startup",
     backgroundInteractive: true,
-    mock: <BrokerMockWithCardHover />,
-    modalPreview: <BrokerMock />,
+    mockShiftDown: true,
+    mock: <AiAppetiteEngineMock />,
+    modalPreview: <AiAppetiteEngineMock />,
     backgroundScene: <GlobeScene interactive transparent tone="white" />,
   },
   {
     label: "Carriers",
-    tagline: "Grow distribution efficiently",
+    tagline: "Be present at the moment agents quote",
     variant: "dark",
     background: "carrier",
     dotGrid: true,
     mockShiftDown: true,
-    mock: <WholesalerMock liveStats />,
-    modalPreview: <WholesalerMock liveStats />,
+    mock: <StartupRecentActivityCard />,
+    modalPreview: <StartupRecentActivityCard />,
   },
 ];
 
@@ -285,7 +295,11 @@ const WayCard = memo(function WayCard({
           ) : null}
         </div>
         <div
-          className={`way-card-mock pointer-events-none absolute inset-0 z-10 max-md:p-3 max-md:sm:p-5 p-4 sm:p-5 md:p-6 transition-opacity duration-300 ${hideMock ? "opacity-0" : "opacity-100"} ${mockAlign === "center" || mockShiftDown ? "max-md:flex max-md:items-start max-md:justify-center md:flex md:items-center md:justify-center" : ""} ${mockShiftDown ? "max-md:pt-[5.75rem] max-md:sm:pt-24 md:pt-28 lg:pt-32" : mockAlign === "bottom" ? "" : "max-md:pt-[5.75rem] max-md:sm:pt-24"}`}
+          className={`way-card-mock pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 ${hideMock ? "opacity-0" : "opacity-100"} ${
+            mockAlign === "bottom"
+              ? "max-md:px-0 max-md:pt-3 max-md:sm:pt-5 max-md:pb-0 px-0 pt-4 sm:pt-5 md:pt-6 md:pb-0"
+              : "max-md:p-3 max-md:sm:p-5 p-4 sm:p-5 md:p-6"
+          } ${mockAlign === "center" || mockShiftDown ? "max-md:flex max-md:items-start max-md:justify-center md:flex md:items-center md:justify-center" : ""} ${mockShiftDown ? "max-md:pt-[5.75rem] max-md:sm:pt-24 md:pt-28 lg:pt-32" : mockAlign === "bottom" ? "" : "max-md:pt-[5.75rem] max-md:sm:pt-24"}`}
         >
           <div
             className={

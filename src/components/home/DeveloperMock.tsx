@@ -197,7 +197,7 @@ export default function DeveloperMock() {
   }, []);
 
   return (
-    <div className="relative z-10 mx-auto w-full max-md:max-w-[min(100%,320px)] max-md:sm:max-w-[360px] rounded-t-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.13)] md:absolute md:-bottom-7 md:right-52 md:mx-0 md:max-w-[420px]">
+    <div className="relative z-10 mx-auto w-full max-md:max-w-none rounded-t-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.13)] md:absolute md:-bottom-7 md:right-52 md:mx-0 md:max-w-[420px]">
       <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] max-md:px-4 max-md:py-4 px-5 py-6">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF]">
           <RiCodeSSlashLine color="#494646" size={15} />
