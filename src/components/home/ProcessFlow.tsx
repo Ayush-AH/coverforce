@@ -922,7 +922,7 @@ function MobileProcessFlow() {
                             {activeStep.tag}
                         </EyebrowPill>
                     </div>
-                    <h3 className="mt-3 max-w-lg text-xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b]">
+                    <h3 className="mt-3 max-w-lg pr-2 text-balance text-[1.375rem] font-heading font-regular leading-[1.25] tracking-tight text-[#0a143b] sm:text-xl sm:leading-[1.2]">
                         {activeStep.heading}
                     </h3>
 

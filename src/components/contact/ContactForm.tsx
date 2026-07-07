@@ -83,8 +83,8 @@ const ContactForm = () => {
           });
           splitsRef.current.push(split);
           split.words.forEach((word) => {
-            word.style.display = "inline";
-            word.style.whiteSpace = "normal";
+            word.style.display = "inline-block";
+            word.style.whiteSpace = "nowrap";
           });
           chars.push(...split.chars);
         });
@@ -250,10 +250,10 @@ const ContactForm = () => {
               <div className="w-full flex flex-col items-center">
                 <h2
                   data-heading
-                  className="mt-5 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal"
+                  className="mt-5 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]"
                 >
                   <span data-split>
-                    Hey there! How can we assist <br /> you on this afternoon <br /> in Chicago, USA ?
+                    Hey there! How can we assist you on this afternoon in Chicago, USA?
                   </span>
                 </h2>
 
@@ -270,7 +270,7 @@ const ContactForm = () => {
 
             {step === 1 && (
               <div className="w-full flex flex-col items-center">
-                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
+                <h2 data-heading className="mb-12 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]">
                   <span data-split>Type of Business</span>
                 </h2>
                 <div className="flex flex-wrap justify-center gap-4 w-full">
@@ -295,8 +295,8 @@ const ContactForm = () => {
 
             {step === 2 && (
               <div className="w-full flex flex-col items-center">
-                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                  <span data-split>Please describe in a few sentences <br /> what problems CoverForce would <br /> solve for  your company *</span>
+                <h2 data-heading className="mb-12 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]">
+                  <span data-split>Please describe in a few sentences what problems CoverForce would solve for your company *</span>
                 </h2>
                 <div className="w-full" data-animate-field>
                   <input
@@ -319,8 +319,8 @@ const ContactForm = () => {
 
             {step === 3 && (
               <div className="w-full flex flex-col items-center">
-                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                  <span data-split>How big is your existing <br /> commercial book of business <br /> ($ of Gross Written Premium)?*</span>
+                <h2 data-heading className="mb-12 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]">
+                  <span data-split>How big is your existing commercial book of business ($ of Gross Written Premium)?*</span>
                 </h2>
                 <div className="flex flex-wrap justify-center gap-4 w-full">
                   {bookSizes.map((size, i) => (
@@ -347,8 +347,8 @@ const ContactForm = () => {
 
             {step === 4 && (
               <div className="w-full flex flex-col items-center">
-                <h2 data-heading className="mb-12 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                  <span data-split>Almost there! Tell us about <br /> you and your company.</span>
+                <h2 data-heading className="mb-12 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]">
+                  <span data-split>Almost there! Tell us about you and your company.</span>
                 </h2>
 
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-left mt-4">
@@ -516,13 +516,11 @@ const ContactForm = () => {
 
             {step === 5 && (
               <div className="w-full flex flex-col items-center">
-                <h2 data-heading className="mb-6 text-3xl font-heading font-regular leading-tight tracking-tight md:text-5xl lg:text-5xl lg:leading-[1.1] whitespace-normal">
-                  <span data-split>Thank you! Your request</span> <br />
-                  <span data-split>has been submitted.</span>
+                <h2 data-heading className="mb-6 max-w-2xl px-2 text-balance text-[1.625rem] font-heading font-regular leading-[1.15] tracking-tight sm:px-0 sm:text-3xl md:text-5xl lg:leading-[1.1]">
+                  <span data-split>Thank you! Your request has been submitted.</span>
                 </h2>
-                <p className="mb-12 mt-4 text-base md:text-lg text-white/90" data-animate-field>
-                  Want to move faster? Schedule a call with our<br />
-                  team at a time that works for you.
+                <p className="mb-12 mt-4 max-w-xl px-2 text-balance text-base text-white/90 sm:px-0 md:text-lg" data-animate-field>
+                  Want to move faster? Schedule a call with our team at a time that works for you.
                 </p>
                 <div data-animate-field data-cal-namespace="15min"
                   data-cal-link="sunny-cal/15min"
