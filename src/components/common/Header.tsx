@@ -71,7 +71,9 @@ function getHeaderTheme(pathname: string): HeaderTheme {
     pathname.startsWith("/calculation") ||
     pathname.startsWith("/terms") ||
     pathname.startsWith("/privacy") ||
-    pathname.startsWith("/security")
+    pathname.startsWith("/security") ||
+    pathname.startsWith("/blog") ||
+    pathname.startsWith("/author")
   ) {
     return "light";
   }

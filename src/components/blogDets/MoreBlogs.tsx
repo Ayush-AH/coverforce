@@ -1,0 +1,105 @@
+import Image from "next/image";
+import Link from "next/link";
+import Container from "@/components/common/Container";
+
+type MorePost = {
+  slug: string;
+  category: string;
+  title: string;
+  image: string;
+  date: string;
+  readTime: string;
+};
+
+const POSTS: MorePost[] = [
+  {
+    slug: "coverforce-cb-insights-2025",
+    category: "News",
+    title: "CoverForce Named to the 2025 CB Insights' List of the...",
+    image: "/images/blog/blog6.png",
+    date: "October 16, 2025",
+    readTime: "1 min read",
+  },
+  {
+    slug: "coverforce-nowcerts-instant-cois",
+    category: "News",
+    title: "CoverForce Partners With NowCerts to Launch Instant...",
+    image: "/images/blog/blog7.png",
+    date: "October 16, 2025",
+    readTime: "1 min read",
+  },
+  {
+    slug: "coverforce-series-a-funding",
+    category: "News",
+    title: "CoverForce Secures $13 Million in Series A Funding L...",
+    image: "/images/blog/blog8.png",
+    date: "October 16, 2025",
+    readTime: "1 min read",
+  },
+];
+
+function CategoryPill({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-[#0a143b] backdrop-blur-sm">
+      <span className="size-1.5 shrink-0 rounded-full bg-[#413CC0]" aria-hidden />
+      {label}
+    </span>
+  );
+}
+
+function MoreCard({ post }: { post: MorePost }) {
+  return (
+    <Link href={`/blog/${post.slug}`} className="group flex flex-col">
+      <div className="relative w-full overflow-hidden rounded-md bg-[#F7F7FB]">
+        <div className="relative aspect-video w-full">
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
+        <div className="pointer-events-none absolute inset-0 flex items-start p-3">
+          <CategoryPill label={post.category} />
+        </div>
+      </div>
+
+      <h3 className="mt-4 font-heading text-base font-medium leading-snug text-[#0a143b] transition-colors group-hover:text-[#413CC0] md:text-lg">
+        {post.title}
+      </h3>
+
+      <p className="mt-2 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280]">
+        {post.date}
+        <span className="mx-2 text-[#C4C4C4]">&bull;</span>
+        {post.readTime}
+      </p>
+    </Link>
+  );
+}
+
+const MoreBlogs = ({
+  title = "More Insights on Shaping the Future of Insurance",
+}: {
+  title?: string;
+}) => {
+  return (
+    <section className="bg-white text-[#0a143b]">
+      <Container borderColor="#53535380">
+        <div className="pb-16 pt-6 md:pb-24 md:pt-10">
+          <h2 className="max-w-2xl font-heading text-3xl font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+            {title}
+          </h2>
+
+          <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3">
+            {POSTS.map((post) => (
+              <MoreCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default MoreBlogs;

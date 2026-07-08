@@ -1,9 +1,14 @@
-import React from 'react'
+import Hero from "@/components/blog/Hero";
+import Listing from "@/components/blog/Listing";
+import PageWrapper from "@/components/PageWrapper";
 
 const BlogPage = () => {
   return (
-    <div>BlogPage</div>
-  )
-}
+    <PageWrapper>
+      <Hero />
+      <Listing />
+    </PageWrapper>
+  );
+};
 
-export default BlogPage
+export default BlogPage;

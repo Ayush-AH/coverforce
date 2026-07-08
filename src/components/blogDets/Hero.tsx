@@ -1,0 +1,175 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import Container from "@/components/common/Container";
+import EyebrowPill from "@/components/common/EyebrowPill";
+
+type BlogDetail = {
+  category: string;
+  breadcrumb: string;
+  image: string;
+  title: string;
+  author: string;
+  authorHref: string;
+  authorAvatar?: string;
+  authorBio: string;
+  date: string;
+  readTime: string;
+};
+
+const POST: BlogDetail = {
+  category: "News",
+  breadcrumb: "Insights",
+  image: "/images/blog/blog4.png",
+  title:
+    "CoverForce and Great American Insurance Group Partner to Enable Digital Access to Commercial Insurance Products Across the United States",
+  author: "Cyrus-Karai",
+  authorHref: "/author/cyrus-karai",
+  authorAvatar: "/images/blog/author.png",
+  authorBio:
+    "Wharton MBA and Chartered Accountant with leadership experience at Credit Suisse and PwC, driving CoverForce's strategy and growth.",
+  date: "October 16, 2025",
+  readTime: "1 min read",
+};
+
+function authorInitials(name: string) {
+  return name
+    .split(/[\s-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+const Hero = () => {
+  const handleShare = async () => {
+    if (typeof window === "undefined") return;
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: POST.title, url });
+      } catch {
+        /* user dismissed */
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+
+  return (
+    <section className="relative z-20 bg-white text-[#0a143b]">
+      <Container borderColor="#53535380" borderBottom>
+        <div className="mx-auto max-w-4xl py-14 md:py-20 lg:py-24">
+          <nav className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#9AA8BC]">
+            <Link href="/blog" className="transition-colors hover:text-[#413CC0]">
+              Blogs
+            </Link>
+            <span className="text-[#C4C4C4]">/</span>
+            <span className="text-[#50617a]">{POST.breadcrumb}</span>
+          </nav>
+
+          <div className="relative mt-5 w-full overflow-hidden rounded-md bg-[#F7F7FB]">
+            <div className="relative aspect-video w-full">
+              <Image
+                src={POST.image}
+                alt={POST.title}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 48rem"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center justify-between gap-4">
+            <EyebrowPill surface="light" className="!m-0">
+              {POST.category}
+            </EyebrowPill>
+            <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280]">
+              {POST.date}
+              <span className="mx-2 text-[#C4C4C4]">&bull;</span>
+              {POST.readTime}
+            </p>
+          </div>
+
+          <h2 className="mt-4 max-w-3xl font-heading text-3xl font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+            {POST.title}
+          </h2>
+
+          <div className="mt-5 flex items-center justify-between gap-4">
+            <div className="group relative">
+              <Link
+                href={POST.authorHref}
+                className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#5D4DDB] underline underline-offset-4 transition-colors hover:text-[#0a143b] focus-visible:text-[#0a143b] focus-visible:outline-none"
+              >
+                {POST.author}
+              </Link>
+
+              <div className="pointer-events-none absolute left-0 top-full z-30 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                <div className="w-90 max-w-[calc(100vw-3rem)] -translate-y-1 rounded-md border border-[#EDEDED] bg-white p-4 shadow-[0_16px_40px_-18px_rgba(10,20,59,0.22)] transition-transform duration-200 ease-out group-hover:translate-y-0 group-focus-within:translate-y-0">
+                  <div className="flex items-center gap-4">
+                    {POST.authorAvatar ? (
+                      <Image
+                        src={POST.authorAvatar}
+                        alt={POST.author}
+                        width={64}
+                        height={64}
+                        className="size-14 shrink-0 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#5D4DDB] to-[#2A2470] font-heading text-lg font-semibold text-white">
+                        {authorInitials(POST.author)}
+                      </span>
+                    )}
+                    <p className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-[#0a143b] underline underline-offset-4">
+                      {POST.author}
+                    </p>
+                  </div>
+
+                  <p className="mt-4 text-sm font-regular font-sans leading-[1.6] text-[#454545]">
+                    {POST.authorBio}
+                  </p>
+
+                  <Link
+                    href={POST.authorHref}
+                    className="mt-5 inline-flex items-center justify-center rounded-full border border-[#E6E6E6] bg-white px-4 py-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#5D4DDB] transition-colors hover:border-[#413CC0] hover:text-[#413CC0]"
+                  >
+                    Read More
+                  </Link>
+                </div>
+
+                <span
+                  className="absolute left-8 top-[5px] size-3.5 rotate-45 border-l border-t border-[#EDEDED] bg-white"
+                  aria-hidden
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#E6E6E6] bg-white px-4 py-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#5D4DDB] transition-colors hover:border-[#413CC0] hover:text-[#413CC0]"
+            >
+              Share
+              <Image
+                src="/images/blog/share.svg"
+                alt=""
+                width={14}
+                height={14}
+                className="size-3.5"
+                aria-hidden
+              />
+            </button>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Hero;
