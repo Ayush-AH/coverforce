@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/common/Container";
@@ -43,6 +44,24 @@ function authorInitials(name: string) {
 }
 
 const Hero = () => {
+  const [authorOpen, setAuthorOpen] = useState(false);
+  const authorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!authorOpen) return;
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (!authorRef.current?.contains(event.target as Node)) {
+        setAuthorOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+    };
+  }, [authorOpen]);
+
   const handleShare = async () => {
     if (typeof window === "undefined") return;
     const url = window.location.href;
@@ -64,7 +83,7 @@ const Hero = () => {
   return (
     <section className="relative z-20 bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="mx-auto max-w-4xl py-14 md:py-20 lg:py-24">
+        <div className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
           <nav className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#9AA8BC]">
             <Link href="/blog" className="transition-colors hover:text-[#413CC0]">
               Blogs
@@ -97,21 +116,33 @@ const Hero = () => {
             </p>
           </div>
 
-          <h2 className="mt-4 max-w-3xl font-heading text-3xl font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+          <h2 className="mt-4 max-w-3xl font-heading text-2xl font-medium leading-[1.15] tracking-tight text-[#0a143b] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
             {POST.title}
           </h2>
 
           <div className="mt-5 flex items-center justify-between gap-4">
-            <div className="group relative">
-              <Link
-                href={POST.authorHref}
+            <div ref={authorRef} className="group relative">
+              <button
+                type="button"
+                onClick={() => setAuthorOpen((prev) => !prev)}
+                aria-expanded={authorOpen}
                 className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#5D4DDB] underline underline-offset-4 transition-colors hover:text-[#0a143b] focus-visible:text-[#0a143b] focus-visible:outline-none"
               >
                 {POST.author}
-              </Link>
+              </button>
 
-              <div className="pointer-events-none absolute left-0 top-full z-30 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                <div className="w-90 max-w-[calc(100vw-3rem)] -translate-y-1 rounded-md border border-[#EDEDED] bg-white p-4 shadow-[0_16px_40px_-18px_rgba(10,20,59,0.22)] transition-transform duration-200 ease-out group-hover:translate-y-0 group-focus-within:translate-y-0">
+              <div
+                className={`absolute left-0 top-full z-30 pt-3 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:opacity-100 ${
+                  authorOpen
+                    ? "pointer-events-auto opacity-100"
+                    : "pointer-events-none opacity-0"
+                }`}
+              >
+                <div
+                  className={`w-90 max-w-[calc(100vw-3rem)] rounded-md border border-[#EDEDED] bg-white p-4 shadow-[0_16px_40px_-18px_rgba(10,20,59,0.22)] transition-transform duration-200 ease-out group-hover:translate-y-0 ${
+                    authorOpen ? "translate-y-0" : "-translate-y-1"
+                  }`}
+                >
                   <div className="flex items-center gap-4">
                     {POST.authorAvatar ? (
                       <Image

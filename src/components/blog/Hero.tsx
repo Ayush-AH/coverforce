@@ -17,7 +17,7 @@ const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="py-14 md:py-20 lg:py-24">
+        <div className="pb-14 pt-28 md:py-20 lg:py-24">
           <Link
             href={FEATURED_POST.href}
             className="group mx-auto block w-full"
@@ -40,7 +40,7 @@ const Hero = () => {
                 {FEATURED_POST.category}
               </EyebrowPill>
 
-              <h2 className="mt-4 max-w-2xl font-heading text-3xl font-medium leading-[1.12] tracking-tight text-[#0a143b] transition-colors md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+              <h2 className="mt-4 max-w-2xl font-heading text-2xl font-medium leading-[1.15] tracking-tight text-[#0a143b] transition-colors sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
                 {FEATURED_POST.title}
               </h2>
 

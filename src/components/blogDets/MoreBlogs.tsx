@@ -87,7 +87,7 @@ const MoreBlogs = ({
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380">
         <div className="pb-16 pt-6 md:pb-24 md:pt-10">
-          <h2 className="max-w-2xl font-heading text-3xl font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+          <h2 className="max-w-sm font-heading text-2xl font-medium leading-[1.15] tracking-tight text-[#0a143b] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
             {title}
           </h2>
 

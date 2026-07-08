@@ -572,7 +572,7 @@ const Header = () => {
           className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color] duration-300 ${navBarClass}`}
         >
           <Container>
-            <div className="relative flex items-center justify-between py-4">
+            <div className="relative flex items-center justify-between py-2 md:py-4">
               <Link
                 href="/"
                 onClick={(e) => {
