@@ -188,34 +188,51 @@ export default function MapPoints() {
 
             {/* ── Popup Card ── */}
             <div
-              className={`absolute top-full left-1/2 mt-[14px] w-[380px] bg-white/5 backdrop-blur-[24px] border border-white/10 rounded-md overflow-hidden flex flex-row shadow-[0_20px_60px_rgba(0,0,0,0.5),inset_0_0_0_1px_rgba(255,255,255,0.05)] origin-top transition-all duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              className={`absolute top-full left-1/2 mt-[14px] w-90 max-w-[calc(100vw-3rem)] rounded-md border border-[#EDEDED] bg-white p-4 shadow-[0_16px_40px_-18px_rgba(10,20,59,0.22)] origin-top transition-all duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 isHovering
                   ? 'opacity-100 pointer-events-auto -translate-x-1/2 translate-y-0'
                   : 'opacity-0 pointer-events-none -translate-x-1/2 translate-y-2'
               }`}
             >
-              {/* Left: Image */}
-              <div className="w-1/2 min-h-[180px] bg-[url(/images/contact/thumbnail_cv.jpg)] bg-cover bg-center" />
+              <div className="flex items-center gap-4">
+                <div className="size-14 shrink-0 rounded-md bg-[url(/images/contact/thumbnail_cv.jpg)] bg-cover bg-center" />
+                <p className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-[#0a143b] underline underline-offset-4">
+                  CoverForce Inc.
+                </p>
+              </div>
 
-              {/* Right: Info */}
-              <div className="w-1/2 px-3 py-4 flex flex-col justify-between">
-                <h3 className="m-0 text-[18px]! font-medium text-white">CoverForce Inc.</h3>
-
-                <div className="flex items-start gap-2 text-[11px] text-white/70 leading-[1.45]">
+              <div className="mt-4 flex flex-col gap-2 font-sans text-sm font-regular leading-[1.6] text-[#454545]">
+                <a
+                  href="https://maps.app.goo.gl/vEtrvY2mQdCTLye38"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2 transition-colors hover:text-[#413CC0]"
+                >
                   <IconPin />
                   <span>485 Madison Ave Ste 1702, New York, NY 10022, United States</span>
-                </div>
+                </a>
 
-                <div className="flex items-start gap-2 text-[11px] text-white/70 leading-[1.45]">
+                <a
+                  href="tel:+19179056508"
+                  className="flex items-start gap-2 transition-colors hover:text-[#413CC0]"
+                >
                   <IconPhone />
                   <span>+1 917-905-6508</span>
-                </div>
+                </a>
 
-                <div className="flex items-start gap-2 text-[11px] text-white/70 leading-[1.45]">
+                <a
+                  href="mailto:sales@coverforce.com"
+                  className="flex items-start gap-2 transition-colors hover:text-[#413CC0]"
+                >
                   <IconMail />
                   <span>sales@coverforce.com</span>
-                </div>
+                </a>
               </div>
+
+              <span
+                className="absolute left-1/2 -top-[6px] size-3 -translate-x-1/2 rotate-45 border-l border-t border-[#EDEDED] bg-white"
+                aria-hidden
+              />
             </div>
           </div>
         </Html>
