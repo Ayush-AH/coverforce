@@ -79,6 +79,8 @@ type WayCardProps = {
   children: ReactNode;
   className?: string;
   wide?: boolean;
+  compact?: boolean;
+  mobileMinHClass?: string;
   background?: CardBackground;
   mockAlign?: "center" | "bottom";
   mockShiftDown?: boolean;
@@ -113,6 +115,8 @@ const WAY_CARDS: WayCardConfig[] = [
     label: "Brokers",
     tagline: "One workflow for every producer",
     variant: "dark",
+    compact: true,
+    mobileMinHClass: "max-md:min-h-[29rem] max-md:sm:min-h-[27rem]",
     background: "broker",
     backgroundScene: <BrokersCardEarth />,
     backgroundSceneBlendScreen: true,
@@ -150,10 +154,15 @@ const WAY_CARDS: WayCardConfig[] = [
       </>
     ),
     variant: "dark",
+    compact: true,
     background: "startup",
     backgroundInteractive: true,
     mockShiftDown: true,
-    mock: <AiAppetiteEngineMock />,
+    mock: (
+      <div className="w-full max-md:mt-10 max-md:sm:mt-12">
+        <AiAppetiteEngineMock />
+      </div>
+    ),
     modalPreview: <AiAppetiteEngineMock />,
     backgroundScene: <GlobeScene interactive transparent tone="white" />,
   },
@@ -161,10 +170,15 @@ const WAY_CARDS: WayCardConfig[] = [
     label: "Carriers",
     tagline: "Be present at the moment agents quote",
     variant: "dark",
+    compact: true,
     background: "carrier",
     dotGrid: true,
     mockShiftDown: true,
-    mock: <StartupRecentActivityCard />,
+    mock: (
+      <div className="w-full max-md:mt-10 max-md:sm:mt-12">
+        <StartupRecentActivityCard />
+      </div>
+    ),
     modalPreview: <StartupRecentActivityCard />,
   },
 ];
@@ -194,6 +208,20 @@ function useLazyInView<T extends HTMLElement>(rootMargin = "240px 0px") {
   return { ref, visible };
 }
 
+function useIsMobile(query = "(max-width: 767px)") {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [query]);
+
+  return isMobile;
+}
+
 const WayCard = memo(function WayCard({
   label,
   tagline,
@@ -202,6 +230,8 @@ const WayCard = memo(function WayCard({
   children,
   className = "",
   wide = false,
+  compact = false,
+  mobileMinHClass,
   background,
   mockAlign = "center",
   mockShiftDown = false,
@@ -215,7 +245,17 @@ const WayCard = memo(function WayCard({
   const [hovered, setHovered] = useState(false);
   const interactiveTapRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const { ref: cardRef, visible: inView } = useLazyInView<HTMLElement>();
+  const isMobile = useIsMobile();
   const isDark = variant === "dark";
+  const enableScene = !isMobile;
+  const enableInteractive = backgroundInteractive && !isMobile;
+  const mobileMinH =
+    mobileMinHClass ??
+    (wide
+      ? "max-md:min-h-[28rem] max-md:sm:min-h-[26rem]"
+      : compact
+        ? "max-md:min-h-[26rem] max-md:sm:min-h-[24rem]"
+        : "max-md:min-h-[32rem] max-md:sm:min-h-[30rem]");
   const textClass =
     background === "developer" && !backgroundScene
       ? "text-[#0a143b]"
@@ -243,10 +283,10 @@ const WayCard = memo(function WayCard({
         tabIndex={0}
         onClick={handleOpen}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseEnter={isMobile ? undefined : () => setHovered(true)}
+        onMouseLeave={isMobile ? undefined : () => setHovered(false)}
         aria-label={`Open details`}
-        className={`way-card-shell relative cursor-pointer [content-visibility:auto] max-md:[contain-intrinsic-size:auto_580px] [contain-intrinsic-size:auto_530px] ${wide ? "max-md:min-h-[36rem] max-md:sm:min-h-[34rem]" : "max-md:min-h-[32rem] max-md:sm:min-h-[30rem]"} min-h-[22rem] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
+        className={`way-card-shell relative cursor-pointer [content-visibility:auto] max-md:[contain-intrinsic-size:auto_580px] [contain-intrinsic-size:auto_530px] ${mobileMinH} min-h-[22rem] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
       >
         <div
           className="way-card-body absolute inset-0 flex flex-col overflow-hidden p-4 sm:p-5 md:p-8"
@@ -254,25 +294,25 @@ const WayCard = memo(function WayCard({
             background ? { background: CARD_BACKGROUND_STYLES[background] } : undefined
           }
         >
-          {dotGrid ? <WayCardDotGrid variant={variant} active={hovered} inView={inView} /> : null}
-          {backgroundScene && inView ? (
+          {dotGrid && enableScene ? <WayCardDotGrid variant={variant} active={hovered} inView={inView} /> : null}
+          {backgroundScene && inView && enableScene ? (
             <div
               style={
                 backgroundSceneBlendScreen
                   ? { mixBlendMode: "screen" }
                   : undefined
               }
-              className={`absolute inset-0 z-[1] overflow-hidden ${backgroundInteractive ? "pointer-events-auto" : "pointer-events-none"}`}
-              aria-hidden={!backgroundInteractive}
+              className={`absolute inset-0 z-[1] overflow-hidden ${enableInteractive ? "pointer-events-auto" : "pointer-events-none"}`}
+              aria-hidden={!enableInteractive}
               onPointerDownCapture={
-                backgroundInteractive
+                enableInteractive
                   ? (e) => {
                     interactiveTapRef.current = { x: e.clientX, y: e.clientY, t: Date.now() };
                   }
                   : undefined
               }
               onPointerUpCapture={
-                backgroundInteractive
+                enableInteractive
                   ? (e) => {
                     const start = interactiveTapRef.current;
                     interactiveTapRef.current = null;
@@ -288,7 +328,7 @@ const WayCard = memo(function WayCard({
                   }
                   : undefined
               }
-              onClick={backgroundInteractive ? (e) => e.stopPropagation() : undefined}
+              onClick={enableInteractive ? (e) => e.stopPropagation() : undefined}
             >
               {backgroundScene}
             </div>
@@ -302,18 +342,18 @@ const WayCard = memo(function WayCard({
           } ${mockAlign === "center" || mockShiftDown ? "max-md:flex max-md:items-start max-md:justify-center md:flex md:items-center md:justify-center" : ""} ${mockShiftDown ? "max-md:pt-[5.75rem] max-md:sm:pt-24 md:pt-28 lg:pt-32" : mockAlign === "bottom" ? "" : "max-md:pt-[5.75rem] max-md:sm:pt-24"}`}
         >
           <div
-            className={
+            className={`max-md:scale-[0.82] ${mockAlign === "bottom" ? "max-md:origin-bottom" : "max-md:origin-top"} ${
               mockAlign === "bottom"
                 ? "relative flex h-full w-full min-w-0 flex-col justify-end max-md:overflow-visible md:overflow-hidden"
                 : mockShiftDown
                   ? "relative mx-auto flex h-full w-full min-w-0 max-w-full max-md:justify-center md:items-center md:justify-center max-md:overflow-visible md:overflow-hidden"
                   : "relative flex h-full w-full min-w-0 max-md:items-start max-md:justify-center md:items-center md:justify-center max-md:overflow-visible md:overflow-hidden"
-            }
+            }`}
           >
             {inView ? children : <MockPlaceholder />}
           </div>
         </div>
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 max-md:p-3 max-md:sm:p-5 p-4 sm:p-5 md:p-8">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 max-md:px-5 max-md:pt-5 max-md:sm:px-6 max-md:sm:pt-6 p-4 sm:p-5 md:p-8">
           <div className="flex items-start justify-between max-md:gap-3 gap-4">
             <div
               className={

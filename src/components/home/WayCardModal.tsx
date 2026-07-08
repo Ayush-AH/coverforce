@@ -190,48 +190,35 @@ export default function WayCardModal({
           </button>
 
           <div className="px-6 pb-8 pt-14 sm:px-10 sm:pb-10 sm:pt-16 lg:px-12 lg:pb-12">
-            <div className="flex items-start justify-between gap-8 pr-8 sm:pr-10">
-              <div className="min-w-0 flex-1">
-                {stored.label ? (
-                  <div className="way-modal-reveal-slot">
-                    <div
-                      className="way-modal-reveal"
-                      style={{ "--way-modal-stagger": "0ms" } as CSSProperties}
-                    >
-                      <EyebrowPill surface="light" background={cardGradient} className="mb-0">
-                        {stored.label}
-                      </EyebrowPill>
-                    </div>
-                  </div>
-                ) : null}
-                <div className={`way-modal-reveal-slot ${stored.label ? "mt-5" : ""}`}>
+            <div className="flex flex-col gap-5 pr-8 sm:pr-10 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-8 lg:gap-y-5">
+              {stored.label ? (
+                <div className="way-modal-reveal-slot order-1 lg:col-start-1 lg:row-start-1">
                   <div
                     className="way-modal-reveal"
-                    style={{ "--way-modal-stagger": "60ms" } as CSSProperties}
+                    style={{ "--way-modal-stagger": "0ms" } as CSSProperties}
                   >
-                    <h2
-                      id="way-card-modal-title"
-                      className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
-                    >
-                      {stored.content.title}
-                    </h2>
-                    <div className="mt-6 flex min-h-10 flex-wrap items-center gap-3">
-                      <RequestDemoCta
-                        label={stored.content.primaryCta.label}
-                        href={stored.content.primaryCta.href}
-                        className="!border-0 !text-white"
-                        style={{ background: cardGradient }}
-                      />
-                      <RequestDemoCta
-                        label={stored.content.secondaryCta.label}
-                        href={stored.content.secondaryCta.href}
-                        variant="secondary"
-                      />
-                    </div>
+                    <EyebrowPill surface="light" background={cardGradient} className="mb-0">
+                      {stored.label}
+                    </EyebrowPill>
                   </div>
                 </div>
+              ) : null}
+
+              <div className="way-modal-reveal-slot order-2 lg:col-start-1 lg:row-start-2">
+                <div
+                  className="way-modal-reveal"
+                  style={{ "--way-modal-stagger": "60ms" } as CSSProperties}
+                >
+                  <h2
+                    id="way-card-modal-title"
+                    className="max-w-xl text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#0a143b] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                  >
+                    {stored.content.title}
+                  </h2>
+                </div>
               </div>
-              <div className="way-modal-reveal-slot mt-4 max-w-md shrink-0">
+
+              <div className="way-modal-reveal-slot order-3 max-w-md lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:mt-1 lg:justify-self-end">
                 <div
                   className="way-modal-reveal"
                   style={{ "--way-modal-stagger": "90ms" } as CSSProperties}
@@ -239,6 +226,27 @@ export default function WayCardModal({
                   <p className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]">
                     {stored.content.description}
                   </p>
+                </div>
+              </div>
+
+              <div className="way-modal-reveal-slot order-4 lg:col-start-1 lg:row-start-3">
+                <div
+                  className="way-modal-reveal"
+                  style={{ "--way-modal-stagger": "120ms" } as CSSProperties}
+                >
+                  <div className="flex min-h-10 flex-wrap items-center gap-3">
+                    <RequestDemoCta
+                      label={stored.content.primaryCta.label}
+                      href={stored.content.primaryCta.href}
+                      className="!border-0 !text-white"
+                      style={{ background: cardGradient }}
+                    />
+                    <RequestDemoCta
+                      label={stored.content.secondaryCta.label}
+                      href={stored.content.secondaryCta.href}
+                      variant="secondary"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -268,7 +276,7 @@ export default function WayCardModal({
           </div>
 
           <div
-            className="relative overflow-hidden border-t border-[#535353]/10 px-6 py-12 sm:px-10 sm:py-14"
+            className="relative overflow-hidden border-t border-[#535353]/10 px-6 pt-14 pb-12 sm:px-10 sm:py-14"
             style={{
               background: stored.background
                 ? CARD_BACKGROUND_STYLES[stored.background]
@@ -291,7 +299,7 @@ export default function WayCardModal({
                 {stored.backgroundScene}
               </div>
             ) : null}
-            <div className="way-modal-preview-slot pointer-events-none relative z-10 mx-auto flex h-[300px] w-full max-w-[820px] items-center justify-center sm:h-[360px] [&>*]:!relative [&>*]:!top-auto [&>*]:!right-auto [&>*]:!bottom-auto [&>*]:!left-auto [&>*]:mx-auto [&>*]:scale-[1.1] sm:[&>*]:scale-[1.2]">
+            <div className="way-modal-preview-slot pointer-events-none relative z-10 mx-auto flex h-[300px] w-full max-w-[820px] items-center justify-center sm:h-[360px] [&>*]:!relative [&>*]:!top-auto [&>*]:!right-auto [&>*]:!bottom-auto [&>*]:!left-auto [&>*]:mx-auto max-md:[&>*]:scale-[0.82] md:[&>*]:scale-100">
               {stored.preview}
             </div>
           </div>

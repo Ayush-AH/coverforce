@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect } from "react";
 import Container from "../common/Container";
 import EyebrowPill from "../common/EyebrowPill";
 import { processSteps } from "@/data/processSteps";
@@ -832,116 +832,35 @@ function StaticPanel({ step, stacked = false }: { step?: number; stacked?: boole
 }
 
 function MobileProcessFlow() {
-    const trackRef = useRef<HTMLDivElement>(null);
-    const panelRef = useRef<HTMLDivElement>(null);
-    const [rawIndex, setRawIndex] = useState(0);
-
-    const totalPoints = processSteps.length * POINTS_PER_STEP;
-
-    useEffect(() => {
-        let ticking = false;
-
-        const compute = () => {
-            ticking = false;
-            const el = trackRef.current;
-            if (!el) return;
-
-            const rect = el.getBoundingClientRect();
-            const navOffset = getMobileNavOffset();
-            const viewportH = window.innerHeight - navOffset;
-            const scrollable = rect.height - viewportH;
-            if (scrollable <= 0) {
-                setRawIndex(0);
-                return;
-            }
-
-            const scrolled = Math.min(scrollable, Math.max(0, -(rect.top - navOffset)));
-            const progress = scrolled / scrollable;
-            const nextRaw = progress * totalPoints;
-            setRawIndex(nextRaw);
-
-            if (panelRef.current) {
-                applyMobilePanelState(panelRef.current, nextRaw);
-            }
-        };
-
-        const onScroll = () => {
-            if (!ticking) {
-                ticking = true;
-                requestAnimationFrame(compute);
-            }
-        };
-
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll);
-        const lenis = window.lenis;
-        lenis?.on("scroll", onScroll);
-        compute();
-
-        return () => {
-            window.removeEventListener("scroll", onScroll);
-            window.removeEventListener("resize", onScroll);
-            lenis?.off("scroll", onScroll);
-        };
-    }, [totalPoints]);
-
-    const stepIndex = Math.min(processSteps.length - 1, Math.floor(rawIndex / POINTS_PER_STEP));
-    const pointInStep = Math.min(POINTS_PER_STEP - 1, Math.floor(rawIndex) % POINTS_PER_STEP);
-    const pointLocalProgress = clamp01(rawIndex - Math.floor(rawIndex));
-    const activeStep = processSteps[stepIndex];
-
-    useLayoutEffect(() => {
-        const panel = panelRef.current?.querySelector<HTMLElement>(".mobile-process-panel");
-        if (!panel) return;
-        initMobilePanelState(panel);
-        applyMobilePanelState(panelRef.current!, rawIndex);
-    }, []);
-
-    useEffect(() => {
-        if (!panelRef.current) return;
-        applyMobilePanelState(panelRef.current, rawIndex);
-    }, [rawIndex]);
-
-    const getPointFill = (pointIdx: number) => {
-        if (pointIdx < pointInStep) return 1;
-        if (pointIdx > pointInStep) return 0;
-        return pointLocalProgress;
-    };
-
     return (
-        <div
-            ref={trackRef}
-            className="relative lg:hidden"
-            style={{ height: `${(totalPoints + 1) * 100}vh` }}
-        >
-            <div className="sticky top-14 flex min-h-[calc(100svh-3.5rem)] flex-col py-8">
-                {/* Top: steps (like desktop left column) */}
-                <div className="relative flex shrink-0 flex-col pl-1">
-                    <div data-step-tag={stepIndex} className="w-fit">
-                        <EyebrowPill surface="light" dotAttr={`step-${stepIndex}`}>
-                            {activeStep.tag}
-                        </EyebrowPill>
+        <div className="flex flex-col gap-16 py-12 lg:hidden">
+            {processSteps.map((step, index) => (
+                <div key={index} className="flex flex-col">
+                    <div className="w-fit">
+                        <EyebrowPill surface="light">{step.tag}</EyebrowPill>
                     </div>
-                    <h3 className="mt-3 max-w-lg pr-2 text-balance text-[1.375rem] font-heading font-regular leading-[1.25] tracking-tight text-[#0a143b] sm:text-xl sm:leading-[1.2]">
-                        {activeStep.heading}
+                    <h3 className="mt-3 max-w-lg pr-2 text-balance text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#0a143b] sm:text-3xl sm:leading-[1.15]">
+                        {step.heading}
                     </h3>
 
                     <ul className="mt-5 space-y-0">
-                        {activeStep.points.map((point, idx) => (
-                            <MobileProcessPoint
-                                key={point.id}
-                                text={point.text}
-                                fill={getPointFill(idx)}
-                            />
+                        {step.points.map((point) => (
+                            <MobileProcessPoint key={point.id} text={point.text} fill={1} />
                         ))}
                     </ul>
-                </div>
 
-                {/* Bottom: panel (like desktop right column) */}
-                <div ref={panelRef} className="mt-6 flex w-full shrink-0 flex-col justify-end px-1 pb-2">
-                    <StaticPanel stacked />
+                    <div className="mt-8 flex w-full flex-col justify-end px-1">
+                        <Image
+                            src={`/images/process/step${index + 1}.svg`}
+                            alt={step.heading}
+                            width={520}
+                            height={520}
+                            className="h-auto w-full"
+                            onLoad={() => ScrollTrigger.refresh()}
+                        />
+                    </div>
                 </div>
-            </div>
+            ))}
         </div>
     );
 }

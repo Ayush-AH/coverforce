@@ -48,7 +48,7 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
   const workflowPercent = useWorkflowPercent(cardHovered);
 
   return (
-    <div className="relative mx-auto w-full max-md:h-[300px] max-md:max-w-[280px] max-md:overflow-visible md:pointer-events-none md:h-[260px] md:max-w-[300px]">
+    <div className="relative mx-auto w-full max-md:mt-10 max-md:sm:mt-12 max-md:h-[300px] max-md:max-w-[280px] max-md:overflow-visible md:pointer-events-none md:h-[260px] md:max-w-[300px]">
       <div className="absolute top-0 right-0 max-md:w-full md:-right-20 md:w-full">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.10)]">
           <div className="max-md:px-4 max-md:pt-3 max-md:pb-2.5 px-5 pt-4 pb-3">

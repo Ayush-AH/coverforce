@@ -68,7 +68,7 @@ export default function StartupRecentActivityCard() {
         {ACTIVITY_ROWS.map((row) => (
           <div
             key={row.name}
-            className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_auto_auto] items-center gap-x-3 border-b border-dashed border-[#E5E7EB] py-4 last:border-b-0 md:gap-x-4 md:py-2"
+            className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_auto_auto] items-center gap-x-3 border-b border-dashed border-[#E5E7EB] py-2.5 last:border-b-0 md:gap-x-4 md:py-2"
           >
             <div className="flex min-w-0 items-center gap-2.5">
               <span
