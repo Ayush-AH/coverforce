@@ -21,7 +21,7 @@ type BlogDetail = {
 const POST: BlogDetail = {
   category: "News",
   breadcrumb: "Insights",
-  image: "/images/blog/blog4.png",
+  image: "/images/blog/blog6.png",
   title:
     "CoverForce and Great American Insurance Group Partner to Enable Digital Access to Commercial Insurance Products Across the United States",
   author: "Cyrus-Karai",

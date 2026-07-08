@@ -5,7 +5,7 @@ import EyebrowPill from "@/components/common/EyebrowPill";
 
 const FEATURED_POST = {
   href: "/blog/coverforce-named-cb-insights-2025",
-  image: "/images/blog/blog.png",
+  image: "/images/blog/blog6.png",
   category: "News",
   title:
     "CoverForce Named to the 2025 CB Insights' List of the 50 Most Innovative Insurtech Startups",
