@@ -25,7 +25,7 @@ const DistributionFlow = () => {
             <div className="max-w-md">
               <h2
                 ref={headingRef}
-                className="mt-3 text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:mt-5 md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="mt-3 text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:mt-5 md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Built to streamline</span>
                 <br />

@@ -451,7 +451,7 @@ export default function ThreeWays() {
             <div className="space-y-5 md:space-y-6">
               <h2
                 ref={headingRef}
-                className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-xl text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>One platform.</span>
                 <br />

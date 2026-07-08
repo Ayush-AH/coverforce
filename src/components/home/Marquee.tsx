@@ -63,7 +63,7 @@ const Marquee = () => {
                 <div className="relative z-10 py-16 md:py-20 lg:py-24">
                     <h2
                         ref={headingRef}
-                        className="max-w-xl text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                        className="max-w-xl text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
                     >
                         <span data-split className="font-medium">
                             Commercial insurance distribution that gets smarter with every transaction
