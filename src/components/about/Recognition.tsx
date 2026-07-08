@@ -50,7 +50,7 @@ function RecognitionTextCard({ text }: { text: string }) {
     <article
       className={`flex overflow-hidden rounded-xl bg-[#1a1f2e] ${CARD_HEIGHT} flex-col justify-end p-6 md:p-8`}
     >
-      <p className="font-heading text-lg font-medium leading-[1.25] tracking-tight text-white md:text-xl lg:text-2xl lg:leading-[1.2]">
+      <p className="font-heading text-2xl font-medium leading-[1.15] tracking-tight text-white sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
         {text}
       </p>
     </article>
@@ -150,7 +150,7 @@ const Recognition = () => {
 
             <h2
               ref={headingRef}
-              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
               <span data-split>
                 Recognized Among the World&apos;s Leading Insurtech Innovators

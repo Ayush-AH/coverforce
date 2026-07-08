@@ -82,16 +82,16 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             />
           </div>
           <div className="min-w-0 pt-0.5">
-            <p className="font-mono text-[0.6875rem] font-medium uppercase text-[#303030] md:text-sm">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#303030] md:text-sm">
               {testimonial.name}
             </p>
-            <p className="mt-1 font-mono text-[0.625rem] font-medium uppercase text-[#303030]/80 md:text-sm">
+            <p className="mt-1.5 font-mono text-[0.6875rem] font-medium uppercase leading-[1.4] tracking-[0.06em] text-[#303030]/80 md:text-sm">
               {testimonial.role}
             </p>
           </div>
         </div>
 
-        <blockquote className="flex max-w-[32rem] items-center self-center text-xl font-sans font-medium leading-[1.45] tracking-tight text-[#303030] md:text-2xl lg:text-[1.75rem] lg:leading-[1.4]">
+        <blockquote className="flex max-w-[32rem] items-center self-center text-base font-sans font-medium leading-snug tracking-tight text-[#303030] sm:text-lg md:text-2xl md:leading-[1.45] lg:text-[1.75rem] lg:leading-[1.4]">
           {testimonial.quote}&rdquo;
         </blockquote>
 
@@ -144,7 +144,7 @@ const Review = () => {
           >
             <h2
               ref={headingRef}
-              className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+              className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#9AA8BC] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
             >
               <span data-split>Why Commercial Insurance</span>{" "}
               <span data-split>

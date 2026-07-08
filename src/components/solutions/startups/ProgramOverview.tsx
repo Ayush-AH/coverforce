@@ -56,7 +56,7 @@ const ProgramOverview = () => {
             <div className="flex flex-col justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-sm text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
+                className="max-w-sm text-2xl font-heading font-regular leading-[1.15] tracking-tight text-[#9AA8BC] sm:text-3xl md:text-4xl lg:text-3xl lg:leading-[1.15]"
               >
                 <span data-split>Everything you need to </span>
                 <span

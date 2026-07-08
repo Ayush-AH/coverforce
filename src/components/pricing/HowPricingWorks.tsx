@@ -252,7 +252,7 @@ const HowPricingWorks = () => {
             <div className="flex flex-col items-start justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#9AA8BC] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#9AA8BC] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Scales with you not</span>
                 <br />

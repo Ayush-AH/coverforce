@@ -300,7 +300,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
               <div className="flex flex-col justify-end space-y-5">
                 <h2
                   ref={headingRef}
-                  className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                  className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
                 >
                   <span data-split>Infrastructure to Run Your Distribution Not a Tool to Quote One Risk.</span>
                 </h2>
@@ -363,7 +363,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                         draggable={false}
                       />
                       <div className="why-swiper-slide-copy">
-                        <p className="why-swiper-slide-title max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+                        <p className="why-swiper-slide-title max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
                           {slide.title}
                         </p>
                         <p className="why-swiper-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">
@@ -398,7 +398,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                       draggable={false}
                     />
                     <div className="why-slide-copy">
-                      <p className="why-slide-title max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+                      <p className="why-slide-title max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
                         {slide.title}
                       </p>
                       <p className="why-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">

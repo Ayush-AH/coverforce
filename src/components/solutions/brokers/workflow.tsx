@@ -751,7 +751,7 @@ const Workflow = () => {
         {/* Tall scroll track. Its height determines how much scroll distance
             it takes to move through all steps while the content stays pinned. */}
         <div ref={trackRef} style={{ height: `${(steps.length + 1) * 100}vh` }} className="relative">
-          <div className="sticky top-14 flex min-h-[calc(100svh-3.5rem)] flex-col gap-6 overflow-x-hidden pb-8 pt-2 md:gap-8 lg:top-0 lg:h-screen lg:min-h-0 lg:justify-between lg:gap-8 lg:overflow-hidden lg:py-36 lg:pb-18">
+          <div className="sticky top-14 flex min-h-[calc(100svh-3.5rem)] flex-col gap-6 overflow-x-hidden pb-8 pt-20 md:gap-8 lg:top-0 lg:h-screen lg:min-h-0 lg:justify-between lg:gap-8 lg:overflow-hidden lg:py-36 lg:pb-18">
             <div
               ref={headerRef}
               className="flex shrink-0 flex-col items-center gap-5 text-center lg:grid lg:grid-cols-2 lg:items-end lg:justify-between lg:gap-12 lg:text-left"
@@ -759,7 +759,7 @@ const Workflow = () => {
               <div className="flex flex-col items-center space-y-4 lg:items-start lg:justify-end lg:space-y-5">
                 <h2
                   ref={headingRef}
-                  className="max-w-md text-[1.75rem] font-heading font-medium leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[1.625rem] lg:text-[#BCC5D6] lg:leading-[1.12]"
+                  className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#0a143b] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:text-[#BCC5D6] lg:leading-[1.12]"
                 >
                   <span data-split>From intake to bind, <br />
                     reimagined

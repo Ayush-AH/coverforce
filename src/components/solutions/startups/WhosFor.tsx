@@ -104,34 +104,35 @@ const WhosFor = () => {
         <div className="flex flex-col gap-10 py-16 md:gap-12 md:py-20 lg:gap-14 lg:py-24">
           <div
             ref={headerRef}
-            className="grid gap-8 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+            className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-x-12 lg:gap-y-5"
           >
-            <div className="flex flex-col justify-end space-y-5">
-              <h2
-                ref={headingRef}
-                className="max-w-sm text-3xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-4xl lg:text-3xl lg:leading-[1.15]"
+            <h2
+              ref={headingRef}
+              className="order-1 max-w-sm text-2xl font-heading font-regular leading-[1.15] tracking-tight text-[#9AA8BC] sm:text-3xl md:text-4xl lg:col-start-1 lg:row-start-1 lg:text-3xl lg:leading-[1.15]"
+            >
+              <span data-split>Built for founders who are </span>
+              <span
+                data-split
+                className="bg-linear-to-r from-[#A483FE] via-[#8B7CFF] to-[#C4B5FF] bg-clip-text text-transparent"
               >
-                <span data-split>Built for founders who are </span>
-                <span
-                  data-split
-                  className="bg-linear-to-r from-[#A483FE] via-[#8B7CFF] to-[#C4B5FF] bg-clip-text text-transparent"
-                >
-                  serious
-                </span>
-                <span data-split> about insurance.</span>
-              </h2>
-              <Button href="/contact" surface="on-dark">
-                Apply to Start Up Program
-              </Button>
-            </div>
+                serious
+              </span>
+              <span data-split> about insurance.</span>
+            </h2>
 
-            <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
+            <div className="order-2 flex max-w-md flex-col items-start justify-end gap-6 text-left lg:col-start-2 lg:row-start-1 lg:ml-auto">
               <p
                 ref={descRef}
                 className="font-sans font-regular text-sm leading-[1.4] text-[#D1D1D1] md:text-[1.125rem]"
               >
                 If you meet the criteria, apply below.
               </p>
+            </div>
+
+            <div className="order-3 lg:col-start-1 lg:row-start-2">
+              <Button href="/contact" surface="on-dark">
+                Apply to Start Up Program
+              </Button>
             </div>
           </div>
 

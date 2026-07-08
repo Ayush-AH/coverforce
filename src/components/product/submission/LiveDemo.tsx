@@ -31,7 +31,7 @@ const LiveDemo = () => {
                             <div className="flex flex-col justify-end space-y-5">
                                 <h2
                                     ref={headingRef}
-                                    className="max-w-md text-3xl font-heading font-regular leading-tight tracking-tight text-white md:text-4xl lg:text-3xl lg:leading-[1.15]"
+                                    className="max-w-md text-2xl font-heading font-regular leading-[1.15] tracking-tight text-white sm:text-3xl sm:leading-tight md:text-4xl lg:text-3xl lg:leading-[1.15]"
                                 >
                                     <span data-split>CoverForce doc <br /> reader</span>
                                 </h2>

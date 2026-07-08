@@ -132,7 +132,7 @@ function DemoStepPanel({
     <article ref={panelRef} data-index={index} className={className}>
       <p
         ref={headlineRef}
-        className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-white md:text-3xl lg:text-[2rem] lg:leading-[1.3]"
+        className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.25] tracking-tight text-white sm:text-3xl sm:leading-[1.3] md:text-3xl md:leading-[1.35] lg:text-[2rem] lg:leading-[1.3]"
       >
         {step.headline}
       </p>

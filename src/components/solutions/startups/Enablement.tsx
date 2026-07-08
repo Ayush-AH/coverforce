@@ -374,22 +374,17 @@ const Enablement = () => {
         <div className="pt-16 md:pt-20 lg:pt-24 pb-8 md:pb-10 lg:pb-12">
           <div
             ref={headerRef}
-            className="grid gap-6 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
+            className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-x-12 lg:gap-y-5"
           >
-            <div className="flex flex-col justify-end space-y-5">
-              <h2
-                ref={headingRef}
-                className="max-w-md text-2xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-3xl lg:text-[1.625rem] lg:leading-[1.12]"
-              >
-                <span data-split>Interested in becoming a program partner?
-                </span>
-              </h2>
-              <Button href="/contact">
-                Book a Call
-              </Button>
-            </div>
+            <h2
+              ref={headingRef}
+              className="order-1 max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:col-start-1 lg:row-start-1 lg:text-[1.625rem] lg:leading-[1.12]"
+            >
+              <span data-split>Interested in becoming a program partner?
+              </span>
+            </h2>
 
-            <div className="flex max-w-md flex-col items-start gap-6 text-left lg:ml-auto lg:items-end">
+            <div className="order-2 flex max-w-md flex-col items-start gap-6 text-left lg:col-start-2 lg:row-start-1 lg:ml-auto lg:items-end">
               <p
                 ref={descRef}
                 className="font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem]"
@@ -398,6 +393,12 @@ const Enablement = () => {
                 early-stage digital brokerages launch faster. If your business supports
                 that journey, we&apos;d like to hear from you.
               </p>
+            </div>
+
+            <div className="order-3 lg:col-start-1 lg:row-start-2">
+              <Button href="/contact">
+                Book a Call
+              </Button>
             </div>
           </div>
 

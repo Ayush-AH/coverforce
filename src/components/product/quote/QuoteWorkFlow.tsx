@@ -127,7 +127,7 @@ function WorkflowStepPanel({
     <article ref={panelRef} data-index={index} className={className}>
       <p
         ref={headlineRef}
-        className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.35] tracking-tight text-[#1A1A1A] md:text-3xl lg:text-[2rem] lg:leading-[1.3]"
+        className="max-w-3xl text-left font-heading text-2xl font-regular leading-[1.25] tracking-tight text-[#1A1A1A] sm:text-3xl sm:leading-[1.3] md:text-3xl md:leading-[1.35] lg:text-[2rem] lg:leading-[1.3]"
       >
         {step.headline}
       </p>
@@ -339,7 +339,7 @@ const QuoteWorkFlow = () => {
             <div className="flex flex-col justify-end space-y-5">
               <h2
                 ref={headingRef}
-                className="max-w-md text-3xl font-heading font-medium leading-[1.12] tracking-tight text-[#BCC5D6] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#BCC5D6] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>The full quote-to-bind <br /> stack</span>
               </h2>

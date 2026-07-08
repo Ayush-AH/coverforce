@@ -6,7 +6,7 @@ import Container from "@/components/common/Container";
 import { animateSplitTextReveal } from "@/lib/animateSplitTextReveal";
 
 const paragraphClassName =
-  "text-3xl font-heading font-regular leading-[1.12] text-[#454545] md:text-4xl lg:text-[1.6rem] lg:leading-[1.12]";
+  "text-base font-heading font-regular leading-[1.5] text-[#454545] sm:text-lg md:text-4xl md:leading-[1.12] lg:text-[1.6rem] lg:leading-[1.12]";
 
 const Info = () => {
   const sectionRef = useRef<HTMLElement>(null);

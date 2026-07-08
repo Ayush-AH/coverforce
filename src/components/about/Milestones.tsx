@@ -69,7 +69,7 @@ const MILESTONE_OVERLAY_GRADIENT =
   "linear-gradient(135deg, rgba(0, 0, 0, 0.54) 0%, rgba(0, 0, 0, 0.27) 100%)";
 
 const milestoneDisplayClassName =
-  "font-heading text-[3.5rem] font-semibold leading-none tracking-tight text-white md:text-[4.5rem] lg:text-[3.5rem]";
+  "font-heading text-[2.5rem] font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl sm:leading-tight md:text-[4.5rem] md:leading-none lg:text-[3.5rem]";
 
 function MilestoneContent({ milestone }: { milestone: Milestone }) {
   return (

@@ -552,9 +552,6 @@ const Header = () => {
     : transparentUntilScroll && !headerPastHero
       ? "border-b border-transparent bg-transparent"
       : styles.bar;
-  const showMobileMenuButtonBackdrop =
-    !mobileMenuOpen && transparentUntilScroll && !headerPastHero;
-
   return (
     <nav className={`relative w-full ${theme === "light" ? "text-[#3D3D3D]" : "text-white"}`}>
       {menuVisible ? (
@@ -592,11 +589,7 @@ const Header = () => {
               </Link>
 
               <div
-                className={`relative z-10 lg:hidden ${
-                  showMobileMenuButtonBackdrop
-                    ? "rounded-full bg-black/25 ring-1 ring-white/20 backdrop-blur-sm"
-                    : ""
-                }`}
+                className="relative z-10 lg:hidden"
                 aria-expanded={mobileMenuOpen}
               >
                 <Hamburger
