@@ -23,10 +23,10 @@ export type LegalPageProps = {
   footerNote?: ReactNode;
 };
 
-const headingClass = "text-[#3D3D3D]";
+const headingClass = "text-[#444444]";
 const bodyClass =
-  `font-sans text-sm font-regular leading-[1.7] md:text-base ${headingClass}`;
-const linkClass = "text-[#3D3D3D] underline underline-offset-2";
+  "font-sans text-[0.9375rem] font-regular leading-[1.75] text-[#444444]";
+const linkClass = "text-[#413CC0] underline underline-offset-2";
 
 const LegalPage = ({
   eyebrow,
@@ -41,12 +41,12 @@ const LegalPage = ({
   footerNote,
 }: LegalPageProps) => {
   return (
-    <section className="bg-white text-[#3D3D3D]">
+    <section className="bg-white text-[#444444]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="mx-auto max-w-4xl py-20 md:py-24 lg:py-28">
+        <div className="mx-auto max-w-4xl pb-20 pt-28 md:pb-24 md:pt-32 lg:pb-28 lg:pt-40">
           <div className="space-y-5">
             <h1
-              className={`text-3xl font-heading font-normal leading-[1.12] tracking-tight md:text-4xl lg:text-[2.5rem] lg:leading-[1.1] ${headingClass}`}
+              className={`text-3xl font-heading font-medium leading-[1.12] tracking-tight sm:text-4xl md:text-5xl lg:text-[2rem] lg:leading-[1.1] ${headingClass}`}
             >
               {title}
             </h1>
@@ -79,7 +79,7 @@ const LegalPage = ({
                 <ul className={`mt-4 space-y-2 ${bodyClass}`}>
                   {tableOfContents.map((item) => (
                     <li key={item} className="flex gap-2">
-                      <span className={`mt-2 size-1 shrink-0 rounded-full bg-[#3D3D3D]`} aria-hidden />
+                      <span className={`mt-2 size-1 shrink-0 rounded-full bg-[#444444]`} aria-hidden />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -111,7 +111,7 @@ const LegalPage = ({
                   ) : null}
                   {section.listItems?.length ? (
                     <ol
-                      className={`list-[lower-alpha] space-y-3 pl-5 marker:font-medium marker:text-[#3D3D3D] ${bodyClass}`}
+                      className={`list-[lower-alpha] space-y-3 pl-5 marker:font-medium marker:text-[#444444] ${bodyClass}`}
                     >
                       {section.listItems.map((item, index) => (
                         <li key={`${section.title}-li-${index}`}>{item}</li>
