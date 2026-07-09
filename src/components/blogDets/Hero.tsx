@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import HeroReveal from "@/components/common/HeroReveal";
 
 type BlogDetail = {
   category: string;
@@ -83,7 +84,7 @@ const Hero = () => {
   return (
     <section className="relative z-20 bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
+        <HeroReveal className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
           <nav className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#9AA8BC]">
             <Link href="/blog" className="transition-colors hover:text-[#413CC0]">
               Blogs
@@ -197,7 +198,7 @@ const Hero = () => {
               />
             </button>
           </div>
-        </div>
+        </HeroReveal>
       </Container>
     </section>
   );

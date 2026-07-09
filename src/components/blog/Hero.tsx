@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import HeroReveal from "@/components/common/HeroReveal";
 
 const FEATURED_POST = {
   href: "/blog/coverforce-cb-insights-2025",
@@ -17,7 +18,7 @@ const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="pb-14 pt-28 md:py-20 lg:py-24">
+        <HeroReveal className="pb-14 pt-28 md:py-20 lg:py-24">
           <Link
             href={FEATURED_POST.href}
             className="group mx-auto block w-full"
@@ -51,7 +52,7 @@ const Hero = () => {
               </p>
             </div>
           </Link>
-        </div>
+        </HeroReveal>
       </Container>
     </section>
   );

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { RiTwitterXFill, RiLinkedinFill } from "@remixicon/react";
 import Container from "@/components/common/Container";
+import HeroReveal from "@/components/common/HeroReveal";
 
 type Author = {
   name: string;
@@ -28,7 +29,7 @@ const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <div className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
+        <HeroReveal className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
           <nav className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#9AA8BC]">
             <Link href="/blog" className="transition-colors hover:text-[#413CC0]">
               Blogs
@@ -76,7 +77,7 @@ const Hero = () => {
           <p className="mt-10 text-[0.9375rem] leading-[1.75] text-[#444444]">
             {AUTHOR.bio}
           </p>
-        </div>
+        </HeroReveal>
       </Container>
     </section>
   );

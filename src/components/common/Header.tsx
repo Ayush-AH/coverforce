@@ -552,6 +552,7 @@ const Header = () => {
     : transparentUntilScroll && !headerPastHero
       ? "border-b border-transparent bg-transparent"
       : styles.bar;
+  const activeLogo = mobileMenuOpen ? headerThemes.light.logo : styles.logo;
   return (
     <nav className={`relative w-full ${theme === "light" ? "text-[#3D3D3D]" : "text-white"}`}>
       {menuVisible ? (
@@ -566,7 +567,7 @@ const Header = () => {
       <div className="relative z-10" onMouseLeave={scheduleClose}>
         <div
           ref={navBarRef}
-          className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color] duration-300 ${navBarClass}`}
+          className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${navBarClass}`}
         >
           <Container>
             <div className="relative flex items-center justify-between py-2 md:py-4">
@@ -578,14 +579,28 @@ const Header = () => {
                 }}
                 className="relative z-10 shrink-0"
               >
-                <Image
-                  src={mobileMenuOpen ? headerThemes.light.logo : styles.logo}
-                  alt="CoverForce"
-                  width={180}
-                  height={34}
-                  priority
-                  className="h-5 w-auto md:h-6"
-                />
+                <span className="relative block h-5 w-[106px] md:h-6 md:w-[127px]">
+                  <Image
+                    src={headerThemes.dark.logo}
+                    alt="CoverForce"
+                    width={180}
+                    height={34}
+                    priority
+                    className={`absolute inset-0 h-5 w-auto transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-6 ${
+                      activeLogo === headerThemes.dark.logo ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                  <Image
+                    src={headerThemes.light.logo}
+                    alt="CoverForce"
+                    width={180}
+                    height={34}
+                    priority
+                    className={`absolute inset-0 h-5 w-auto transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-6 ${
+                      activeLogo === headerThemes.light.logo ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </span>
               </Link>
 
               <div
