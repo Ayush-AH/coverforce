@@ -388,6 +388,36 @@ const APPS: App[] = [
 ];
 
 // ─── Genie scanline renderer ──────────────────────────────────────────────────
+function computeRowSlice(
+  y: number,
+  rawT: number,
+  dir: Dir,
+  dock: Pt,
+  win: Pt,
+): { left: number; right: number; destY: number } {
+  const r = y / WIN_H;
+  const rowXStart = dir === "minimize" ? (1 - r) * 0.65 : r * 0.65;
+  const xP = clamp((rawT - rowXStart) / (1 - rowXStart), 0, 1);
+  const xE = eioC(xP);
+  const rowYStart = dir === "minimize" ? (1 - r) * 0.2 : r * 0.2;
+  const yP = clamp((rawT - rowYStart) / (1 - rowYStart), 0, 1);
+  const yE = eIn2(yP);
+
+  if (dir === "minimize") {
+    return {
+      left: lerp(win.x, dock.x, xE),
+      right: lerp(win.x + WIN_W, dock.x, xE),
+      destY: lerp(win.y + y, dock.y, yE),
+    };
+  }
+
+  return {
+    left: lerp(dock.x, win.x, xE),
+    right: lerp(dock.x, win.x + WIN_W, xE),
+    destY: lerp(dock.y, win.y + y, yE),
+  };
+}
+
 function renderGenie(
   ctx: CanvasRenderingContext2D,
   off: HTMLCanvasElement,
@@ -399,28 +429,28 @@ function renderGenie(
   win: Pt,
 ): void {
   ctx.clearRect(0, 0, W, H);
+  ctx.imageSmoothingEnabled = true;
+
+  const rows = Array.from({ length: WIN_H }, (_, y) =>
+    computeRowSlice(y, rawT, dir, dock, win),
+  );
+
+  const srcW = off.width || WIN_W;
+  const srcH = off.height || WIN_H;
+
   for (let y = 0; y < WIN_H; y++) {
-    const r = y / WIN_H;
-    const rowXStart = dir === "minimize" ? (1 - r) * 0.65 : r * 0.65;
-    const xP = clamp((rawT - rowXStart) / (1 - rowXStart), 0, 1);
-    const xE = eioC(xP);
-    const rowYStart = dir === "minimize" ? (1 - r) * 0.2 : r * 0.2;
-    const yP = clamp((rawT - rowYStart) / (1 - rowYStart), 0, 1);
-    const yE = eIn2(yP);
-    let left: number, right: number, destY: number;
-    if (dir === "minimize") {
-      left = lerp(win.x, dock.x, xE);
-      right = lerp(win.x + WIN_W, dock.x, xE);
-      destY = lerp(win.y + y, dock.y, yE);
-    } else {
-      left = lerp(dock.x, win.x, xE);
-      right = lerp(dock.x, win.x + WIN_W, xE);
-      destY = lerp(dock.y, win.y + y, yE);
-    }
+    const { left, right, destY } = rows[y];
     const rowW = right - left;
-    if (rowW < 0.8) continue;
-    ctx.drawImage(off, 0, y, WIN_W, 1, left, destY, rowW, 1);
+    if (rowW < 0.05) continue;
+
+    const nextDestY = y < WIN_H - 1 ? rows[y + 1].destY : destY + 1;
+    // Stretch each strip to the next row (+ overlap) so gaps never show through.
+    const destH = Math.max(1.5, nextDestY - destY + 1.25);
+
+    const srcY = Math.min(srcH - 1, Math.floor((y / WIN_H) * srcH));
+    ctx.drawImage(off, 0, srcY, srcW, 1, left, destY, rowW, destH);
   }
+
   const glowRaw = dir === "minimize" ? rawT : 1 - rawT;
   if (glowRaw > 0.75) {
     const a = eOut2((glowRaw - 0.75) / 0.25) * 0.3;
@@ -1165,7 +1195,12 @@ function SnapshotStage({
           refs.current
             .filter((n): n is HTMLDivElement => n !== null)
             .map((node) =>
-              toCanvas(node, { pixelRatio: 1, cacheBust: false }),
+              toCanvas(node, {
+                pixelRatio: 1,
+                width: WIN_W,
+                height: WIN_H,
+                cacheBust: false,
+              }),
             ),
         );
         if (cancelled) return;
@@ -1500,15 +1535,16 @@ export default function GenieEffect() {
         <span className="text-white/60 text-[11px] font-medium">9:41 AM</span>
       </div>
 
-      {/* Genie canvas — safe to SSR (just an empty <canvas>) */}
+      </div>
+
+      {/* Genie canvas — outside clipped scene so the warp isn't cut off */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none"
         style={{ width: "100%", height: "100%", zIndex: 30 }}
       />
 
-      {/* Live MacWindow — only renders when phase is open/closing, which can
-          only happen post-mount, so no SSR concern. */}
+      {/* Live MacWindow — only renders when phase is open/closing */}
       {(phase === "open" || phase === "closing") && app && (
         <MacWindow
           app={app}
@@ -1519,8 +1555,6 @@ export default function GenieEffect() {
           }}
         />
       )}
-
-      </div>
 
       {/* Everything below is gated on `mounted` — server skips it entirely,
           client renders it after the first effect fires. */}
