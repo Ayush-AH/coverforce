@@ -407,8 +407,8 @@ const Enablement = () => {
             <div className="flex aspect-square w-28 items-center justify-center rounded-full border border-[#ECE7FF] bg-white sm:w-32">
               <div className="flex aspect-square w-14 items-center justify-center rounded-full bg-[#ECE7FF] sm:w-16">
                 <Image
-                  src="/footer-logo.svg"
-                  alt="Coverforce"
+                  src="/ft-logo.svg"
+                  alt="CoverForce logo"
                   width={32}
                   height={32}
                 />
@@ -492,8 +492,8 @@ const Enablement = () => {
             >
               <div className="w-20 aspect-square bg-[#ECE7FF] rounded-full flex items-center justify-center">
                 <Image
-                  src="/footer-logo.svg"
-                  alt="Coverforce"
+                  src="/ft-logo.svg"
+                  alt="CoverForce logo"
                   width={36}
                   height={36}
                 />

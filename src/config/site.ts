@@ -34,8 +34,9 @@ export type SiteRoute = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: "CoverForce",
-  description: "CoverForce is a platform for creating and managing insurance policies.",
+  name: "Insurance Distribution Infrastructure Platform | CoverForce",
+  description:
+    "Generate, compare, and bind commercial insurance quotes with CoverForce. Access leading P&C carriers through one API marketplace and distribution platform built to scale.",
   url: "https://coverforce.com",
   locale: "en_IN",
   language: "en-IN",
@@ -64,145 +65,160 @@ export const siteRoutes: SiteRoute[] = [
   {
     path: "/",
     label: "Home",
-    title: "Home",
+    title: "Insurance Distribution Infrastructure Platform | CoverForce",
     description: siteConfig.description,
     priority: 1,
   },
   {
     path: "/product/submission-intake",
     label: "Submission Intake",
-    title: "Submission Intake",
+    title: "AI Submission Intake for Commercial Insurance | CoverForce",
     description:
-      "Turn emails and documents into insurance-ready submissions with AI-powered intake.",
+      "Turn emails, PDFs, and ACORD forms into carrier-ready submissions. CoverForce helps brokers and wholesalers automate intake and process commercial submissions faster.",
     priority: 0.9,
   },
   {
     path: "/product/quote-bind",
     label: "Quote & Bind",
-    title: "Quote & Bind",
+    title: "Commercial Quote and Bind Software | CoverForce",
     description:
-      "Instant quotes and one-click binding across leading commercial carriers.",
+      "Generate, compare, and bind commercial quotes from top P&C carriers in one workflow. Speed placements and close policies faster with CoverForce quote and bind.",
     priority: 0.9,
   },
   {
     path: "/product/intelligence",
     label: "Intelligence",
-    title: "Intelligence",
+    title: "Insurance Intelligence and Appetite Matching | CoverForce",
     description:
-      "AI-native appetite matching and insurance intelligence for faster decisions.",
+      "AI-powered insurance intelligence for appetite matching and placement decisions. Help brokers and wholesalers gain risk insights and place more commercial business.",
     priority: 0.9,
   },
   {
     path: "/solutions/carrier",
     label: "Carriers",
-    title: "Solutions for Carriers",
+    title: "Insurance Distribution Solutions for Carriers | CoverForce",
     description:
-      "Unlock new distribution channels and faster underwriting with CoverForce.",
+      "Expand distribution and modernize underwriting with CoverForce. Connect to brokers, streamline submissions, and deliver faster quote-to-bind experiences at scale.",
     priority: 0.8,
   },
   {
     path: "/solutions/brokers",
     label: "Brokers",
-    title: "Solutions for Brokers",
+    title: "Insurance Workflow Software for Brokers | CoverForce",
     description:
-      "One workflow from intake to bind for retail and independent brokers.",
+      "One platform from intake to bind for retail and independent brokers. Streamline submissions, compare carrier quotes, and grow placements with CoverForce.",
     priority: 0.8,
   },
   {
     path: "/solutions/wholesalers",
     label: "Wholesalers",
-    title: "Solutions for Wholesalers",
+    title: "Digital Submission Platform for Wholesalers | CoverForce",
     description:
-      "Track submissions across retail agencies with on-demand quoting.",
+      "Manage broker codes, delegate access, and streamline surplus lines distribution with white-label storefronts, reporting, and digital submissions on CoverForce.",
     priority: 0.8,
   },
   {
     path: "/solutions/startups",
     label: "Startups",
-    title: "Solutions for Startups",
+    title: "Insurance Infrastructure for Brokerage Startups | CoverForce",
     description:
-      "The faster way to build a modern brokerage on CoverForce infrastructure.",
+      "Launch and scale a modern commercial insurance brokerage on CoverForce infrastructure. Get APIs, carrier access, and workflows built for fast-growing agencies.",
     priority: 0.8,
   },
   {
     path: "/solutions/developers",
     label: "Developers",
-    title: "Solutions for Developers",
+    title: "Insurance APIs and Developer Infrastructure | CoverForce",
     description:
-      "Developer-first infrastructure for quote-to-bind workflows.",
+      "Build quote-to-bind workflows with open APIs, MCP support, sandbox access, and developer docs. Integrate commercial insurance distribution with CoverForce.",
     priority: 0.8,
   },
   {
     path: "/developers",
     label: "Developers",
-    title: "Developers",
+    title: "Developer APIs for Commercial Insurance | CoverForce",
     description:
-      "Open APIs, MCP support, sandbox access, and docs to go from integration to production.",
+      "Explore CoverForce developer APIs, MCP support, sandbox access, and documentation. Build quote-to-bind integrations and ship production-ready insurance workflows faster.",
     priority: 0.8,
   },
   {
     path: "/integration",
     label: "Integrations",
-    title: "Integrations",
+    title: "Insurance Integrations and Carrier Connections | CoverForce",
     description:
-      "Connect CoverForce with the tools and carriers your team already uses.",
+      "Connect CoverForce with agency management systems, carriers, and tools your team already uses. Streamline data flow across your commercial insurance distribution stack.",
     priority: 0.7,
   },
   {
     path: "/pricing",
     label: "Pricing",
-    title: "Pricing",
-    description: "Simple, transparent pricing for teams of every size.",
+    title: "Commercial Insurance Platform Pricing | CoverForce",
+    description:
+      "Simple, transparent pricing for brokerages, wholesalers, and carriers. Compare CoverForce plans and find the right fit for your team size and distribution goals.",
     priority: 0.7,
   },
   {
     path: "/blog",
     label: "Blog",
-    title: "Blog",
+    title: "Commercial Insurance Blog and Insights | CoverForce",
     description:
-      "Insights, news, and case studies on the future of commercial insurance.",
+      "Read the latest on commercial insurance APIs, digital distribution, insurtech trends, and product updates from the CoverForce team and industry experts.",
     priority: 0.7,
   },
   {
     path: "/about",
     label: "About",
-    title: "About",
-    description: "Why CoverForce was founded and the team building it.",
+    title: "About CoverForce | Commercial Insurance Platform",
+    description:
+      "Learn how CoverForce modernizes commercial insurance distribution for brokers, carriers, and wholesalers with APIs, workflows, and infrastructure built to scale.",
     priority: 0.6,
   },
   {
     path: "/careers",
     label: "Careers",
-    title: "Careers",
-    description: "Join our growing team shaping the future of insurance.",
+    title: "Careers at CoverForce | Join Our Insurtech Team",
+    description:
+      "Explore open roles at CoverForce and help build the future of commercial insurance distribution. Join a team innovating APIs, workflows, and data for the P&C industry.",
     priority: 0.6,
   },
   {
     path: "/contact",
     label: "Contact",
-    title: "Contact",
-    description: "Get in touch with the CoverForce team.",
+    title: "Contact CoverForce | Talk to Our Team",
+    description:
+      "Get in touch with CoverForce to request a demo, explore partnerships, or learn how our insurance distribution platform can help your agency, network, or carrier grow.",
     priority: 0.6,
+  },
+  {
+    path: "/calculation",
+    label: "Calculator",
+    title: "Insurance ROI Calculator | CoverForce",
+    description:
+      "Estimate time and cost savings with the CoverForce insurance distribution calculator. Model submission, quoting, and binding efficiencies for your brokerage or agency.",
+    priority: 0.5,
   },
   {
     path: "/terms",
     label: "Terms",
-    title: "Terms of Service",
-    description: "The terms governing your use of CoverForce.",
+    title: "Terms of Service | CoverForce",
+    description:
+      "Read CoverForce Terms of Service for use of our website, platform, APIs, and related services. Review policies governing access, use, and legal responsibilities.",
     priority: 0.3,
   },
   {
     path: "/privacy",
     label: "Privacy",
-    title: "Privacy Policy",
-    description: "How CoverForce collects, uses, and protects your data.",
+    title: "Privacy Policy | CoverForce",
+    description:
+      "Learn how CoverForce collects, uses, shares, and protects personal information across our website, platform, and APIs, including your privacy rights under CCPA.",
     priority: 0.3,
   },
   {
     path: "/security",
     label: "Security",
-    title: "Security",
-    description: "How CoverForce keeps your data safe and secure.",
+    title: "Security at CoverForce | Enterprise Insurance Platform",
+    description:
+      "See how CoverForce secures insurance data with AWS infrastructure, zero trust architecture, SOC 2 compliance, encryption, and continuous monitoring by design.",
     priority: 0.3,
   },
 ];

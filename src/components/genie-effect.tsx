@@ -1477,7 +1477,8 @@ export default function GenieEffect() {
       <div className="absolute inset-0 overflow-hidden">
       <img
         src="/macos.png"
-        alt="macos"
+        alt=""
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
       />
 
@@ -1529,7 +1530,7 @@ export default function GenieEffect() {
         }}
       >
         <span className="text-white/70 flex items-center text-[11px] gap-1 font-semibold tracking-tight">
-         <img src="/macicon.png" alt="macicon" className="w-4 h-4" />{app?.label ?? "Finder"} &nbsp; File &nbsp; Edit &nbsp; View
+         <img src="/macicon.png" alt="" aria-hidden="true" className="w-4 h-4" />{app?.label ?? "Finder"} &nbsp; File &nbsp; Edit &nbsp; View
           &nbsp; Window &nbsp; Help
         </span>
         <span className="text-white/60 text-[11px] font-medium">9:41 AM</span>

@@ -8,6 +8,9 @@ import Launch from '@/components/solutions/startups/Launch'
 import Enablement from '@/components/solutions/startups/Enablement'
 import Hero from '@/components/solutions/startups/Hero'
 import PageWrapper from '@/components/PageWrapper'
+import { createPageMetadata } from '@/lib/seo'
+
+export const metadata = createPageMetadata('/solutions/startups')
 const page = () => {
   return (
     <>

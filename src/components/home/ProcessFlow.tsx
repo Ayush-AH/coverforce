@@ -490,7 +490,7 @@ function PanelStep1() {
                             <span className="font-mono tracking-wider font-medium text-[0.45rem] text-[#5A5A5A] uppercase">Revenue</span>
                             <p className="font-mono text-xs font-medium text-[#5A5A5A]">+326%</p>
                         </div>
-                        <Image src="/images/process/graph.svg" alt="graph" width={100} height={100} className="w-full h-auto object-cover" />
+                        <Image src="/images/process/graph.svg" alt="Revenue growth chart" width={100} height={100} className="w-full h-auto object-cover" />
                     </div>
                 </div>
 
@@ -718,7 +718,7 @@ function PanelStep4() {
 
                             <div className="card4-success absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl opacity-0">
                                 <div className="flex flex-col items-center px-6 pb-6 pt-8 text-center">
-                                    <Image src="/images/process/success.gif" alt="success" width={100} height={100} className="size-16 object-contain" />
+                                    <Image src="/images/process/success.gif" alt="Policy bound successfully confirmation" width={100} height={100} className="size-16 object-contain" />
                                     <p className="mt-4 font-sans text-xs font-medium text-[#3742A4]">Thank you!</p>
                                     <p className="mt-1 font-sans text-sm font-medium tracking-tight text-[#11243E]">Policy Bound Successfully!</p>
                                 </div>
@@ -765,7 +765,7 @@ function PanelStep5() {
         <div className="panel-step5 absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
             <div className="w-xs shrink-0 overflow-hidden rounded-2xl border border-[#CCCCCC] bg-white">
                 <div className="flex flex-col items-center px-6 pb-8 pt-10 text-center">
-                    <Image src="/images/process/success.gif" alt="success" width={100} height={100} className="size-18 object-contain" />
+                    <Image src="/images/process/success.gif" alt="Policy bound successfully confirmation" width={100} height={100} className="size-18 object-contain" />
                     <p className="mt-5 font-sans text-xs font-medium text-[#3742A4]">Thank you!</p>
                     <p className="mt-1 font-sans text-base font-medium tracking-tight text-[#11243E]">Policy Bound Successfully!</p>
                 </div>

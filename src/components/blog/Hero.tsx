@@ -4,7 +4,7 @@ import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
 
 const FEATURED_POST = {
-  href: "/blog/coverforce-named-cb-insights-2025",
+  href: "/blog/coverforce-cb-insights-2025",
   image: "/images/blog/blog6.png",
   category: "News",
   title:

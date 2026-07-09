@@ -1,14 +1,9 @@
 import PageWrapper from "@/components/PageWrapper";
 import LegalPage from "@/components/legal/LegalPage";
 import { privacyContent } from "@/content/legal/privacyContent";
-import { createMetadata } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = createMetadata({
-  title: "Privacy Policy",
-  description:
-    "How CoverForce collects, uses, shares, and protects information across our website, platform, and APIs.",
-  path: "/privacy",
-});
+export const metadata = createPageMetadata("/privacy");
 
 const PrivacyPage = () => {
   return (

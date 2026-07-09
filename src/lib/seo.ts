@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { siteConfig, siteRoutes, type SiteRoute } from "@/config/site";
 import { absoluteUrl, normalizePath } from "@/utils/url";
 
+const OG_IMAGE_WIDTH = 1200;
+const OG_IMAGE_HEIGHT = 630;
+
 type CreateMetadataOptions = {
   title?: string;
   description?: string;
@@ -11,6 +14,23 @@ type CreateMetadataOptions = {
   type?: "website" | "article";
   noIndex?: boolean;
 };
+
+function buildOgImages(alt: string, image = siteConfig.ogImage) {
+  const imageUrl = absoluteUrl(image);
+
+  return {
+    imageUrl,
+    openGraphImages: [
+      {
+        url: imageUrl,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
+        alt,
+      },
+    ],
+    twitterImages: [imageUrl],
+  };
+}
 
 export function getPageSeo(path = "/"): SiteRoute {
   const normalizedPath = normalizePath(path);
@@ -35,8 +55,11 @@ export function createMetadata({
   noIndex = false,
 }: CreateMetadataOptions = {}): Metadata {
   const url = absoluteUrl(path);
-  const imageUrl = absoluteUrl(image);
   const pageTitle = title || siteConfig.name;
+  const { imageUrl, openGraphImages, twitterImages } = buildOgImages(
+    pageTitle,
+    image,
+  );
 
   return {
     metadataBase: new URL(siteConfig.url),
@@ -65,20 +88,13 @@ export function createMetadata({
       title: pageTitle,
       description,
       url,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: pageTitle,
-        },
-      ],
+      images: openGraphImages,
     },
     twitter: {
       card: "summary_large_image",
       title: pageTitle,
       description,
-      images: [imageUrl],
+      images: twitterImages,
     },
     icons: {
       icon: "/favicon/favicon.png",
@@ -102,10 +118,64 @@ export function createRootMetadata(): Metadata {
 
 export function createPageMetadata(path: string): Metadata {
   const page = getPageSeo(path);
-
-  return createMetadata({
-    title: page.title,
+  const meta = createMetadata({
     description: page.description,
     path: page.path,
+    image: siteConfig.ogImage,
   });
+  const { openGraphImages, twitterImages } = buildOgImages(page.title);
+
+  return {
+    ...meta,
+    title: { absolute: page.title },
+    openGraph: {
+      ...meta.openGraph,
+      title: page.title,
+      description: page.description,
+      images: openGraphImages,
+    },
+    twitter: {
+      ...meta.twitter,
+      title: page.title,
+      description: page.description,
+      images: twitterImages,
+    },
+  };
+}
+
+export function createArticleMetadata({
+  title,
+  description,
+  path,
+  image = siteConfig.ogImage,
+}: Required<Pick<CreateMetadataOptions, "title" | "description" | "path">> &
+  Pick<CreateMetadataOptions, "image">): Metadata {
+  const meta = createMetadata({
+    description,
+    path,
+    image: image ?? siteConfig.ogImage,
+    type: "article",
+  });
+  const { openGraphImages, twitterImages } = buildOgImages(
+    title,
+    image ?? siteConfig.ogImage,
+  );
+
+  return {
+    ...meta,
+    title: { absolute: title },
+    openGraph: {
+      ...meta.openGraph,
+      title,
+      description,
+      type: "article",
+      images: openGraphImages,
+    },
+    twitter: {
+      ...meta.twitter,
+      title,
+      description,
+      images: twitterImages,
+    },
+  };
 }

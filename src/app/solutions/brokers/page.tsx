@@ -6,6 +6,9 @@ import Workflow from '@/components/solutions/brokers/workflow'
 import CarrierResults from '@/components/home/CarrierResults'
 import Hero from '@/components/solutions/brokers/Hero'
 import PageWrapper from '@/components/PageWrapper'
+import { createPageMetadata } from '@/lib/seo'
+
+export const metadata = createPageMetadata('/solutions/brokers')
 
 const page = () => {
   return (

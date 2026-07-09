@@ -1,17 +1,20 @@
-import React from 'react'
-import PageWrapper from '@/components/PageWrapper'
-import Hero from '@/components/integration/Hero'
-import CardSection from '@/components/integration/CardSection'
-import Integration from '@/components/integration/Integration'
+import React from "react";
+import PageWrapper from "@/components/PageWrapper";
+import Hero from "@/components/integration/Hero";
+import CardSection from "@/components/integration/CardSection";
+import Integration from "@/components/integration/Integration";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata("/integration");
 
 const IntegrationPage = () => {
   return (
     <PageWrapper>
-        <Hero/>
-        <CardSection/>
-        <Integration/>
+      <Hero />
+      <CardSection />
+      <Integration />
     </PageWrapper>
-  )
-}
+  );
+};
 
-export default IntegrationPage
+export default IntegrationPage;

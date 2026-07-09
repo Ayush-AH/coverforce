@@ -6,6 +6,11 @@ import Appetite from '@/components/product/intelligence/Appetite'
 import ExplorePlatform from '@/components/product/intelligence/ExplorePlatform'
 import CommingSoon from '@/components/product/intelligence/CommingSoon'
 import PageWrapper from '@/components/PageWrapper'
+import { createPageMetadata } from '@/lib/seo'
+
+export const metadata = createPageMetadata('/product/intelligence')
+
+
 
 const IntelligencePage = () => {
     return (

@@ -5,6 +5,9 @@ import Hero from '@/components/product/quote/Hero'
 import CarrierMatch from '@/components/product/quote/CarrierMatch'
 import QuoteWorkFlow from '@/components/product/quote/QuoteWorkFlow'
 import PageWrapper from '@/components/PageWrapper'
+import { createPageMetadata } from '@/lib/seo'
+
+export const metadata = createPageMetadata('/product/quote-bind')
 
 const QuoteBindPage = () => {
     return (
