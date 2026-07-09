@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import Container from "@/components/common/Container";
 import GenieEffect from "@/components/genie-effect";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
@@ -48,7 +49,19 @@ const LiveDemo = () => {
                             </div>
                         </div>
 
-                        <div className="relative w-full overflow-hidden rounded-2xl">
+                        <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:hidden">
+                            <Image
+                                src="/images/product/demo.svg"
+                                alt="CoverForce doc reader extracting fields from sample documents"
+                                width={1122}
+                                height={628}
+                                className="h-auto w-full"
+                                sizes="(max-width: 768px) 100vw, 1122px"
+                                priority
+                            />
+                        </div>
+
+                        <div className="relative hidden w-full overflow-hidden rounded-2xl md:block">
                             <GenieEffect />
                         </div>
                     </div>
