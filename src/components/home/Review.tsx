@@ -5,12 +5,17 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import ArrowNavButton from "../common/ArrowNavButton";
 import Container from "../common/Container";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 import "swiper/css";
 import "swiper/css/navigation";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type Testimonial = {
   id: string;
@@ -52,12 +57,54 @@ const testimonials: Testimonial[] = [
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
     logo: "/images/coailtionloading-logo.svg",
   },
+  {
+    id: "4",
+    quote:
+      "Carrier appetite visibility improved overnight. Our producers spend less time chasing dead ends.",
+    name: "Elena Rodriguez",
+    role: "Chief Operating Officer",
+    avatar:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
+  },
+  {
+    id: "5",
+    quote:
+      "The platform streamlined renewals and cut manual data entry across our entire brokerage.",
+    name: "James Okonkwo",
+    role: "Senior Broker",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
+  },
+  {
+    id: "6",
+    quote:
+      "We onboarded new producers faster with one system for submissions, quotes, and binding.",
+    name: "Priya Sharma",
+    role: "Director of Operations",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+    logo: "/images/coailtionloading-logo.svg",
+  },
 ];
 
-function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+function TestimonialCard({
+  testimonial,
+  compact = false,
+  overlayRef,
+}: {
+  testimonial: Testimonial;
+  compact?: boolean;
+  overlayRef?: (el: HTMLDivElement | null) => void;
+}) {
   return (
     <article
-      className="relative flex min-h-[280px] flex-col overflow-hidden rounded-sm bg-white p-6 md:min-h-[360px] md:p-8 lg:min-h-[440px] lg:p-9"
+      className={`relative flex flex-col overflow-hidden rounded-sm bg-white p-6 md:p-8 ${
+        compact
+          ? "min-h-[300px] lg:min-h-[360px] lg:p-7"
+          : "min-h-[280px] md:min-h-[360px] lg:min-h-[440px] lg:p-9"
+      }`}
     >
       <div className="pointer-events-none absolute -translate-y-1/6 left-1/2 z-0 h-[180%] w-[120%] -translate-x-1/2 md:-top-24 lg:-top-28">
         <Image
@@ -69,6 +116,11 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           aria-hidden
         />
       </div>
+
+      <div
+        ref={overlayRef}
+        className="pointer-events-none absolute inset-0 z-20 rounded-sm bg-[#151f4d] opacity-0"
+      />
 
       <div className="relative z-10 grid h-full min-h-[inherit] flex-1 grid-rows-[auto_1fr_auto]">
         <div className="flex items-center gap-4 md:gap-5">
@@ -91,7 +143,13 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           </div>
         </div>
 
-        <blockquote className="flex max-w-[32rem] items-center self-center text-base font-sans font-medium leading-snug tracking-tight text-[#303030] sm:text-lg md:text-2xl md:leading-[1.45] lg:text-[1.75rem] lg:leading-[1.4]">
+        <blockquote
+          className={`flex max-w-[32rem] items-center self-center font-sans font-medium leading-snug tracking-tight text-[#303030] ${
+            compact
+              ? "text-base sm:text-lg lg:text-xl lg:leading-[1.45]"
+              : "text-base sm:text-lg md:text-2xl md:leading-[1.45] lg:text-[1.75rem] lg:leading-[1.4]"
+          }`}
+        >
           {testimonial.quote}&rdquo;
         </blockquote>
 
@@ -111,15 +169,135 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   );
 }
 
+const CARD_STAGGER_Y = 80;
+
 const Review = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const desktopPinRef = useRef<HTMLDivElement>(null);
+  const trackViewportRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const innerCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const hoveredIndexRef = useRef<number | null>(null);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
 
+  const animateCardHover = (index: number | null) => {
+    if (hoveredIndexRef.current === index) return;
+    hoveredIndexRef.current = index;
+
+    innerCardRefs.current.forEach((el, i) => {
+      if (!el) return;
+
+      const isActive = index !== null && i === index;
+      const isInactive = index !== null && i !== index;
+
+      gsap.to(el, {
+        scale: isActive ? 1.04 : isInactive ? 0.96 : 1,
+        zIndex: isActive ? 10 : 1,
+        duration: 0.55,
+        ease: "power2.out",
+        overwrite: true,
+      });
+    });
+
+    overlayRefs.current.forEach((el, i) => {
+      if (!el) return;
+
+      gsap.to(el, {
+        opacity: index !== null && i !== index ? 0.35 : 0,
+        duration: 0.55,
+        ease: "power2.out",
+        overwrite: true,
+      });
+    });
+  };
+
   useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, theme: "dark" });
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1024px)", () => {
+        const row = rowRef.current;
+        const pinSection = desktopPinRef.current;
+        if (!row || !pinSection) return;
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reducedMotion) return;
+
+        const cardEls = cardRefs.current.filter(Boolean);
+        if (!cardEls.length) return;
+
+        const getDistance = () => {
+          const viewport = trackViewportRef.current;
+          const lastCard = cardEls[cardEls.length - 1];
+          if (!viewport || !lastCard) return 0;
+
+          const lastCardRight = lastCard.offsetLeft + lastCard.offsetWidth;
+          return Math.max(0, lastCardRight - viewport.clientWidth);
+        };
+
+        cardEls.forEach((card, i) => {
+          gsap.set(card, { y: i * CARD_STAGGER_Y, force3D: true });
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: pinSection,
+            start: "top top",
+            end: () => `+=${getDistance()}`,
+            scrub: 0.8,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        tl.to(
+          row,
+          {
+            x: () => -getDistance(),
+            ease: "none",
+            duration: 1,
+          },
+          0,
+        );
+
+        const perCardSpan = 1 / cardEls.length;
+
+        cardEls.forEach((card, i) => {
+          const start = i * perCardSpan;
+
+          tl.to(
+            card,
+            {
+              y: 0,
+              ease: "none",
+              duration: 1 - start,
+            },
+            start,
+          );
+        });
+
+        const lenis = window.lenis;
+        const onLenisScroll = () => ScrollTrigger.update();
+        lenis?.on("scroll", onLenisScroll);
+
+        return () => {
+          lenis?.off("scroll", onLenisScroll);
+        };
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef },
+  );
 
   useEffect(() => {
     const swiper = swiperRef.current;
@@ -137,10 +315,10 @@ const Review = () => {
   return (
     <section ref={sectionRef} className="bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33" borderBottom={true}>
-        <div className="relative overflow-hidden py-16 md:py-20 lg:py-24">
+        <div className="relative pt-16 md:pt-20 lg:pt-24">
           <div
             ref={headerRef}
-            className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between md:mb-12"
+            className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
           >
             <h2
               ref={headingRef}
@@ -152,7 +330,7 @@ const Review = () => {
               </span>
             </h2>
 
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 items-center gap-3 lg:hidden">
               <ArrowNavButton
                 ref={prevRef}
                 direction="prev"
@@ -168,6 +346,7 @@ const Review = () => {
             </div>
           </div>
 
+          <div className="lg:hidden">
           <Swiper
             modules={[Navigation]}
             spaceBetween={24}
@@ -202,6 +381,46 @@ const Review = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+          </div>
+
+          <div
+            ref={desktopPinRef}
+            className="relative hidden h-screen overflow-hidden lg:block"
+          >
+            <div ref={trackViewportRef} className="flex h-full items-center overflow-hidden">
+              <div
+                ref={rowRef}
+                onMouseLeave={() => animateCardHover(null)}
+                className="group/review flex gap-6 pl-[20%] will-change-transform"
+              >
+                {testimonials.map((testimonial, i) => (
+                  <div
+                    key={testimonial.id}
+                    ref={(el) => {
+                      if (el) cardRefs.current[i] = el;
+                    }}
+                    className="relative w-[min(34vw,400px)] shrink-0 will-change-transform"
+                  >
+                    <div
+                      ref={(el) => {
+                        innerCardRefs.current[i] = el;
+                      }}
+                      onMouseEnter={() => animateCardHover(i)}
+                      className="relative origin-center will-change-transform"
+                    >
+                      <TestimonialCard
+                        testimonial={testimonial}
+                        compact
+                        overlayRef={(el) => {
+                          overlayRefs.current[i] = el;
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>
