@@ -105,15 +105,15 @@ const Hero = () => {
         className="relative h-full w-full overflow-hidden will-change-transform"
       >
         <Image
-          src="/images/about/about.png"
+          src="/images/about/about.avif"
           alt=""
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-top"
           sizes="100vw"
         />
         <div
-          className="absolute inset-0 bg-linear-to-t from-black/55 via-black/15 to-black/10"
+          className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-black/25"
           aria-hidden
         />
 

@@ -10,6 +10,7 @@ import Container from "../common/Container";
 import Button from "../common/Button";
 import ArrowNavButton from "../common/ArrowNavButton";
 import Image from "next/image";
+import Link from "next/link";
 
 import "swiper/css";
 
@@ -17,48 +18,35 @@ gsap.registerPlugin(ScrollTrigger);
 
 type WhySlide = {
   id: string;
+  slug: string;
   image: string;
   alt: string;
-  title: string;
-  description: string;
 };
 
 const whySlides: WhySlide[] = [
   {
     id: "slide-1",
-    image:
-      "https://images.unsplash.com/photo-1773227930443-730f0f1f2154?q=80&w=1332&auto=format&fit=crop",
-    alt: "Abstract blue geometric pattern",
-    title: "Full Lifecycle, Not Just Quotes",
-    description:
-      "From intake and appetite through quote, bind, and servicing in one workflow.",
+    slug: "wholesalers-embrace-apis",
+    image: "/images/blog/blog1.png",
+    alt: "Wholesalers Must Embrace APIs to Stay Competitive",
   },
   {
     id: "slide-2",
-    image:
-      "https://images.unsplash.com/photo-1777828634169-e3d9f138ee01?q=80&w=1332&auto=format&fit=crop",
-    alt: "Layered blue abstract shapes",
-    title: "API-First Architecture",
-    description:
-      "Integrate distribution into your stack with modern, versioned insurance APIs.",
+    slug: "hidden-costs-slow-submission-workflows",
+    image: "/images/blog/blog2.png",
+    alt: "The Hidden Costs of Slow Submission Workflows",
   },
   {
     id: "slide-3",
-    image:
-      "https://images.unsplash.com/photo-1658753570876-3cc72c842b44?q=80&w=1332&auto=format&fit=crop",
-    alt: "White geometric cube landscape",
-    title: "Real-Time Data Sync",
-    description:
-      "Keep submissions, quotes, and carrier responses aligned across every channel.",
+    slug: "true-bindability-commercial-quoting",
+    image: "/images/blog/blog3.png",
+    alt: "True Bindability in Commercial Quoting",
   },
   {
     id: "slide-4",
-    image:
-      "https://images.unsplash.com/photo-1770885653473-ca48b4d69173?q=80&w=1332&auto=format&fit=crop",
-    alt: "Flowing dark blue abstract waves",
-    title: "Carrier Integrations",
-    description:
-      "Connect to carrier appetite, forms, and rating without rebuilding integrations.",
+    slug: "broker-codes-extended",
+    image: "/images/blog/blog4.png",
+    alt: "Broker Codes, Extended",
   },
 ];
 
@@ -226,39 +214,6 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
           object-fit: cover;
         }
 
-        .why-slide-copy {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 32px 20px 20px;
-          background: linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 100%);
-          color: #fff;
-          text-align: left;
-          opacity: 0;
-          transform: translateY(6px);
-          transition:
-            opacity 0.68s cubic-bezier(0.19, 1, 0.22, 1),
-            transform 0.68s cubic-bezier(0.19, 1, 0.22, 1);
-          pointer-events: none;
-        }
-
-        .why-slide-title,
-        .why-slide-desc {
-          color: #fff;
-        }
-
-        .why-slide-desc {
-          margin-top: 1.25rem;
-          max-width: 28rem;
-        }
-
-        .why-slide.is-active .why-slide-copy {
-          opacity: 1;
-          transform: translateY(0);
-          transition-delay: 0.42s;
-        }
-
         .why-swiper-slide {
           position: relative;
           height: 340px;
@@ -268,25 +223,6 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
         }
         @media (min-width: 640px) {
           .why-swiper-slide { height: 380px; }
-        }
-        .why-swiper-slide-copy {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 32px 20px 20px;
-          background: linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 100%);
-          color: #fff;
-          text-align: left;
-          pointer-events: none;
-        }
-
-        @media (min-width: 1024px) {
-          .why-slide-copy { padding: 36px 24px 22px; }
-        }
-
-        .why-swiper-slide-desc {
-          margin-top: 1.25rem;
         }
       `}</style>
       <div ref={containerRef} className="relative z-10 overflow-hidden lg:will-change-transform">
@@ -311,8 +247,8 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                   Insurance distribution should work like infrastructure — just
                   like Stripe for payments or Plaid for identity.
                 </p>
-                <Button href="/contact">
-                  Start a quote
+                <Button href="/blog">
+                  View all insights
                 </Button>
               </div>
 
@@ -352,7 +288,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
               >
                 {whySlides.map((slide) => (
                   <SwiperSlide key={slide.id}>
-                    <div className="why-swiper-slide">
+                    <Link href={`/blog/${slide.slug}`} className="why-swiper-slide block">
                       <Image
                         width={1000}
                         height={1000}
@@ -362,15 +298,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                         alt={slide.alt}
                         draggable={false}
                       />
-                      <div className="why-swiper-slide-copy">
-                        <p className="why-swiper-slide-title max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                          {slide.title}
-                        </p>
-                        <p className="why-swiper-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">
-                          {slide.description}
-                        </p>
-                      </div>
-                    </div>
+                    </Link>
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -380,13 +308,18 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
             <div className="relative mt-12 hidden md:mt-14 lg:mt-16 lg:block">
               <div className="why-slider-track" onMouseLeave={handleTrackMouseLeave}>
                 {whySlides.map((slide, i) => (
-                  <div
+                  <Link
                     key={slide.id}
+                    href={`/blog/${slide.slug}`}
                     className={`why-slide ${i === active ? "is-active" : "is-inactive"}`}
                     onMouseEnter={() => handleSlideMouseEnter(i)}
                     onFocus={() => goTo(i)}
-                    onClick={() => goTo(i)}
-                    tabIndex={0}
+                    onClick={(e) => {
+                      if (i !== active) {
+                        e.preventDefault();
+                        goTo(i);
+                      }
+                    }}
                   >
                     <Image
                       width={1000}
@@ -397,15 +330,7 @@ const WhyCoverforce = ({ paddingTop }: { paddingTop?: boolean }) => {
                       alt={slide.alt}
                       draggable={false}
                     />
-                    <div className="why-slide-copy">
-                      <p className="why-slide-title max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                        {slide.title}
-                      </p>
-                      <p className="why-slide-desc font-sans font-regular text-sm leading-[1.4] md:text-[1.125rem]">
-                        {slide.description}
-                      </p>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

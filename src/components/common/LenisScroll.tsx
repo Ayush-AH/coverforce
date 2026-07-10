@@ -31,9 +31,9 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     let cancelHashScroll = () => {};
 
     if (window.location.hash) {
-      cancelHashScroll = scrollToHashWhenReady(undefined, { immediate: true });
+      // Start at the top, then ease down to the hash once layout is ready.
+      scrollToTop(true);
       const timer = window.setTimeout(() => {
-        cancelHashScroll();
         cancelHashScroll = scrollToHashWhenReady();
       }, PAGE_TRANSITION_MS);
 
@@ -128,9 +128,12 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     window.addEventListener("hashchange", handleHashChange);
     document.addEventListener("click", handleAnchorClick, true);
 
+    let settleHashTimer: number | undefined;
     const settleFrames = window.requestAnimationFrame(() => {
       if (window.location.hash) {
-        scrollToHashWhenReady(undefined, { immediate: true });
+        settleHashTimer = window.setTimeout(() => {
+          scrollToHashWhenReady();
+        }, PAGE_TRANSITION_MS);
         return;
       }
       scrollToTop();
@@ -140,6 +143,7 @@ export default function LenisScroll({ children }: LenisScrollProps) {
     return () => {
       window.cancelAnimationFrame(frame);
       window.cancelAnimationFrame(settleFrames);
+      if (settleHashTimer !== undefined) window.clearTimeout(settleHashTimer);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("load", handleLoad);

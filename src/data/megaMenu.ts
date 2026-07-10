@@ -212,7 +212,7 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
     },
     cta: {
       label: "Explore Company",
-      href: "/",
+      href: "/about",
     },
     columns: [
       {

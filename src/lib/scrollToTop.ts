@@ -1,5 +1,11 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const HASH_RETRY_MS = 50;
 const HASH_MAX_ATTEMPTS = 40;
+const HASH_SCROLL_DURATION = 1.45;
 
 export function scrollToTop(immediate = true) {
   if (typeof window === "undefined") return;
@@ -10,12 +16,22 @@ export function scrollToTop(immediate = true) {
   window.lenis?.scrollTo(0, { immediate });
 }
 
-export function getHeaderScrollOffset(extra = 16) {
+/** Prefer the real nav bar height so mega-menu chrome isn't counted. */
+export function getHeaderScrollOffset(extra = 0) {
   if (typeof window === "undefined") return -extra;
 
-  const header = document.querySelector(".site-view-header");
-  const height = header?.getBoundingClientRect().height ?? 0;
+  const nav =
+    document.querySelector<HTMLElement>("[data-site-nav]") ??
+    document.querySelector<HTMLElement>(".site-view-header");
+  const height = nav?.getBoundingClientRect().height ?? 0;
   return -(height + extra);
+}
+
+export function prepareScrollLayout() {
+  if (typeof window === "undefined") return;
+
+  window.lenis?.resize();
+  ScrollTrigger.refresh();
 }
 
 export function scrollToHash(
@@ -30,25 +46,44 @@ export function scrollToHash(
   const target = document.getElementById(id);
   if (!target) return false;
 
-  const offset = getHeaderScrollOffset();
+  prepareScrollLayout();
 
-  if (window.lenis) {
-    window.lenis.scrollTo(target, {
+  const nav =
+    document.querySelector<HTMLElement>("[data-site-nav]") ??
+    document.querySelector<HTMLElement>(".site-view-header");
+  const headerHeight = nav?.getBoundingClientRect().height ?? 0;
+  target.style.scrollMarginTop = `${headerHeight}px`;
+
+  const offset = getHeaderScrollOffset();
+  const immediate = options?.immediate ?? false;
+  const duration = options?.duration ?? HASH_SCROLL_DURATION;
+  const lenis = window.lenis;
+
+  if (lenis) {
+    lenis.resize();
+    lenis.scrollTo(target, {
       offset,
-      immediate: options?.immediate ?? false,
-      duration: options?.duration ?? 1.2,
+      immediate,
+      duration,
+      force: true,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
   } else {
-    const top = target.getBoundingClientRect().top + window.scrollY + offset;
+    const top =
+      target.getBoundingClientRect().top + window.scrollY + offset;
     window.scrollTo({
-      top,
-      behavior: options?.immediate ? "auto" : "smooth",
+      top: Math.max(0, top),
+      behavior: immediate ? "auto" : "smooth",
     });
   }
 
   return true;
 }
 
+/**
+ * Waits until the hash target exists, refreshes layout, then scrolls once.
+ * Defaults to a smooth Lenis scroll (not an instant jump).
+ */
 export function scrollToHashWhenReady(
   hash?: string,
   options?: { immediate?: boolean; duration?: number },
@@ -65,7 +100,14 @@ export function scrollToHashWhenReady(
   const tryScroll = () => {
     if (cancelled) return;
 
-    if (scrollToHash(`#${id}`, options)) {
+    prepareScrollLayout();
+
+    if (
+      scrollToHash(`#${id}`, {
+        immediate: options?.immediate ?? false,
+        duration: options?.duration ?? HASH_SCROLL_DURATION,
+      })
+    ) {
       return;
     }
 

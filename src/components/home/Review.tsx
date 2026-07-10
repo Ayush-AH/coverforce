@@ -40,7 +40,7 @@ const testimonials: Testimonial[] = [
   {
     id: "2",
     quote:
-      "We cut submission time dramatically while improving carrier match rates across our book.",
+      "We cut submission time dramatically while improving carrier match rates across our book. CoverForce gave our underwriters the clarity and speed we had been missing for years.",
     name: "Sarah Chen",
     role: "VP of Underwriting",
     avatar:
@@ -50,7 +50,7 @@ const testimonials: Testimonial[] = [
   {
     id: "3",
     quote:
-      "CoverForce gives our team one workflow from intake to bind — fewer errors, faster quotes.",
+      "CoverForce gives our team one workflow from intake to bind — fewer errors, faster quotes, and far less back-and-forth with carriers. It has become essential to how we operate every day.",
     name: "Marcus Webb",
     role: "Head of Distribution",
     avatar:
@@ -60,7 +60,7 @@ const testimonials: Testimonial[] = [
   {
     id: "4",
     quote:
-      "Carrier appetite visibility improved overnight. Our producers spend less time chasing dead ends.",
+      "Carrier appetite visibility improved overnight. Our producers spend less time chasing dead ends and more time placing business with the right markets the first time.",
     name: "Elena Rodriguez",
     role: "Chief Operating Officer",
     avatar:
@@ -70,7 +70,7 @@ const testimonials: Testimonial[] = [
   {
     id: "5",
     quote:
-      "The platform streamlined renewals and cut manual data entry across our entire brokerage.",
+      "The platform streamlined renewals and cut manual data entry across our entire brokerage. What used to take days of rekeying now happens in a single, reliable workflow.",
     name: "James Okonkwo",
     role: "Senior Broker",
     avatar:
@@ -80,7 +80,7 @@ const testimonials: Testimonial[] = [
   {
     id: "6",
     quote:
-      "We onboarded new producers faster with one system for submissions, quotes, and binding.",
+      "We onboarded new producers faster with one system for submissions, quotes, and binding. CoverForce removed the friction that used to slow every new hire down.",
     name: "Priya Sharma",
     role: "Director of Operations",
     avatar:
@@ -102,8 +102,8 @@ function TestimonialCard({
     <article
       className={`relative flex flex-col overflow-hidden rounded-sm bg-white p-6 md:p-8 ${
         compact
-          ? "min-h-[300px] lg:min-h-[360px] lg:p-7"
-          : "min-h-[280px] md:min-h-[360px] lg:min-h-[440px] lg:p-9"
+          ? "min-h-[340px] lg:min-h-[400px] lg:p-7"
+          : "min-h-[320px] md:min-h-[400px] lg:min-h-[480px] lg:p-9"
       }`}
     >
       <div className="pointer-events-none absolute -translate-y-1/6 left-1/2 z-0 h-[180%] w-[120%] -translate-x-1/2 md:-top-24 lg:-top-28">
@@ -123,13 +123,13 @@ function TestimonialCard({
       />
 
       <div className="relative z-10 grid h-full min-h-[inherit] flex-1 grid-rows-[auto_1fr_auto]">
-        <div className="flex items-center gap-4 md:gap-5">
-          <div className="size-16 shrink-0 overflow-hidden md:size-[4.5rem]">
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="size-12 shrink-0 overflow-hidden md:size-14">
             <Image
               src={testimonial.avatar}
               alt={testimonial.name}
-              width={96}
-              height={96}
+              width={72}
+              height={72}
               className="size-full object-cover"
             />
           </div>
@@ -137,14 +137,14 @@ function TestimonialCard({
             <p className="font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#303030] md:text-sm">
               {testimonial.name}
             </p>
-            <p className="mt-1.5 font-mono text-[0.6875rem] font-medium uppercase leading-[1.4] tracking-[0.06em] text-[#303030]/80 md:text-sm">
+            <p className="mt-1 font-mono text-[0.625rem] font-medium uppercase leading-[1.4] tracking-[0.06em] text-[#303030]/80 md:text-[0.6875rem]">
               {testimonial.role}
             </p>
           </div>
         </div>
 
         <blockquote
-          className={`flex max-w-[32rem] items-center self-center font-sans font-medium leading-snug tracking-tight text-[#303030] ${
+          className={`flex max-w-[32rem] items-center self-center font-sans font-normal leading-snug tracking-tight text-[#303030] ${
             compact
               ? "text-base sm:text-lg lg:text-xl lg:leading-[1.45]"
               : "text-base sm:text-lg md:text-2xl md:leading-[1.45] lg:text-[1.75rem] lg:leading-[1.4]"
@@ -154,7 +154,7 @@ function TestimonialCard({
         </blockquote>
 
         {testimonial.logo ? (
-          <div className="flex justify-end pt-6 md:pt-8">
+          <div className="flex justify-start pt-6 md:pt-8">
             <Image
               src={testimonial.logo}
               alt="Coalition"

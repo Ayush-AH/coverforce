@@ -41,8 +41,8 @@ const DUR = 500;
 // run during SSR and either crash or hardcode a value.
 
 // Magnification config — tuned to match macOS dock proportions
-const DOCK_ICON_BASE = 56;
-const DOCK_ICON_PEAK = 96;
+const DOCK_ICON_BASE = 68;
+const DOCK_ICON_PEAK = 112;
 const DOCK_MAG_RANGE = 160;
 const DOCK_PAD_X = 18;
 const DOCK_PAD_BOTTOM = 6;
@@ -722,6 +722,18 @@ export default function GenieEffect() {
       cancelAnimationFrame(rafRef.current);
     };
   }, []);
+
+  // Open the first app by default once dock snapshots are ready.
+  useEffect(() => {
+    if (!mounted || !snapshotsReady) return;
+    if (stateRef.current.phase !== "idle") return;
+
+    const wp = getWinPos();
+    stateRef.current = { phase: "open", activeApp: 0 };
+    setWinPos(wp);
+    setActiveApp(0);
+    setPhase("open");
+  }, [mounted, snapshotsReady, getWinPos]);
 
   // Re-center the open window when the container resizes (browser resize,
   // sidebar collapse, parent flexbox changes, etc.). ResizeObserver fires

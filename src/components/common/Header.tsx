@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   { label: "Developers", href: "/developers", hasDropdown: false },
   { label: "Integration", href: "/integration", hasDropdown: false },
   { label: "Pricing", href: "/pricing", hasDropdown: false },
-  { label: "Company", href: "/", hasDropdown: true },
+  { label: "Company", href: "/about", hasDropdown: true },
 ];
 
 const NAV_PATH_PREFIXES: Record<string, string[]> = {
@@ -567,6 +567,7 @@ const Header = () => {
       <div className="relative z-10" onMouseLeave={scheduleClose}>
         <div
           ref={navBarRef}
+          data-site-nav
           className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${navBarClass}`}
         >
           <Container>

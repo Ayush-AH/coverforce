@@ -13,7 +13,7 @@ import {
 } from "@/contexts/HomeIntroContext";
 import { RequestDemoProvider } from "@/contexts/RequestDemoContext";
 import { VideoModalProvider } from "@/contexts/VideoModalContext";
-import { scrollToHashWhenReady, scrollToTop } from "@/lib/scrollToTop";
+import { scrollToTop } from "@/lib/scrollToTop";
 import {
   getPageTransitionBg,
   installPageTransitionBgSync,
@@ -91,9 +91,8 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
     const timeout = window.setTimeout(() => {
       ScrollTrigger.refresh();
       window.lenis?.resize();
-      if (window.location.hash) {
-        scrollToHashWhenReady();
-      } else {
+      // Hash scrolling is owned by LenisScroll so we don't interrupt a smooth tween.
+      if (!window.location.hash) {
         scrollToTop();
       }
     }, PAGE_TRANSITION_MS + 50);
