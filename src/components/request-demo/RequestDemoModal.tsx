@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
+import { RiCloseLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { useRequestDemo } from "@/contexts/RequestDemoContext";
 import {
@@ -194,12 +195,21 @@ export default function RequestDemoModal() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="request-demo-title"
-          className={`${panelAnim} way-modal-panel flex max-h-[min(92vh,900px)] w-full max-w-3xl flex-col overflow-hidden bg-white shadow-[0_24px_80px_rgba(10,20,59,0.18)]`}
+          className={`${panelAnim} way-modal-panel relative flex max-h-[min(92vh,900px)] w-full max-w-3xl flex-col overflow-hidden bg-white shadow-[0_24px_80px_rgba(10,20,59,0.18)]`}
           onClick={(event) => event.stopPropagation()}
         >
+          <button
+            type="button"
+            onClick={handleClose}
+            className="absolute right-4 top-4 z-20 flex size-10 items-center justify-center rounded-sm border border-[#535353]/15 bg-white text-[#0a143b] transition-colors hover:bg-[#F5F7FA] sm:right-5 sm:top-5"
+            aria-label="Close"
+          >
+            <RiCloseLine size={20} />
+          </button>
+
           <div
             data-lenis-prevent
-            className="overflow-y-auto overscroll-contain px-6 py-8 sm:px-10 sm:py-10"
+            className="overflow-y-auto overscroll-contain px-6 pb-8 pt-14 sm:px-10 sm:pb-10 sm:pt-16"
           >
             {step < 4 ? (
               <>

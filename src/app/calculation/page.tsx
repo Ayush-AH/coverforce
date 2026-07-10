@@ -3,7 +3,6 @@
 import CompanyBar from "@/components/calculator/CompanyBar";
 import Sidebar from "@/components/calculator/Sidebar";
 import Tabs from "@/components/calculator/Tabs";
-import Container from "@/components/common/Container";
 import PageWrapper from "@/components/PageWrapper";
 import { useCalculator } from "@/hooks/useCalculator";
 
@@ -20,29 +19,28 @@ export default function CalculationPage() {
 
   return (
     <PageWrapper>
-      <section className="bg-white text-[#0a143b]">
-        <Container borderColor="#53535380" borderBottom>
-          <CompanyBar
+      <section className="min-h-screen bg-[#F7F7F8] pt-24 text-[#444444] md:pt-28">
+        <div
+          id="calculator-main-view"
+          className="flex w-full flex-col gap-5 px-4 py-5 print:flex-col print:gap-4 print:px-4 print:py-4 sm:px-6 md:flex-row md:items-start md:gap-6 md:px-8 md:py-6 lg:gap-8 lg:px-10"
+        >
+          <Sidebar
             inputs={inputs}
             updateInput={updateInput}
             applySegment={applySegment}
-            results={results}
+            toggleCommercialLob={toggleCommercialLob}
+            setCommercialLobPct={setCommercialLobPct}
+            setPersonalLobPct={setPersonalLobPct}
           />
-
-          <div
-            id="calculator-main-view"
-            className="mx-auto flex w-full flex-col gap-8 py-8 print:flex-col print:gap-4 print:py-4 md:flex-row md:gap-10 lg:py-12"
-          >
-            <Sidebar
+          <div className="flex min-w-0 flex-1 flex-col gap-5">
+            <CompanyBar
               inputs={inputs}
               updateInput={updateInput}
-              toggleCommercialLob={toggleCommercialLob}
-              setCommercialLobPct={setCommercialLobPct}
-              setPersonalLobPct={setPersonalLobPct}
+              results={results}
             />
             <Tabs results={results} />
           </div>
-        </Container>
+        </div>
       </section>
     </PageWrapper>
   );

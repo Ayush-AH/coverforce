@@ -1,10 +1,22 @@
 import React from 'react';
-import { Lightbulb, AlertCircle, CheckCircle2, Target, Building2, User } from 'lucide-react';
-import { CalculationResult, LOB_COMMERCIAL, LOB_PERSONAL } from '@/lib/calculations';
-import { fmtM, pct } from '@/lib/formatters';
+import { Lightbulb, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { CalculationResult } from '@/lib/calculations';
+import { fmtM } from '@/lib/formatters';
+import { CalculatorKpiCard, CalculatorKpiRow, CalculatorSection } from '../CalculatorKpiCard';
+import { calcEyebrow, calcHeading, calcMetricLabel, calcMetricValueSm, calcPara, calcRowLabel, calcRowValue, calcSubheading, calcSubpara } from '../calculatorUi';
 
-const LOB_COLORS_COMM = ['#0A143B','#1D2C59','#293B73','#3A4B95','#293B73','#6E82F4','#8B9DF6','#A7B9F9'];
-const LOB_COLORS_PERS = ['#50617a','#687A93','#8296B0','#9DB1CA'];
+const LOB_COLORS_COMM_SOLID = [
+  "#5B35E0",
+  "#10B981",
+  "#0D9488",
+  "#F97316",
+  "#6366F1",
+  "#F43F5E",
+  "#8B5CF6",
+  "#06B6D4",
+];
+const LOB_COLORS_PERS_SOLID = ["#A78BFA", "#FB923C", "#67E8F9", "#F9A8D4"];
+
 
 export default function RevenueMapTab({ results }: { results: CalculationResult }) {
   const { inputs, lobBreakdown, totalROI } = results;
@@ -16,235 +28,301 @@ export default function RevenueMapTab({ results }: { results: CalculationResult 
   const commOffPremium = lobBreakdown.commLOBs.filter(l => !l.on).reduce((s,l) => s + l.premium, 0);
 
   return (
-    <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 md:gap-6">
       
-      {/* KPIs */}
-      {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-white border border-[#535353]/10 rounded-2xl p-6 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r "></div>
-          <div className="flex justify-between items-start mb-4">
-            <div className="text-sm font-bold text-[#50617a] uppercase tracking-wider font-heading">Premium in Reach</div>
-            <div className="p-2 bg-[#F5F7FA] rounded-xl text-[#293B73] group-hover:scale-110 transition-transform duration-300">
-              <Target className="w-5 h-5" />
+      <CalculatorSection>
+        <CalculatorKpiRow cols={3}>
+          <CalculatorKpiCard
+            label="Premium in Reach"
+            value={fmtM(lobBreakdown.cfReachable)}
+            tone="purple"
+            trend={`${(lobBreakdown.cfReachable / ap * 100).toFixed(0)}% of book`}
+          />
+          <CalculatorKpiCard
+            label="Commercial Premium"
+            value={fmtM(lobBreakdown.commTotal)}
+            tone="teal"
+            trend={`${inputs.commPct}% of book`}
+          />
+          <CalculatorKpiCard
+            label="Personal Lines"
+            value={fmtM(lobBreakdown.persTotal)}
+            tone="slate"
+            trend="Pain quantified only"
+          />
+        </CalculatorKpiRow>
+      </CalculatorSection>
+
+      {/* Full Book — segmented premium mix */}
+      <CalculatorSection>
+        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <p className={`${calcEyebrow} text-[#6B5BB5]`}>
+              Premium Mix
+            </p>
+            <h3 className={`mt-0.5 ${calcHeading}`}>
+              Your Full Book
+            </h3>
+            <p className={`mt-1.5 ${calcPara}`}>
+              Segmented by line of business — sized to your premium mix.
+            </p>
+          </div>
+          <div className="shrink-0 sm:text-right">
+            <p className={calcMetricLabel}>
+              Total Premium
+            </p>
+            <p className={`mt-0.5 ${calcMetricValueSm}`}>
+              {fmtM(ap)}
+            </p>
+            <div className="mt-2.5 flex flex-wrap gap-2 sm:justify-end">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#EFE8FF] px-2 py-1 font-mono text-[0.6875rem] font-semibold text-[#4C2FC9]">
+                <span className="size-1.5 rounded-full bg-[#5B35E0]" aria-hidden />
+                Commercial {inputs.commPct}%
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#F4F4F5] px-2 py-1 font-mono text-[0.6875rem] font-semibold text-[#3F3F46]">
+                <span className="size-1.5 rounded-full bg-[#A1A1AA]" aria-hidden />
+                Personal {100 - inputs.commPct}%
+              </span>
             </div>
           </div>
-          <div className="text-4xl font-heading font-regular tracking-tight font-bold text-[#0a143b] mb-1">{fmtM(lobBreakdown.cfReachable)}</div>
-          <div className="text-xs text-[#50617a] font-sans mt-2">{(lobBreakdown.cfReachable / ap * 100).toFixed(0)}% of total book</div>
         </div>
 
-        <div className="bg-white border border-[#535353]/10 rounded-2xl p-6 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r "></div>
-          <div className="flex justify-between items-start mb-4">
-            <div className="text-sm font-bold text-[#50617a] uppercase tracking-wider font-heading">Commercial Premium</div>
-            <div className="p-2 bg-[#F5F7FA] rounded-xl text-[#0a143b] group-hover:scale-110 transition-transform duration-300">
-              <Building2 className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-4xl font-heading font-regular tracking-tight font-bold text-[#0a143b] mb-1">{fmtM(lobBreakdown.commTotal)}</div>
-          <div className="text-xs text-[#50617a] font-sans mt-2">{inputs.commPct}% of book</div>
-        </div>
-
-        <div className="bg-white border border-[#535353]/10 rounded-2xl p-6 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r "></div>
-          <div className="flex justify-between items-start mb-4">
-            <div className="text-sm font-bold text-[#50617a] uppercase tracking-wider font-heading">Personal Lines</div>
-            <div className="p-2 bg-[#F5F7FA] rounded-xl text-[#0a143b] group-hover:scale-110 transition-transform duration-300">
-              <User className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-4xl font-heading font-regular tracking-tight font-bold text-[#0a143b] mb-1">{fmtM(lobBreakdown.persTotal)}</div>
-          <div className="text-xs text-[#50617a] font-sans mt-2">Pain Quantified Only</div>
-        </div>
-      </div>
-
-      {/* Full Book Stacked Bar */}
-      <div className="bg-white border border-[#535353]/10 rounded-xl p-6">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-1 font-heading">Your Full Book — Where Every Dollar Lives</h3>
-        <p className="text-xs text-[#50617a] mb-4 font-sans">Each segment is sized to your inputs. Green = CoverForce can help today. Amber = Personal lines. Gray = Commercial not yet selected.</p>
-        
-        <div className="h-12 rounded-lg flex overflow-hidden shadow-inner mb-3 border border-[#535353]/10">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
           {lobBreakdown.commLOBs.map((l, i) => {
-            const w = (l.premium / ap * 100).toFixed(2);
-            const col = l.on ? LOB_COLORS_COMM[i % LOB_COLORS_COMM.length] : '#E5E7EB';
-            return parseFloat(w) > 0.5 ? (
-              <div key={l.id} className={`h-full flex items-center justify-center text-[10px] font-bold ${l.on ? 'text-white' : 'text-[#9AA8BC]'} overflow-hidden transition-all duration-500`} style={{ width: `${w}%`, background: col }} title={`${l.label}: ${fmtM(l.premium)}`}>
-                <span className="truncate px-2">{l.label}</span>
+            const w = (l.premium / ap) * 100;
+            if (w < 0.5) return null;
+            const col = l.on
+              ? LOB_COLORS_COMM_SOLID[i % LOB_COLORS_COMM_SOLID.length]
+              : "#D4D4D8";
+            return (
+              <div
+                key={l.id}
+                className="flex items-center justify-between gap-3"
+              >
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span
+                    className="size-2.5 shrink-0 rounded-full"
+                    style={{ background: col }}
+                    aria-hidden
+                  />
+                  <span className={`truncate ${calcRowLabel}`}>{l.label}</span>
+                  {!l.on ? (
+                    <span className="rounded bg-[#F3F3F6] px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-wide text-[#8A8A8A]">
+                      Off
+                    </span>
+                  ) : null}
+                </div>
+                <div className="flex shrink-0 items-baseline gap-2">
+                  <span className={calcRowValue}>
+                    {fmtM(l.premium)}
+                  </span>
+                  <span className="w-10 text-right font-mono text-[10px] tabular-nums text-[#8A8A8A]">
+                    {w.toFixed(0)}%
+                  </span>
+                </div>
               </div>
-            ) : null;
+            );
           })}
           {lobBreakdown.persLOBs.map((l, i) => {
-            const w = (l.premium / ap * 100).toFixed(2);
-            const col = LOB_COLORS_PERS[i % LOB_COLORS_PERS.length];
-            return parseFloat(w) > 0.5 ? (
-              <div key={l.id} className="h-full flex items-center justify-center text-[10px] font-bold text-white overflow-hidden transition-all duration-500" style={{ width: `${w}%`, background: col }} title={`${l.label}: ${fmtM(l.premium)}`}>
-                <span className="truncate px-2">{l.label}</span>
+            const w = (l.premium / ap) * 100;
+            if (w < 0.5) return null;
+            return (
+              <div
+                key={l.id}
+                className="flex items-center justify-between gap-3"
+              >
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span
+                    className="size-2.5 shrink-0 rounded-full border border-[#D4D4D8]"
+                    style={{
+                      background: LOB_COLORS_PERS_SOLID[i % LOB_COLORS_PERS_SOLID.length],
+                    }}
+                    aria-hidden
+                  />
+                  <span className={`truncate ${calcRowLabel}`}>{l.label}</span>
+                  <span className="rounded bg-[#F4F4F5] px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-wide text-[#8A8A8A]">
+                    Personal
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-baseline gap-2">
+                  <span className={calcRowValue}>
+                    {fmtM(l.premium)}
+                  </span>
+                  <span className="w-10 text-right font-mono text-[10px] tabular-nums text-[#8A8A8A]">
+                    {w.toFixed(0)}%
+                  </span>
+                </div>
               </div>
-            ) : null;
+            );
           })}
         </div>
-
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
-          {lobBreakdown.commLOBs.map((l, i) => {
-            const w = (l.premium / ap * 100).toFixed(2);
-            const col = l.on ? LOB_COLORS_COMM[i % LOB_COLORS_COMM.length] : '#E5E7EB';
-            return parseFloat(w) > 0.5 ? (
-              <div key={l.id} className="flex items-center gap-1.5 text-[10px] text-[#50617a] font-sans">
-                <div className="w-2.5 h-2.5 rounded-sm" style={{ background: col }}></div>
-                <span>{l.label} {fmtM(l.premium)}</span>
-              </div>
-            ) : null;
-          })}
-          {lobBreakdown.persLOBs.map((l, i) => {
-            const w = (l.premium / ap * 100).toFixed(2);
-            const col = LOB_COLORS_PERS[i % LOB_COLORS_PERS.length];
-            return parseFloat(w) > 0.5 ? (
-              <div key={l.id} className="flex items-center gap-1.5 text-[10px] text-[#50617a] font-sans">
-                <div className="w-2.5 h-2.5 rounded-sm" style={{ background: col }}></div>
-                <span>{l.label} {fmtM(l.premium)}</span>
-              </div>
-            ) : null;
-          })}
-        </div>
-      </div>
+      </CalculatorSection>
 
       {/* Spilt Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
         {/* Commercial Lines */}
-        <div className="bg-[#F5F7FA] border border-[#293B73]/30 ring-2 ring-[#293B73]/20 rounded-xl p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#293B73]"></div>
-            <h3 className="text-[10px] font-bold tracking-widest uppercase text-[#50617a] flex-1 font-sans">Commercial Lines</h3>
-            <span className="text-[9px] font-bold bg-[#293B73] text-white px-2 py-0.5 rounded-full">{inputs.commPct}%</span>
-          </div>
-
+        <CalculatorSection>
           <div className="mb-6 font-sans">
-            <div className="text-[10px] font-semibold text-[#50617a] uppercase tracking-widest mb-2">Admitted vs E&amp;S</div>
-            <div className="flex h-8 rounded-lg overflow-hidden mb-2 shadow-inner border border-[#535353]/10">
-              <div className="flex items-center justify-center text-[10px] font-bold text-white bg-[#293B73]" style={{ width: `${inputs.admittedPct}%` }}>Admitted {inputs.admittedPct}%</div>
-              <div className="flex items-center justify-center text-[10px] font-bold text-white bg-[#0a143b]" style={{ width: `${100 - inputs.admittedPct}%` }}>E&amp;S {100 - inputs.admittedPct}%</div>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <div className={calcEyebrow}>
+                Admitted vs E&amp;S
+              </div>
+              <span className="rounded-full bg-[#EFE8FF] px-2 py-0.5 text-[9px] font-medium text-[#4C2FC9]">
+                Commercial {inputs.commPct}%
+              </span>
             </div>
-            <div className="flex gap-4 text-[11px]">
-              <span className="font-bold text-[#293B73]">{fmtM(lobBreakdown.admTotal)} Admitted</span>
-              <span className="font-bold text-[#0a143b]">{fmtM(lobBreakdown.ensTotal)} E&amp;S</span>
+            <div className="mb-2 flex h-2.5 overflow-hidden rounded-full bg-[#F0F0F4]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#5B35E0] to-[#7B5CFF]"
+                style={{ width: `${inputs.admittedPct}%` }}
+                title={`Admitted ${inputs.admittedPct}%`}
+              />
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#0D9488] to-[#2DD4BF]"
+                style={{ width: `${100 - inputs.admittedPct}%` }}
+                title={`E&S ${100 - inputs.admittedPct}%`}
+              />
+            </div>
+            <div className="flex gap-4 font-sans text-xs">
+              <span className="font-medium text-[#5B35E0]">{fmtM(lobBreakdown.admTotal)} Admitted</span>
+              <span className="font-medium text-[#0D9488]">{fmtM(lobBreakdown.ensTotal)} E&amp;S</span>
             </div>
           </div>
 
-          <hr className="border-[#535353]/10 my-4" />
-          <div className="text-[10px] font-semibold text-[#50617a] uppercase tracking-widest mb-3 font-sans">By Line of Business</div>
+          <hr className="my-4 border-[#535353]/10" />
 
-          <div className="flex flex-col gap-2 font-sans">
+          <div className="flex flex-col gap-4 font-sans">
             {lobBreakdown.commLOBs.map((l, i) => {
               const barW = (l.premium / commMax * 100).toFixed(1);
-              const col = l.on ? LOB_COLORS_COMM[i % LOB_COLORS_COMM.length] : '#E5E7EB';
+              const col = l.on
+                ? LOB_COLORS_COMM_SOLID[i % LOB_COLORS_COMM_SOLID.length]
+                : "#E5E7EB";
               return (
                 <div key={l.id}>
-                  <div className="flex justify-between items-center text-[11px] mb-1">
-                    <div className="font-medium text-[#0a143b] flex items-center gap-1.5">
+                  <div className="mb-1 flex items-center justify-between">
+                    <div className={`flex items-center gap-1.5 ${calcRowLabel}`}>
                       {l.on 
-                        ? <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#F5F7FA] text-[#293B73] tracking-wider">CF ✓</span> 
-                        : <span className="text-[8px] font-bold text-[#9AA8BC] tracking-wider">OFF</span>
+                        ? <span className="rounded bg-[#EFE8FF] px-1.5 py-0.5 font-mono text-[8px] font-medium tracking-wider text-[#4C2FC9]">CF ✓</span> 
+                        : <span className="font-mono text-[8px] font-medium tracking-wider text-[#8A8A8A]">OFF</span>
                       }
                       {l.label}
                     </div>
-                    <div className="font-bold text-[#0a143b]">{fmtM(l.premium)}</div>
+                    <div className={calcRowValue}>{fmtM(l.premium)}</div>
                   </div>
-                  <div className="h-1.5 bg-[#E8ECF0] rounded-full overflow-hidden border border-[#535353]/10">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-[#F0F0F4]">
                     <div className="h-full rounded-full transition-all duration-500" style={{ width: `${barW}%`, background: col }}></div>
                   </div>
                 </div>
               )
             })}
           </div>
-        </div>
+        </CalculatorSection>
 
         {/* Personal Lines */}
-        <div className="bg-white border border-[#535353]/10 rounded-xl p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#50617a]"></div>
-            <h3 className="text-[10px] font-bold tracking-widest uppercase text-[#50617a] flex-1 font-sans">Personal Lines</h3>
-            <span className="text-[9px] font-bold bg-[#50617a] text-white px-2 py-0.5 rounded-full">{100 - inputs.commPct}%</span>
+        <CalculatorSection>
+          <div className={`mb-6 ${calcPara}`}>
+            <div className="mb-1.5 flex items-center justify-between gap-2">
+              <strong className="text-[#444444]">Pain quantification only.</strong>
+              <span className="shrink-0 rounded-full bg-[#F4F4F5] px-2 py-0.5 text-[9px] font-medium text-[#3F3F46]">
+                Personal {100 - inputs.commPct}%
+              </span>
+            </div>
+            CoverForce does not currently serve personal lines — but showing this premium helps executives see the full scope of the digital transformation gap.
           </div>
 
-          <div className="bg-[#F5F7FA] border-l-2 border-[#9AA8BC] p-3 rounded-r-lg text-[11px] leading-relaxed text-[#50617a] mb-6 font-sans">
-            <strong className="text-[#0a143b]">Pain quantification only.</strong> CoverForce does not currently serve personal lines — but showing this premium helps executives see the full scope of the digital transformation gap.
-          </div>
-
-          <div className="text-[10px] font-semibold text-[#50617a] uppercase tracking-widest mb-3 font-sans">By Line of Business</div>
-          
-          <div className="flex flex-col gap-2 font-sans">
+          <div className="flex flex-col gap-4 font-sans">
             {lobBreakdown.persLOBs.map((l, i) => {
               const barW = (l.premium / persMax * 100).toFixed(1);
               return (
                 <div key={l.id}>
-                  <div className="flex justify-between items-center text-[11px] mb-1">
-                    <div className="font-medium text-[#0a143b] flex items-center gap-1.5">
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#E8ECF0] text-[#50617a] tracking-wider uppercase">Pain Only</span>
+                  <div className="mb-1 flex items-center justify-between">
+                    <div className={`flex items-center gap-1.5 ${calcRowLabel}`}>
+                      <span className="rounded bg-[#FFEDD5] px-1.5 py-0.5 font-mono text-[8px] font-medium uppercase tracking-wider text-[#C2410C]">Pain Only</span>
                       {l.label}
                     </div>
-                    <div className="font-bold text-[#0a143b]">{fmtM(l.premium)}</div>
+                    <div className={calcRowValue}>{fmtM(l.premium)}</div>
                   </div>
-                  <div className="h-1.5 bg-[#E8ECF0] rounded-full overflow-hidden border border-[#535353]/10">
-                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${barW}%`, background: LOB_COLORS_PERS[i % 4] }}></div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-[#F0F0F4]">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${barW}%`,
+                        background: LOB_COLORS_PERS_SOLID[i % LOB_COLORS_PERS_SOLID.length],
+                      }}
+                    />
                   </div>
                 </div>
               )
             })}
           </div>
-        </div>
+        </CalculatorSection>
       </div>
 
       {/* Pain Callouts */}
-      <div className="flex flex-col gap-3 font-sans">
+      <CalculatorSection className="flex flex-col gap-5 font-sans">
         {lobBreakdown.persTotal > 0 && (
-          <div className="bg-white border border-[#535353]/10 rounded-xl p-4 text-[#50617a]">
-            <div className="text-sm font-bold text-[#0a143b] mb-1 flex items-center gap-1.5"><Lightbulb className="w-4 h-4 text-[#50617a]" /> {fmtM(lobBreakdown.persTotal)} in Personal Lines — the size of the gap</div>
-            <div className="text-xs leading-relaxed">
-              {inputs.companyName} is managing <strong className="text-[#0a143b]">{fmtM(lobBreakdown.persTotal)}</strong> ({100 - inputs.commPct}% of book) in personal lines without a CoverForce equivalent. While CoverForce can't help here today, this premium represents the scale of the digital workflow problem you're solving in commercial — and it signals how much operational leverage is still on the table.
+          <div className={calcPara}>
+            <div className={`mb-1 flex items-center gap-1.5 ${calcSubheading}`}><Lightbulb className="size-4 text-[#6B6B6B]" /> {fmtM(lobBreakdown.persTotal)} in Personal Lines — the size of the gap</div>
+            <div className={calcSubpara}>
+              {inputs.companyName} is managing <strong className="text-[#444444]">{fmtM(lobBreakdown.persTotal)}</strong> ({100 - inputs.commPct}% of book) in personal lines without a CoverForce equivalent. While CoverForce can't help here today, this premium represents the scale of the digital workflow problem you're solving in commercial — and it signals how much operational leverage is still on the table.
             </div>
           </div>
         )}
         {commOffPremium > 0 && (
-          <div className="bg-white border border-[#535353]/10 rounded-xl p-4 text-[#50617a]">
-            <div className="text-sm font-bold text-[#0a143b] mb-1 flex items-center gap-1.5"><AlertCircle className="w-4 h-4 text-[#0a143b]" /> {fmtM(commOffPremium)} in commercial lines not yet in scope</div>
-            <div className="text-xs leading-relaxed">
-              You've toggled off some commercial LOBs — that's <strong className="text-[#0a143b]">{fmtM(commOffPremium)}</strong> in commercial premium still handled manually. Turning these on expands the CoverForce opportunity to the full <strong className="text-[#0a143b]">{fmtM(lobBreakdown.commTotal)}</strong> commercial book.
+          <div className={calcPara}>
+            <div className={`mb-1 flex items-center gap-1.5 ${calcSubheading}`}><AlertCircle className="size-4 text-[#444444]" /> {fmtM(commOffPremium)} in commercial lines not yet in scope</div>
+            <div className={calcSubpara}>
+              You've toggled off some commercial LOBs — that's <strong className="text-[#444444]">{fmtM(commOffPremium)}</strong> in commercial premium still handled manually. Turning these on expands the CoverForce opportunity to the full <strong className="text-[#444444]">{fmtM(lobBreakdown.commTotal)}</strong> commercial book.
             </div>
           </div>
         )}
         {lobBreakdown.cfReachable > 0 && (
-          <div className="bg-[#F5F7FA] border border-[#293B73]/30 rounded-xl p-4 text-[#0a143b]">
-            <div className="text-sm font-bold text-[#0a143b] mb-1 flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[#293B73]" /> {fmtM(lobBreakdown.cfReachable)} in premium CoverForce can transform today</div>
-            <div className="text-xs leading-relaxed">
-              At a {inputs.commissionRate}% commission rate, <strong className="text-[#0a143b]">{fmtM(lobBreakdown.cfReachable)}</strong> in addressable premium represents <strong className="text-[#0a143b]">{fmtM(lobBreakdown.cfReachable * inputs.commissionRate / 100)}</strong> in annual commission — the base that compounds with every new policy written.
+          <div className={calcPara}>
+            <div className={`mb-1 flex items-center gap-1.5 ${calcSubheading}`}>
+              <CheckCircle2 className="size-4 text-[#6B6B6B]" /> {fmtM(lobBreakdown.cfReachable)} in premium CoverForce can transform today
+            </div>
+            <div className={calcSubpara}>
+              At a {inputs.commissionRate}% commission rate, <strong className="text-[#444444]">{fmtM(lobBreakdown.cfReachable)}</strong> in addressable premium represents <strong className="text-[#444444]">{fmtM(lobBreakdown.cfReachable * inputs.commissionRate / 100)}</strong> in annual commission — the base that compounds with every new policy written.
             </div>
           </div>
         )}
-      </div>
+      </CalculatorSection>
 
       {/* ROI Tie-In */}
-      <div className="bg-white border border-[#535353]/10 rounded-xl p-6">
-        <h3 className="text-sm font-bold text-[#0a143b] mb-1 font-heading">What This Means for Your ROI</h3>
-        <p className="text-xs text-[#50617a] mb-5 font-sans">The revenue model adjusts to only count premium in CoverForce's reach (commercial lines you've selected). Here's what that unlocks:</p>
+      <CalculatorSection>
+        <h3 className={calcHeading}>What This Means for Your ROI</h3>
+        <p className={`mb-5 mt-1.5 ${calcPara}`}>The revenue model adjusts to only count premium in CoverForce&apos;s reach (commercial lines you&apos;ve selected). Here&apos;s what that unlocks:</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-sans">
-          <div className="bg-[#F5F7FA] border border-[#535353]/10 rounded-xl p-4 text-center">
-            <div className="text-2xl font-heading font-regular tracking-tight text-[#0a143b] mb-1">{fmtM(totalROI)}</div>
-            <div className="text-[11px] font-bold text-[#0a143b] mb-0.5">{inputs.projYears}-Year Net ROI</div>
-            <div className="text-[10px] text-[#50617a]">Based on {fmtM(lobBreakdown.cfReachable)} in reach</div>
+        <div className="grid grid-cols-1 gap-0 font-sans md:grid-cols-3 md:divide-x md:divide-[#E8E8EC]">
+          <div className="py-4 md:px-6 md:py-1 first:md:pl-0">
+            <p className={calcMetricLabel}>
+              {inputs.projYears}-Year Net ROI
+            </p>
+            <div className={`mt-3 ${calcMetricValueSm}`}>
+              {fmtM(totalROI)}
+            </div>
+            <div className={`mt-1 ${calcSubpara}`}>Based on {fmtM(lobBreakdown.cfReachable)} in reach</div>
           </div>
-          <div className="bg-[#F5F7FA] border border-[#293B73]/30 rounded-xl p-4 text-center">
-            <div className="text-2xl font-heading font-regular tracking-tight text-[#293B73] mb-1">{fmtM(lobBreakdown.cfReachable * inputs.commissionRate / 100)}</div>
-            <div className="text-[11px] font-bold text-[#0a143b] mb-0.5">Annual Commission at Stake</div>
-            <div className="text-[10px] text-[#50617a]">{inputs.commPct}% of book × {inputs.commissionRate}% rate</div>
+          <div className="py-4 md:px-6 md:py-1">
+            <p className={calcMetricLabel}>
+              Annual Commission at Stake
+            </p>
+            <div className={`mt-3 ${calcMetricValueSm}`}>
+              {fmtM(lobBreakdown.cfReachable * inputs.commissionRate / 100)}
+            </div>
+            <div className={`mt-1 ${calcSubpara}`}>{inputs.commPct}% of book × {inputs.commissionRate}% rate</div>
           </div>
-          <div className="bg-white border border-[#535353]/10 rounded-xl p-4 text-center">
-            <div className="text-2xl font-heading font-regular tracking-tight text-[#0a143b] mb-1">{fmtM(lobBreakdown.persTotal)}</div>
-            <div className="text-[11px] font-bold text-[#0a143b] mb-0.5">Personal Lines Pain Quantified</div>
-            <div className="text-[10px] text-[#50617a]">Full digital gap for executives</div>
+          <div className="py-4 md:px-6 md:py-1 last:md:pr-0">
+            <p className={calcMetricLabel}>
+              Personal Lines Pain Quantified
+            </p>
+            <div className={`mt-3 ${calcMetricValueSm}`}>
+              {fmtM(lobBreakdown.persTotal)}
+            </div>
+            <div className={`mt-1 ${calcSubpara}`}>Full digital gap for executives</div>
           </div>
         </div>
-      </div>
+      </CalculatorSection>
 
     </div>
   );

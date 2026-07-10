@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { CalculatorInputs, LOB_COMMERCIAL, LOB_PERSONAL } from "@/lib/calculations";
+import {
+  CalculatorInputs,
+  LOB_COMMERCIAL,
+  LOB_PERSONAL,
+  SEGMENTS,
+} from "@/lib/calculations";
 import {
   BarChart3,
   Blocks,
@@ -14,19 +19,29 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
-  calcCard,
   calcEyebrow,
   calcInputWrap,
   calcLabel,
+  calcSegmentActive,
+  calcSegmentIdle,
 } from "./calculatorUi";
 
 interface Props {
   inputs: CalculatorInputs;
   updateInput: <K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) => void;
+  applySegment: (segment: keyof typeof SEGMENTS) => void;
   toggleCommercialLob: (id: string) => void;
   setCommercialLobPct: (id: string, pct: number) => void;
   setPersonalLobPct: (id: string, pct: number) => void;
 }
+
+const SEGMENT_OPTIONS = [
+  { id: "startup" as const, label: "Startup" },
+  { id: "mid" as const, label: "Mid-Market" },
+  { id: "enterprise" as const, label: "Enterprise" },
+];
+
+const PROJECTION_OPTIONS = [3, 5] as const;
 
 type SectionId =
   | "business-mix"
@@ -63,19 +78,19 @@ function SidebarAccordion({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`overflow-hidden rounded-xl ${calcCard}`}>
+    <div className="overflow-hidden border-b border-[#535353]/10 last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-[#F5F7FA]"
+        className="flex w-full items-center justify-between gap-3 px-1 py-3.5 text-left transition-colors hover:bg-[#F7F7F7]/80"
       >
-        <span className="flex items-center gap-2.5 font-heading text-sm font-medium tracking-tight text-[#0a143b]">
-          <Icon className="size-4 shrink-0 text-[#50617a]" aria-hidden />
+        <span className="flex items-center gap-2.5 font-heading text-sm font-medium tracking-tight text-[#444444]">
+          <Icon className="size-4 shrink-0 text-[#8A8A8A]" aria-hidden />
           {title}
         </span>
         <ChevronDown
-          className={`size-4 shrink-0 text-[#9AA8BC] transition-transform duration-300 ease-out ${
+          className={`size-4 shrink-0 text-[#8A8A8A] transition-transform duration-300 ease-out ${
             open ? "rotate-180" : ""
           }`}
           aria-hidden
@@ -88,24 +103,53 @@ function SidebarAccordion({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="border-t border-[#535353]/10 px-4 pb-4 pt-3">{children}</div>
+          <div className="px-1 pb-4 pt-1">{children}</div>
         </div>
       </div>
     </div>
   );
 }
 
+function SegmentButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-md border px-2.5 py-1.5 font-heading text-xs font-medium tracking-tight transition-colors ${
+        active ? calcSegmentActive : calcSegmentIdle
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function Sidebar({
   inputs,
   updateInput,
+  applySegment,
   toggleCommercialLob,
   setCommercialLobPct,
   setPersonalLobPct,
 }: Props) {
-  const [openSection, setOpenSection] = useState<SectionId | null>("business-mix");
+  const [openSection, setOpenSection] = useState<SectionId | null>(null);
+  const [activeSegment, setActiveSegment] = useState<keyof typeof SEGMENTS>("mid");
 
   const toggleSection = (id: SectionId) => {
     setOpenSection((prev) => (prev === id ? null : id));
+  };
+
+  const handleSegmentClick = (seg: keyof typeof SEGMENTS) => {
+    setActiveSegment(seg);
+    applySegment(seg);
   };
 
   const InputRow = ({
@@ -121,13 +165,13 @@ export default function Sidebar({
       <ControlLabel>{label}</ControlLabel>
       <div className={calcInputWrap}>
         {prefix ? (
-          <span className="pl-3 pr-1 font-heading text-sm font-medium text-[#9AA8BC]">
+          <span className="pl-3 pr-1 font-heading text-sm font-medium text-[#8A8A8A]">
             {prefix}
           </span>
         ) : null}
         <input
           type={type}
-          className="w-full border-none bg-transparent px-3 py-2.5 font-heading text-sm font-medium text-[#0a143b] outline-none"
+          className="w-full border-none bg-transparent px-3 py-2.5 font-heading text-sm font-medium text-[#444444] outline-none"
           value={inputs[prop] as string | number}
           onChange={(e) => {
             const val = type === "number" ? parseFloat(e.target.value) : e.target.value;
@@ -139,12 +183,12 @@ export default function Sidebar({
           step={step}
         />
         {suffix ? (
-          <span className="pl-1 pr-3 font-heading text-sm font-medium text-[#9AA8BC]">
+          <span className="pl-1 pr-3 font-heading text-sm font-medium text-[#8A8A8A]">
             {suffix}
           </span>
         ) : null}
       </div>
-      {note ? <p className="mt-1 font-sans text-[10px] leading-relaxed text-[#9AA8BC]">{note}</p> : null}
+      {note ? <p className="mt-1 font-sans text-[10px] leading-relaxed text-[#8A8A8A]">{note}</p> : null}
     </div>
   );
 
@@ -164,14 +208,14 @@ export default function Sidebar({
     <div className="mb-5">
       <ControlLabel>{label}</ControlLabel>
       <div className="mb-2 flex justify-between font-sans text-[11px] font-semibold">
-        <span className="text-[#0a143b]">{leftLabel}</span>
-        <span className="text-[#9AA8BC]">{rightLabel}</span>
+        <span className="text-[#444444]">{leftLabel}</span>
+        <span className="text-[#8A8A8A]">{rightLabel}</span>
       </div>
       <input
         type="range"
         min={0}
         max={100}
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[#F5F7FA] accent-[#0a143b] [&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[#0a143b] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0a143b]"
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[#F0F0F0] accent-[#444444] [&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[#444444] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#444444]"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
       />
@@ -179,7 +223,39 @@ export default function Sidebar({
   );
 
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-3 print:w-full md:w-[340px] lg:w-[360px]">
+    <aside className="flex w-full shrink-0 flex-col rounded-xl border border-[#E8E8EC] bg-white p-4 print:w-full md:sticky md:top-24 md:w-[260px] md:self-start md:p-5 lg:w-[280px]">
+      <div className="mb-4 space-y-4 border-b border-[#535353]/10 pb-4">
+        <div>
+          <span className={calcLabel}>Company size</span>
+          <div className="flex flex-wrap gap-1.5">
+            {SEGMENT_OPTIONS.map(({ id, label }) => (
+              <SegmentButton
+                key={id}
+                active={activeSegment === id}
+                onClick={() => handleSegmentClick(id)}
+              >
+                {label}
+              </SegmentButton>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <span className={calcLabel}>Projection</span>
+          <div className="flex flex-wrap gap-1.5">
+            {PROJECTION_OPTIONS.map((years) => (
+              <SegmentButton
+                key={years}
+                active={inputs.projYears === years}
+                onClick={() => updateInput("projYears", years)}
+              >
+                {years} years
+              </SegmentButton>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <SidebarAccordion
         title="Business Mix"
         icon={FolderGit2}
@@ -214,30 +290,15 @@ export default function Sidebar({
             return (
               <label
                 key={lob.id}
-                className={`flex cursor-pointer select-none items-center gap-2 rounded-md border p-1.5 transition-colors ${
-                  st.on
-                    ? "border-[#0a143b]/30 bg-[#0a143b]/6"
-                    : "border-[#535353]/10 bg-[#F5F7FA]"
-                }`}
+                className="flex cursor-pointer select-none items-center gap-2 rounded-md p-1.5 hover:bg-[#F7F7F7]"
               >
-                <div
-                  className={`flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
-                    st.on
-                      ? "border-[#0a143b] bg-[#0a143b] text-white"
-                      : "border-[#535353]/15 bg-white"
-                  }`}
-                >
-                  {st.on ? <span className="text-[10px]">✓</span> : null}
-                </div>
                 <input
                   type="checkbox"
-                  className="hidden"
+                  className="size-3.5 shrink-0 rounded border-[#535353]/25 accent-[#444444]"
                   checked={st.on}
                   onChange={() => toggleCommercialLob(lob.id)}
                 />
-                <span
-                  className={`flex-1 text-xs font-semibold ${st.on ? "text-[#0a143b]" : "text-[#8296B0]"}`}
-                >
+                <span className="flex-1 text-xs font-medium text-[#444444]">
                   {lob.label}
                 </span>
                 <div className="flex items-center gap-1 border-l border-[#535353]/10 pl-2">
@@ -245,12 +306,12 @@ export default function Sidebar({
                     type="number"
                     min={0}
                     max={100}
-                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
+                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-medium text-[#444444] outline-none"
                     value={st.pct}
                     onChange={(e) => setCommercialLobPct(lob.id, parseFloat(e.target.value) || 0)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-[10px] font-bold text-[#8296B0]">%</span>
+                  <span className="text-[10px] font-medium text-[#8A8A8A]">%</span>
                 </div>
               </label>
             );
@@ -267,23 +328,15 @@ export default function Sidebar({
             return (
               <label
                 key={lob.id}
-                className={`flex cursor-pointer select-none items-center gap-2 rounded-md border p-1.5 transition-colors ${
-                  st.on ? "border-[#50617a]/30 bg-[#F5F7FA]" : "border-[#535353]/10 bg-[#F5F7FA]"
-                }`}
+                className="flex cursor-pointer select-none items-center gap-2 rounded-md p-1.5 hover:bg-[#F7F7F7]"
               >
-                <div
-                  className={`flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
-                    st.on
-                      ? "border-[#50617a] bg-[#50617a] text-white"
-                      : "border-[#535353]/15 bg-white"
-                  }`}
-                >
-                  {st.on ? <span className="text-[10px]">✓</span> : null}
-                </div>
-                <input type="checkbox" className="hidden" checked={st.on} onChange={() => {}} />
-                <span
-                  className={`flex-1 text-xs font-semibold ${st.on ? "text-[#0a143b]" : "text-[#8296B0]"}`}
-                >
+                <input
+                  type="checkbox"
+                  className="size-3.5 shrink-0 rounded border-[#535353]/25 accent-[#444444]"
+                  checked={st.on}
+                  onChange={() => {}}
+                />
+                <span className="flex-1 text-xs font-medium text-[#444444]">
                   {lob.label}
                 </span>
                 <div className="flex items-center gap-1 border-l border-[#535353]/15 pl-2">
@@ -291,12 +344,12 @@ export default function Sidebar({
                     type="number"
                     min={0}
                     max={100}
-                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
+                    className="w-8 border-none bg-transparent p-0 text-right text-xs font-medium text-[#444444] outline-none"
                     value={st.pct}
                     onChange={(e) => setPersonalLobPct(lob.id, parseFloat(e.target.value) || 0)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-[10px] font-bold text-[#8296B0]">%</span>
+                  <span className="text-[10px] font-medium text-[#8A8A8A]">%</span>
                 </div>
               </label>
             );
@@ -311,27 +364,27 @@ export default function Sidebar({
           <input
             type="text"
             placeholder="e.g. Marine Cargo..."
-            className="flex-1 rounded-lg border border-[#535353]/10 bg-white p-2 text-xs text-[#0a143b] outline-none transition-colors placeholder:text-[#8296B0] focus:border-[#0a143b]"
+            className="flex-1 rounded-lg border border-[#535353]/10 bg-white p-2 text-xs text-[#444444] outline-none transition-colors placeholder:text-[#8A8A8A] focus:border-[#444444]"
             value={inputs.otherLobName}
             onChange={(e) => updateInput("otherLobName", e.target.value)}
           />
-          <div className="flex items-center gap-1 rounded-lg border border-[#535353]/10 bg-white px-2 py-1 focus-within:border-[#0a143b]">
+          <div className="flex items-center gap-1 rounded-lg border border-[#535353]/10 bg-white px-2 py-1 focus-within:border-[#444444]">
             <input
               type="number"
               min={0}
               max={100}
               placeholder="0"
-              className="w-6 border-none bg-transparent p-0 text-right text-xs font-bold text-[#0a143b] outline-none"
+              className="w-6 border-none bg-transparent p-0 text-right text-xs font-bold text-[#444444] outline-none"
               value={inputs.otherLobPct || ""}
               onChange={(e) => updateInput("otherLobPct", parseFloat(e.target.value) || 0)}
             />
-            <span className="text-[10px] font-bold text-[#8296B0]">%</span>
+            <span className="text-[10px] font-bold text-[#8A8A8A]">%</span>
           </div>
         </div>
-        <label className="mt-2 flex cursor-pointer items-center gap-1.5 font-sans text-xs text-[#50617a]">
+        <label className="mt-2 flex cursor-pointer items-center gap-1.5 font-sans text-xs text-[#6B6B6B]">
           <input
             type="checkbox"
-            className="accent-[#0a143b]"
+            className="accent-[#444444]"
             checked={inputs.otherLobCF}
             onChange={(e) => updateInput("otherLobCF", e.target.checked)}
           />

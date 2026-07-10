@@ -1,7 +1,8 @@
 import React from 'react';
-import { Clock, AlertTriangle } from 'lucide-react';
 import { CalculationResult } from '@/lib/calculations';
 import { fmtM } from '@/lib/formatters';
+import { CalculatorKpiCard, CalculatorSection } from '../CalculatorKpiCard';
+import { calcHeading, calcMetricLabel, calcPara, calcRowValue, calcSubheading, calcSubpara } from '../calculatorUi';
 
 export default function InactionTab({ results }: { results: CalculationResult }) {
   const { years, inputs, totalROI } = results;
@@ -10,76 +11,84 @@ export default function InactionTab({ results }: { results: CalculationResult })
   const valueForegone = yr1?.totalValue || 0;
   const delayedROI = totalROI - valueForegone;
   
-  const deployNowPct = 100;
   const wait12Pct = (delayedROI / totalROI) * 100;
 
   return (
-    <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 md:gap-6">
       
-      <div className="bg-white border border-[#535353]/10 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-[#0a143b] mb-1 font-heading">The Cost of Waiting 12 Months</h3>
-        <p className="text-sm text-[#50617a] mb-6 font-sans">Software implementations are often delayed due to competing priorities. But in insurance, deferring digitisation doesn't just defer revenue — it permanently erases it because the renewal compounding clock starts a year late.</p>
+      <CalculatorSection>
+        <h3 className={calcHeading}>The Cost of Waiting 12 Months</h3>
+        <p className={`mb-5 mt-1.5 ${calcPara}`}>Software implementations are often delayed due to competing priorities. But in insurance, deferring digitisation doesn't just defer revenue — it permanently erases it because the renewal compounding clock starts a year late.</p>
         
-        <div className="bg-white border border-[#535353]/10 rounded-2xl p-8 mb-8 text-center max-w-xl mx-auto transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r "></div>
-          <div className="mx-auto w-12 h-12 bg-[#F5F7FA] rounded-full flex items-center justify-center mb-4 text-[#0a143b] group-hover:scale-110 transition-transform duration-300">
-            <AlertTriangle className="w-6 h-6" />
-          </div>
-          <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-widest mb-2 font-sans">Total Value Lost to a 12-Month Delay</div>
-          <div className="text-5xl font-heading font-regular tracking-tight font-bold text-[#0a143b]">{fmtM(valueForegone)}</div>
-        </div>
+        <CalculatorKpiCard
+          label="Total Value Lost to a 12-Month Delay"
+          value={fmtM(valueForegone)}
+          tone="rose"
+          trend="permanently foregone"
+          className="max-w-xl px-0 md:px-0"
+        />
+        <div className="mb-8" />
 
         <div className="mb-6 font-sans">
-          <div className="flex justify-between text-xs font-bold text-[#0a143b] mb-2">
+          <div className="mb-2 flex justify-between font-sans text-xs font-medium text-[#444444]">
             <span>Deploy Now — Full {inputs.projYears}-Year ROI</span>
-            <span className="text-[#293B73]">{fmtM(totalROI)}</span>
+            <span className="font-heading font-medium text-[#5B35E0]">{fmtM(totalROI)}</span>
           </div>
-          <div className="h-8 bg-[#F5F7FA] rounded-md overflow-hidden relative shadow-inner border border-[#535353]/10">
-            <div className="h-full bg-[#293B73] transition-all duration-1000 flex items-center justify-center text-xs font-bold text-white" style={{ width: '100%' }}>
-              100% Value Captured
+          <div className="relative h-2.5 overflow-hidden rounded-full bg-[#F0F0F4]">
+            <div className="flex h-full w-full items-center justify-end rounded-full bg-gradient-to-r from-[#5B35E0] to-[#10B981] pr-2 transition-all duration-1000">
+              <span className="text-[9px] font-medium text-white">100% captured</span>
             </div>
           </div>
         </div>
         
-        <div className="mb-8 font-sans">
-          <div className="flex justify-between text-xs font-bold text-[#0a143b] mb-2">
+        <div className="font-sans">
+          <div className="mb-2 flex justify-between font-sans text-xs font-medium text-[#444444]">
             <span>Wait 12 Months — Adjusted ROI</span>
-            <span className="text-[#0a143b]">{fmtM(delayedROI)}</span>
+            <span className="font-heading font-medium text-[#F43F5E]">{fmtM(delayedROI)}</span>
           </div>
-          <div className="h-8 bg-[#F5F7FA] rounded-md overflow-hidden relative flex shadow-inner border border-[#535353]/10">
-            <div className="h-full bg-[#8296B0] transition-all duration-1000 flex items-center justify-center text-xs font-bold text-white whitespace-nowrap overflow-hidden px-2" style={{ width: `${wait12Pct}%` }}>
-              {wait12Pct.toFixed(0)}% Captured
+          <div className="relative flex h-2.5 overflow-hidden rounded-full bg-[#F0F0F4]">
+            <div
+              className="flex h-full items-center justify-end rounded-full bg-gradient-to-r from-[#FB7185] to-[#F43F5E] pr-2 transition-all duration-1000"
+              style={{ width: `${wait12Pct}%` }}
+            >
+              {wait12Pct > 18 ? (
+                <span className="truncate text-[9px] font-medium text-white">
+                  {wait12Pct.toFixed(0)}%
+                </span>
+              ) : null}
             </div>
-            <div className="flex-1 border-2 border-dashed border-[#535353]/15 h-full flex items-center justify-center text-[10px] font-bold text-[#50617a] bg-[#F5F7FA]">
-              {fmtM(valueForegone)} Lost
+            <div className={`flex flex-1 items-center justify-center px-2 font-sans text-xs font-medium text-[#F43F5E]`}>
+              {fmtM(valueForegone)} lost
             </div>
           </div>
         </div>
+      </CalculatorSection>
 
-        <h4 className="text-sm font-bold text-[#0a143b] mb-4 border-b border-[#535353]/10 pb-2 font-heading">Where the value bleeds out:</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-sans">
-          <div className="bg-white border border-[#535353]/10 rounded-lg p-4">
-            <div className="text-sm font-bold text-[#0a143b] mb-1">{fmtM(yr1?.addlRevBind)}</div>
-            <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-wide">Lost Bind Lift</div>
-            <div className="text-[10px] text-[#9AA8BC] mt-1">Quotes bound at current {inputs.bindCurrent}% instead of {inputs.bindCF}%</div>
+      <CalculatorSection>
+        <h4 className={`mb-4 border-b border-[#535353]/10 pb-2 ${calcSubheading}`}>Where the value bleeds out:</h4>
+        <div className="grid grid-cols-1 divide-y divide-[#E8E8EC] font-sans sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          <div className="py-4 sm:px-5 sm:py-1 first:sm:pl-0">
+            <p className={calcMetricLabel}>Lost Bind Lift</p>
+            <div className={`mt-2 ${calcRowValue}`}>{fmtM(yr1?.addlRevBind)}</div>
+            <div className={`mt-1 ${calcSubpara}`}>Quotes bound at current {inputs.bindCurrent}% instead of {inputs.bindCF}%</div>
           </div>
-          <div className="bg-white border border-[#535353]/10 rounded-lg p-4">
-            <div className="text-sm font-bold text-[#0a143b] mb-1">{fmtM(yr1?.productivityReinvest)}</div>
-            <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-wide">Lost Productivity</div>
-            <div className="text-[10px] text-[#9AA8BC] mt-1">Time wasted on data entry instead of revenue-gen</div>
+          <div className="py-4 sm:px-5 sm:py-1">
+            <p className={calcMetricLabel}>Lost Productivity</p>
+            <div className={`mt-2 ${calcRowValue}`}>{fmtM(yr1?.productivityReinvest)}</div>
+            <div className={`mt-1 ${calcSubpara}`}>Time wasted on data entry instead of revenue-gen</div>
           </div>
-          <div className="bg-white border border-[#535353]/10 rounded-lg p-4">
-            <div className="text-sm font-bold text-[#0a143b] mb-1">{fmtM(yr1?.commOnIncremental)}</div>
-            <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-wide">Lost Compounding</div>
-            <div className="text-[10px] text-[#9AA8BC] mt-1">Year 1 growth that won't renew in Year 2</div>
+          <div className="py-4 sm:px-5 sm:py-1">
+            <p className={calcMetricLabel}>Lost Compounding</p>
+            <div className={`mt-2 ${calcRowValue}`}>{fmtM(yr1?.commOnIncremental)}</div>
+            <div className={`mt-1 ${calcSubpara}`}>Year 1 growth that won't renew in Year 2</div>
           </div>
-          <div className="bg-white border border-[#535353]/10 rounded-lg p-4">
-            <div className="text-sm font-bold text-[#0a143b] mb-1">{fmtM(yr1?.itSavings)}</div>
-            <div className="text-[10px] font-bold text-[#50617a] uppercase tracking-wide">Lost IT Savings</div>
-            <div className="text-[10px] text-[#9AA8BC] mt-1">12 months of continued in-house maintenance costs</div>
+          <div className="py-4 sm:px-5 sm:py-1 last:sm:pr-0">
+            <p className={calcMetricLabel}>Lost IT Savings</p>
+            <div className={`mt-2 ${calcRowValue}`}>{fmtM(yr1?.itSavings)}</div>
+            <div className={`mt-1 ${calcSubpara}`}>12 months of continued in-house maintenance costs</div>
           </div>
         </div>
-      </div>
+      </CalculatorSection>
 
     </div>
   );

@@ -15,13 +15,28 @@ interface Props {
   results: CalculationResult;
 }
 
-export type TabId = "revmap" | "overview" | "compounding" | "productivity" | "buildvbuy" | "inaction" | "model";
+export type TabId =
+  | "revmap"
+  | "overview"
+  | "compounding"
+  | "productivity"
+  | "buildvbuy"
+  | "inaction"
+  | "model";
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: "revmap", label: "Revenue Map", icon: <Map className="size-3.5 shrink-0" aria-hidden /> },
   { id: "overview", label: "Overview", icon: <TrendingUp className="size-3.5 shrink-0" aria-hidden /> },
-  { id: "compounding", label: "Compounding Growth", icon: <RefreshCw className="size-3.5 shrink-0" aria-hidden /> },
-  { id: "productivity", label: "Productivity Unlock", icon: <Zap className="size-3.5 shrink-0" aria-hidden /> },
+  {
+    id: "compounding",
+    label: "Compounding Growth",
+    icon: <RefreshCw className="size-3.5 shrink-0" aria-hidden />,
+  },
+  {
+    id: "productivity",
+    label: "Productivity Unlock",
+    icon: <Zap className="size-3.5 shrink-0" aria-hidden />,
+  },
   { id: "buildvbuy", label: "Build vs. Buy", icon: <Scale className="size-3.5 shrink-0" aria-hidden /> },
   { id: "inaction", label: "Cost of Inaction", icon: <Coins className="size-3.5 shrink-0" aria-hidden /> },
   { id: "model", label: "Full Model", icon: <Table className="size-3.5 shrink-0" aria-hidden /> },
@@ -44,10 +59,10 @@ function TabButton({
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className={`flex shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 font-heading text-xs font-medium tracking-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a143b] md:px-4 ${
+      className={`flex shrink-0 items-center gap-2 rounded-md border px-3 py-2 font-heading text-xs font-medium tracking-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#444444] md:px-3.5 ${
         active
-          ? `${calcSegmentActive} [&_svg]:text-white`
-          : `${calcSegmentIdle} [&_svg]:text-[#50617a]`
+          ? `${calcSegmentActive} [&_svg]:text-[#3834A4]`
+          : `${calcSegmentIdle} [&_svg]:text-[#8A8A8A]`
       }`}
     >
       {icon}
@@ -62,7 +77,7 @@ export default function Tabs({ results }: Props) {
   return (
     <div className="min-w-0 w-full flex-1">
       <div
-        className="mb-6 border-b border-[#535353]/10 pb-4 print:hidden"
+        className="mb-5 rounded-xl border border-[#E8E8EC] bg-white p-3 shadow-[0_1px_2px_rgba(17,24,39,0.04)] print:hidden"
         role="tablist"
         aria-label="Calculator views"
       >

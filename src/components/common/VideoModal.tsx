@@ -106,7 +106,7 @@ export default function VideoModal() {
     >
       <div
         ref={overlayRef}
-        className={`${overlayAnim} fixed inset-0 bg-[#0a143b]/70 backdrop-blur-[2px]`}
+        className={`${overlayAnim} fixed inset-0 bg-[#0a143b]/55 backdrop-blur-[2px]`}
         aria-hidden
         onClick={handleClose}
       />
@@ -119,13 +119,13 @@ export default function VideoModal() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="video-modal-title"
-          className={`${panelAnim} way-modal-panel relative w-full max-w-4xl overflow-hidden bg-[#0a143b] shadow-[0_24px_80px_rgba(10,20,59,0.28)]`}
+          className={`${panelAnim} way-modal-panel relative w-full max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(10,20,59,0.18)]`}
           onClick={(event) => event.stopPropagation()}
         >
           <button
             type="button"
             onClick={handleClose}
-            className="absolute right-4 top-4 z-20 flex size-10 items-center justify-center rounded-sm border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20 sm:right-5 sm:top-5"
+            className="absolute right-4 top-4 z-20 flex size-10 items-center justify-center rounded-sm border border-[#535353]/15 bg-white text-[#0a143b] transition-colors hover:bg-[#F5F7FA] sm:right-5 sm:top-5"
             aria-label="Close video"
           >
             <RiCloseLine size={20} />
@@ -134,12 +134,12 @@ export default function VideoModal() {
           <div className="px-4 pb-5 pt-14 sm:px-6 sm:pb-6 sm:pt-16">
             <h2
               id="video-modal-title"
-              className="max-w-2xl font-heading text-lg font-medium leading-snug text-white sm:text-xl"
+              className="max-w-2xl font-heading text-lg font-medium leading-snug text-[#2B409E] sm:text-xl"
             >
               {title}
             </h2>
 
-            <div className="mt-4 overflow-hidden rounded-lg border border-white/10 bg-black sm:mt-5">
+            <div className="mt-4 overflow-hidden rounded-lg border border-[#E8ECF0] bg-black sm:mt-5">
               <video
                 ref={videoRef}
                 key={src}

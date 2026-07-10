@@ -1,107 +1,206 @@
-import React from 'react';
-import { CalculationResult } from '@/lib/calculations';
-import { fmtM, fmt } from '@/lib/formatters';
+import React from "react";
+import { CalculationResult } from "@/lib/calculations";
+import { fmtM } from "@/lib/formatters";
+import {
+  calcSectionRow,
+  calcTable,
+  calcTableWrap,
+  calcTd,
+  calcTdMuted,
+  calcTdMutedRight,
+  calcTdRight,
+  calcTh,
+  calcThRight,
+  calcTheadRow,
+  calcTotalRow,
+  calcTr,
+  calcHeading,
+  calcPara,
+} from "../calculatorUi";
+import { CalculatorSection } from "../CalculatorKpiCard";
 
 export default function FullModelTab({ results }: { results: CalculationResult }) {
-  const { years, inputs, totalROI, totalCFSpend, roiMult, payback, monthlyVal, doNothing, buildTotal, itSavingsTotal, commTotal } = results;
+  const {
+    years,
+    inputs,
+    totalROI,
+    totalCFSpend,
+    doNothing,
+    itSavingsTotal,
+    commTotal,
+  } = results;
 
   return (
-    <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
-      <div className="bg-white border border-[#535353]/10 rounded-xl p-6 overflow-x-auto">
-        <h3 className="text-lg font-bold text-[#0a143b] mb-1 font-heading">Full Financial Model — {inputs.projYears} Year Projection</h3>
-        <p className="text-sm text-[#50617a] mb-6 font-sans">Detailed breakdown of value drivers, costs, and compounding effects.</p>
+    <div className="flex flex-col gap-5 duration-500 animate-in fade-in slide-in-from-bottom-4 md:gap-6">
+      <CalculatorSection>
+        <h3 className={calcHeading}>
+          Full Financial Model — {inputs.projYears} Year Projection
+        </h3>
+        <p className={`mb-5 mt-1.5 ${calcPara}`}>
+          Detailed breakdown of value drivers, costs, and compounding effects.
+        </p>
 
-        <table className="w-full text-left border-collapse min-w-[800px] font-sans">
-          <thead>
-            <tr>
-              <th className="py-2 px-3 text-[10px] font-bold text-[#50617a] uppercase tracking-wider border-b border-[#535353]/10 w-[200px]">Metric</th>
-              {years.map(y => (
-                <th key={y.year} className="py-2 px-3 text-[10px] font-bold text-[#50617a] uppercase tracking-wider text-right border-b border-[#535353]/10">Year {y.year}</th>
-              ))}
-              <th className="py-2 px-3 text-[10px] font-bold text-[#0a143b] uppercase tracking-wider text-right border-b border-[#535353]/10 bg-[#F5F7FA]">Total</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            
-            {/* Revenue Growth */}
-            <tr className="bg-[#F5F7FA]">
-              <td colSpan={years.length + 2} className="py-2 px-3 text-xs font-bold text-[#0a143b] uppercase tracking-widest border-t border-[#535353]/10">1. Revenue Growth</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Net New Business Premium</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.newBizThisYear)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(years.reduce((s,y)=>s+y.newBizThisYear,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Compounding Renewals</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#293B73]">{fmtM(y.renewalsThisYear)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#293B73]">{fmtM(years.reduce((s,y)=>s+y.renewalsThisYear,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 bg-[#F5F7FA]">
-              <td className="py-2 px-3 font-semibold text-[#0a143b]">Commission on New Book</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right font-semibold text-[#293B73]">{fmtM(y.commOnIncremental)}</td>)}
-              <td className="py-2 px-3 text-right font-bold bg-[#F5F7FA] text-[#293B73]">{fmtM(commTotal)}</td>
-            </tr>
+        <div className={calcTableWrap}>
+          <table className={`${calcTable} min-w-[920px]`}>
+            <thead>
+              <tr className={calcTheadRow}>
+                <th className={`${calcTh} w-[260px] min-w-[240px] whitespace-nowrap text-left`}>
+                  Metric
+                </th>
+                {years.map((y) => (
+                  <th key={y.year} className={`${calcThRight} min-w-[100px]`}>
+                    Year {y.year}
+                  </th>
+                ))}
+                <th className={`${calcThRight} min-w-[100px]`}>Total</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white text-sm">
+              <tr className={calcSectionRow}>
+                <td
+                  colSpan={years.length + 2}
+                  className="px-4 py-3 font-mono text-sm font-medium uppercase text-[#414141] md:px-5"
+                >
+                  1. Revenue Growth
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={`${calcTdMuted} whitespace-nowrap`}>Net New Business Premium</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.newBizThisYear)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.newBizThisYear, 0))}
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={`${calcTdMuted} whitespace-nowrap`}>Compounding Renewals</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.renewalsThisYear)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.renewalsThisYear, 0))}
+                </td>
+              </tr>
+              <tr className={calcTotalRow}>
+                <td className={`${calcTd} whitespace-nowrap font-medium`}>
+                  Commission on New Book
+                </td>
+                {years.map((y) => (
+                  <td key={y.year} className={`${calcTdRight} font-medium`}>
+                    {fmtM(y.commOnIncremental)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>{fmtM(commTotal)}</td>
+              </tr>
 
-            {/* Operational Efficiency */}
-            <tr className="bg-[#F5F7FA]">
-              <td colSpan={years.length + 2} className="py-2 px-3 text-xs font-bold text-[#0a143b] uppercase tracking-widest border-t border-[#535353]/10">2. Operational Efficiency</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Lift from Improved Bind Rate</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.addlRevBind)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(years.reduce((s,y)=>s+y.addlRevBind,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Time Savings Value</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.timeSavingsVal)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(years.reduce((s,y)=>s+y.timeSavingsVal,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Productivity Reinvestment</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.productivityReinvest)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(years.reduce((s,y)=>s+y.productivityReinvest,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">Error Reduction Savings</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.errorSavings)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(years.reduce((s,y)=>s+y.errorSavings,0))}</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">IT Maintenance Saved</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#9AA8BC]">{fmtM(y.itSavings)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">{fmtM(itSavingsTotal)}</td>
-            </tr>
+              <tr className={calcSectionRow}>
+                <td
+                  colSpan={years.length + 2}
+                  className="px-4 py-3 font-mono text-sm font-medium uppercase text-[#414141] md:px-5"
+                >
+                  2. Operational Efficiency
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>Lift from Improved Bind Rate</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.addlRevBind)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.addlRevBind, 0))}
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>Time Savings Value</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.timeSavingsVal)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.timeSavingsVal, 0))}
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>Productivity Reinvestment</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.productivityReinvest)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.productivityReinvest, 0))}
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>Error Reduction Savings</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.errorSavings)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>
+                  {fmtM(years.reduce((s, y) => s + y.errorSavings, 0))}
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>IT Maintenance Saved</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdMutedRight}>
+                    {fmtM(y.itSavings)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>{fmtM(itSavingsTotal)}</td>
+              </tr>
 
-            {/* Total Value */}
-            <tr className="border-t border-[#535353]/10 bg-[#F5F7FA]">
-              <td className="py-3 px-3 font-bold text-[#0a143b]">Total Value Created</td>
-              {years.map(y => <td key={y.year} className="py-3 px-3 text-right font-bold text-[#0a143b]">{fmtM(y.totalValue)}</td>)}
-              <td className="py-3 px-3 text-right font-black text-[#0a143b]">{fmtM(doNothing)}</td>
-            </tr>
+              <tr className={calcTotalRow}>
+                <td className={`${calcTd} font-medium`}>Total Value Created</td>
+                {years.map((y) => (
+                  <td key={y.year} className={`${calcTdRight} font-medium`}>
+                    {fmtM(y.totalValue)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>{fmtM(doNothing)}</td>
+              </tr>
 
-            {/* Investment */}
-            <tr className="bg-[#F5F7FA]">
-              <td colSpan={years.length + 2} className="py-2 px-3 text-xs font-bold text-[#0a143b] uppercase tracking-widest border-t border-[#535353]/10">3. Investment</td>
-            </tr>
-            <tr className="border-t border-[#535353]/10 hover:bg-[#F5F7FA]">
-              <td className="py-2 px-3 text-[#50617a]">CoverForce Fee</td>
-              {years.map(y => <td key={y.year} className="py-2 px-3 text-right text-[#0a143b]">-{fmtM(y.cfCost)}</td>)}
-              <td className="py-2 px-3 text-right font-semibold bg-[#F5F7FA] text-[#0a143b]">-{fmtM(totalCFSpend)}</td>
-            </tr>
+              <tr className={calcSectionRow}>
+                <td
+                  colSpan={years.length + 2}
+                  className="px-4 py-3 font-mono text-sm font-medium uppercase text-[#414141] md:px-5"
+                >
+                  3. Investment
+                </td>
+              </tr>
+              <tr className={calcTr}>
+                <td className={calcTdMuted}>CoverForce Fee</td>
+                {years.map((y) => (
+                  <td key={y.year} className={calcTdRight}>
+                    -{fmtM(y.cfCost)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>-{fmtM(totalCFSpend)}</td>
+              </tr>
 
-            {/* Net ROI */}
-            <tr className="border-t border-[#535353]/10 bg-[#0a143b] text-white">
-              <td className="py-3 px-3 font-bold">Net ROI</td>
-              {years.map(y => <td key={y.year} className="py-3 px-3 text-right font-bold text-white">{fmtM(y.netROI)}</td>)}
-              <td className="py-3 px-3 text-right font-black text-white">{fmtM(totalROI)}</td>
-            </tr>
-            
-          </tbody>
-        </table>
-      </div>
-
+              <tr className="border-b-0 bg-[#FAF7FF]">
+                <td className={`${calcTd} font-medium`}>Net ROI</td>
+                {years.map((y) => (
+                  <td key={y.year} className={`${calcTdRight} font-medium`}>
+                    {fmtM(y.netROI)}
+                  </td>
+                ))}
+                <td className={`${calcTdRight} font-medium`}>{fmtM(totalROI)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </CalculatorSection>
     </div>
   );
 }
