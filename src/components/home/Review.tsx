@@ -315,10 +315,10 @@ const Review = () => {
   return (
     <section ref={sectionRef} className="overflow-hidden bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33" borderBottom={true}>
-        <div className="relative pt-16 md:pt-20 lg:pt-24">
+        <div className="relative pt-16 pb-16 md:pt-20 md:pb-20 lg:pt-24 lg:pb-0">
           <div
             ref={headerRef}
-            className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
+            className="mb-8 flex flex-col gap-6 sm:mb-10 sm:flex-row sm:items-end sm:justify-between md:mb-12 lg:mb-0"
           >
             <h2
               ref={headingRef}
