@@ -246,11 +246,11 @@ const Footer = () => {
                   the right policy quickly with CoverForce.
                 </h2>
 
-                <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
-                  <RequestDemoButton balanced surface="on-dark">
+                <div className="mt-8 flex w-full max-w-[21rem] flex-row items-center gap-2.5 sm:mt-10 sm:max-w-none sm:gap-4">
+                  <RequestDemoButton balanced surface="on-dark" className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
                     Request demo
                   </RequestDemoButton>
-                  <Button href="/contact" balanced variant="secondary" surface="on-dark">
+                  <Button href="/contact" balanced variant="secondary" surface="on-dark" className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
                     Book a call
                   </Button>
                 </div>

@@ -48,10 +48,10 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
   const workflowPercent = useWorkflowPercent(cardHovered);
 
   return (
-    <div className="relative mx-auto w-full max-md:mt-10 max-md:sm:mt-12 max-md:h-[300px] max-md:max-w-[280px] max-md:overflow-visible md:pointer-events-none md:h-[260px] md:max-w-[300px]">
-      <div className="absolute top-0 right-0 max-md:w-full md:-right-20 md:w-full">
+    <div className="relative mx-auto w-full max-md:mt-8 max-md:h-[220px] max-md:max-w-[250px] max-md:overflow-visible md:pointer-events-none md:h-[260px] md:max-w-[300px]">
+      <div className="absolute top-0 right-0 max-md:right-[-6%] max-md:w-[88%] md:-right-20 md:w-full">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.10)]">
-          <div className="max-md:px-4 max-md:pt-3 max-md:pb-2.5 px-5 pt-4 pb-3">
+          <div className="max-md:px-3 max-md:pt-2.5 max-md:pb-2 px-5 pt-4 pb-3">
             <p className="text-[9px] font-mono font-medium uppercase tracking-wide text-[#6B7280]">
               Quotes Returned Today
             </p>
@@ -62,10 +62,10 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
                 max={47}
                 intervalMs={ROTATE_MS}
                 suffix="+"
-                suffixClassName="max-md:text-base md:text-lg font-sans font-medium leading-none text-[#494646]"
-                className="max-md:text-base md:text-lg font-sans font-medium leading-none text-[#494646]"
+                suffixClassName="max-md:text-sm md:text-lg font-sans font-medium leading-none text-[#494646]"
+                className="max-md:text-sm md:text-lg font-sans font-medium leading-none text-[#494646]"
               />
-              <span className="max-md:text-base md:text-lg font-sans font-medium leading-none text-[#494646]">
+              <span className="max-md:text-sm md:text-lg font-sans font-medium leading-none text-[#494646]">
                 carriers
               </span>
             </div>
@@ -73,7 +73,7 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
 
           <div className="border-t border-neutral-100" />
 
-          <div className="flex max-md:items-end max-md:gap-2 max-md:px-3 max-md:pt-2 max-md:pb-3 items-start gap-3 px-5 pt-3 pb-4">
+          <div className="flex max-md:items-end max-md:gap-2 max-md:px-2.5 max-md:pt-1.5 max-md:pb-2.5 items-start gap-3 px-5 pt-3 pb-4">
             <div className="min-w-0 flex-1 max-md:pb-1">
               <p className="text-[10px] font-sans font-normal text-[#323233] md:whitespace-nowrap">
                 AI pre-filled application
@@ -83,7 +83,7 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
               </p>
             </div>
 
-            <div className="max-md:origin-bottom-right max-md:scale-[0.82] md:scale-100">
+            <div className="max-md:origin-bottom-right max-md:scale-[0.72] md:scale-100">
               <div
                 className="flex shrink-0 items-end gap-2 border-b border-dashed border-[#CCCCCC]"
                 style={{ height: `${CHART_MAX}px` }}
@@ -127,9 +127,9 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 z-10 max-md:w-full md:-left-20 md:w-full">
+      <div className="absolute bottom-0 left-0 z-10 max-md:left-[-6%] max-md:w-[88%] md:-left-20 md:w-full">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.14)]">
-          <div className="flex items-center gap-3 border border-[#F3F4F6] px-4 py-2.5">
+          <div className="flex items-center gap-3 border border-[#F3F4F6] max-md:px-3 max-md:py-2 px-4 py-2.5">
             <span className="flex size-[23px] shrink-0 items-center justify-center rounded-full bg-[#F9FAFB]">
               <RiUserFill color="#6F6F6F" size={11} />
             </span>
@@ -143,14 +143,14 @@ export default function BrokerMock({ cardHovered = false }: BrokerMockProps) {
             </div>
           </div>
 
-          <div className="px-4 pt-3 pb-4">
+          <div className="max-md:px-3 max-md:pt-2 max-md:pb-3 px-4 pt-3 pb-4">
             <span
-              className="max-md:text-xl md:text-2xl font-sans font-medium leading-none text-[#494646] tabular-nums"
+              className="max-md:text-lg md:text-2xl font-sans font-medium leading-none text-[#494646] tabular-nums"
               style={{ transition: WORKFLOW_WIDTH_TRANSITION }}
             >
               {workflowPercent}%
             </span>
-            <div className="flex items-start max-md:gap-4 max-md:pt-2 gap-10 pt-3">
+            <div className="flex items-start max-md:gap-3 max-md:pt-1.5 gap-10 pt-3">
               <div className="shrink-0">
                 <p className="mt-1 text-xs font-heading font-medium uppercase tracking-normal text-[#4F46E5]">
                   Faster Quoting

@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import gsap from "gsap";
 import Container from "./Container";
-import Button from "./Button";
 import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import MegaMenu, {
   CLIP_CLOSE_MS,
@@ -22,7 +21,9 @@ import {
 } from "@remixicon/react";
 import Hamburger from "hamburger-react";
 import { MEGA_MENUS, type MegaMenuLink } from "@/data/megaMenu";
+import { DEMO_VIDEO_SRC, DEMO_VIDEO_TITLE } from "@/data/demoVideo";
 import { HOME_INTRO_NAV_MS, useHomeIntro } from "@/contexts/HomeIntroContext";
+import { useVideoModal } from "@/contexts/VideoModalContext";
 import { pageAnimation, setPageTransitionBg } from "@/lib/pageTransition";
 import { scrollToHashWhenReady } from "@/lib/scrollToTop";
 import { useTransitionRouter } from "next-view-transitions";
@@ -282,6 +283,7 @@ const Header = () => {
   const [mobileEnterKey, setMobileEnterKey] = useState(0);
   const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
   const [renderedMobileSubMenu, setRenderedMobileSubMenu] = useState<string | null>(null);
+  const { open: openVideoModal } = useVideoModal();
   const [navBarHeight, setNavBarHeight] = useState(0);
   const [headerPastHero, setHeaderPastHero] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -571,7 +573,7 @@ const Header = () => {
           className={`relative z-20 overflow-hidden will-change-transform transition-[background-color,border-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${navBarClass}`}
         >
           <Container>
-            <div className="relative flex items-center justify-between py-2 md:py-4">
+            <div className="relative flex items-center justify-between py-4">
               <Link
                 href="/"
                 onClick={(e) => {
@@ -580,14 +582,14 @@ const Header = () => {
                 }}
                 className="relative z-10 shrink-0"
               >
-                <span className="relative block h-5 w-[106px] md:h-6 md:w-[127px]">
+                <span className="relative block h-5 w-[148px] md:h-6 md:w-[170px]">
                   <Image
                     src={headerThemes.dark.logo}
                     alt="CoverForce"
                     width={180}
                     height={34}
                     priority
-                    className={`absolute inset-0 h-5 w-auto transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-6 ${
+                    className={`absolute left-0 top-1/2 h-7 w-auto -translate-y-1/2 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-8 ${
                       activeLogo === headerThemes.dark.logo ? "opacity-100" : "opacity-0"
                     }`}
                   />
@@ -597,7 +599,7 @@ const Header = () => {
                     width={180}
                     height={34}
                     priority
-                    className={`absolute inset-0 h-5 w-auto transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-6 ${
+                    className={`absolute left-0 top-1/2 h-7 w-auto -translate-y-1/2 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:h-8 ${
                       activeLogo === headerThemes.light.logo ? "opacity-100" : "opacity-0"
                     }`}
                   />
@@ -605,26 +607,39 @@ const Header = () => {
               </Link>
 
               <div
-                className="relative z-10 lg:hidden"
+                className="relative z-10 size-12 shrink-0 lg:hidden"
                 aria-expanded={mobileMenuOpen}
               >
-                <Hamburger
-                  toggled={mobileMenuOpen}
-                  duration={0.8}
-                  size={20}
-                  color={
-                    mobileMenuOpen
-                      ? "#3D3D3D"
-                      : theme === "dark"
-                        ? "#ffffff"
-                        : "#3D3D3D"
-                  }
-                  label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                  onToggle={(toggled) => {
-                    if (toggled) openMobileMenu();
-                    else closeMobileMenu();
-                  }}
-                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {mobileMenuOpen && mobileActiveMenu ? (
+                    <button
+                      type="button"
+                      onClick={backToMobileMain}
+                      className="flex size-full items-center justify-center text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
+                      aria-label="Back to main menu"
+                    >
+                      <RiArrowLeftLine className="size-5" aria-hidden />
+                    </button>
+                  ) : (
+                    <Hamburger
+                      toggled={mobileMenuOpen}
+                      duration={0.8}
+                      size={20}
+                      color={
+                        mobileMenuOpen
+                          ? "#3D3D3D"
+                          : theme === "dark"
+                            ? "#ffffff"
+                            : "#3D3D3D"
+                      }
+                      label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                      onToggle={(toggled) => {
+                        if (toggled) openMobileMenu();
+                        else closeMobileMenu();
+                      }}
+                    />
+                  )}
+                </div>
               </div>
 
               <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
@@ -721,56 +736,69 @@ const Header = () => {
                 <div
                   className={`absolute inset-0 flex flex-col transition-transform motion-reduce:transition-none ${
                     mobileActiveMenu ? "-translate-x-full" : "translate-x-0"
-                  }`}
+                  } ${mobileContentEnter && !mobileActiveMenu ? "mega-menu-enter" : ""}`}
                   style={{
                     transitionDuration: `${MOBILE_PANEL_MS}ms`,
                     transitionTimingFunction: MOBILE_PANEL_EASE,
                   }}
                 >
-                  <div
-                    className={`flex-1 overflow-y-auto ${
-                      mobileContentEnter && !mobileActiveMenu ? "mega-menu-enter" : ""
-                    }`}
-                  >
-                    <div>
-                      {navItems.map(({ label, href, hasDropdown }, index) => (
-                        <MobileMenuReveal
-                          key={label}
-                          enterKey={mobileEnterKey}
-                          delay={MOBILE_CONTENT_BASE_DELAY + MOBILE_CONTENT_STAG * index}
-                        >
-                          <MobileMenuLinkRow
-                            label={label}
-                            isCurrentPage={isNavItemCurrentPage(label, pathname)}
-                            onClick={() => {
-                              if (hasDropdown && MEGA_MENUS[label]) {
-                                openMobileSubMenu(label);
-                                return;
-                              }
-                              handleNavigate(href);
-                            }}
-                          />
-                        </MobileMenuReveal>
-                      ))}
-                    </div>
+                  <div className="min-h-0 flex-1 overflow-y-auto">
+                    {navItems.map(({ label, href, hasDropdown }, index) => (
+                      <MobileMenuReveal
+                        key={label}
+                        enterKey={mobileEnterKey}
+                        delay={MOBILE_CONTENT_BASE_DELAY + MOBILE_CONTENT_STAG * index}
+                      >
+                        <MobileMenuLinkRow
+                          label={label}
+                          isCurrentPage={isNavItemCurrentPage(label, pathname)}
+                          onClick={() => {
+                            if (hasDropdown && MEGA_MENUS[label]) {
+                              openMobileSubMenu(label);
+                              return;
+                            }
+                            handleNavigate(href);
+                          }}
+                        />
+                      </MobileMenuReveal>
+                    ))}
                   </div>
 
                   <MobileMenuReveal
                     enterKey={mobileEnterKey}
                     delay={
-                      MOBILE_CONTENT_BASE_DELAY + MOBILE_CONTENT_STAG * (navItems.length + 1)
+                      MOBILE_CONTENT_BASE_DELAY + MOBILE_CONTENT_STAG * navItems.length
                     }
                     className="shrink-0"
                   >
-                    <div className="border-t border-[#E8ECF0] px-6 py-5">
-                      <div className="flex items-center gap-3">
-                        <RequestDemoButton className="flex-1 justify-center">
-                          Request demo
-                        </RequestDemoButton>
-                        <Button href="/" variant="secondary" className="flex-1 justify-center">
-                          Login
-                        </Button>
-                      </div>
+                    <div className="px-6 pb-4 pt-6">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          openVideoModal({
+                            src: DEMO_VIDEO_SRC,
+                            title: DEMO_VIDEO_TITLE,
+                          });
+                          closeMobileMenu();
+                        }}
+                        className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-[#E5E7EB] bg-white p-3 text-left transition-colors duration-200 hover:bg-[#FAFAFA]"
+                      >
+                        <div className="h-[10rem] shrink-0 overflow-hidden rounded-lg bg-[#0a143b]">
+                          <video
+                            src={DEMO_VIDEO_SRC}
+                            className="pointer-events-none h-full w-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            preload="metadata"
+                            aria-hidden
+                          />
+                        </div>
+                        <p className="mt-3 px-0.5 font-heading text-sm font-regular leading-snug text-[#3D3D3D]">
+                          {DEMO_VIDEO_TITLE}
+                        </p>
+                      </button>
                     </div>
                   </MobileMenuReveal>
                 </div>
@@ -786,22 +814,11 @@ const Header = () => {
                 >
                   {activeMobileConfig ? (
                     <div key={renderedMobileSubMenu} className="mega-menu-enter px-6 pb-6 pt-4">
-                      <MobileMenuReveal enterKey={mobileEnterKey} delay={MOBILE_CONTENT_BASE_DELAY}>
-                        <button
-                          type="button"
-                          onClick={backToMobileMain}
-                          className="mb-6 flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.08em] text-[#3D3D3D] transition-colors hover:text-[#151F4D]"
-                        >
-                          <RiArrowLeftLine className="size-4" aria-hidden />
-                          <span>Back</span>
-                        </button>
-                      </MobileMenuReveal>
-
                       <div className="space-y-8">
                         {activeMobileConfig.columns.map((column, columnIndex) => {
                           const columnDelay =
                             MOBILE_CONTENT_BASE_DELAY +
-                            MOBILE_CONTENT_STAG * (columnIndex + 1);
+                            MOBILE_CONTENT_STAG * columnIndex;
 
                           return (
                             <div

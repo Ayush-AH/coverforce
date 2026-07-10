@@ -380,6 +380,16 @@ button {
   transform-origin: 10px 10px;
 }
 
+@media (max-width: 767px), (hover: none) {
+  .way-card-expand-btn {
+    background-color: #151f4d;
+  }
+
+  .way-card-expand-btn .way-card-expand-icon {
+    color: #ffffff;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @media (hover: hover) {
     .way-card-shell:hover .way-card-expand-btn {

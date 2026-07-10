@@ -80,7 +80,6 @@ type WayCardProps = {
   className?: string;
   wide?: boolean;
   compact?: boolean;
-  mobileMinHClass?: string;
   background?: CardBackground;
   mockAlign?: "center" | "bottom";
   mockShiftDown?: boolean;
@@ -116,7 +115,6 @@ const WAY_CARDS: WayCardConfig[] = [
     tagline: "One workflow for every producer",
     variant: "dark",
     compact: true,
-    mobileMinHClass: "max-md:min-h-[29rem] max-md:sm:min-h-[27rem]",
     background: "broker",
     backgroundScene: <BrokersCardEarth />,
     backgroundSceneBlendScreen: true,
@@ -230,8 +228,6 @@ const WayCard = memo(function WayCard({
   children,
   className = "",
   wide = false,
-  compact = false,
-  mobileMinHClass,
   background,
   mockAlign = "center",
   mockShiftDown = false,
@@ -249,13 +245,6 @@ const WayCard = memo(function WayCard({
   const isDark = variant === "dark";
   const enableScene = !isMobile;
   const enableInteractive = backgroundInteractive && !isMobile;
-  const mobileMinH =
-    mobileMinHClass ??
-    (wide
-      ? "max-md:min-h-[28rem] max-md:sm:min-h-[26rem]"
-      : compact
-        ? "max-md:min-h-[26rem] max-md:sm:min-h-[24rem]"
-        : "max-md:min-h-[32rem] max-md:sm:min-h-[30rem]");
   const textClass =
     background === "developer" && !backgroundScene
       ? "text-[#0a143b]"
@@ -286,7 +275,7 @@ const WayCard = memo(function WayCard({
         onMouseEnter={isMobile ? undefined : () => setHovered(true)}
         onMouseLeave={isMobile ? undefined : () => setHovered(false)}
         aria-label={`Open details`}
-        className={`way-card-shell relative cursor-pointer [content-visibility:auto] max-md:[contain-intrinsic-size:auto_580px] [contain-intrinsic-size:auto_530px] ${mobileMinH} min-h-[22rem] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
+        className={`way-card-shell relative cursor-pointer [content-visibility:auto] max-md:aspect-square max-md:[contain-intrinsic-size:auto_100%] max-md:min-h-0 [contain-intrinsic-size:auto_530px] md:min-h-[22rem] ${wide ? "md:aspect-[1179/530]" : "md:aspect-[580/530]"} ${hovered ? "way-card-shell--hovered" : ""} ${textClass} ${className}`}
       >
         <div
           className="way-card-body absolute inset-0 flex flex-col overflow-hidden p-4 sm:p-5 md:p-8"
@@ -342,7 +331,11 @@ const WayCard = memo(function WayCard({
           } ${mockAlign === "center" || mockShiftDown ? "max-md:flex max-md:items-start max-md:justify-center md:flex md:items-center md:justify-center" : ""} ${mockShiftDown ? "max-md:pt-[5.75rem] max-md:sm:pt-24 md:pt-28 lg:pt-32" : mockAlign === "bottom" ? "" : "max-md:pt-[5.75rem] max-md:sm:pt-24"}`}
         >
           <div
-            className={`max-md:scale-[0.82] ${mockAlign === "bottom" ? "max-md:origin-bottom" : "max-md:origin-top"} ${
+            className={`${
+              mockAlign === "bottom" || mockShiftDown
+                ? "max-md:scale-[0.72]"
+                : "max-md:scale-[0.82]"
+            } ${mockAlign === "bottom" ? "max-md:origin-bottom" : "max-md:origin-top"} ${
               mockAlign === "bottom"
                 ? "relative flex h-full w-full min-w-0 flex-col justify-end max-md:overflow-visible md:overflow-hidden"
                 : mockShiftDown

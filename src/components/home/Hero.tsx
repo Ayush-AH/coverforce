@@ -522,14 +522,14 @@ const Hero = () => {
             <div
               ref={buttonsRef}
               data-hero-reveal
-              className={`mt-8 flex w-full max-w-[18rem] flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-4 ${
+              className={`mt-8 flex w-full max-w-[21rem] flex-row items-center justify-center gap-2.5 sm:mt-10 sm:max-w-none sm:gap-4 ${
                 introUiLocked ? "pointer-events-none" : ""
               }`}
             >
-              <RequestDemoButton balanced surface="on-dark" className="w-full sm:w-auto">
+              <RequestDemoButton balanced surface="on-dark" className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
                 Request Demo
               </RequestDemoButton>
-              <WatchDemoButton balanced variant="secondary" surface="on-dark" className="w-full sm:w-auto">
+              <WatchDemoButton balanced variant="secondary" surface="on-dark" className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
                 Watch Demo
               </WatchDemoButton>
             </div>
@@ -543,13 +543,37 @@ const Hero = () => {
             }`}
           >
             <SectionRadialGlow className="absolute left-1/2 top-20 z-0 -translate-x-1/2 -translate-y-1/3 md:top-20" />
+
+            {/* Mobile: scrolling stats marquee */}
+            <div className="relative py-5 md:hidden" aria-label="Platform stats">
+              <div className="logo-marquee-viewport">
+                <div className="logo-marquee-track !gap-10" style={{ animationDuration: "28s" }}>
+                  {[...stats, ...stats].map((stat, index) => (
+                    <div
+                      key={`${stat.label}-${index}`}
+                      className="flex shrink-0 flex-col items-center gap-1.5 px-2"
+                      aria-hidden={index >= stats.length ? true : undefined}
+                    >
+                      <p className={`text-[1.35rem] font-heading font-regular tracking-tight ${theme.statValueActive}`}>
+                        {stat.value}
+                      </p>
+                      <p className={`whitespace-nowrap text-center text-[0.68rem] font-sans font-regular leading-relaxed ${theme.statLabelActive}`}>
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop: interactive stats row */}
             <ul
               ref={listRef}
-              className="relative grid grid-cols-2 gap-x-4 gap-y-8 pb-6 pt-2 md:flex md:py-10"
+              className="relative hidden gap-x-4 gap-y-8 pb-6 pt-2 md:flex md:py-10"
               onMouseLeave={() => setActiveIndex(1)}
             >
               <div
-                className="pointer-events-none w-full absolute inset-y-0 hidden md:block"
+                className="pointer-events-none absolute inset-y-0 w-full"
                 aria-hidden
               >
                 {/* Top full-width line + moving segment */}
@@ -564,7 +588,7 @@ const Hero = () => {
                 </div>
 
                 {/* Bottom full-width line + moving segment */}
-                <div className={`absolute left-0 bottom-0 h-[0.05rem] w-full ${theme.statLine}`}>
+                <div className={`absolute bottom-0 left-0 h-[0.05rem] w-full ${theme.statLine}`}>
                   <div
                     className="h-full rounded-full linear-line_color transition-[transform,width] duration-300 ease-out"
                     style={{
@@ -582,17 +606,19 @@ const Hero = () => {
                     itemRefs.current[index] = el;
                   }}
                   onMouseEnter={() => setActiveIndex(index)}
-                  className="flex flex-col items-center gap-2 md:flex-1 md:px-8"
+                  className="flex flex-1 flex-col items-center gap-2 px-8"
                 >
                   <p
-                    className={`text-[1.35rem] font-heading font-regular tracking-tight transition-colors sm:text-2xl md:text-3xl lg:text-4xl ${index === activeIndex ? theme.statValueActive : theme.statValueInactive
-                      }`}
+                    className={`font-heading text-3xl font-regular tracking-tight transition-colors lg:text-4xl ${
+                      index === activeIndex ? theme.statValueActive : theme.statValueInactive
+                    }`}
                   >
                     {stat.value}
                   </p>
                   <p
-                    className={`max-w-[10rem] text-[0.68rem] font-sans font-regular text-center leading-relaxed transition-colors sm:text-xs md:max-w-none md:text-lg ${index === activeIndex ? theme.statLabelActive : theme.statLabelInactive
-                      }`}
+                    className={`text-center font-sans text-lg font-regular leading-relaxed transition-colors ${
+                      index === activeIndex ? theme.statLabelActive : theme.statLabelInactive
+                    }`}
                   >
                     {stat.label}
                   </p>

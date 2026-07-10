@@ -581,10 +581,10 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
   const coverageStatClassName = "inline text-[0.50rem] tracking-wide font-heading font-medium text-[#111827]";
 
   return (
-    <div className="relative w-full min-w-0 max-md:mx-auto max-md:mt-10 max-md:sm:mt-12 md:-ml-32 md:max-w-[290px]">
-      <div className="relative z-20 w-full max-md:left-auto max-md:right-auto md:absolute md:top-0 md:-right-32">
+    <div className="relative w-full min-w-0 max-md:mx-auto max-md:mt-8 max-md:h-[220px] max-md:max-w-[250px] max-md:overflow-visible md:-ml-32 md:max-w-[290px] md:h-auto">
+      <div className="relative z-20 w-full max-md:absolute max-md:top-0 max-md:right-[-14%] max-md:w-[88%] md:absolute md:top-0 md:-right-32">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
-          <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] px-4 py-2.5">
+          <div className="flex items-center gap-3 border-b border-dashed border-[#CCCCCC] max-md:px-3 max-md:py-2 px-4 py-2.5">
             <span className="flex size-[23px] shrink-0 items-center justify-center border border-[#F3F4F6] rounded-full bg-[#F9FAFB]">
               <RiMailFill color="#6F6F6F" size={11} />
             </span>
@@ -614,16 +614,16 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-md:mt-4 max-md:sm:mt-5 md:mt-[72px]">
+      <div className="relative z-10 w-full max-md:absolute max-md:-bottom-6 max-md:left-[-14%] max-md:mt-0 max-md:w-[88%] md:mt-[72px]">
         <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_8px_40px_rgba(0,0,0,0.18)]">
-          <div className="flex items-center gap-2 border-b border-[#CCCCCC] px-4 py-3">
+          <div className="flex items-center gap-2 border-b border-[#CCCCCC] max-md:px-3 max-md:py-2.5 px-4 py-3">
             <span className="flex size-[23px] shrink-0 items-center justify-center border border-[#F3F4F6] rounded-full bg-[#F9FAFB]">
               <RiFileTextFill color="#6F6F6F" size={11} />
             </span>
             <span className="text-xs font-heading font-medium leading-tight text-[#3C3B3B]">ACORD 25</span>
           </div>
 
-          <div className="flex items-center justify-between px-4 pt-3 pb-1">
+          <div className="flex items-center justify-between max-md:px-3 max-md:pt-2 max-md:pb-0.5 px-4 pt-3 pb-1">
             <p className="text-[0.60rem] font-heading font-medium text-[#3C3B3B]">
               Certificate of liability insurance
             </p>
@@ -632,7 +632,7 @@ export default function WholesalerMock({ liveStats = false }: { liveStats?: bool
 
           <AnimatedLimitsList />
 
-          <div className="flex items-center justify-between border-t border-[#CCCCCC] px-4 py-3">
+          <div className="flex items-center justify-between border-t border-[#CCCCCC] max-md:px-3 max-md:py-2.5 px-4 py-3">
             <div className="flex items-center gap-1.5">
               <span className="flex size-[16px] shrink-0 items-center justify-center rounded-full bg-blue-100">
                 <svg width="8" height="6" viewBox="0 0 8 6" fill="none">

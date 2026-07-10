@@ -100,7 +100,7 @@ const Hero = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-30 h-dvh min-h-dvh overflow-hidden text-white md:h-svh md:min-h-svh"
+      className="relative z-30 h-svh min-h-svh overflow-hidden text-white"
     >
       <div
         ref={containerRef}
@@ -118,7 +118,7 @@ const Hero = () => {
 
         <Container
           borderColor="#FFFFFF33"
-          className="relative flex h-dvh min-h-dvh items-center justify-center md:h-svh md:min-h-svh"
+          className="relative flex h-svh min-h-svh items-center justify-center"
         >
           <HeroReveal className="flex max-w-4xl flex-col items-center text-center">
             <EyebrowPill surface="dark" className="mx-auto mb-0">

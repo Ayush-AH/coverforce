@@ -23,11 +23,11 @@ const Hero = () => {
             infrastructure.
           </p>
 
-          <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:mt-14">
-            <Button href="#plans" balanced>
+          <div className="mt-12 flex w-full max-w-[21rem] flex-row items-center justify-center gap-2.5 sm:mt-14 sm:max-w-none sm:gap-4 md:mt-14">
+            <Button href="#plans" balanced className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
               Explore plans
             </Button>
-            <Button href="/contact" balanced variant="secondary">
+            <Button href="/contact" balanced variant="secondary" className="!min-w-0 !px-3.5 sm:!min-w-[148px] sm:!px-5">
               Talk to sales
             </Button>
           </div>

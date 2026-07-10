@@ -98,7 +98,7 @@ const Hero = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative z-30 h-dvh min-h-dvh overflow-hidden text-white md:h-svh md:min-h-svh"
+      className="relative z-30 h-svh min-h-svh overflow-hidden text-white"
     >
       <div
         ref={containerRef}
@@ -119,7 +119,7 @@ const Hero = () => {
 
         <Container
           borderColor="#FFFFFF33"
-          className="relative flex h-dvh min-h-dvh items-end pb-14 md:h-svh md:min-h-svh md:pb-20 lg:pb-24"
+          className="relative flex h-svh min-h-svh items-end pb-14 md:pb-20 lg:pb-24"
         >
           <HeroReveal className="max-w-xl text-left md:max-w-2xl lg:max-w-3xl">
             <h1 className="text-3xl font-heading font-normal leading-[1.12] tracking-tight md:text-4xl lg:text-5xl xl:text-[3.25rem] xl:leading-[1.08]">
