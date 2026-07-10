@@ -50,7 +50,7 @@ function StatusIcon({ approved }: { approved: boolean }) {
 
 export default function StartupRecentActivityCard() {
   return (
-    <div className="relative z-10 w-full max-w-[420px] overflow-hidden rounded-[1.75rem] border border-[#E8EAEF] bg-white p-4 shadow-[0_16px_48px_rgba(0,0,0,0.12)] md:py-5 px-6">
+    <div className="relative z-10 mx-auto w-full max-w-[420px] overflow-hidden rounded-[1.75rem] border border-[#E8EAEF] bg-white p-4 shadow-[0_16px_48px_rgba(0,0,0,0.12)] md:py-5 px-6">
       <div className="flex items-center justify-between gap-3 pb-2">
         <p className="font-heading text-lg font-semibold text-[#3C3B3B] md:text-sm">
           Recent Activity
