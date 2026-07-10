@@ -33,23 +33,21 @@ interface App {
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const WIN_W = 720;
-const WIN_H = 550;
+const WIN_W = 640;
+const WIN_H = 500;
 const WIN_TITLE_H = 42;
-const DOCK_BOTTOM_OFFSET = 12; // matches Tailwind bottom-3 on MacDock
-const MENUBAR_H = 27;
 const DUR = 500;
 // DPR is read lazily inside setupCanvas — never at module scope, which would
 // run during SSR and either crash or hardcode a value.
 
 // Magnification config — tuned to match macOS dock proportions
-const DOCK_ICON_BASE = 48;
-const DOCK_ICON_PEAK = 80;
-const DOCK_MAG_RANGE = 140;
-const DOCK_PAD_X = 14;
-const DOCK_PAD_BOTTOM = 5;
-const DOCK_PAD_TOP = 6;
-const DOCK_GAP = 5;
+const DOCK_ICON_BASE = 56;
+const DOCK_ICON_PEAK = 96;
+const DOCK_MAG_RANGE = 160;
+const DOCK_PAD_X = 18;
+const DOCK_PAD_BOTTOM = 6;
+const DOCK_PAD_TOP = 8;
+const DOCK_GAP = 6;
 const DOCK_RADIUS = 20;
 
 // ─── Math ─────────────────────────────────────────────────────────────────────
@@ -186,12 +184,12 @@ function renderGenie(
 
 function DocumentPreviewContent({ src }: { src: string }) {
   return (
-    <div className="flex h-full w-full items-end justify-center overflow-hidden bg-[#F4F5F7]">
+    <div className="flex h-full w-full items-start justify-center overflow-hidden bg-[#F4F5F7]">
       <img
         src={src}
         alt=""
         draggable={false}
-        className="h-full w-full min-w-full object-cover object-bottom"
+        className="h-full w-full min-w-full object-cover object-top"
       />
     </div>
   );
@@ -258,7 +256,7 @@ const MacWindow = ({
         </span>
       </div>
       <div
-        className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden"
+        className="flex-1 overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
       >
         <DocumentPreviewContent src={app.previewImage} />
@@ -371,7 +369,6 @@ function MacDock({
   isAnimating,
   snapshotsReady,
   dockRefs,
-  dockBarRef,
   onOpen,
 }: {
   apps: App[];
@@ -380,7 +377,6 @@ function MacDock({
   isAnimating: boolean;
   snapshotsReady: boolean;
   dockRefs: MutableRefObject<(HTMLButtonElement | null)[]>;
-  dockBarRef: React.Ref<HTMLDivElement>;
   onOpen: (idx: number) => void;
 }) {
   const mouseX = useMotionValue(Infinity);
@@ -412,7 +408,6 @@ function MacDock({
   return (
     <TooltipProvider delayDuration={400}>
       <motion.div
-        ref={dockBarRef}
         onMouseMove={(e) => mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         className="absolute bottom-3 bg-[#303030]/20 rounded-2xl left-1/2 z-50 flex -translate-x-1/2 items-end"
@@ -568,7 +563,6 @@ export default function GenieEffect() {
   // and centers correctly within it.
   const containerRef = useRef<HTMLDivElement>(null);
   const dockRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const dockBarRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
   const offRef = useRef<HTMLCanvasElement[]>([]);
   const rafRef = useRef<number>(0);
@@ -593,29 +587,9 @@ export default function GenieEffect() {
 
   const getWinPos = useCallback((): Pt => {
     const { w, h } = getContainerSize();
-    const cont = containerRef.current;
-    const dockEl = dockBarRef.current;
-
-    let y: number;
-
-    if (dockEl && cont) {
-      const dockTop =
-        dockEl.getBoundingClientRect().top - cont.getBoundingClientRect().top;
-      y = dockTop - WIN_H;
-    } else {
-      const dockReserve =
-        DOCK_BOTTOM_OFFSET +
-        DOCK_ICON_PEAK +
-        DOCK_PAD_TOP +
-        DOCK_PAD_BOTTOM;
-      y = h - WIN_H - dockReserve;
-    }
-
-    y = Math.max(MENUBAR_H, y);
-
     return {
       x: (w - WIN_W) / 2,
-      y,
+      y: (h - WIN_H) / 2 - 20,
     };
   }, [getContainerSize]);
 
@@ -749,10 +723,11 @@ export default function GenieEffect() {
     };
   }, []);
 
-  // Re-anchor the open window above the dock when layout changes.
+  // Re-center the open window when the container resizes (browser resize,
+  // sidebar collapse, parent flexbox changes, etc.). ResizeObserver fires
+  // synchronously with layout so there's no visible jitter.
   useEffect(() => {
     const el = containerRef.current;
-    const dock = dockBarRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(() => {
       if (stateRef.current.phase === "open") {
@@ -760,9 +735,8 @@ export default function GenieEffect() {
       }
     });
     ro.observe(el);
-    if (dock) ro.observe(dock);
     return () => ro.disconnect();
-  }, [getWinPos, mounted]);
+  }, [getWinPos]);
 
   const isAnimating = phase === "opening" || phase === "closing";
   const app = activeApp !== null ? APPS[activeApp] : null;
@@ -868,7 +842,6 @@ export default function GenieEffect() {
             isAnimating={isAnimating}
             snapshotsReady={snapshotsReady}
             dockRefs={dockRefs}
-            dockBarRef={dockBarRef}
             onOpen={doOpen}
           />
         </>
