@@ -313,7 +313,7 @@ const Review = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-[#151f4d] text-white">
+    <section ref={sectionRef} className="overflow-hidden bg-[#151f4d] text-white">
       <Container borderColor="#FFFFFF33" borderBottom={true}>
         <div className="relative pt-16 md:pt-20 lg:pt-24">
           <div
