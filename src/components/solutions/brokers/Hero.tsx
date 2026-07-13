@@ -9,10 +9,13 @@ const HeroMock = brokersHeroCardMock;
 const Hero = () => (
   <SolutionScrollHero
     eyebrow="Brokers"
-    title="Standardise commercial lines everywhere."
+    title="Place business more profitably."
     titleClassName="max-w-xl text-3xl font-heading font-normal tracking-normal text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-none"
+    description="CoverForce helps every producer place risks faster, with better carrier fit and less wasted effort — so your firm keeps more premium and more margin."
+    primaryButtonHref="/contact"
+    primaryButtonLabel="Start a quote"
     secondaryButtonHref="#workflow"
-    secondaryButtonLabel="How Program Works"
+    secondaryButtonLabel="How it works"
     rightCard={HeroMock ? <HeroMock /> : null}
     rightCardTransferTargetId="brokers-step-1-card"
     showSecondSection={false}

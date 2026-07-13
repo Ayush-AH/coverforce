@@ -14,7 +14,7 @@ export type ProcessStep = {
 export const processSteps: ProcessStep[] = [
   {
     id: "intake-01",
-    tag: "01 Intake",
+    tag: "01 Smart Intake",
     heading: "Every submission starts here, however your team works today.",
     points: [
       {
@@ -34,12 +34,12 @@ export const processSteps: ProcessStep[] = [
   },
   {
     id: "step-02",
-    tag: "02 ACORD Automation",
-    heading: "The form fills itself in the moment a submission arrives.",
+    tag: "02 Smart Enrichment",
+    heading: "AI enriches every submission from ACORD forms and classifications.",
     points: [
-      { id: "p1", text: "AI extracts data from ACORD forms and fills missing application fields." },
-      { id: "p2", text: "Classification codes and underwriting answers are mapped automatically." },
-      { id: "p3", text: "Applications are pre-filled across carrier formats with less manual entry." },
+      { id: "p1", text: "AI extracts and enriches data from ACORD forms into complete application fields." },
+      { id: "p2", text: "Classification codes and underwriting answers are mapped intelligently." },
+      { id: "p3", text: "Intelligent prefill completes applications across carrier formats — using 350k+ datapoints." },
     ],
   },
   {

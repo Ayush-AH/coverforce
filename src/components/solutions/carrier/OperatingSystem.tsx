@@ -5,30 +5,28 @@ import { createSolutionStepMock } from "@/components/solutions/shared/SolutionSt
 
 export const carrierHeroCardMock = createSolutionStepMock(
   "/images/solution/carriers1.svg",
-  "One Integration, 15,000+ Agencies",
+  "One Integration Across Your Distribution",
 );
 
 export const operatingRows = [
   {
     id: "integration",
-    heading: "One Integration, 15,000+ Agencies",
+    heading: "One Integration Across Your Distribution",
     description:
-      "One API connects your products to wholesalers, networks, and agencies nationwide — no separate partnerships required.",
-    stat: "15K+",
-    statLabelLines: ["Agencies", "Accessible"] as [string, string],
+      "One API connects your products to wholesalers, brokers, and high-growth startups nationwide — no separate partnerships required.",
     Mock: carrierHeroCardMock,
     transferTargetId: "carrier-step-1-card",
   },
   {
     id: "ai-validated",
-    heading: "AI-Validated, Error-Free Submissions",
+    heading: "AI-Native Testing Infrastructure, Error-Free Submissions",
     description:
       "AI validates every submission for completeness, extracts documents, pre-answers questions, and maps industry codes to your classification system.",
     stat: "0%",
     statLabelLines: ["API Error", "Rate"] as [string, string],
     Mock: createSolutionStepMock(
       "/images/solution/carriers2.svg",
-      "AI-Validated, Error-Free Submissions",
+      "AI-Native Testing Infrastructure, Error-Free Submissions",
     ),
   },
   {
@@ -47,15 +45,16 @@ export const operatingRows = [
 
 export const operatingSystemTitle = "Built for Carrier Distribution at Scale";
 export const operatingSystemDescription =
-  "See how inconsistent broker submissions compare to CoverForce — from standardized intake through bind, on one platform built to receive cleaner business at scale.";
+  "Reach wholesalers, brokers, and high-growth startups from one integration — and grow with CoverForce’s Startup Program.";
 
 export default function OperatingSystem() {
   return (
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
       sectionDescription={operatingSystemDescription}
-      ctaLabel="Request a demo"
-      ctaVariant="request-demo"
+      ctaHref="/solutions/startups"
+      ctaLabel="Explore Startup Program"
+      ctaVariant="link"
       paddingTop={true}
       showHeader={true}
       rows={operatingRows}

@@ -10,7 +10,10 @@ import Button from "@/components/common/Button";
 import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
-import { MarqueeRow } from "@/components/solutions/wholesalers/MarqueeLine";
+import {
+  MarqueeRow,
+  type MarqueeLogo,
+} from "@/components/solutions/wholesalers/MarqueeLine";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import type { GradFlowColors } from "@/data/wayCardStyles";
 import { GradFlow } from "gradflow";
@@ -52,6 +55,8 @@ type SolutionScrollHeroProps = {
   rightCardTransferTargetId?: string;
   gradFlow: GradFlowColors;
   showMarquee?: boolean;
+  marqueeLogos?: readonly MarqueeLogo[];
+  marqueeSize?: "default" | "large";
   showSecondSection?: boolean;
 };
 
@@ -69,9 +74,9 @@ export default function SolutionScrollHero({
   description,
   titleClassName = "max-w-xl text-3xl font-heading font-normal leading-[1.12] tracking-tight text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-[1.1]",
   primaryButtonHref = "/contact",
-  primaryButtonLabel = "Apply to Start Up Program",
-  secondaryButtonHref = "/solutions/wholesalers#workflow",
-  secondaryButtonLabel = "How Program Works",
+  primaryButtonLabel = "Request demo",
+  secondaryButtonHref = "#workflow",
+  secondaryButtonLabel = "How it works",
   feature,
   featureHeaderTitle,
   featureHeaderDescription,
@@ -85,6 +90,8 @@ export default function SolutionScrollHero({
   rightCardTransferTargetId,
   gradFlow,
   showMarquee = false,
+  marqueeLogos,
+  marqueeSize = "default",
   showSecondSection = true,
 }: SolutionScrollHeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -269,7 +276,7 @@ export default function SolutionScrollHero({
 
               {showMarquee ? (
                 <div className="relative z-10 w-full shrink-0 pb-6 md:pb-8 lg:hidden">
-                  <MarqueeRow />
+                  <MarqueeRow logos={marqueeLogos} size={marqueeSize} />
                 </div>
               ) : null}
             </div>
@@ -414,7 +421,7 @@ export default function SolutionScrollHero({
           {showMarquee ? (
             <div className="pointer-events-none absolute inset-x-0 top-0 z-10 hidden h-svh flex-col justify-end pb-6 md:pb-8 lg:flex">
               <div className="pointer-events-auto w-full">
-                <MarqueeRow />
+                <MarqueeRow logos={marqueeLogos} size={marqueeSize} />
               </div>
             </div>
           ) : null}

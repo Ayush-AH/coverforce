@@ -10,6 +10,9 @@ import {
 const TENS_95_SEQUENCE = [0, 1, 5, 6, 9] as const;
 const ONES_95_SEQUENCE = [0, 1, 2, 3, 4, 5] as const;
 
+const TENS_85_SEQUENCE = [0, 1, 5, 8] as const;
+const ONES_85_SEQUENCE = [0, 1, 3, 5] as const;
+
 const TENS_40_SEQUENCE = [0, 1, 4] as const;
 const ONES_40_SEQUENCE = [0, 1, 8, 0] as const;
 
@@ -287,7 +290,7 @@ type AnimatedPercentProps = {
   onesDelay?: number;
 };
 
-/** 95% slide-up (Data Advantage) */
+/** 95% slide-up (Data Advantage legacy / product) */
 export default function AnimatedPercent({
   className = "",
   tensDuration = 1700,
@@ -302,6 +305,26 @@ export default function AnimatedPercent({
       columns={[
         { sequence: TENS_95_SEQUENCE, duration: tensDuration },
         { sequence: ONES_95_SEQUENCE, duration: onesDuration, delay: onesDelay },
+      ]}
+    />
+  );
+}
+
+/** 85% slide-up (Data Advantage — remarket & service) */
+export function AnimatedEightyFivePercent({
+  className = "",
+  tensDuration = 1700,
+  onesDuration = 1400,
+  onesDelay = 100,
+}: AnimatedPercentProps) {
+  return (
+    <ScrollTriggeredAnimatedStat
+      className={className}
+      suffix="%"
+      ariaLabel="85 percent"
+      columns={[
+        { sequence: TENS_85_SEQUENCE, duration: tensDuration },
+        { sequence: ONES_85_SEQUENCE, duration: onesDuration, delay: onesDelay },
       ]}
     />
   );

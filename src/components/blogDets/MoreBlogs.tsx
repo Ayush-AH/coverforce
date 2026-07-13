@@ -8,7 +8,6 @@ type MorePost = {
   title: string;
   image: string;
   date: string;
-  readTime: string;
 };
 
 const POSTS: MorePost[] = [
@@ -18,7 +17,6 @@ const POSTS: MorePost[] = [
     title: "CoverForce Named to the 2025 CB Insights' List of the...",
     image: "/images/blog/blog6.png",
     date: "October 16, 2025",
-    readTime: "1 min read",
   },
   {
     slug: "coverforce-nowcerts-instant-cois",
@@ -26,7 +24,6 @@ const POSTS: MorePost[] = [
     title: "CoverForce Partners With NowCerts to Launch Instant...",
     image: "/images/blog/blog7.png",
     date: "October 16, 2025",
-    readTime: "1 min read",
   },
   {
     slug: "coverforce-series-a-funding",
@@ -34,13 +31,12 @@ const POSTS: MorePost[] = [
     title: "CoverForce Secures $13 Million in Series A Funding L...",
     image: "/images/blog/blog8.png",
     date: "October 16, 2025",
-    readTime: "1 min read",
   },
 ];
 
 function CategoryPill({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-[#0a143b] backdrop-blur-sm">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0801140a] px-2.5 py-1 font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-[#0a143b]">
       <span className="size-1.5 shrink-0 rounded-full bg-[#413CC0]" aria-hidden />
       {label}
     </span>
@@ -60,19 +56,18 @@ function MoreCard({ post }: { post: MorePost }) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>
-        <div className="pointer-events-none absolute inset-0 flex items-start p-3">
-          <CategoryPill label={post.category} />
-        </div>
       </div>
 
-      <h3 className="mt-4 font-heading text-base font-medium leading-snug text-[#0a143b] transition-colors group-hover:text-[#413CC0] md:text-lg">
+      <div className="mt-3">
+        <CategoryPill label={post.category} />
+      </div>
+
+      <h3 className="mt-3 font-heading text-base font-medium leading-snug text-[#0a143b] transition-colors group-hover:text-[#413CC0] md:text-lg">
         {post.title}
       </h3>
 
       <p className="mt-2 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280]">
         {post.date}
-        <span className="mx-2 text-[#C4C4C4]">&bull;</span>
-        {post.readTime}
       </p>
     </Link>
   );

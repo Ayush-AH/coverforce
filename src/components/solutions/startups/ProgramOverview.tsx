@@ -30,6 +30,12 @@ const programItems: ProgramItem[] = [
     description:
       "Members get special partner pricing and trusted licensing support, helping you get licensed, secure carrier appointments.",
   },
+  {
+    number: "04",
+    title: "Educational Resources",
+    description:
+      "Access curated guides, trainings, and playbooks that help your team learn the market, place risks faster, and scale with confidence.",
+  },
 ];
 
 const ProgramOverview = () => {
@@ -78,7 +84,7 @@ const ProgramOverview = () => {
             </div>
           </div>
 
-          <div className="grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-24">
+          <div className="grid gap-10 sm:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-12">
             {programItems.map((item) => (
               <article key={item.number} className="space-y-4">
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">

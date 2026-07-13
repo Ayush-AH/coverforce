@@ -46,7 +46,7 @@ const carrierResults: CarrierResult[] = [
     logoAlt: "Liberty Mutual",
     title: "5-Point Bind Advantage",
     description:
-      "Only integration partner to achieve 0% API error rate on submission data.",
+      "CoverForce submissions score 5 points higher on Liberty Mutual’s bindability criteria.",
   },
 ];
 
@@ -86,9 +86,8 @@ const CarrierResults = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
 
-  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, descRef, theme: "dark" });
+  useSectionHeaderReveal({ scopeRef: sectionRef, headerRef, headingRef, theme: "dark" });
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">
@@ -321,41 +320,18 @@ const CarrierResults = () => {
         <div className="relative py-12 md:py-20 lg:py-24">
           <div className="relative z-10 flex flex-col gap-10 lg:gap-62">
             {/* Header */}
-            <div
-              ref={headerRef}
-              className="grid gap-6 lg:grid-cols-2 lg:items-start lg:justify-between lg:gap-12"
-            >
-              <div className="flex flex-col justify-end space-y-5">
-                <h2
-                  ref={headingRef}
-                  className="max-w-md text-2xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-3xl lg:text-3xl lg:leading-[1.15]"
-                >
-                  <span data-split>Carrier results that</span>
-                  <br />
-                  <span data-split>speak for themselves</span>
-                </h2>
-                <p
-                  ref={descRef}
-                  className="font-sans font-regular text-sm leading-[1.4] text-[#D1D1D1] md:text-[1.125rem] lg:hidden"
-                >
-                  Named outcomes provide clear, organized quote comparisons from
-                  appointed carriers, helping agents from production carrier
-                  partnerships.
-                </p>
-                <Button href="/solutions/carriers" surface="on-dark">
-                  Explore Carrier
-                </Button>
-              </div>
-
-              <div className="flex max-w-md flex-col items-start justify-end gap-6 text-left lg:ml-auto">
-                <p
-                  className="hidden font-sans font-regular text-sm leading-[1.4] text-[#D1D1D1] md:text-[1.125rem] lg:block"
-                >
-                  Named outcomes provide clear, organized quote comparisons from
-                  appointed carriers, helping agents from production carrier
-                  partnerships.
-                </p>
-              </div>
+            <div ref={headerRef} className="flex flex-col justify-end space-y-5">
+              <h2
+                ref={headingRef}
+                className="max-w-md text-2xl font-heading font-regular leading-tight tracking-tight text-[#9AA8BC] md:text-3xl lg:text-3xl lg:leading-[1.15]"
+              >
+                <span data-split>Carrier results that</span>
+                <br />
+                <span data-split>speak for themselves</span>
+              </h2>
+              <Button href="/solutions/carrier" surface="on-dark">
+                Explore Carrier
+              </Button>
             </div>
 
             {/* Carrier columns */}

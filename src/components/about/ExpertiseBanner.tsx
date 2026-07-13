@@ -24,10 +24,11 @@ const ExpertiseBanner = () => {
         return;
       }
 
-      gsap.set(image, { y: -60, force3D: true });
+      // Keep shift downward-only so Kaivan's headroom isn't cropped off the top.
+      gsap.set(image, { y: 0, force3D: true });
 
       const tween = gsap.to(image, {
-        y: 60,
+        y: 48,
         ease: "none",
         force3D: true,
         overwrite: "auto",
@@ -65,14 +66,14 @@ const ExpertiseBanner = () => {
     >
       <div
         ref={imageRef}
-        className="absolute inset-0 scale-110 will-change-transform"
+        className="absolute inset-0 scale-105 will-change-transform"
       >
         <Image
           src="/images/about/expertise.png"
           alt="A Convergence of Expertise"
           fill
           priority={false}
-          className="object-cover object-center"
+          className="object-cover object-top"
           sizes="100vw"
         />
       </div>

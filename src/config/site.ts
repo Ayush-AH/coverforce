@@ -126,19 +126,11 @@ export const siteRoutes: SiteRoute[] = [
     priority: 0.8,
   },
   {
-    path: "/solutions/developers",
-    label: "Developers",
-    title: "Insurance APIs and Developer Infrastructure | CoverForce",
-    description:
-      "Build quote-to-bind workflows with open APIs, MCP support, sandbox access, and developer docs. Integrate commercial insurance distribution with CoverForce.",
-    priority: 0.8,
-  },
-  {
     path: "/developers",
     label: "Developers",
     title: "Developer APIs for Commercial Insurance | CoverForce",
     description:
-      "Explore CoverForce developer APIs, MCP support, sandbox access, and documentation. Build quote-to-bind integrations and ship production-ready insurance workflows faster.",
+      "Embed commercial insurance with open APIs, MCP support, sandbox access, and developer docs. Build quote-to-bind workflows and ship production-ready insurance products faster.",
     priority: 0.8,
   },
   {

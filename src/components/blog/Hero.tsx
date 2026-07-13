@@ -11,19 +11,18 @@ const FEATURED_POST = {
   title:
     "CoverForce Named to the 2025 CB Insights' List of the 50 Most Innovative Insurtech Startups",
   date: "October 16, 2025",
-  readTime: "1 min read",
 };
 
 const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535380" borderBottom>
-        <HeroReveal className="pb-14 pt-28 md:py-20 lg:py-24">
+        <HeroReveal className="mx-auto max-w-4xl pb-14 pt-28 md:py-20 lg:py-24">
           <Link
             href={FEATURED_POST.href}
             className="group mx-auto block w-full"
           >
-            <div className="relative w-full overflow-hidden rounded-md">
+            <div className="relative w-full overflow-hidden rounded-md bg-[#F7F7FB]">
               <div className="relative aspect-video w-full">
                 <Image
                   src={FEATURED_POST.image}
@@ -31,26 +30,23 @@ const Hero = () => {
                   fill
                   priority
                   className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                  sizes="(max-width: 768px) 100vw, 42rem"
+                  sizes="(max-width: 768px) 100vw, 48rem"
                 />
               </div>
             </div>
 
-            <div className="mt-6">
-              <EyebrowPill surface="light" className="mb-0">
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <EyebrowPill surface="light" className="!m-0">
                 {FEATURED_POST.category}
               </EyebrowPill>
-
-              <h2 className="mt-4 max-w-2xl font-heading text-2xl font-medium leading-[1.15] tracking-tight text-[#0a143b] transition-colors sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
-                {FEATURED_POST.title}
-              </h2>
-
-              <p className="mt-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-[#6B7280]">
+              <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280]">
                 {FEATURED_POST.date}
-                <span className="mx-2 text-[#C4C4C4]">&bull;</span>
-                {FEATURED_POST.readTime}
               </p>
             </div>
+
+            <h2 className="mt-4 max-w-3xl font-heading text-2xl font-medium leading-[1.15] tracking-tight text-[#0a143b] transition-colors sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]">
+              {FEATURED_POST.title}
+            </h2>
           </Link>
         </HeroReveal>
       </Container>

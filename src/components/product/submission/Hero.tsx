@@ -19,18 +19,18 @@ const SUBMISSION_COLOURS = ["#322696", "#7F44FF", "#A975FF", "#8E46FF"];
 const SLIDES: HeroSlide[] = [
   {
     type: "copy",
-    label: "Submission & intake",
+    label: "Smart Intake",
     title: (
       <>
-        Read docs. Skip the
+        AI that ingests
         <br />
-        manual work.
+        applications from any source.
       </>
     ),
     description:
-      "Upload ACORDs, loss runs, and proposals. AI extracts every field, pre-fills 40+ carrier applications, and delivers bindable quotes in 8 minutes instead of 115.",
+      "Email, ACORDs, loss runs, prior policies, or AMS — AI extracts every field, enriches the submission, and pre-fills 40+ carrier applications in minutes.",
   },
-  { type: "stat", value: "4,200+", label: "Submissions processed" },
+  { type: "stat", value: "350,000+", label: "Submissions processed" },
   { type: "stat", value: "95% +",  label: "Extraction accuracy"  },
   { type: "stat", value: "93%",    label: "Faster per submission" },
 ];

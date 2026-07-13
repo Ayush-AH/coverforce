@@ -110,7 +110,7 @@ export default function OperatingPlatformMock({
               One submission
             </p>
             <p className="mt-1 font-heading text-[0.65rem] font-normal leading-snug text-[#6B7280] md:text-xs">
-              One Workflow, 40+ carriers.
+              One Workflow, 60+ carrier products.
             </p>
           </div>
 

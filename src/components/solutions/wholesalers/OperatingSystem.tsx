@@ -46,6 +46,7 @@ export const operatingRows = [
   {
     id: "digitization",
     heading: "Product Digitization",
+    tag: "Coming Soon",
     description:
       "Put your proprietary programs on API rails without rip-and-replace. CoverForce wraps existing systems into unified endpoints, giving retailers permitted access, cross-quoting, more at-bats, and full visibility before E&S escalation.",
     stat: "1",

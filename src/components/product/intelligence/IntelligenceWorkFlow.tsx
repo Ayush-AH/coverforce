@@ -41,15 +41,44 @@ const WORKFLOW_STEPS = [
     ),
   },
   {
+    id: "underwriter-intelligence",
+    label: "Underwriter Intelligence",
+    image: "/images/product/intelligence1.svg",
+    width: 467,
+    height: 410,
+    headline: (
+      <>
+        Rich underwriting questions and answers{" "}
+        <span className="text-[#9AA8BC]">at your fingertips</span>.
+      </>
+    ),
+  },
+  {
     id: "carrier-performance",
-    label: "Carrier Performance",
+    label: "Outcome Analytics",
     image: "/images/product/intelligence3.svg",
     width: 442,
     height: 428,
     headline: (
       <>
-        See quote conversion and bind rates by carrier with{" "}
-        <span className="text-[#9AA8BC]">named outcome analytics</span>.
+        Named outcome analytics that power{" "}
+        <span className="text-[#9AA8BC]">more meaningful carrier conversations</span>.
+      </>
+    ),
+  },
+  {
+    id: "opportunity-visibility",
+    label: "Opportunity Visibility",
+    image: "/images/product/intelligence4.svg",
+    width: 479,
+    height: 421,
+    headline: (
+      <>
+        Find new opportunities for expansion —{" "}
+        <span className="text-[#9AA8BC]">
+          verticals, locations, products, and MGA opportunities
+        </span>{" "}
+        from your own underwriting data.
       </>
     ),
   },
@@ -190,12 +219,12 @@ const IntelligenceWorkFlow = () => {
           {
             y: 0,
             opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
+            ease: "none",
             scrollTrigger: {
               trigger: image,
-              start: "top 68%",
-              once: true,
+              start: "top 90%",
+              end: "center center",
+              scrub: 0.45,
             },
           },
         );

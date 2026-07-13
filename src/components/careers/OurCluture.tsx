@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Container from "@/components/common/Container";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -40,21 +41,22 @@ const cultureItems: CultureItem[] = [
     src: "/images/careers/image1.png",
     alt: "Team meeting collaboration",
     caption:
-      "3,000+ employees across 170 countries working together as one team.",
+      "Built on collaboration — we ship together, share context freely, and win as one team.",
     placement: "lg:col-span-5 lg:row-span-6",
     imageHeight: "large",
   },
   {
     src: "/images/careers/image2.png",
     alt: "Colleagues discussing work",
-    caption: "Brings our global team together to connect, celebrate, and align around the future we’re building.",
+    caption:
+      "A culture people stick with — we keep attrition around 2%, because the work and the team are worth staying for.",
     placement: "lg:col-span-7 lg:col-start-6 lg:row-span-6 lg:row-start-1",
     imageHeight: "large",
   },
   {
     src: "/images/careers/image3.png",
     alt: "Team outdoor adventure",
-    caption: "96% of employees report a strong sense of acceptance.",
+    caption: "Tight feedback loops and shared ownership keep collaboration high and handoffs low.",
     placement: "lg:col-span-6 lg:row-span-3 lg:row-start-7 lg:mt-10 xl:mt-12",
     imageHeight: "medium",
   },
@@ -62,7 +64,7 @@ const cultureItems: CultureItem[] = [
     src: "/images/careers/image4.png",
     alt: "Global team gathering outdoors",
     caption:
-      "94% of employees say they're proud to tell others where they work.",
+      "People stay because they grow here — low attrition, high trust, real impact on customers.",
     placement: "lg:col-span-6 lg:col-start-7 lg:row-span-3 lg:row-start-9",
     imageHeight: "medium",
   },
@@ -72,22 +74,21 @@ const bottomCulturePair = {
   left: {
     src: "/images/careers/image5.png",
     alt: "Diverse team group photo",
-    caption:
-      "A culture that inspires pride and innovation.",
+    caption: "Collaboration first — from product to support, we build side by side.",
     placement: "",
     imageHeight: "large" as const,
   },
   right: {
     src: "/images/careers/image6.png",
     alt: "Team in modern office space",
-    caption: "Where talent thrives and ideas come to life.",
+    caption: "~2% attrition. A team that chooses to keep building together.",
     placement: "",
     imageHeight: "medium" as const,
   },
 };
 
 const captionClassName =
-  "max-w-md font-heading text-base font-medium leading-snug tracking-tight text-[#444444] md:text-lg";
+  "max-w-md font-heading text-base font-medium leading-snug tracking-tight text-white/85 md:text-lg";
 
 function CultureImage({
   item,
@@ -172,6 +173,7 @@ const OurCluture = () => {
     headerRef,
     headingRef,
     descRef,
+    theme: "dark",
   });
 
   useGSAP(
@@ -230,21 +232,23 @@ const OurCluture = () => {
   );
 
   return (
-    <section ref={sectionRef} className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535380">
-        <div className="py-16 md:py-20 lg:py-24">
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#151f4d] text-white">
+      <Container borderColor="#FFFFFF33" className="relative">
+        <SectionRadialGlow className="absolute left-1/2 top-[10%] z-0 -translate-x-1/2 opacity-70 md:top-[12%]" />
+
+        <div className="relative z-10 py-16 md:py-20 lg:py-24">
           <div
             ref={headerRef}
             className="grid gap-8 lg:grid-cols-2 lg:items-end lg:justify-between lg:gap-12"
           >
             <div className="flex flex-col items-start justify-end space-y-5">
-              <EyebrowPill surface="light" className="mb-0">
+              <EyebrowPill surface="dark" className="mb-0">
                 Our Culture
               </EyebrowPill>
 
               <h2
                 ref={headingRef}
-                className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-[#9AA8BC] sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
+                className="max-w-md text-2xl font-heading font-medium leading-[1.15] tracking-tight text-white sm:text-3xl sm:leading-[1.12] md:text-4xl lg:text-[1.625rem] lg:leading-[1.12]"
               >
                 <span data-split>Driven by People,</span>
                 <br />
@@ -255,10 +259,11 @@ const OurCluture = () => {
             <div className="max-w-md text-left lg:ml-auto">
               <p
                 ref={descRef}
-                className="font-sans font-regular text-sm leading-[1.4] text-[#797979] md:text-[1.125rem]"
+                className="font-sans font-regular text-sm leading-[1.4] text-white/75 md:text-[1.125rem]"
               >
-                Our values shape our culture, decisions, and the impact we create
-                every day.
+                Our culture is built on collaboration — and it shows in how we
+                work and stay. With ~2% attrition, people stick around to keep
+                building together.
               </p>
             </div>
           </div>

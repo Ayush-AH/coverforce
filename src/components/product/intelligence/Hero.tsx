@@ -19,31 +19,51 @@ const INTELLIGENCE_COLOURS = ["#0045FF", "#008EFF", "#6BCAFF", "#C3EBFF"];
 const SLIDES: HeroSlide[] = [
   {
     type: "copy",
-    label: "Intelligence",
+    label: "Predictive intelligence",
     title: (
       <>
-        See appetite before
+        Know who is in the market —
         <br />
-        you submit.
+        and who isn&apos;t
       </>
     ),
-    description:
-      "Submission intelligence, appetite matching, and carrier analytics — powered by proprietary data no other platform has.",
+    description: "",
   },
   {
-    type: "stat",
-    value: "95%+",
-    label: "Pre-fill accuracy",
+    type: "copy",
+    label: "Predictive intelligence",
+    title: (
+      <>
+        Spot opportunities to
+        <br />
+        expand or invest
+      </>
+    ),
+    description: "",
   },
   {
-    type: "stat",
-    value: "140K+",
-    label: "Carrier interactions",
+    type: "copy",
+    label: "Predictive intelligence",
+    title: (
+      <>
+        It&apos;s your underwriting data —
+        <br />
+        stand up an MGA?
+      </>
+    ),
+    description: "",
   },
   {
-    type: "stat",
-    value: "100%",
-    label: "Pipeline visibility",
+    type: "copy",
+    label: "Predictive intelligence",
+    title: (
+      <>
+        Is your data really
+        <br />
+        working for you?
+      </>
+    ),
+    description: "Our AI makes your data work for you.",
   },
 ];
 

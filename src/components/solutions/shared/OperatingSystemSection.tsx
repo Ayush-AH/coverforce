@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
+import EyebrowPill from "@/components/common/EyebrowPill";
 import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import OperatingPlatformMock from "@/components/solutions/brokers/OperatingPlatformMock";
@@ -18,10 +19,13 @@ export type OperatingRow = {
   id: string;
   heading: string;
   description: string;
+  tag?: string;
   stat?: string;
   statLabelLines?: [string, string];
   Mock?: ComponentType;
   transferTargetId?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
 };
 
 export type OperatingSystemConfig = {
@@ -161,12 +165,20 @@ export default function OperatingSystemSection({
                   className="operating-row grid gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20"
                 >
                   <div className="flex flex-col justify-center">
+                    {row.tag ? (
+                      <EyebrowPill surface="light">{row.tag}</EyebrowPill>
+                    ) : null}
                     <h3 className="max-w-lg text-2xl font-heading font-regular leading-[1.2] tracking-tight text-[#444444] md:text-3xl lg:max-w-md lg:text-[1.75rem] lg:leading-[1.25]">
                       {row.heading}
                     </h3>
-                    <p className="mt-8 max-w-sm font-heading text-sm font-regular leading-relaxed text-[#444444] md:mt-6 md:text-sm">
+                    <p className="mt-8 max-w-md font-heading text-base font-regular leading-relaxed text-[#444444] md:mt-6 md:text-base">
                       {row.description}
                     </p>
+                    {row.ctaHref && row.ctaLabel ? (
+                      <div className="mt-6">
+                        <Button href={row.ctaHref}>{row.ctaLabel}</Button>
+                      </div>
+                    ) : null}
                     {showStats && row.stat && row.statLabelLines ? (
                       <div className="mt-10 flex items-center gap-4 md:mt-8 md:gap-5">
                         <span

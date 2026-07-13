@@ -13,9 +13,9 @@ export const operatingRows = [
     id: "platform",
     heading: "One Platform for Every Carrier, Every Office",
     description:
-      "One workflow for every producer — 40+ carrier integrations, dynamic carrier questions, no portal logins, no rekeying, and no office-by-office workflow gaps.",
-    stat: "40+",
-    statLabelLines: ["Carriers,", "One Workflow"] as [string, string],
+      "One workflow for every producer — 60+ carrier products, dynamic carrier questions, no portal logins, no rekeying, and no office-by-office workflow gaps.",
+    stat: "60+",
+    statLabelLines: ["Carrier", "Products"] as [string, string],
     Mock: brokersHeroCardMock,
     transferTargetId: "brokers-step-1-card",
   },
@@ -45,19 +45,15 @@ export const operatingRows = [
   },
 ];
 
-export const operatingSystemTitle = "Precision engineering for professional workflow";
+export const operatingSystemTitle =
+  "We're focused on placement profitability and efficiency.";
 export const operatingSystemDescription =
   "See how manual workflows compare to CoverForce — from smart intake through bind, in one connected platform built for every producer.";
 
 export default function OperatingSystem() {
   return (
     <OperatingSystemSection
-      sectionTitle={
-        <>
-          Precision engineering for
-          professional workflow
-        </>
-      }
+      sectionTitle={operatingSystemTitle}
       sectionDescription={operatingSystemDescription}
       ctaHref="/contact"
       ctaLabel="Start a quote"

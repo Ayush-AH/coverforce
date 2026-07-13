@@ -78,6 +78,17 @@ function buildGradientStyle(stops: readonly GradientStop[]): string {
   return `linear-gradient(45deg, ${body})`;
 }
 
+/** Dark→mid slice of a card wash — for pills, CTAs, and ticks (avoids pale/white ends). */
+function buildUiChromeGradient(stops: readonly GradientStop[]): string {
+  const midIndex = Math.max(1, Math.floor((stops.length - 1) / 2));
+  const slice = stops.slice(0, midIndex + 1);
+  const remapped = slice.map((stop, index) => ({
+    hex: stop.hex,
+    pos: slice.length === 1 ? 0 : (index / (slice.length - 1)) * 100,
+  }));
+  return buildGradientStyle(remapped);
+}
+
 function gradFlowFromStops(stops: readonly GradientStop[]): GradFlowColors {
   const mid = stops[Math.floor((stops.length - 1) / 2)];
 
@@ -104,6 +115,20 @@ export const CARD_BACKGROUND_STYLES: Record<CardBackground, string> = {
   broker: buildGradientStyle(SOLUTION_GRADIENT_DEFS.broker),
   startup: buildGradientStyle(SOLUTION_GRADIENT_DEFS.startup),
   carrier: buildGradientStyle(SOLUTION_GRADIENT_DEFS.carrier),
+};
+
+/**
+ * Saturated dark→mid gradients for modal chrome (tags, primary buttons, check ticks).
+ * Matches each card's palette without the washed-out light end of the full card background.
+ */
+export const CARD_UI_GRADIENT_STYLES: Record<CardBackground, string> = {
+  accent: "linear-gradient(135deg, #121C49 0%, #352D93 55%, #4541CD 100%)",
+  light: "linear-gradient(135deg, #2A2680 0%, #413CC0 100%)",
+  developer: buildUiChromeGradient(SOLUTION_GRADIENT_DEFS.developer),
+  wholesaler: buildUiChromeGradient(SOLUTION_GRADIENT_DEFS.wholesaler),
+  broker: buildUiChromeGradient(SOLUTION_GRADIENT_DEFS.broker),
+  startup: buildUiChromeGradient(SOLUTION_GRADIENT_DEFS.startup),
+  carrier: buildUiChromeGradient(SOLUTION_GRADIENT_DEFS.carrier),
 };
 
 /** Primary accent sampled from each card gradient (pill dot, check ticks). */

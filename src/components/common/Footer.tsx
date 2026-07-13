@@ -38,7 +38,6 @@ const footerColumns: FooterColumnData[] = [
       { label: "Brokers", href: "/solutions/brokers" },
       { label: "Carriers", href: "/solutions/carrier" },
       { label: "Startups", href: "/solutions/startups" },
-      { label: "Developers", href: "/solutions/developers" },
     ],
   },
   {

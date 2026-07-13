@@ -15,7 +15,6 @@ export const operatingRows = [
     description:
       "Build faster with open APIs, MCP support, sandbox access, and direct engineering support — everything needed to go from integration to production in 30 days.",
     Mock: developersHeroCardMock,
-    transferTargetId: "developers-step-1-card",
   },
   {
     id: "ai-workflows",
@@ -39,23 +38,16 @@ export const operatingRows = [
   },
 ];
 
-export const operatingSystemTitle = "Precision engineering for professional workflow";
+export const operatingSystemTitle =
+  "Infrastructure to embed commercial insurance — not a portal to rebuild.";
 export const operatingSystemDescription =
   "See how custom integrations compare to CoverForce — from API-first intake through bind, on infrastructure built for developers shipping commercial insurance products.";
 
 export default function OperatingSystem({
   showHeader = true,
-  enableHeroTransfer = false,
 }: {
   showHeader?: boolean;
-  enableHeroTransfer?: boolean;
 }) {
-  const rows = enableHeroTransfer
-    ? operatingRows
-    : operatingRows.map((row, index) =>
-        index === 0 ? { ...row, transferTargetId: undefined } : row,
-      );
-
   return (
     <OperatingSystemSection
       sectionTitle={<>{operatingSystemTitle}</>}
@@ -65,7 +57,7 @@ export default function OperatingSystem({
       paddingTop={true}
       showHeader={showHeader}
       showStats={false}
-      rows={rows}
+      rows={operatingRows}
     />
   );
 }

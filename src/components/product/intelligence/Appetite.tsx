@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,6 +11,25 @@ import SectionRadialGlow from "@/components/common/SectionRadialGlow";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const PRODUCTS = [
+  "Workers Comp",
+  "General Liability",
+  "BOP",
+  "Cyber",
+  "Umbrella",
+] as const;
+
+const INDUSTRIES = [
+  "Restaurant",
+  "Contractor",
+  "Technology",
+  "Plumbing & HVAC",
+  "Healthcare",
+  "Trucking",
+] as const;
+
+const STATES = ["FL", "CA", "TX", "NY", "IL", "GA"] as const;
 
 type AppetiteStatus = "writing" | "selective" | "decline";
 
@@ -172,7 +192,50 @@ function StatusPill({
   );
 }
 
+function FormSelect({
+  id,
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  options: readonly string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block min-w-0 flex-1">
+      <span className="mb-2 block font-mono text-sm font-medium uppercase text-[#2A297C]">
+        {label}
+      </span>
+      <div className="relative">
+        <select
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="box-border h-10 min-h-10 max-h-10 w-full appearance-none rounded-lg border border-[#E4E7EC] bg-white px-4 pr-10 font-heading text-sm font-medium leading-none text-[#1A1A1A] outline-none transition-colors hover:border-[#5B35E0]/40 focus:border-[#5B35E0] focus:ring-1 focus:ring-[#5B35E0]/20"
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-[#9AA8BC]"
+          aria-hidden
+        />
+      </div>
+    </label>
+  );
+}
+
 const Appetite = () => {
+  const [product, setProduct] = useState<string>(PRODUCTS[1]);
+  const [industry, setIndustry] = useState<string>(INDUSTRIES[1]);
+  const [state, setState] = useState<string>(STATES[0]);
   const [selectedQuickTry, setSelectedQuickTry] = useState<string>(DEFAULT_QUICK_TRY);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -294,6 +357,30 @@ const Appetite = () => {
 
             <div className="relative z-10 rounded-2xl bg-white p-5 text-[#0a143b] shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:p-8 lg:p-10">
               <form className="space-y-6" onSubmit={(event) => event.preventDefault()}>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <FormSelect
+                    id="appetite-product"
+                    label="Product"
+                    value={product}
+                    options={PRODUCTS}
+                    onChange={setProduct}
+                  />
+                  <FormSelect
+                    id="appetite-industry"
+                    label="Industry"
+                    value={industry}
+                    options={INDUSTRIES}
+                    onChange={setIndustry}
+                  />
+                  <FormSelect
+                    id="appetite-state"
+                    label="State"
+                    value={state}
+                    options={STATES}
+                    onChange={setState}
+                  />
+                </div>
+
                 <div>
                   <label
                     htmlFor="naics-search"

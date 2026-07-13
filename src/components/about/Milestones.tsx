@@ -19,7 +19,7 @@ const BORDER_COLOR = "#FFFFFF40";
 type Milestone = {
   src: string;
   alt: string;
-  number: string;
+  year: string;
   title: string;
   description: string;
 };
@@ -27,35 +27,35 @@ type Milestone = {
 const milestones: Milestone[] = [
   {
     src: "/images/about/milestone1.png",
-    alt: "CoverForce milestone 1",
-    number: "01",
-    title: "Partnered with ISU Steadfast",
+    alt: "CoverForce milestone 2022",
+    year: "2022",
+    title: "Partnered with ISU",
     description:
-      "Collaborated with the second-largest U.S. agency network to build carrier integration infrastructure from the ground up.",
+      "Our first customer — partnered with ISU Steadfast to build CoverForce from the ground up.",
   },
   {
     src: "/images/about/milestone2.png",
-    alt: "CoverForce milestone 2",
-    number: "02",
-    title: "Scaled carrier connectivity",
+    alt: "CoverForce milestone 2023",
+    year: "2023",
+    title: "Nationwide launch",
     description:
-      "Expanded integrations across commercial lines, enabling agencies to quote and bind through a single unified workflow.",
+      "Scaled carrier connectivity and launched admitted with 8 carriers across the country.",
   },
   {
     src: "/images/about/milestone3.png",
-    alt: "CoverForce milestone 3",
-    number: "03",
-    title: "Launched API-first distribution",
+    alt: "CoverForce milestone 2025",
+    year: "2025",
+    title: "Launched E&S",
     description:
-      "Introduced a modern insurance API layer that connects platforms, agencies, and carriers in real time.",
+      "Introduced CoverForce to a broader audience — now powering 4 of the top 10 U.S. wholesalers.",
   },
   {
     src: "/images/about/milestone4.png",
-    alt: "CoverForce milestone 4",
-    number: "04",
-    title: "Accelerated national growth",
+    alt: "CoverForce milestone 2026",
+    year: "2026",
+    title: "First-in-market AI agents",
     description:
-      "Continued building the infrastructure layer for commercial insurance distribution across new markets and partners.",
+      "Deployed AI agents for bindable quoting in commercial lines. Launching the first bindable quote and instant bind E&S integrations with Nationwide, Markel, and Westchester.",
   },
 ];
 
@@ -79,7 +79,7 @@ function MilestoneContent({ milestone }: { milestone: Milestone }) {
         style={getBottomBorderStyle(BORDER_COLOR)}
       >
         <div className={`${containerPadding} pb-8 md:pb-10`}>
-          <p className={milestoneDisplayClassName}>{milestone.number}</p>
+          <p className={milestoneDisplayClassName}>{milestone.year}</p>
         </div>
       </div>
 

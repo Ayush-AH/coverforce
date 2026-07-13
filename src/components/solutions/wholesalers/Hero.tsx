@@ -11,6 +11,10 @@ const Hero = () => (
     eyebrow="Wholesalers"
     title="Scale your wholesale operation from one platform"
     description="CoverForce centralizes intake, routing, broker controls, and program distribution so your wholesale team can move faster without changing how retailers submit business."
+    primaryButtonHref="/contact"
+    primaryButtonLabel="Talk to sales"
+    secondaryButtonHref="#workflow"
+    secondaryButtonLabel="How it works"
     rightCard={HeroMock ? <HeroMock /> : null}
     rightCardTransferTargetId="wholesalers-step-1-card"
     showMarquee

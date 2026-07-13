@@ -164,12 +164,6 @@ export const MEGA_MENUS: Record<string, MegaMenuConfig> = {
             description: "Launch insurance products on modern infrastructure.",
             icon: RiRocketLine,
           },
-          {
-            label: "Developers",
-            href: "/solutions/developers",
-            description: "Build insurance products on Coverforce APIs.",
-            icon: RiCodeSSlashLine,
-          },
         ],
       },
       {

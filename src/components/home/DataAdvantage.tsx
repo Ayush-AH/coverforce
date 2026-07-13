@@ -1,9 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import AnimatedCarrierBars from "@/components/common/AnimatedCarrierBar";
-import AnimatedPercent from "@/components/common/AnimatedPercent";
+import { AnimatedEightyFivePercent } from "@/components/common/AnimatedPercent";
 import Button from "@/components/common/Button";
 import Container from "../common/Container";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
@@ -37,8 +36,8 @@ const DataAdvantage = () => {
                 ref={descRef}
                 className="font-sans font-regular text-sm leading-[1.4] text-white/80 md:text-[1.125rem] lg:hidden"
               >
-                140,000+ proprietary carrier interactions. Every transaction
-                makes the platform smarter.
+                Market intelligence and rich underwriting data — now visible so
+                every placement, remarket, and service touch gets smarter.
               </p>
               <Button href="/product/intelligence#coming-soon" surface="on-dark">
                 Explore AI
@@ -46,53 +45,42 @@ const DataAdvantage = () => {
             </div>
 
             <div className="max-w-md text-left lg:ml-auto">
-              <p
-                className="hidden font-sans font-regular text-sm leading-[1.4] text-white/80 md:text-[1.125rem] lg:block"
-              >
-                140,000+ proprietary carrier interactions. Every transaction
-                makes the platform smarter.
+              <p className="hidden font-sans font-regular text-sm leading-[1.4] text-white/80 md:text-[1.125rem] lg:block">
+                Market intelligence and rich underwriting data — now visible so
+                every placement, remarket, and service touch gets smarter.
               </p>
             </div>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+          <div className="grid gap-5 md:grid-cols-2 md:gap-6 md:items-stretch">
+            {/* Underwriting data retention */}
             <article
-              className="relative flex aspect-[556/586] w-full flex-col justify-between overflow-hidden rounded-sm p-6 text-[#0a143b] md:p-8 lg:p-10"
+              className="relative flex min-h-[26rem] w-full flex-col overflow-hidden rounded-sm text-[#0a143b] md:min-h-[32rem]"
               style={{ backgroundColor: "#FFFFFFCC" }}
             >
-              <div className="pointer-events-none absolute -translate-y-1/5 left-1/2 z-0 h-[150%] w-[150%] -translate-x-1/2 md:-top-24 lg:-top-28">
-                <Image
-                  src="/images/secondcardbg.svg"
-                  alt=""
-                  fill
-                  className="h-full w-full object-cover object-center opacity-60"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  aria-hidden
-                />
-              </div>
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_20%,rgba(90,53,224,0.18),transparent_60%)]" aria-hidden />
 
-              <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between">
-                <div className="space-y-8">
-                  <div>
-                    <AnimatedPercent className="text-5xl font-heading font-medium leading-none tracking-tight text-[#121C49]" />
-                    <p className="mt-2 text-lg font-heading font-medium text-[#525252]">
-                      Pre-fill Accuracy
-                    </p>
-                  </div>
+              <div className="relative z-10 flex flex-1 flex-col justify-between gap-8 p-6 md:p-8 lg:p-10">
+                <div className="space-y-2">
+                  <AnimatedEightyFivePercent className="text-6xl font-heading font-medium leading-none tracking-tight text-[#121C49] md:text-7xl" />
+                  <p className="text-base font-heading font-medium text-[#525252] md:text-lg">
+                    Faster remarket &amp; service
+                  </p>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="max-w-xs text-lg font-heading font-medium md:text-2xl">
-                    Upload an ACORD form AI reads it instantly
+                  <h3 className="max-w-sm text-lg font-heading font-medium md:text-2xl">
+                    Retain underwriting data to streamline policy remarket and service
                   </h3>
-                  <p className="text-sm font-sans font-regular leading-relaxed text-[#525252]">
-                    Pre-fill with precision, no manual entry, no errors
+                  <p className="max-w-sm text-sm font-sans font-regular leading-relaxed text-[#525252]">
+                    Keep rich underwriting history with every account — so renewals, remarkets, and service run up to 85% faster.
                   </p>
                 </div>
               </div>
             </article>
 
-            <article className="relative flex aspect-[556/586] w-full flex-col justify-between overflow-hidden rounded-sm p-6 md:p-8 lg:p-10">
+            {/* Placement / decline intelligence — keep RHS video */}
+            <article className="relative flex min-h-[26rem] w-full flex-col justify-between overflow-hidden rounded-sm p-6 md:min-h-[32rem] md:p-8 lg:p-10">
               <video
                 src="/carrier.mp4"
                 autoPlay
@@ -102,18 +90,16 @@ const DataAdvantage = () => {
                 className="absolute inset-0 h-full w-full object-cover object-center"
                 aria-hidden
               />
-              <div className="absolute inset-0 bg-[#141E4B]/20" aria-hidden />
+              <div className="absolute inset-0 bg-[#141E4B]/35" aria-hidden />
 
               <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-between gap-10">
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <h3 className="max-w-xs text-3xl font-heading font-medium md:text-3xl">
-                      Same risk, <br /> different carriers.
-                    </h3>
-                    <p className="max-w-[18rem] text-sm font-sans font-regular leading-relaxed text-[#FFFFFF]">
-                      See which carriers quote which risks before you submit.
-                    </p>
-                  </div>
+                <div className="space-y-2">
+                  <h3 className="max-w-xs text-3xl font-heading font-medium md:text-3xl">
+                    Know where to place — and who&apos;s declining you.
+                  </h3>
+                  <p className="max-w-[18rem] text-sm font-sans font-regular leading-relaxed text-white">
+                    See which carriers will quote a risk before you submit — and which ones will decline.
+                  </p>
                 </div>
 
                 <AnimatedCarrierBars />

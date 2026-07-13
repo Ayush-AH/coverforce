@@ -15,7 +15,7 @@ export type CopySlide = {
   type: "copy";
   label: string;
   title: ReactNode;
-  description: string;
+  description?: string;
 };
 
 export type StatSlide = {
@@ -110,7 +110,9 @@ const slideStateClass: Record<SlideState, string> = {
 };
 
 function getSlideKey(slide: HeroSlide, index: number) {
-  if (slide.type === "copy") return slide.description;
+  if (slide.type === "copy") {
+    return slide.description ? slide.description : `copy-${index}`;
+  }
   return `${slide.value}-${index}`;
 }
 
@@ -134,13 +136,15 @@ function HeroSlideContent({ slide }: { slide: HeroSlide }) {
     <div className="flex h-full w-full flex-col items-center justify-center text-center">
       <EyebrowPill surface="dark">{slide.label}</EyebrowPill>
 
-      <h1 className="max-w-2xl text-3xl font-heading font-normal leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl [&_br]:hidden md:[&_br]:inline">
+      <h1 className="max-w-3xl text-3xl font-heading font-normal leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl [&_br]:hidden md:[&_br]:inline">
         {slide.title}
       </h1>
 
-      <p className="mt-8 max-w-xl font-sans text-sm font-regular leading-relaxed text-white/85 md:text-sm">
-        {slide.description}
-      </p>
+      {slide.description ? (
+        <p className="mt-8 max-w-xl font-sans text-sm font-regular leading-relaxed text-white/85 md:text-sm">
+          {slide.description}
+        </p>
+      ) : null}
     </div>
   );
 }

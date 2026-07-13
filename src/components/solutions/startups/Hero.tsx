@@ -4,6 +4,17 @@ import StartupRecentActivityCard from "@/components/solutions/startups/StartupRe
 import SolutionScrollHero from "@/components/solutions/shared/SolutionScrollHero";
 import { SOLUTION_GRAD_FLOW } from "@/data/wayCardStyles";
 
+const STARTUP_MARQUEE_LOGOS = [
+  { src: "/images/startups/logos/anzen.png", alt: "Anzen" },
+  { src: "/images/startups/logos/broker.png", alt: "Broker" },
+  { src: "/images/startups/logos/coverwatch.png", alt: "CoverWatch" },
+  { src: "/images/startups/logos/harper.png", alt: "Harper" },
+  { src: "/images/startups/logos/latent.png", alt: "Latent" },
+  { src: "/images/startups/logos/rosella.png", alt: "Rosella" },
+  { src: "/images/startups/logos/snapbind.png", alt: "Snapbind" },
+  { src: "/images/startups/logos/switchboard.png", alt: "Switchboard" },
+] as const;
+
 const Hero = () => (
   <SolutionScrollHero
     eyebrow="Startups"
@@ -11,10 +22,14 @@ const Hero = () => (
     titleClassName="max-w-xl text-3xl font-heading font-normal tracking-normal text-[#0a143b] md:text-4xl lg:text-[3.5rem] lg:leading-none"
     description="CoverForce gives early-stage startups the infrastructure, carriers, and ecosystem support to go from zero to launch in days."
     primaryButtonHref="/contact"
+    primaryButtonLabel="Apply to Startup Program"
     secondaryButtonHref="#launch"
+    secondaryButtonLabel="How Program Works"
     rightCard={<StartupRecentActivityCard />}
     showSecondSection={false}
     showMarquee
+    marqueeLogos={STARTUP_MARQUEE_LOGOS}
+    marqueeSize="large"
     gradFlow={SOLUTION_GRAD_FLOW.startup}
   />
 );

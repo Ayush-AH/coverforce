@@ -7,6 +7,7 @@ import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 import type { WayCardModalContent } from "@/data/wayCardModals";
 import {
   CARD_BACKGROUND_STYLES,
+  CARD_UI_GRADIENT_STYLES,
   type CardBackground,
 } from "@/data/wayCardStyles";
 import { WAY_MODAL_CLOSE_TOTAL_MS, prefersReducedMotion } from "@/lib/wayModalMotion";
@@ -151,7 +152,7 @@ export default function WayCardModal({
   if (!visible || !stored || typeof document === "undefined") return null;
 
   const cardBackground = stored.background ?? "light";
-  const cardGradient = CARD_BACKGROUND_STYLES[cardBackground];
+  const chromeGradient = CARD_UI_GRADIENT_STYLES[cardBackground];
 
   const overlayAnim = isClosing ? "way-modal-overlay-exit" : "way-modal-overlay-enter";
   const panelAnim = isClosing ? "way-modal-panel-exit" : "way-modal-panel-enter";
@@ -197,7 +198,7 @@ export default function WayCardModal({
                     className="way-modal-reveal"
                     style={{ "--way-modal-stagger": "0ms" } as CSSProperties}
                   >
-                    <EyebrowPill surface="light" background={cardGradient} className="mb-0">
+                    <EyebrowPill surface="light" background={chromeGradient} className="mb-0">
                       {stored.label}
                     </EyebrowPill>
                   </div>
@@ -229,7 +230,7 @@ export default function WayCardModal({
                 </div>
               </div>
 
-              <div className="way-modal-reveal-slot order-4 lg:col-start-1 lg:row-start-3">
+              <div className="way-modal-reveal-slot order-4 p-px lg:col-start-1 lg:row-start-3">
                 <div
                   className="way-modal-reveal"
                   style={{ "--way-modal-stagger": "120ms" } as CSSProperties}
@@ -239,7 +240,7 @@ export default function WayCardModal({
                       label={stored.content.primaryCta.label}
                       href={stored.content.primaryCta.href}
                       className="!border-0 !text-white"
-                      style={{ background: cardGradient }}
+                      style={{ background: chromeGradient }}
                     />
                     <RequestDemoCta
                       label={stored.content.secondaryCta.label}
@@ -261,7 +262,7 @@ export default function WayCardModal({
                     >
                       <span
                         className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-white"
-                        style={{ background: cardGradient }}
+                        style={{ background: chromeGradient }}
                       >
                         <RiCheckLine size={11} />
                       </span>

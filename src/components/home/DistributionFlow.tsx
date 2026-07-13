@@ -3,7 +3,6 @@
 import { useRef } from "react";
 
 import Container from "../common/Container";
-import Button from "../common/Button";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 
 const DistributionFlow = () => {
@@ -38,9 +37,6 @@ const DistributionFlow = () => {
                 Upload emails and documents to instantly extract insurance-ready
                 data with AI.
               </p>
-              <Button href="/contact" className="mt-5 sm:mt-6">
-                Start a Quote
-              </Button>
             </div>
             <p
               className="hidden max-w-md font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem] lg:block lg:mt-4"

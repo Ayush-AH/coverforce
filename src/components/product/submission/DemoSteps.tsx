@@ -191,12 +191,12 @@ const DemoSteps = () => {
           {
             y: 0,
             opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
+            ease: "none",
             scrollTrigger: {
               trigger: image,
-              start: "top 68%",
-              once: true,
+              start: "top 90%",
+              end: "center center",
+              scrub: 0.45,
             },
           },
         );

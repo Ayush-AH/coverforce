@@ -17,7 +17,6 @@ type BlogDetail = {
   authorAvatar?: string;
   authorBio: string;
   date: string;
-  readTime: string;
 };
 
 const POST: BlogDetail = {
@@ -32,7 +31,6 @@ const POST: BlogDetail = {
   authorBio:
     "Wharton MBA and Chartered Accountant with leadership experience at Credit Suisse and PwC, driving CoverForce's strategy and growth.",
   date: "October 16, 2025",
-  readTime: "1 min read",
 };
 
 function authorInitials(name: string) {
@@ -112,8 +110,6 @@ const Hero = () => {
             </EyebrowPill>
             <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-[#6B7280]">
               {POST.date}
-              <span className="mx-2 text-[#C4C4C4]">&bull;</span>
-              {POST.readTime}
             </p>
           </div>
 
