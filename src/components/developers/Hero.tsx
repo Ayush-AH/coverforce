@@ -8,6 +8,7 @@ import RequestDemoButton from "@/components/request-demo/RequestDemoButton";
 import HeroReveal from "@/components/common/HeroReveal";
 import ApiCodeReveal from "@/components/developers/ApiCodeReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import { HERO_COPY_STACK } from "@/components/common/heroSectionSpacing";
 
 // Lazy-load – R3F must never run on the server
 const WavePlaneCanvas = dynamic(
@@ -38,14 +39,16 @@ const Hero = () => {
       </div>
 
       <Container className="relative z-10">
-        <div className="flex min-h-screen flex-col">
-          <HeroReveal className="flex flex-1 flex-col items-center justify-center px-6 pt-24 text-center md:pt-28 lg:pt-32">
+        <div className="flex flex-col">
+          <HeroReveal className={`${HERO_COPY_STACK} max-w-4xl`}>
             <EyebrowPill surface="dark" className="mx-auto">
               Developers
             </EyebrowPill>
 
             <h1 className="max-w-4xl text-3xl font-heading font-normal leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl">
-              Embed commercial insurance <br /> into any product with one API
+              Embed insurance
+              <br />
+              with one API
             </h1>
 
             <p className="mx-auto mt-8 max-w-xl font-sans text-sm font-regular leading-relaxed text-white/85 md:text-sm">
@@ -66,7 +69,7 @@ const Hero = () => {
           </HeroReveal>
 
           <HeroReveal
-            className="relative z-10 mx-auto mt-14 w-full max-w-6xl px-4 pb-16 md:mt-20 md:pb-20 lg:mt-24 lg:max-w-7xl lg:pb-24"
+            className="relative z-10 mx-auto -mt-10 w-full max-w-6xl px-4 pb-16 md:-mt-16 md:pb-20 lg:-mt-20 lg:max-w-7xl lg:pb-24"
             delay={0.75}
           >
             <div className="relative mx-auto w-full md:hidden">

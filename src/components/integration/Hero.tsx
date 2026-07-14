@@ -7,6 +7,7 @@ import {
   useHeroCarousel,
   type HeroSlide,
 } from "@/components/product/HeroCarousel";
+import { HERO_COPY_INSET, HERO_SVH_SHELL } from "@/components/common/heroSectionSpacing";
 
 // Lazy-load – R3F must never run on the server
 const WavePlaneCanvas = dynamic(
@@ -52,7 +53,7 @@ const Hero = () => {
   const { activeIndex, handleSelectSlide, track } = useHeroCarousel(SLIDES);
 
   return (
-    <section className="relative flex h-svh items-center justify-center overflow-hidden bg-[#151f4d] pb-24 text-white md:pb-32">
+    <section className={`${HERO_SVH_SHELL} bg-[#151f4d] text-white`}>
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
@@ -70,9 +71,7 @@ const Hero = () => {
       </div>
 
       <Container className="relative z-10">
-        <div className="mx-auto flex max-w-3xl -translate-y-6 flex-col items-center px-6 py-16 text-center md:-translate-y-10 md:py-20">
-          {track}
-        </div>
+        <div className={HERO_COPY_INSET}>{track}</div>
       </Container>
 
       <HeroCarouselNav

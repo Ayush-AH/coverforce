@@ -2,12 +2,13 @@ import Container from "@/components/common/Container";
 import Button from "@/components/common/Button";
 import HeroReveal from "@/components/common/HeroReveal";
 import EyebrowPill from "@/components/common/EyebrowPill";
+import { HERO_COPY_FLOW } from "@/components/common/heroSectionSpacing";
 
 const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
       <Container borderColor="#53535333">
-        <HeroReveal className="mx-auto flex max-w-3xl flex-col items-center px-6  pt-28 text-center  md:pt-32 lg:pt-40">
+        <HeroReveal className={HERO_COPY_FLOW}>
           <EyebrowPill surface="light">Pricing</EyebrowPill>
 
           <h1 className="text-3xl font-heading font-normal leading-[1.15] tracking-tight md:text-4xl lg:text-5xl xl:text-5xl">

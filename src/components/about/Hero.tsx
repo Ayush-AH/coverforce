@@ -105,11 +105,11 @@ const Hero = () => {
         className="relative h-full w-full overflow-hidden will-change-transform"
       >
         <Image
-          src="/images/about/about.avif"
+          src="/images/about/about.jpg"
           alt=""
           fill
           priority
-          className="object-cover object-top"
+          className="object-cover object-center"
           sizes="100vw"
         />
         <div

@@ -24,7 +24,7 @@ const Hero = () => (
     primaryButtonHref="/contact"
     primaryButtonLabel="Apply to Startup Program"
     secondaryButtonHref="#launch"
-    secondaryButtonLabel="How Program Works"
+    secondaryButtonLabel="How it Works"
     rightCard={<StartupRecentActivityCard />}
     showSecondSection={false}
     showMarquee

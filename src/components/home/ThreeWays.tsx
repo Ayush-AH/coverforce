@@ -488,14 +488,15 @@ export default function ThreeWays() {
               >
                 <span data-split>One platform.</span>
                 <br />
-                <span data-split>Three Ways to Use It.</span>
+                <span data-split>Five customer types it serves.</span>
               </h2>
             </div>
             <p
               ref={descRef}
               className="max-w-md font-sans font-regular text-sm leading-[1.4] text-[#50617a] md:text-[1.125rem] lg:text-left"
             >
-              Whether you&apos;re routing submissions, quoting carriers, or building on our API, CoverForce adapts to your role.
+              Wholesalers, brokers, carriers, startups, and builders — CoverForce
+              adapts to how each team works, without changing the platform underneath.
             </p>
           </div>
 
