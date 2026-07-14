@@ -1,35 +1,41 @@
 "use client";
 
 import { useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Container from "@/components/common/Container";
 import { useSectionHeaderReveal } from "@/hooks/useSectionHeaderReveal";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 type LaunchStep = {
   id: string;
   label: string;
   title: string;
+  description: string;
   image: string;
 };
 
 const launchSteps: LaunchStep[] = [
-  { id: "license", label: "STEP 01", title: "Get License", image: "/images/startups/step1.png" },
-  { id: "appointments", label: "STEP 02", title: "Accelerated carrier appointments", image: "/images/startups/step2.png" },
-  { id: "api", label: "STEP 03", title: "Connect to the API", image: "/images/startups/step3.png" },
+  {
+    id: "license",
+    label: "STEP 01",
+    title: "Get Licensed",
+    description: "Secure producer and entity licenses with guided checklists.",
+    image: "/images/startups/step1.png",
+  },
+  {
+    id: "appointments",
+    label: "STEP 02",
+    title: "Access the Market",
+    description: "Accelerate carrier appointments through our partner network.",
+    image: "/images/startups/step2.png",
+  },
+  {
+    id: "api",
+    label: "STEP 03",
+    title: "Connect the API",
+    description: "Plug into CoverForce and start quoting in days, not months.",
+    image: "/images/startups/step3.png",
+  },
 ];
-
-const CLIP_HIDDEN_BOTTOM = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
-const CLIP_FULL = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
-const CLIP_HIDDEN_TOP = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
-
-const INACTIVE_COLOR = "#E5E7EB";
-const ACTIVE_COLOR = "#151f4d";
 
 const Launch = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -38,12 +44,7 @@ const Launch = () => {
   const descRef = useRef<HTMLParagraphElement>(null);
 
   const [activeStep, setActiveStep] = useState(0);
-
-  const progressRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const labelRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const titleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const active = launchSteps[activeStep];
 
   useSectionHeaderReveal({
     scopeRef: sectionRef,
@@ -51,73 +52,6 @@ const Launch = () => {
     headingRef,
     descRef,
   });
-
-  useGSAP(() => {
-    if (!sectionRef.current) return;
-
-    const steps = launchSteps.length;
-    const mm = gsap.matchMedia();
-
-    mm.add("(min-width: 1024px)", () => {
-      const ctx = gsap.context(() => {
-        progressRefs.current.forEach((el) => el && gsap.set(el, { scaleX: 0 }));
-        labelRefs.current.forEach((el) => el && gsap.set(el, { color: INACTIVE_COLOR }));
-        titleRefs.current.forEach((el) => el && gsap.set(el, { color: INACTIVE_COLOR }));
-        imageRefs.current.forEach((el) => el && gsap.set(el, { clipPath: CLIP_HIDDEN_BOTTOM }));
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: () => `+=${window.innerHeight * steps}`,
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            onUpdate: (self) => {
-              const idx = Math.min(steps - 1, Math.floor(self.progress * steps));
-              setActiveStep(idx);
-            },
-            onRefresh: (self) => {
-              scrollTriggerRef.current = self;
-            },
-          },
-        });
-
-        launchSteps.forEach((_, i) => {
-          const pos = i;
-
-          tl.to(progressRefs.current[i], { scaleX: 1, duration: 1, ease: "none" }, pos);
-          tl.to(labelRefs.current[i], { color: ACTIVE_COLOR, duration: 1, ease: "none" }, pos);
-          tl.to(titleRefs.current[i], { color: ACTIVE_COLOR, duration: 1, ease: "none" }, pos);
-
-          if (i > 0) {
-            tl.to(
-              imageRefs.current[i - 1],
-              { clipPath: CLIP_HIDDEN_TOP, duration: 1, ease: "none" },
-              pos,
-            );
-          }
-
-          tl.to(
-            imageRefs.current[i],
-            { clipPath: CLIP_FULL, duration: 1, ease: "none" },
-            pos,
-          );
-        });
-      }, sectionRef);
-
-      return () => ctx.revert();
-    });
-
-    return () => mm.revert();
-  }, []);
-
-  const handleStepClick = (index: number) => {
-    const st = scrollTriggerRef.current;
-    if (!st) return;
-    const target = st.start + (index / launchSteps.length) * (st.end - st.start);
-    gsap.to(window, { scrollTo: target, duration: 0.8, ease: "power2.inOut" });
-  };
 
   return (
     <section id="launch" ref={sectionRef} className="bg-white text-[#0a143b]">
@@ -144,30 +78,33 @@ const Launch = () => {
             <div key={step.id} className="flex flex-col gap-5">
               <div className="border-t border-[#E5E7EB] py-4">
                 <p className="font-mono text-sm font-regular leading-relaxed text-[#151f4d]">
-                    {step.label}
-                  </p>
-                  <p className="mt-1 font-sans text-sm font-regular leading-relaxed text-[#151f4d]">
-                    {step.title}
-                  </p>
+                  {step.label}
+                </p>
+                <p className="mt-1 font-sans text-sm font-regular leading-relaxed text-[#151f4d]">
+                  {step.title}
+                </p>
+                <p className="mt-1.5 font-sans text-sm font-regular leading-relaxed text-[#6B7280]">
+                  {step.description}
+                </p>
               </div>
 
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-gray-50">
+              <div className="w-full overflow-hidden rounded-md bg-[#F5F7FA]">
                 <Image
-                  className="h-full w-full object-cover"
+                  className="h-auto w-full object-contain"
                   src={step.image}
                   alt={step.title}
-                  width={500}
-                  height={500}
+                  width={1200}
+                  height={900}
                 />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Desktop: pinned scroll with side-by-side layout */}
-        <div className="hidden h-screen grid-cols-7 items-center gap-23 pt-27 pb-12 lg:grid">
-          <div className="flex h-full flex-col justify-between lg:col-span-3">
-            <div className="space-y-5">
+        {/* Desktop: click tabs to switch image */}
+        <div className="hidden grid-cols-7 items-stretch gap-16 py-24 xl:gap-23 lg:grid">
+          <div className="flex h-full min-h-0 flex-col lg:col-span-3">
+            <div className="shrink-0 space-y-5">
               <h2 className="max-w-xs text-[1.75rem] font-heading font-regular leading-tight tracking-tight text-[#0a143b]">
                 <span data-split>From idea to first bind Three steps</span>
               </h2>
@@ -177,66 +114,94 @@ const Launch = () => {
               </p>
             </div>
 
-            <div className="border-t border-[#E5E7EB]">
-              {launchSteps.map((step, index) => (
-                <button
-                  key={step.id}
-                  type="button"
-                  onClick={() => handleStepClick(index)}
-                  aria-current={activeStep === index}
-                  className="block w-full text-left"
-                >
-                  <div className="h-1 w-full bg-[#E5E7EB]">
-                    <div
-                      ref={(el) => {
-                        progressRefs.current[index] = el;
-                      }}
-                      className="h-1 w-full origin-left bg-[#151f4d]"
-                      style={{ transform: "scaleX(0)" }}
-                    />
-                  </div>
-                  <div className="py-6">
-                    <p
-                      ref={(el) => {
-                        labelRefs.current[index] = el;
-                      }}
-                      className="font-mono text-sm font-regular leading-relaxed"
+            <div
+              role="tablist"
+              aria-label="Launch steps"
+              aria-orientation="vertical"
+              className="mt-auto flex w-full max-w-sm flex-col gap-5 pt-10"
+            >
+              {launchSteps.map((step, index) => {
+                const isActive = activeStep === index;
+
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    role="tab"
+                    id={`launch-tab-${step.id}`}
+                    aria-selected={isActive}
+                    aria-controls="launch-panel"
+                    onClick={() => setActiveStep(index)}
+                    className={`group flex w-full items-start gap-5 rounded-xl border border-[#E5E7EB] px-4 py-3.5 text-left outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-[#0a143b]/25 focus-visible:ring-offset-2 ${
+                      isActive
+                        ? "bg-white shadow-[0_1px_2px_rgba(10,20,59,0.04)]"
+                        : "bg-transparent hover:bg-[#F8F9FC]"
+                    }`}
+                  >
+                    <span
+                      className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full font-sans text-sm font-medium transition-all duration-300 ${
+                        isActive
+                          ? "bg-[#0a143b] text-white"
+                          : "bg-[#ECEEF2] text-[#9CA3AF] group-hover:bg-[#E5E7EB] group-hover:text-[#6B7280]"
+                      }`}
                     >
-                      {step.label}
-                    </p>
-                    <p
-                      ref={(el) => {
-                        titleRefs.current[index] = el;
-                      }}
-                      className="font-sans text-sm font-regular leading-relaxed"
-                    >
-                      {step.title}
-                    </p>
-                  </div>
-                </button>
-              ))}
+                      {index + 1}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={`block font-sans text-base leading-snug transition-colors duration-300 ${
+                          isActive
+                            ? "font-semibold text-[#0a143b]"
+                            : "font-regular text-[#9CA3AF] group-hover:text-[#6B7280]"
+                        }`}
+                      >
+                        {step.title}
+                      </span>
+                      <span
+                        className={`mt-1 block font-sans text-sm leading-relaxed transition-colors duration-300 ${
+                          isActive
+                            ? "text-[#4B5563]"
+                            : "text-[#B0B5BF] group-hover:text-[#9CA3AF]"
+                        }`}
+                      >
+                        {step.description}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="relative mx-auto h-full w-full overflow-hidden rounded-md bg-gray-50 lg:col-span-4">
-            {launchSteps.map((step, index) => (
-              <div
-                key={step.id}
-                ref={(el) => {
-                  imageRefs.current[index] = el;
-                }}
-                className="absolute inset-0"
-                style={{ clipPath: CLIP_HIDDEN_BOTTOM }}
-              >
-                <Image
-                  className="h-full w-full object-cover"
-                  src={step.image}
-                  alt={step.title}
-                  width={500}
-                  height={500}
-                />
-              </div>
-            ))}
+          <div
+            role="tabpanel"
+            id="launch-panel"
+            aria-labelledby={`launch-tab-${active.id}`}
+            className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-md bg-[#F5F7FA] lg:col-span-4"
+          >
+            <div className="relative h-full w-full">
+              {launchSteps.map((step, index) => (
+                <div
+                  key={step.id}
+                  className={`transition-opacity duration-500 ease-out ${
+                    activeStep === index
+                      ? "relative h-full opacity-100"
+                      : "pointer-events-none absolute inset-0 opacity-0"
+                  }`}
+                  aria-hidden={activeStep !== index}
+                >
+                  <Image
+                    className="h-auto w-full object-contain"
+                    src={step.image}
+                    alt={step.title}
+                    width={1200}
+                    height={900}
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Container>
