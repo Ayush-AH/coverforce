@@ -19,13 +19,20 @@ type MarqueeRowProps = {
   offset?: boolean;
   logos?: readonly MarqueeLogo[];
   size?: "default" | "large";
+  /** "dark" = black logos on light bg; "light" = white logos on dark/colored bg */
+  tone?: "dark" | "light";
 };
 
 const LOGO_SIZE_CLASS = {
   default:
-    "h-8 w-auto max-h-8 object-contain opacity-90 grayscale contrast-200 brightness-0 md:h-6 md:max-h-6 lg:h-7 lg:max-h-7",
+    "h-8 w-auto max-h-8 object-contain opacity-90 grayscale contrast-200 md:h-6 md:max-h-6 lg:h-7 lg:max-h-7",
   large:
-    "h-12 w-auto max-h-12 object-contain opacity-90 grayscale contrast-200 brightness-0 md:h-10 md:max-h-10 lg:h-12 lg:max-h-12",
+    "h-12 w-auto max-h-12 object-contain opacity-90 grayscale contrast-200 md:h-10 md:max-h-10 lg:h-12 lg:max-h-12",
+} as const;
+
+const LOGO_TONE_CLASS = {
+  dark: "brightness-0",
+  light: "brightness-0 invert",
 } as const;
 
 export function MarqueeRow({
@@ -33,6 +40,7 @@ export function MarqueeRow({
   offset = false,
   logos = DEFAULT_LOGOS,
   size = "default",
+  tone = "dark",
 }: MarqueeRowProps) {
   const items = [...logos, ...logos];
 
@@ -49,7 +57,7 @@ export function MarqueeRow({
               alt=""
               width={size === "large" ? 180 : 120}
               height={size === "large" ? 60 : 40}
-              className={LOGO_SIZE_CLASS[size]}
+              className={`${LOGO_SIZE_CLASS[size]} ${LOGO_TONE_CLASS[tone]}`}
               draggable={false}
             />
           </div>

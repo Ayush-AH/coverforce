@@ -20,7 +20,7 @@ export const operatingRows = [
     id: "ai-workflows",
     heading: "AI-native insurance workflows",
     description:
-      "Connect AI agents and LLM-powered apps to CoverForce's quote-to-bind lifecycle through MCP, without building custom workflow logic from scratch.",
+      "CoverForce built AI-native testing infrastructure that validates integrations on both the developer and carrier side — surfacing errors early so issues get resolved proactively and at scale across every partner.",
     Mock: createSolutionStepMock(
       "/images/developers/dev2.svg",
       "AI-native insurance workflows",

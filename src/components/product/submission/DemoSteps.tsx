@@ -98,7 +98,7 @@ function NavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-sm font-medium transition-colors duration-300 md:text-[0.8125rem] ${
+      className={`flex w-full items-center gap-2.5 py-2 text-left font-heading text-[0.9375rem] font-regular leading-none tracking-normal transition-colors duration-300 ${
         active ? "text-white" : "text-white/35 hover:text-white/55"
       }`}
     >

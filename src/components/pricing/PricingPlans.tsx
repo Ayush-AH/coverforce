@@ -1,49 +1,14 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RiCheckLine } from "@remixicon/react";
 import Container from "@/components/common/Container";
 import RequestDemoCta from "@/components/request-demo/RequestDemoCta";
-import {
-  CARD_BACKGROUND_STYLES,
-  type CardBackground,
-} from "@/data/wayCardStyles";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const WayCardDotGridScene = dynamic(
-  () => import("@/components/home/WayCardDotGridScene"),
-  { ssr: false, loading: () => null },
-);
-
-function useLazyInView<T extends HTMLElement>(rootMargin = "240px 0px") {
-  const ref = useRef<T>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || visible) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [rootMargin, visible]);
-
-  return { ref, visible };
-}
 
 type PricingPlan = {
   id: string;
@@ -52,7 +17,6 @@ type PricingPlan = {
   description: string;
   features: string[];
   cta: { label: string; href: string };
-  background: CardBackground;
 };
 
 const PLANS: PricingPlan[] = [
@@ -63,16 +27,18 @@ const PLANS: PricingPlan[] = [
     description:
       "For insurtechs, new brokerages, and early-stage startups. Full platform access from day one. Start building in sandbox with no time limit, go live when you're ready, and scale with pricing that grows as you do.",
     features: [
-      "Free Sandbox Access",
-      "Standard API Integrations",
-      "Basic AI Intake Tools",
-      "Community Support",
+      "Application and usage-based pricing that scales as you scale",
+      "Unlimited seats",
+      "Aligned incentives",
+      "Free sandbox",
+      "Standard API",
+      "Slack + integration support",
+      "API-only",
     ],
     cta: {
       label: "Apply to our startup program",
       href: "/contact",
     },
-    background: "startup",
   },
   {
     id: "enterprise",
@@ -80,18 +46,19 @@ const PLANS: PricingPlan[] = [
     description:
       "For wholesalers, brokers, carriers, and organizations at scale. The full CoverForce platform with unlimited usage, enterprise controls, dedicated support, and custom integrations built for organizations processing thousands of submissions per month.",
     features: [
-      "All 40+ carrier integrations — unlimited usage",
-      "Full AI suite — 10 production capabilities",
-      "Broker code management & carrier code delegation",
-      "E&S compliance — surplus lines tax, covering letters",
-      "Performance analytics & commission tracking",
-      "AMS integration — Applied EPIC, AMS360, Nexsure, Salesforce",
+      "Application and usage-based pricing that scales as you scale",
+      "Unlimited seats",
+      "Aligned incentives",
+      "Full AI ingestion, enrichment, quoting & binding",
+      "Tailored carrier roadmap",
+      "Agent & consumer-facing modules, plus wholesaler and agency-network experiences with configurable workflows",
+      "Nationwide distribution capabilities",
+      "24/7 enterprise technical customer support",
     ],
     cta: {
       label: "Talk to sales",
       href: "/contact",
     },
-    background: "developer",
   },
 ];
 
@@ -102,7 +69,7 @@ function FeatureItem({ children }: { children: string }) {
         <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#7CD20D] text-[#0a143b]">
           <RiCheckLine className="size-3" aria-hidden />
         </span>
-        <span className="font-sans text-sm font-regular leading-relaxed text-white">
+        <span className="font-sans text-[0.9375rem] font-regular leading-relaxed text-[#2E2E2E]">
           {children}
         </span>
       </div>
@@ -113,17 +80,9 @@ function FeatureItem({ children }: { children: string }) {
 function PricingCard({ plan }: { plan: PricingPlan }) {
   const cardRef = useRef<HTMLElement>(null);
   const hoverTweenRef = useRef<gsap.core.Timeline | null>(null);
-  const { ref: lazyRef, visible: inView } = useLazyInView<HTMLElement>();
-  const [hovered, setHovered] = useState(false);
   const isEnterprise = plan.id === "enterprise";
 
-  const setRefs = (el: HTMLElement | null) => {
-    cardRef.current = el;
-    lazyRef.current = el;
-  };
-
   const handleMouseEnter = () => {
-    setHovered(true);
     const card = cardRef.current;
     if (!card) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -147,7 +106,6 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
   };
 
   const handleMouseLeave = () => {
-    setHovered(false);
     const card = cardRef.current;
     if (!card) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -172,42 +130,32 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 
   return (
     <article
-      ref={setRefs}
+      ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`pricing-card pricing-plan-card-shell way-card-shell group/pricing relative flex flex-col overflow-hidden rounded-md will-change-transform transform-gpu lg:will-change-transform ${
         isEnterprise
-          ? "min-h-[38rem] sm:min-h-[40rem]"
-          : "min-h-[34rem] sm:min-h-[36rem]"
-      } md:min-h-[42rem] lg:min-h-[46rem]`}
+          ? "min-h-[40rem] sm:min-h-[42rem]"
+          : "min-h-[36rem] sm:min-h-[38rem]"
+      } md:min-h-[44rem] lg:min-h-[48rem]`}
     >
       <div className="way-card-body absolute inset-0 overflow-hidden rounded-md">
-        <div
-          className="absolute inset-0 rounded-md"
-          style={{ background: CARD_BACKGROUND_STYLES[plan.background] }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] overflow-hidden rounded-md"
-          aria-hidden
-        >
-          {inView ? <WayCardDotGridScene variant="dark" active={hovered} /> : null}
-        </div>
+        <div className="absolute inset-0 rounded-md bg-[#F4F5F7]" aria-hidden />
       </div>
 
-      <div className="relative z-10 flex flex-1 flex-col p-5 text-white sm:p-8 md:p-12 lg:p-10">
+      <div className="relative z-10 flex flex-1 flex-col p-5 text-[#0a143b] sm:p-8 md:p-12 lg:p-10">
         <div className="flex items-center gap-3">
-          <h2 className="font-heading text-2xl font-medium tracking-tight text-white sm:text-3xl md:text-4xl">
+          <h2 className="font-heading text-3xl font-medium text-[#0a143b] sm:text-4xl md:text-5xl">
             {plan.title}
           </h2>
           {plan.badge ? (
-            <span className="rounded-full bg-white px-2.5 py-1 font-sans text-xs font-semibold text-[#413CC0]">
+            <span className="rounded-full bg-[#0a143b] px-2.5 py-1 font-sans text-sm font-semibold text-white">
               {plan.badge}
             </span>
           ) : null}
         </div>
 
-        <p className="mt-4 font-sans text-sm font-regular leading-relaxed text-white sm:mt-5">
+        <p className="mt-4 font-sans text-[0.9375rem] font-regular leading-relaxed text-[#444444] sm:mt-5">
           {plan.description}
         </p>
 
@@ -221,9 +169,10 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
           label={plan.cta.label}
           href={plan.cta.href}
           variant="primary"
-          surface="on-dark"
+          size="md"
+          surface="default"
           balanced
-          className="w-full border-transparent !bg-white !text-[#2E2E2E]"
+          className="w-full"
         />
       </div>
     </article>
@@ -326,7 +275,7 @@ const PricingPlans = () => {
           transform: translate3d(0, 0, 0) scale(1);
         }
       `}</style>
-      <Container borderColor="#53535333">
+      <Container borderColor="#53535380">
         <div className="grid grid-cols-1 items-stretch gap-4 pb-12 pt-2 sm:gap-6 md:grid-cols-2 md:gap-8 md:px-26 md:pb-16 md:pt-4 lg:pb-20">
           {PLANS.map((plan) => (
             <PricingCard key={plan.id} plan={plan} />

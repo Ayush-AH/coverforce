@@ -351,8 +351,11 @@ const Header = () => {
   }, []);
 
   const transparentUntilScroll = usesTransparentHeaderUntilScroll(pathname);
-  const theme =
-    transparentUntilScroll && headerPastHero ? "light" : baseTheme;
+  const theme = transparentUntilScroll
+    ? headerPastHero
+      ? "light"
+      : "dark"
+    : baseTheme;
   const styles = headerThemes[theme];
 
   useEffect(() => {

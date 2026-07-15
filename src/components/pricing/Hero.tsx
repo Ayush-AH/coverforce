@@ -7,7 +7,7 @@ import { HERO_COPY_FLOW } from "@/components/common/heroSectionSpacing";
 const Hero = () => {
   return (
     <section className="bg-white text-[#0a143b]">
-      <Container borderColor="#53535333">
+      <Container borderColor="#53535380">
         <HeroReveal className={HERO_COPY_FLOW}>
           <EyebrowPill surface="light">Pricing</EyebrowPill>
 

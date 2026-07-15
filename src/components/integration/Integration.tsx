@@ -23,11 +23,14 @@ const LOGO_MAP: Record<string, string> = {
 
 type Market = "AD" | "ES";
 
+/** live = integrated & quotable now · request = available to request while carrier is live */
+type ProductAvailability = "live" | "request";
+
 type CarrierProduct = {
   market: Market;
   name: string;
-  /** False = partial / not yet integrated on CoverForce */
-  integrated?: boolean;
+  /** Defaults to "live". Use "request" for products not yet integrated on a live carrier. */
+  availability?: ProductAvailability;
 };
 
 type Carrier = {
@@ -89,7 +92,7 @@ const BASE_CARRIERS: Carrier[] = [
     lobs: ["WC", "BOP", "GL"],
     products: [
       { market: "AD", name: "Business Policy" },
-      { market: "AD", name: "Inland Marine", integrated: false },
+      { market: "AD", name: "Inland Marine", availability: "request" },
       { market: "AD", name: "General Liability" },
       { market: "AD", name: "Workers Compensation" },
     ],
@@ -120,7 +123,7 @@ const BASE_CARRIERS: Carrier[] = [
     lobs: ["WC", "BOP", "GL"],
     products: [
       { market: "AD", name: "Business Policy" },
-      { market: "AD", name: "Inland Marine", integrated: false },
+      { market: "AD", name: "Inland Marine", availability: "request" },
       { market: "AD", name: "General Liability" },
       { market: "AD", name: "Workers Compensation" },
     ],
@@ -254,29 +257,52 @@ const CarrierCard = ({ carrier }: { carrier: Carrier }) => {
 
         <div className="mt-5 flex flex-wrap gap-2 md:mt-6">
           {carrier.products.map((product, idx) => {
-            const integrated = product.integrated !== false;
+            const requestable = product.availability === "request";
             return (
               <span
                 key={`${product.name}-${idx}`}
                 title={
-                  integrated ? undefined : "Not yet integrated on CoverForce"
+                  requestable
+                    ? "Available to request — not yet live on CoverForce"
+                    : "Live on CoverForce"
                 }
-                className={`inline-flex w-fit max-w-full items-center truncate rounded-full px-4 py-1 text-xs font-sans font-medium tracking-wide transition-colors duration-300 ${
-                  integrated
-                    ? "bg-[#F2F8FC] text-[#185FA5]/95 group-hover:bg-[#E8F2FA]"
-                    : "bg-[#FFF5F5] text-[#9B2C2C] ring-1 ring-inset ring-[#E24B4A]"
+                className={`inline-flex w-fit max-w-full items-center gap-1.5 rounded-full py-1 pl-2.5 pr-4 text-xs font-sans font-medium tracking-wide transition-colors duration-300 ${
+                  requestable
+                    ? "border border-dashed border-[#C9B27A] bg-[#FBF6EC] text-[#8A6A22]"
+                    : "bg-[#F2F8FC] text-[#185FA5]/95 group-hover:bg-[#E8F2FA]"
                 }`}
               >
-                {product.market} | {product.name}
-                {!integrated && (
-                  <span className="ml-2 shrink-0 text-[0.625rem] font-semibold uppercase tracking-wide opacity-80">
-                    Partial
-                  </span>
-                )}
+                <span
+                  className={`size-1.5 shrink-0 rounded-full ${
+                    requestable
+                      ? "bg-transparent ring-1 ring-[#C08A2B]"
+                      : "bg-[#4F8A2E]"
+                  }`}
+                  aria-hidden
+                />
+                <span className="truncate">
+                  {product.market} | {product.name}
+                </span>
               </span>
             );
           })}
         </div>
+
+        {carrier.products.some((p) => p.availability === "request") && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-[#F0F0F0] pt-3 text-[0.625rem] font-sans font-medium text-[#98A2B3]">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-[#4F8A2E]" aria-hidden />
+              Live
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="size-1.5 rounded-full ring-1 ring-[#C08A2B]"
+                aria-hidden
+              />
+              Available to request
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

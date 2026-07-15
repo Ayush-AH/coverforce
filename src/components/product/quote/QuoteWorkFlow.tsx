@@ -95,8 +95,9 @@ function NavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 py-2 text-left font-mono text-[0.6875rem] font-medium leading-snug transition-colors duration-300 md:text-xs ${active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
-        }`}
+      className={`flex w-full items-center gap-2.5 py-2 text-left font-heading text-[0.9375rem] font-regular leading-none tracking-normal transition-colors duration-300 ${
+        active ? "text-[#1A1A1A]" : "text-[#C8CDD6] hover:text-[#9AA8BC]"
+      }`}
     >
       <span
         className={`size-1.5 shrink-0 rounded-full transition-colors duration-300 lg:-translate-x-1/2 ${active ? "bg-[#1A1A1A]" : "bg-transparent"

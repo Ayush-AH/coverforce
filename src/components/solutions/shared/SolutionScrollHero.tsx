@@ -256,18 +256,25 @@ export default function SolutionScrollHero({
             <div className="relative flex h-svh flex-col">
               <div ref={heroContentRef} className="flex min-h-0 flex-1 flex-col justify-center">
                 <HeroReveal className="flex flex-col justify-center space-y-8">
-                  <EyebrowPill surface="light">{eyebrow}</EyebrowPill>
-                  <h1 className={titleClassName}>{title}</h1>
+                  <EyebrowPill surface="dark">{eyebrow}</EyebrowPill>
+                  <h1 className={titleClassName} style={{ color: "#FFFFFF" }}>
+                    {title}
+                  </h1>
                   {description ? (
-                    <p className="max-w-sm font-heading text-sm font-regular leading-relaxed text-[#444444] md:text-sm">
+                    <p className="max-w-sm font-heading text-sm font-regular leading-relaxed text-white/80 md:text-sm">
                       {description}
                     </p>
                   ) : null}
                   <div className="flex flex-wrap gap-4">
-                    <Button href={primaryButtonHref} balanced>
+                    <Button href={primaryButtonHref} balanced surface="on-dark">
                       {primaryButtonLabel}
                     </Button>
-                    <Button href={secondaryButtonHref} balanced variant="secondary">
+                    <Button
+                      href={secondaryButtonHref}
+                      balanced
+                      variant="secondary"
+                      surface="on-dark"
+                    >
                       {secondaryButtonLabel}
                     </Button>
                   </div>
@@ -276,7 +283,7 @@ export default function SolutionScrollHero({
 
               {showMarquee ? (
                 <div className="relative z-10 w-full shrink-0 pb-6 md:pb-8 lg:hidden">
-                  <MarqueeRow logos={marqueeLogos} size={marqueeSize} />
+                  <MarqueeRow logos={marqueeLogos} size={marqueeSize} tone="light" />
                 </div>
               ) : null}
             </div>
@@ -421,15 +428,16 @@ export default function SolutionScrollHero({
           {showMarquee ? (
             <div className="pointer-events-none absolute inset-x-0 top-0 z-10 hidden h-svh flex-col justify-end pb-6 md:pb-8 lg:flex">
               <div className="pointer-events-auto w-full">
-                <MarqueeRow logos={marqueeLogos} size={marqueeSize} />
+                <MarqueeRow logos={marqueeLogos} size={marqueeSize} tone="light" />
               </div>
             </div>
           ) : null}
         </div>
       </Container>
 
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-0 hidden h-screen w-[50vw] overflow-hidden lg:block">
+      <div className="pointer-events-none absolute left-0 top-0 z-0 h-svh w-[calc(100vw+2rem)] overflow-hidden">
         <GradFlow
+          className="absolute inset-0 h-full w-full"
           config={{
             ...gradFlow,
             speed: 0.4,
@@ -438,7 +446,6 @@ export default function SolutionScrollHero({
             noise: 0.08,
           }}
         />
-        <div className="absolute -bottom-50 -right-45 z-0 h-40 w-full -rotate-35 transform-origin-bottom-right bg-white" />
       </div>
     </section>
   );
